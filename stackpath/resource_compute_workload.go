@@ -311,7 +311,7 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 	// Set the ID based on the workload created in the API
 	data.SetId(resp.Payload.Workload.ID)
 
-	return nil
+	return resourceComputeWorkloadRead(data, meta)
 }
 
 func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) error {
@@ -332,7 +332,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 	} else if err != nil {
 		return err
 	}
-	return err
+	return resourceComputeWorkloadRead(data, meta)
 }
 
 func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) error {
