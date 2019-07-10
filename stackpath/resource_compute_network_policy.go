@@ -17,6 +17,9 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 		Read:   resourceComputeNetworkPolicyRead,
 		Update: resourceComputeNetworkPolicyUpdate,
 		Delete: resourceComputeNetworkPolicyDelete,
+		Importer: &schema.ResourceImporter{
+			State: resourceComputeNetworkPolicyImportState,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
