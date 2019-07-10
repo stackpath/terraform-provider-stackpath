@@ -388,6 +388,7 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	}
 
 	data.Set("name", resp.Payload.NetworkPolicy.Name)
+	data.Set("slug", resp.Payload.NetworkPolicy.Slug)
 	data.Set("description", resp.Payload.NetworkPolicy.Description)
 	data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels))
 	data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations))
