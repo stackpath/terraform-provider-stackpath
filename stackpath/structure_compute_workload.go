@@ -285,7 +285,7 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *models.V1Worklo
 	data.Set("annotations", flattenStringMap(workload.Metadata.Annotations))
 	data.Set("network_interface", flattenComputeWorkloadNetworkInterfaces(workload.Spec.NetworkInterfaces))
 	data.Set("container", flattenComputeWorkloadContainers("container", data, workload.Spec.Containers))
-	data.Set("image_pull_credentials", flattenComputeWorkloadImagePullCredentials(workload.Spec.ImagePullCredentials))
+	data.Set("image_pull_credentials", flattenComputeWorkloadImagePullCredentials("image_pull_credentials", data, workload.Spec.ImagePullCredentials))
 	data.Set("virtual_machine", flattenComputeWorkloadVirtualMachines("virtual_machine", data, workload.Spec.VirtualMachines))
 	data.Set("volume_claim", flattenComputeWorkloadVolumeClaims(workload.Spec.VolumeClaimTemplates))
 	data.Set("target", flattenComputeWorkloadTargets("target", data, workload.Targets))
@@ -309,6 +309,10 @@ func flattenComputeWorkloadVolumeClaims(claims []*models.V1VolumeClaim) []interf
 	return flattened
 }
 
+// flattenComputeWorkloadVirtualMachines flattens the provided virtual machines
+// with respect to the order of any virtual machines defined in the provided
+// ResourceData. The prefix should be the flattened key of the list of virtual
+// machines in the ResourceData.
 func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceData, vms models.V1VirtualMachineSpecMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
@@ -319,39 +323,81 @@ func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 	}
 	flattened := make([]interface{}, data.Get(prefix+".#").(int))
 	for name, vm := range vms {
-		flattenedVM := map[string]interface{}{
-			"name":            name,
-			"image":           vm.Image,
-			"port":            flattenComputeWorkloadPorts(vm.Ports),
-			"readiness_probe": flattenComputeWorkloadProbe(vm.ReadinessProbe),
-			"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
-			"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
-			"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
-		}
-
 		if index, found := ordered[name]; found {
-			flattened[index] = flattenedVM
+			flattened[index] = flattenComputeWorkloadVirtualMachineOrdered(fmt.Sprintf("%s.%d", prefix, index), name, data, vm)
 		} else {
-			flattened = append(flattened, flattenedVM)
+			flattened = append(flattened, flattenComputeWorkloadVirtualMachine(name, vm))
 		}
 	}
 	return flattened
 }
 
-func flattenComputeWorkloadImagePullCredentials(credentials []*models.V1ImagePullCredential) []interface{} {
-	creds := make([]interface{}, 0, len(credentials))
+// flattenComputeWorkloadVirtualMachineOrdered flattens a workload virtual machine but
+// respects the ordering of the previous virtual machine entry. Ordering is important
+// when dealing with updates to existing resources and accurate diffs are desired.
+func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *schema.ResourceData, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	return map[string]interface{}{
+		"name":            name,
+		"image":           vm.Image,
+		"port":            flattenComputeWorkloadPortsOrdered(prefix+".port", data, vm.Ports),
+		"readiness_probe": flattenComputeWorkloadProbe(vm.ReadinessProbe),
+		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
+		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
+		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+	}
+}
+
+// flattenComputeWorkloadVirtualMachine flattens the provided virtual machine
+// spec as given. This implementation should only be used when the ordering of
+// the returned virtual machines does not matter. When ordering is important,
+// use flattenComputeWorkloadVirtualMachineOrdered.
+func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	return map[string]interface{}{
+		"name":            name,
+		"image":           vm.Image,
+		"port":            flattenComputeWorkloadPorts(vm.Ports),
+		"readiness_probe": flattenComputeWorkloadProbe(vm.ReadinessProbe),
+		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
+		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
+		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+	}
+}
+
+// flattenComputeWorkloadImagePullCredentials flattens the provided image pull
+// credentials with respect to the order of any image pull credentials defined
+// in the provided ResourceData. The prefix should be the flattened key of the
+// list of image pull credentials in the ResourceData.
+func flattenComputeWorkloadImagePullCredentials(prefix string, data *schema.ResourceData, credentials []*models.V1ImagePullCredential) []interface{} {
+	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
+	ordered := make(map[string]int, data.Get(prefix+".#").(int))
+	for i, k := range data.Get(prefix).([]interface{}) {
+		// Grab the docker registry data set in the image pull
+		// credentials, this guaranteed to be set.
+		data := k.(map[string]interface{})["docker_registry"].([]interface{})[0].(map[string]interface{})
+		// Set the order of the credentials based on the registry server
+		ordered[data["server"].(string)] = i
+	}
+	creds := make([]interface{}, data.Get(prefix+".#").(int))
 	for _, c := range credentials {
-		creds = append(creds, map[string]interface{}{
+		data := map[string]interface{}{
 			"docker_registry": map[string]interface{}{
 				"server":   c.DockerRegistry.Server,
 				"username": c.DockerRegistry.Username,
 				"email":    c.DockerRegistry.Email,
 			},
-		})
+		}
+		if index, exists := ordered[c.DockerRegistry.Server]; exists {
+			creds[index] = data
+		} else {
+			creds = append(creds, data)
+		}
 	}
 	return creds
 }
 
+// flattenComputeWorkloadTargets flattens the provided workload targets with
+// respect to the order of any targets defined in the provided ResourceData.
+// The prefix should be the flattened key of the list of targets in the ResourceData.
 func flattenComputeWorkloadTargets(prefix string, data *schema.ResourceData, targets models.V1TargetMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
@@ -363,20 +409,23 @@ func flattenComputeWorkloadTargets(prefix string, data *schema.ResourceData, tar
 	t := make([]interface{}, data.Get(prefix+".#").(int))
 	for k, v := range targets {
 		if index, found := ordered[k]; found {
-			t[index] = flattenComputeWorkloadTarget(k, v)
+			t[index] = flattenComputeWorkloadTarget(fmt.Sprintf("%s.%d", prefix, index), k, data, v)
 		} else {
-			t = append(t, flattenComputeWorkloadTarget(k, v))
+			t = append(t, flattenComputeWorkloadTarget(fmt.Sprintf("%s.%d", prefix, len(targets)), k, data, v))
 		}
 	}
 	return t
 }
 
-func flattenComputeWorkloadTarget(name string, target models.V1Target) map[string]interface{} {
+// flattenComputeWorkloadTarget will flatten the provided workload target with
+// respect to the original order of the target in the ResourceData. The prefix
+// should be the flattened key of the target in the ResourceData.
+func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData, target models.V1Target) map[string]interface{} {
 	return map[string]interface{}{
 		"name":             name,
 		"min_replicas":     target.Spec.Deployments.MinReplicas,
 		"deployment_scope": target.Spec.DeploymentScope,
-		"selector":         flattenComputeMatchExpressions(target.Spec.Deployments.Selectors),
+		"selector":         flattenComputeMatchExpressionsOrdered(prefix+".selector", data, target.Spec.Deployments.Selectors),
 	}
 }
 
@@ -390,6 +439,9 @@ func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*models.V1Netwo
 	return flattened
 }
 
+// flattenComputeWorkloadContainers flattens the provided workload containers
+// with respect to the order of any containers defined in the provided ResourceData.
+// The prefix should be the flattened key of the list of containers in the ResourceData.
 func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, containers models.V1ContainerSpecMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
@@ -400,27 +452,49 @@ func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, 
 	}
 	flattened := make([]interface{}, data.Get(prefix+".#").(int))
 	for name, container := range containers {
-		flattenedContainer := map[string]interface{}{
-			"name":            name,
-			"image":           container.Image,
-			"command":         flattenStringArray(container.Command),
-			"port":            flattenComputeWorkloadPorts(container.Ports),
-			"env":             flattenComputeWorkloadEnvVars(container.Env),
-			"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
-			"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
-			"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
-			"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
-		}
-
 		// In the event that a container is added to a workload outside of
 		// terraform, we need to support adding unknown containers to our state.
 		if index, found := ordered[name]; found {
-			flattened[index] = flattenedContainer
+			flattened[index] = flattenComputeWorkloadContainerOrdered(fmt.Sprintf("%s.%d", prefix, index), name, data, container)
 		} else {
-			flattened = append(flattened, flattenedContainer)
+			flattened = append(flattened, flattenComputeWorkloadContainer(name, container))
 		}
 	}
 	return flattened
+}
+
+// flattenComputeWorkloadContainerOrdered flattens a workload container but respects
+// the ordering of the previous container entry. Ordering is important when dealing
+// with updates to existing resources and accurate diffs are desired.
+func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.ResourceData, container models.V1ContainerSpec) map[string]interface{} {
+	return map[string]interface{}{
+		"name":            name,
+		"image":           container.Image,
+		"command":         flattenStringArray(container.Command),
+		"port":            flattenComputeWorkloadPortsOrdered(prefix+".port", data, container.Ports),
+		"env":             flattenComputeWorkloadEnvVarsOrdered(prefix+".env", data, container.Env),
+		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+	}
+}
+
+// flattenComputeWorkloadContainer flattens a workload container as given with no
+// respect to ordering. The order of the returned data is not guaranteed. If ordering
+// is important, flattenComputeWorkloadContainerOrdered should be used.
+func flattenComputeWorkloadContainer(name string, container models.V1ContainerSpec) map[string]interface{} {
+	return map[string]interface{}{
+		"name":            name,
+		"image":           container.Image,
+		"command":         flattenStringArray(container.Command),
+		"port":            flattenComputeWorkloadPorts(container.Ports),
+		"env":             flattenComputeWorkloadEnvVars(container.Env),
+		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+	}
 }
 
 func flattenComputeWorkloadVolumeMounts(mounts []*models.V1InstanceVolumeMount) []interface{} {
@@ -488,6 +562,30 @@ func flattenComputeWorkloadHTTPGetAction(httpGet *models.V1HTTPGetAction) []inte
 	}
 }
 
+// flattenComputeWorkloadEnvVarsOrdered flattens the environment variables for a workload
+// while respecting the original order of the previous environment variables. Ordering is
+// important when dealing with updates to existing resources and accurate diffs are desired.
+func flattenComputeWorkloadEnvVarsOrdered(prefix string, data *schema.ResourceData, envVars models.V1EnvironmentVariableMapEntry) []interface{} {
+	ordered := make(map[interface{}]int, data.Get(prefix+".#").(int))
+	for i, n := range data.Get(prefix).([]interface{}) {
+		ordered[n.(map[string]interface{})["key"].(string)] = i
+	}
+	e := make([]interface{}, data.Get(prefix+".#").(int))
+	for key, v := range envVars {
+		val := map[string]interface{}{
+			"key":   key,
+			"value": v.Value,
+		}
+
+		if index, exists := ordered[key]; exists {
+			e[index] = val
+		} else {
+			e = append(e, val)
+		}
+	}
+	return e
+}
+
 func flattenComputeWorkloadEnvVars(envVars models.V1EnvironmentVariableMapEntry) []interface{} {
 	e := make([]interface{}, 0, len(envVars))
 	for k, v := range envVars {
@@ -497,6 +595,31 @@ func flattenComputeWorkloadEnvVars(envVars models.V1EnvironmentVariableMapEntry)
 		})
 	}
 	return e
+}
+
+// flattenComputeWorkloadPortsOrdered flattens the port definitions for a workload while
+// respecting the original order of the previous port definitions. Ordering is important
+// when dealing with updates to existing resources and accurate diffs are desired.
+func flattenComputeWorkloadPortsOrdered(prefix string, data *schema.ResourceData, ports models.V1InstancePortMapEntry) []interface{} {
+	ordered := make(map[interface{}]int, data.Get(prefix+".#").(int))
+	for i, n := range data.Get(prefix).([]interface{}) {
+		ordered[n.(map[string]interface{})["name"].(string)] = i
+	}
+
+	newPorts := make([]interface{}, data.Get(prefix+".#").(int))
+	for portName, v := range ports {
+		port := map[string]interface{}{
+			"name":     portName,
+			"port":     v.Port,
+			"protocol": v.Protocol,
+		}
+		if index, exists := ordered[portName]; exists {
+			newPorts[index] = port
+		} else {
+			newPorts = append(newPorts, port)
+		}
+	}
+	return newPorts
 }
 
 func flattenComputeWorkloadPorts(ports models.V1InstancePortMapEntry) []interface{} {

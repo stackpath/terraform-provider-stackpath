@@ -1,6 +1,11 @@
 package stackpath
 
-import "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+import (
+	"sort"
+
+	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+)
 
 func convertComputeMatchExpression(data []interface{}) []*models.V1MatchExpression {
 	selectors := make([]*models.V1MatchExpression, len(data))
@@ -35,6 +40,35 @@ func convertToStringArray(data []interface{}) []string {
 	return s
 }
 
+// flattenComputeMatchExpressions flattens the provided workload match expressions
+// with respect to the order of any existing match expressions defined in the provided
+// ResourceData. The prefix should be the flattened key of the list of match expressions
+// in the ResourceData.
+func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*models.V1MatchExpression) []interface{} {
+	ordered := make(map[string]int, data.Get(prefix+".#").(int))
+	for i, d := range selectors {
+		ordered[d.Key] = i
+	}
+	s := make([]interface{}, data.Get(prefix+".#").(int))
+	for _, v := range selectors {
+		data := map[string]interface{}{
+			"key":      v.Key,
+			"operator": v.Operator,
+			"values":   flattenStringArray(v.Values),
+		}
+		if index, exists := ordered[v.Key]; exists {
+			s[index] = data
+		} else {
+			s = append(s, data)
+		}
+	}
+	return s
+}
+
+// flattenComputeMatchExpressions flattens the provided workload match expressions
+// as given with no respect to ordering. If the order of the resulting match expressions
+// is important, eg when using for diff logic, then flattenComputeMatchExpressionsOrdered
+// should be used.
 func flattenComputeMatchExpressions(selectors []*models.V1MatchExpression) []interface{} {
 	s := make([]interface{}, len(selectors))
 	for i, v := range selectors {
@@ -56,6 +90,9 @@ func flattenStringMap(stringMap models.V1StringMapEntry) map[string]interface{} 
 }
 
 func flattenStringArray(arr []string) []interface{} {
+	// ensure the array is always sorted before flattened so
+	// we have guaranteed ordering.
+	sort.Strings(arr)
 	a := make([]interface{}, len(arr))
 	for i, s := range arr {
 		a[i] = s
