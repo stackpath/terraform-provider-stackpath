@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	workload "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
 
@@ -89,73 +90,13 @@ func resourceComputeWorkload() *schema.Resource {
 				ConflictsWith: []string{"container"},
 				MaxItems:      1,
 				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"image": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"port":            resourceComputeWorkloadPortSchema(),
-						"liveness_probe":  resourceComputeWorkloadProbeSchema(),
-						"readiness_probe": resourceComputeWorkloadProbeSchema(),
-						"resources":       resourceComputeWorkloadResourcesSchema(),
-						"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
-					},
-				},
+				Elem:          resourceComputeWorkloadVirtualMachine(),
 			},
 			"container": &schema.Schema{
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"virtual_machine"},
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"image": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"command": &schema.Schema{
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"env": &schema.Schema{
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"key": &schema.Schema{
-										Type:     schema.TypeString,
-										Required: true,
-									},
-									"value": &schema.Schema{
-										Type:     schema.TypeString,
-										Optional: true,
-									},
-									"secret_value": &schema.Schema{
-										Type:      schema.TypeString,
-										Optional:  true,
-										Sensitive: true,
-									},
-								},
-							},
-						},
-						"port":            resourceComputeWorkloadPortSchema(),
-						"readiness_probe": resourceComputeWorkloadProbeSchema(),
-						"liveness_probe":  resourceComputeWorkloadProbeSchema(),
-						"resources":       resourceComputeWorkloadResourcesSchema(),
-						"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
-					},
-				},
+				Elem:          resourceComputeWorkloadContainer(),
 			},
 			"volume_claim": &schema.Schema{
 				Type:     schema.TypeList,
@@ -201,6 +142,13 @@ func resourceComputeWorkload() *schema.Resource {
 						},
 					},
 				},
+			},
+			"instances": &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Optional: true,
+				ForceNew: false,
+				Elem:     resourceComputeWorkloadInstance(),
 			},
 		},
 	}
@@ -405,6 +353,41 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 	}
 
 	flattenComputeWorkload(data, resp.Payload.Workload)
+	return resourceComputeWorkloadReadInstances(data, meta)
+}
+
+func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interface{}) error {
+	config := meta.(*Config)
+
+	pageSize := "50"
+	// variable to keep track of our location through pagination
+	var endCursor string
+	var instances []interface{}
+	for {
+		params := &client.GetWorkloadInstancesParams{
+			StackID:          config.Stack,
+			WorkloadID:       data.Id(),
+			Context:          context.Background(),
+			PageRequestFirst: &pageSize,
+		}
+		if endCursor != "" {
+			params.PageRequestAfter = &endCursor
+		}
+		resp, err := config.compute.GetWorkloadInstances(params, nil)
+		if err != nil {
+			return err
+		}
+		for _, result := range resp.Payload.Results {
+			instances = append(instances, flattenComputeWorkloadInstance(result))
+		}
+		// Continue paginating until we get all the results
+		if !resp.Payload.PageInfo.HasNextPage {
+			break
+		}
+		endCursor = resp.Payload.PageInfo.EndCursor
+	}
+
+	data.Set("instances", instances)
 	return nil
 }
 

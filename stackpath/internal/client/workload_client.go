@@ -28,6 +28,7 @@ type Compute interface {
 	GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadOK, error)
 	GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadsOK, error)
 	UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateWorkloadOK, error)
+	GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstancesOK, error)
 	SetTransport(transport runtime.ClientTransport)
 }
 
@@ -207,6 +208,35 @@ func (a *compute) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.
 		return nil, err
 	}
 	return result.(*UpdateWorkloadOK), nil
+
+}
+
+/*
+GetWorkloadInstances retrieves a workload s instances
+*/
+func (a *compute) GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstancesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetWorkloadInstancesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "GetWorkloadInstances",
+		Method:             "GET",
+		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetWorkloadInstancesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetWorkloadInstancesOK), nil
 
 }
 
