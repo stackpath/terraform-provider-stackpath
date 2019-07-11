@@ -26,7 +26,6 @@ This network policy will open up port 80 traffic to web servers and allow
 a specific CIDR range to access the instance at port 9500.
 EOT
 
-  slug
   # Instance label selectors that should be applied to determines
   # which instances the network policy should apply to. You can define
   # multiple label selectors. By not defining any instance selectors,
@@ -39,7 +38,7 @@ EOT
     # Each workload instance is provisioned with a label of the workload
     # slug that created the instance. You can apply the label selector
     # to a specific workload by leveraging the workload slug label.
-    key      = "workload.platform.stackpath.net/workload-slug"
+    key = "workload.platform.stackpath.net/workload-slug"
     # the operator is the operation that should be applied to the value
     # of the label.
     operator = "in"
@@ -55,7 +54,7 @@ EOT
   # developer documentation.
   instance_selector {
     # The key is the label that should be used
-    key      = "role"
+    key = "role"
     # the operator is the operation that should be applied to the value
     # of the label.
     operator = "in"
@@ -81,7 +80,7 @@ EOT
     description = "Allow port 80 traffic for all IPs"
     # The action that should be taken for this policy. You can either
     # BLOCK or ALLOW traffic based on this policy.
-    action      = "ALLOW"
+    action = "ALLOW"
     # The protocol block allows provides different configuration options
     # for applying the ingress policy based on the protocol of the connection.
     protocol {
@@ -174,7 +173,7 @@ EOT
     description = "Allow all outbound connections on both TCP and UDP"
     # The action that should be taken for this policy. You can either
     # BLOCK or ALLOW traffic based on this policy.
-    action      = "ALLOW"
+    action = "ALLOW"
     # The protocol block allows provides different configuration options
     # for applying the egress policy based on the protocol of the connection.
     protocol {

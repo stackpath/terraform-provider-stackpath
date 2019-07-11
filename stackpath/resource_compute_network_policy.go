@@ -17,6 +17,9 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 		Read:   resourceComputeNetworkPolicyRead,
 		Update: resourceComputeNetworkPolicyUpdate,
 		Delete: resourceComputeNetworkPolicyDelete,
+		Importer: &schema.ResourceImporter{
+			State: resourceComputeNetworkPolicyImportState,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
@@ -385,11 +388,12 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	}
 
 	data.Set("name", resp.Payload.NetworkPolicy.Name)
+	data.Set("slug", resp.Payload.NetworkPolicy.Slug)
 	data.Set("description", resp.Payload.NetworkPolicy.Description)
 	data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels))
 	data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations))
-	data.Set("instance_selector", flattenComputeMatchExpressions(resp.Payload.NetworkPolicy.Spec.InstanceSelectors))
-	data.Set("network_selector", flattenComputeMatchExpressions(resp.Payload.NetworkPolicy.Spec.NetworkSelectors))
+	data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, resp.Payload.NetworkPolicy.Spec.InstanceSelectors))
+	data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, resp.Payload.NetworkPolicy.Spec.NetworkSelectors))
 	data.Set("policy_types", flattenComputeNetworkPolicyTypes(resp.Payload.NetworkPolicy.Spec.PolicyTypes))
 	data.Set("priority", resp.Payload.NetworkPolicy.Spec.Priority)
 	data.Set("ingress", flattenComputeNetworkPolicyIngress(resp.Payload.NetworkPolicy.Spec.Ingress))

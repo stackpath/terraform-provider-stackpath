@@ -21,6 +21,14 @@ provider "stackpath" {
   client_secret = var.stackpath_client_secret
 }
 
+# output a map of instance name to IP address
+output "my-terraform-workload-instances" {
+  value = {
+    for instance in stackpath_compute_workload.my-terraform-nginx-workload.instances :
+    instance.name => instance.external_ip_address
+  }
+}
+
 # Create a new network policy that only applies to the nginx workload
 resource "stackpath_compute_network_policy" "my-terraform-nginx-workload" {
   name = "My Terraform Nginx Network Policy"
