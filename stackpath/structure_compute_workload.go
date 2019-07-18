@@ -86,13 +86,37 @@ func convertComputeWorkloadTargets(data []interface{}) models.V1TargetMapEntry {
 			Spec: &models.V1TargetSpec{
 				DeploymentScope: target["deployment_scope"].(string),
 				Deployments: &models.V1DeploymentSpec{
-					MinReplicas: int32(target["min_replicas"].(int)),
-					Selectors:   convertComputeMatchExpression(target["selector"].([]interface{})),
+					MinReplicas:   int32(target["min_replicas"].(int)),
+					MaxReplicas:   int32(target["max_replicas"].(int)),
+					ScaleSettings: convertComputeWorkloadTargetScaleSettings(target["scale_settings"].([]interface{})),
+					Selectors:     convertComputeMatchExpression(target["selector"].([]interface{})),
 				},
 			},
 		}
 	}
 	return targets
+}
+
+func convertComputeWorkloadTargetScaleSettings(data []interface{}) *models.V1ScaleSettings {
+	if len(data) == 0 {
+		return nil
+	}
+
+	settings := data[0].(map[string]interface{})
+
+	metrics := make([]*models.V1MetricSpec, len(settings["metrics"].([]interface{})))
+	for i, metric := range settings["metrics"].([]interface{}) {
+		metricData := metric.(map[string]interface{})
+		metrics[i] = &models.V1MetricSpec{
+			Metric:             metricData["metric"].(string),
+			AverageValue:       metricData["average_value"].(string),
+			AverageUtilization: int32(metricData["average_utilization"].(int)),
+		}
+	}
+
+	return &models.V1ScaleSettings{
+		Metrics: metrics,
+	}
 }
 
 func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*models.V1NetworkInterface {
@@ -424,8 +448,46 @@ func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData
 	return map[string]interface{}{
 		"name":             name,
 		"min_replicas":     target.Spec.Deployments.MinReplicas,
+		"max_replicas":     target.Spec.Deployments.MaxReplicas,
 		"deployment_scope": target.Spec.DeploymentScope,
+		"scale_settings":   flattenComputeWorkloadTargetScaleSettings(prefix+".scale_settings", data, target.Spec.Deployments.ScaleSettings),
 		"selector":         flattenComputeMatchExpressionsOrdered(prefix+".selector", data, target.Spec.Deployments.Selectors),
+	}
+}
+
+func flattenComputeWorkloadTargetScaleSettings(prefix string, data *schema.ResourceData, settings *models.V1ScaleSettings) []interface{} {
+	if settings == nil {
+		return nil
+	}
+
+	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
+	ordered := make(map[string]int, data.Get(prefix+".0.metrics.#").(int))
+	for i, k := range data.Get(prefix + ".0.metrics").([]interface{}) {
+		// Set the name of the container in the map with its expected
+		// index, container names are guaranteed to be unique
+		ordered[k.(map[string]interface{})["metric"].(string)] = i
+	}
+	flattenedMetrics := make([]interface{}, data.Get(prefix+".0.metrics.#").(int))
+	for _, metric := range settings.Metrics {
+		if index, exists := ordered[metric.Metric]; exists {
+			flattenedMetrics[index] = map[string]interface{}{
+				"metric":              metric.Metric,
+				"average_value":       metric.AverageValue,
+				"average_utilization": metric.AverageUtilization,
+			}
+		} else {
+			flattenedMetrics = append(flattenedMetrics, map[string]interface{}{
+				"metric":              metric.Metric,
+				"average_value":       metric.AverageValue,
+				"average_utilization": metric.AverageUtilization,
+			})
+		}
+	}
+
+	return []interface{}{
+		map[string]interface{}{
+			"metrics": flattenedMetrics,
+		},
 	}
 }
 

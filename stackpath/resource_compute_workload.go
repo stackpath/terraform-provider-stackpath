@@ -163,6 +163,40 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
+						"max_replicas": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"scale_settings": &schema.Schema{
+							Type:     schema.TypeList,
+							Optional: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"metrics": &schema.Schema{
+										Type:     schema.TypeList,
+										Required: true,
+										MinItems: 1,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"metric": &schema.Schema{
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"average_utilization": &schema.Schema{
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+												"average_value": &schema.Schema{
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
 						"deployment_scope": &schema.Schema{
 							Type:     schema.TypeString,
 							Optional: true,

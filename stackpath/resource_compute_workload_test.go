@@ -77,6 +77,13 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
 				),
 			},
+			resource.TestStep{
+				Config: testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+				),
+			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
@@ -360,6 +367,30 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 
 		*workload = *found.Payload.Workload
 
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckTargetAutoScaling(workload *models.V1Workload, targetName, metric string, minReplicas, maxReplicas, averageUtilization int32) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		target, found := workload.Targets[targetName]
+		if !found {
+			return fmt.Errorf("target not found: %s", targetName)
+		} else if target.Spec.Deployments.MinReplicas != minReplicas {
+			return fmt.Errorf("expected %d min replicas, got %d", minReplicas, target.Spec.Deployments.MinReplicas)
+		} else if target.Spec.Deployments.MaxReplicas != maxReplicas {
+			return fmt.Errorf("expected %d max replicas, got %d", maxReplicas, target.Spec.Deployments.MaxReplicas)
+		} else if target.Spec.Deployments.ScaleSettings == nil {
+			return fmt.Errorf("expected scale settings to be non-nil")
+		}
+
+		for _, m := range target.Spec.Deployments.ScaleSettings.Metrics {
+			if m.Metric != metric {
+				continue
+			} else if m.AverageUtilization != averageUtilization {
+				return fmt.Errorf("expected average utilization to be %d, got %d", averageUtilization, m.AverageUtilization)
+			}
+		}
 		return nil
 	}
 }
@@ -728,6 +759,52 @@ resource "stackpath_compute_workload" "foo-volume" {
       requests = {
         "storage" = "10Gi"
       }
+    }
+  }
+}`, suffix, suffix)
+}
+
+func testComputeWorkloadConfigAutoScalingConfiguration(suffix string) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  network_interface {
+    network = "default"
+  }
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 2
+    max_replicas = 4
+    scale_settings {
+      metrics {
+        metric = "cpu"
+        average_utilization = 50
+      }
+    }
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
     }
   }
 }`, suffix, suffix)

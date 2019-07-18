@@ -1,6 +1,8 @@
 package stackpath
 
-import "github.com/hashicorp/terraform/helper/schema"
+import (
+	"github.com/hashicorp/terraform/helper/schema"
+)
 
 func resourceComputeMatchExpressionSchema() *schema.Resource {
 	return &schema.Resource{

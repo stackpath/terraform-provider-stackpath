@@ -18,8 +18,14 @@ import (
 // swagger:model v1DeploymentSpec
 type V1DeploymentSpec struct {
 
-	// The minimum number of running containers a deployment should run
+	// The maximum number of instances in a deployment
+	MaxReplicas int32 `json:"maxReplicas,omitempty"`
+
+	// The minimum number of instances in a deployment
 	MinReplicas int32 `json:"minReplicas,omitempty"`
+
+	// scale settings
+	ScaleSettings *V1ScaleSettings `json:"scaleSettings,omitempty"`
 
 	// A collection of filters that match the deployment's scope
 	Selectors []*V1MatchExpression `json:"selectors"`
@@ -29,6 +35,10 @@ type V1DeploymentSpec struct {
 func (m *V1DeploymentSpec) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateScaleSettings(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSelectors(formats); err != nil {
 		res = append(res, err)
 	}
@@ -36,6 +46,24 @@ func (m *V1DeploymentSpec) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1DeploymentSpec) validateScaleSettings(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ScaleSettings) { // not required
+		return nil
+	}
+
+	if m.ScaleSettings != nil {
+		if err := m.ScaleSettings.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("scaleSettings")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
