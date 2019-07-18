@@ -1,8 +1,6 @@
 package stackpath
 
 import (
-	"sort"
-
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
 )
@@ -90,9 +88,6 @@ func flattenStringMap(stringMap models.V1StringMapEntry) map[string]interface{} 
 }
 
 func flattenStringArray(arr []string) []interface{} {
-	// ensure the array is always sorted before flattened so
-	// we have guaranteed ordering.
-	sort.Strings(arr)
 	a := make([]interface{}, len(arr))
 	for i, s := range arr {
 		a[i] = s
