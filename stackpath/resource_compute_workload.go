@@ -28,6 +28,7 @@ func resourceComputeWorkload() *schema.Resource {
 			"slug": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"labels": &schema.Schema{
 				Type:     schema.TypeMap,
@@ -147,7 +148,6 @@ func resourceComputeWorkload() *schema.Resource {
 				Type:     schema.TypeList,
 				Computed: true,
 				Optional: true,
-				ForceNew: false,
 				Elem:     resourceComputeWorkloadInstance(),
 			},
 		},
