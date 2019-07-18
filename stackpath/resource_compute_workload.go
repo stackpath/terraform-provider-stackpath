@@ -11,6 +11,11 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
+// annotation keys that should be ignored when diffing the state of a workload
+var ignoredComputeWorkloadAnnotations = map[string]bool{
+	"annotations.anycast.platform.stackpath.net/subnets": true,
+}
+
 func resourceComputeWorkload() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceComputeWorkloadCreate,
@@ -37,6 +42,34 @@ func resourceComputeWorkload() *schema.Resource {
 			"annotations": &schema.Schema{
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
+				DiffSuppressFunc: func(key, _, _ string, d *schema.ResourceData) bool {
+					o, n := d.GetChange("annotations")
+					oldData, newData := o.(map[string]interface{}), n.(map[string]interface{})
+					for k, newVal := range newData {
+						// check if its an ignored annotation
+						if ignoredComputeWorkloadAnnotations[k] {
+							continue
+						}
+						// compare the its previous value and see if its changed
+						if oldVal, exists := oldData[k]; !exists || oldVal != newVal {
+							return true
+						}
+					}
+
+					for k, oldVal := range oldData {
+						// check if its an ignored annotation
+						if ignoredComputeWorkloadAnnotations[k] {
+							continue
+						}
+						// compare the its previous value and see if its changed
+						if newVal, exists := newData[k]; !exists || oldVal != newVal {
+							return true
+						}
+					}
+
+					return false
+				},
 			},
 			"network_interface": &schema.Schema{
 				Type:     schema.TypeList,
