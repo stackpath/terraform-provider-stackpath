@@ -82,6 +82,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckTargetAutoScaling(workload, "us", "cpu", 2, 4, 50),
 				),
 			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
