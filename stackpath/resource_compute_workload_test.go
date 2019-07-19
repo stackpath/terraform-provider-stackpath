@@ -700,6 +700,11 @@ resource "stackpath_compute_workload" "bar" {
         memory = "2Gi"
       }
     }
+	user_data = <<EOT
+package_update: true
+packages:
+- nginx
+EOT
   }
 
   target {

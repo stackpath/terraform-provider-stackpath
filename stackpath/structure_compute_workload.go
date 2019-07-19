@@ -1,6 +1,7 @@
 package stackpath
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"strings"
@@ -41,6 +42,7 @@ func convertComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 			Ports:          convertComputeWorkloadPorts(fmt.Sprintf("%s.%d.port", prefix, i), data),
 			Resources:      convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
 			VolumeMounts:   convertComputeWorkloadVolumeMounts(fmt.Sprintf("%s.%d.volume_mount", prefix, i), data),
+			UserData:       base64.StdEncoding.EncodeToString([]byte(vmData["user_data"].(string))),
 		}
 	}
 	return vms
@@ -360,6 +362,12 @@ func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 // respects the ordering of the previous virtual machine entry. Ordering is important
 // when dealing with updates to existing resources and accurate diffs are desired.
 func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *schema.ResourceData, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
+	if err != nil {
+		// This error should never happen as the API only allows valid
+		// base64 input and therefore should only ever output valid base64
+		panic(err)
+	}
 	return map[string]interface{}{
 		"name":            name,
 		"image":           vm.Image,
@@ -368,6 +376,7 @@ func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *sche
 		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
 		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
 		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+		"user_data":       string(decodedUserData),
 	}
 }
 
@@ -376,6 +385,12 @@ func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *sche
 // the returned virtual machines does not matter. When ordering is important,
 // use flattenComputeWorkloadVirtualMachineOrdered.
 func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
+	if err != nil {
+		// This error should never happen as the API only allows valid
+		// base64 input and therefore should only ever output valid base64
+		panic(err)
+	}
 	return map[string]interface{}{
 		"name":            name,
 		"image":           vm.Image,
@@ -384,6 +399,7 @@ func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachin
 		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
 		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
 		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+		"user_data":       string(decodedUserData),
 	}
 }
 

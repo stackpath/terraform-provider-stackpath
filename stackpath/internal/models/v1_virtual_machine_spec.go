@@ -33,6 +33,9 @@ type V1VirtualMachineSpec struct {
 	// resources
 	Resources *V1ResourceRequirements `json:"resources,omitempty"`
 
+	// Base64 encoded cloud-init compatible user-data
+	UserData string `json:"userData,omitempty"`
+
 	// Volumes to mount in the virtual machine
 	VolumeMounts []*V1InstanceVolumeMount `json:"volumeMounts"`
 }

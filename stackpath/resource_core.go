@@ -91,6 +91,10 @@ func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 			"readiness_probe": resourceComputeWorkloadProbeSchema(),
 			"resources":       resourceComputeWorkloadResourcesSchema(),
 			"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
+			"user_data": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
 		},
 	}
 }
