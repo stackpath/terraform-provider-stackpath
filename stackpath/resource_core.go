@@ -93,7 +93,7 @@ func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 			"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
 			"user_data": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 		},
 	}
