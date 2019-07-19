@@ -1,6 +1,7 @@
 package stackpath
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"strings"
@@ -41,6 +42,7 @@ func convertComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 			Ports:          convertComputeWorkloadPorts(fmt.Sprintf("%s.%d.port", prefix, i), data),
 			Resources:      convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
 			VolumeMounts:   convertComputeWorkloadVolumeMounts(fmt.Sprintf("%s.%d.volume_mount", prefix, i), data),
+			UserData:       base64.StdEncoding.EncodeToString([]byte(vmData["user_data"].(string))),
 		}
 	}
 	return vms
@@ -86,13 +88,37 @@ func convertComputeWorkloadTargets(data []interface{}) models.V1TargetMapEntry {
 			Spec: &models.V1TargetSpec{
 				DeploymentScope: target["deployment_scope"].(string),
 				Deployments: &models.V1DeploymentSpec{
-					MinReplicas: int32(target["min_replicas"].(int)),
-					Selectors:   convertComputeMatchExpression(target["selector"].([]interface{})),
+					MinReplicas:   int32(target["min_replicas"].(int)),
+					MaxReplicas:   int32(target["max_replicas"].(int)),
+					ScaleSettings: convertComputeWorkloadTargetScaleSettings(target["scale_settings"].([]interface{})),
+					Selectors:     convertComputeMatchExpression(target["selector"].([]interface{})),
 				},
 			},
 		}
 	}
 	return targets
+}
+
+func convertComputeWorkloadTargetScaleSettings(data []interface{}) *models.V1ScaleSettings {
+	if len(data) == 0 {
+		return nil
+	}
+
+	settings := data[0].(map[string]interface{})
+
+	metrics := make([]*models.V1MetricSpec, len(settings["metrics"].([]interface{})))
+	for i, metric := range settings["metrics"].([]interface{}) {
+		metricData := metric.(map[string]interface{})
+		metrics[i] = &models.V1MetricSpec{
+			Metric:             metricData["metric"].(string),
+			AverageValue:       metricData["average_value"].(string),
+			AverageUtilization: int32(metricData["average_utilization"].(int)),
+		}
+	}
+
+	return &models.V1ScaleSettings{
+		Metrics: metrics,
+	}
 }
 
 func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*models.V1NetworkInterface {
@@ -336,6 +362,12 @@ func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 // respects the ordering of the previous virtual machine entry. Ordering is important
 // when dealing with updates to existing resources and accurate diffs are desired.
 func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *schema.ResourceData, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
+	if err != nil {
+		// This error should never happen as the API only allows valid
+		// base64 input and therefore should only ever output valid base64
+		panic(err)
+	}
 	return map[string]interface{}{
 		"name":            name,
 		"image":           vm.Image,
@@ -344,6 +376,7 @@ func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *sche
 		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
 		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
 		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+		"user_data":       string(decodedUserData),
 	}
 }
 
@@ -352,6 +385,12 @@ func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *sche
 // the returned virtual machines does not matter. When ordering is important,
 // use flattenComputeWorkloadVirtualMachineOrdered.
 func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachineSpec) map[string]interface{} {
+	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
+	if err != nil {
+		// This error should never happen as the API only allows valid
+		// base64 input and therefore should only ever output valid base64
+		panic(err)
+	}
 	return map[string]interface{}{
 		"name":            name,
 		"image":           vm.Image,
@@ -360,6 +399,7 @@ func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachin
 		"liveness_probe":  flattenComputeWorkloadProbe(vm.LivenessProbe),
 		"resources":       flattenComputeWorkloadResourceRequirements(vm.Resources),
 		"volume_mount":    flattenComputeWorkloadVolumeMounts(vm.VolumeMounts),
+		"user_data":       string(decodedUserData),
 	}
 }
 
@@ -424,8 +464,46 @@ func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData
 	return map[string]interface{}{
 		"name":             name,
 		"min_replicas":     target.Spec.Deployments.MinReplicas,
+		"max_replicas":     target.Spec.Deployments.MaxReplicas,
 		"deployment_scope": target.Spec.DeploymentScope,
+		"scale_settings":   flattenComputeWorkloadTargetScaleSettings(prefix+".scale_settings", data, target.Spec.Deployments.ScaleSettings),
 		"selector":         flattenComputeMatchExpressionsOrdered(prefix+".selector", data, target.Spec.Deployments.Selectors),
+	}
+}
+
+func flattenComputeWorkloadTargetScaleSettings(prefix string, data *schema.ResourceData, settings *models.V1ScaleSettings) []interface{} {
+	if settings == nil {
+		return nil
+	}
+
+	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
+	ordered := make(map[string]int, data.Get(prefix+".0.metrics.#").(int))
+	for i, k := range data.Get(prefix + ".0.metrics").([]interface{}) {
+		// Set the name of the container in the map with its expected
+		// index, container names are guaranteed to be unique
+		ordered[k.(map[string]interface{})["metric"].(string)] = i
+	}
+	flattenedMetrics := make([]interface{}, data.Get(prefix+".0.metrics.#").(int))
+	for _, metric := range settings.Metrics {
+		if index, exists := ordered[metric.Metric]; exists {
+			flattenedMetrics[index] = map[string]interface{}{
+				"metric":              metric.Metric,
+				"average_value":       metric.AverageValue,
+				"average_utilization": metric.AverageUtilization,
+			}
+		} else {
+			flattenedMetrics = append(flattenedMetrics, map[string]interface{}{
+				"metric":              metric.Metric,
+				"average_value":       metric.AverageValue,
+				"average_utilization": metric.AverageUtilization,
+			})
+		}
+	}
+
+	return []interface{}{
+		map[string]interface{}{
+			"metrics": flattenedMetrics,
+		},
 	}
 }
 

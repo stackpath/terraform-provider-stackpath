@@ -11,6 +11,11 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
+// annotation keys that should be ignored when diffing the state of a workload
+var ignoredComputeWorkloadAnnotations = map[string]bool{
+	"annotations.anycast.platform.stackpath.net/subnets": true,
+}
+
 func resourceComputeWorkload() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceComputeWorkloadCreate,
@@ -28,6 +33,7 @@ func resourceComputeWorkload() *schema.Resource {
 			"slug": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"labels": &schema.Schema{
 				Type:     schema.TypeMap,
@@ -36,6 +42,34 @@ func resourceComputeWorkload() *schema.Resource {
 			"annotations": &schema.Schema{
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
+				DiffSuppressFunc: func(key, _, _ string, d *schema.ResourceData) bool {
+					o, n := d.GetChange("annotations")
+					oldData, newData := o.(map[string]interface{}), n.(map[string]interface{})
+					for k, newVal := range newData {
+						// check if it is an ignored annotation
+						if ignoredComputeWorkloadAnnotations[k] {
+							continue
+						}
+						// compare the previous value and see if it changed
+						if oldVal, exists := oldData[k]; !exists || oldVal != newVal {
+							return true
+						}
+					}
+
+					for k, oldVal := range oldData {
+						// check if it is an ignored annotation
+						if ignoredComputeWorkloadAnnotations[k] {
+							continue
+						}
+						// compare the previous value and see if it changed
+						if newVal, exists := newData[k]; !exists || oldVal != newVal {
+							return true
+						}
+					}
+
+					return false
+				},
 			},
 			"network_interface": &schema.Schema{
 				Type:     schema.TypeList,
@@ -129,6 +163,40 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
+						"max_replicas": &schema.Schema{
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"scale_settings": &schema.Schema{
+							Type:     schema.TypeList,
+							Optional: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"metrics": &schema.Schema{
+										Type:     schema.TypeList,
+										Required: true,
+										MinItems: 1,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"metric": &schema.Schema{
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"average_utilization": &schema.Schema{
+													Type:     schema.TypeInt,
+													Optional: true,
+												},
+												"average_value": &schema.Schema{
+													Type:     schema.TypeString,
+													Optional: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
 						"deployment_scope": &schema.Schema{
 							Type:     schema.TypeString,
 							Optional: true,
@@ -147,7 +215,6 @@ func resourceComputeWorkload() *schema.Resource {
 				Type:     schema.TypeList,
 				Computed: true,
 				Optional: true,
-				ForceNew: false,
 				Elem:     resourceComputeWorkloadInstance(),
 			},
 		},

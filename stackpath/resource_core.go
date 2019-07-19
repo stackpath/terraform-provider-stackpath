@@ -1,6 +1,8 @@
 package stackpath
 
-import "github.com/hashicorp/terraform/helper/schema"
+import (
+	"github.com/hashicorp/terraform/helper/schema"
+)
 
 func resourceComputeMatchExpressionSchema() *schema.Resource {
 	return &schema.Resource{
@@ -89,6 +91,10 @@ func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 			"readiness_probe": resourceComputeWorkloadProbeSchema(),
 			"resources":       resourceComputeWorkloadResourcesSchema(),
 			"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
+			"user_data": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
