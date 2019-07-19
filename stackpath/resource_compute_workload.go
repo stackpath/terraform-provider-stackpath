@@ -47,22 +47,22 @@ func resourceComputeWorkload() *schema.Resource {
 					o, n := d.GetChange("annotations")
 					oldData, newData := o.(map[string]interface{}), n.(map[string]interface{})
 					for k, newVal := range newData {
-						// check if its an ignored annotation
+						// check if it is an ignored annotation
 						if ignoredComputeWorkloadAnnotations[k] {
 							continue
 						}
-						// compare the its previous value and see if its changed
+						// compare the previous value and see if it changed
 						if oldVal, exists := oldData[k]; !exists || oldVal != newVal {
 							return true
 						}
 					}
 
 					for k, oldVal := range oldData {
-						// check if its an ignored annotation
+						// check if it is an ignored annotation
 						if ignoredComputeWorkloadAnnotations[k] {
 							continue
 						}
-						// compare the its previous value and see if its changed
+						// compare the previous value and see if it changed
 						if newVal, exists := newData[k]; !exists || oldVal != newVal {
 							return true
 						}
