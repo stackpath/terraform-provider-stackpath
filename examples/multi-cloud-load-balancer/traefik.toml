@@ -1,0 +1,20 @@
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[accessLog]
+
+[file]
+
+[frontends]
+  [frontends.frontend]
+  backend = "backend"
+
+[backends]
+  [backends.backend]
+    [backends.backend.servers.server1]
+    weight = 1
+    url = "${BACKEND_1}"
+    [backends.backend.servers.server2]
+    weight = 1
+    url = "${BACKEND_2}"
