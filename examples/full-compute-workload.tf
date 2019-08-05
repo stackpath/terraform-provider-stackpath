@@ -168,6 +168,42 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     # matches the selectors defined below.
     min_replicas = 1
 
+    # The maximum number of replicas of an instance that
+    # should be created within a target deployment. This
+    # option is required when using the auto-scaling options.
+    # max_replicas = 10
+
+    # The scaling configuration that should be used to determine
+    # when workload instances within a target deployment should
+    # be scaled up or down. These options are required when using
+    # the max_replicas option.
+    # scale_settings {
+    #   # Defines a metric that should be used to determine whether
+    #   # the instances within a target deployment should be scaled
+    #   # up or down. When multiple metrics are defined, the instances
+    #   # will be scaled when the threshold for ANY of the metrics is
+    #   # reached, not when all defined metrics have reached their
+    #   # threshold. Currently the only supported metric for scaling
+    #   # is CPU.
+    #   metrics {
+    #     # The name of the metric that should be used to scale. The
+    #     # only option currently supported is CPU.
+    #     metric = "cpu"
+    #     # The average utilization (in percent) when the instances
+    #     # should be scaled. For example, when this is set to 50%,
+    #     # the instances of a target deployment will be scaled up
+    #     # when the average CPU utilization of all instances within
+    #     # the deployment is over 50%.
+    #     average_utilization = 50
+    #     # The average value (in resources) when the instances should
+    #     # be scaled. For example, when this is set to 500m, the
+    #     # instances of a target deployment will be scaled up when the
+    #     # average consumed CPU resources of all instances within the
+    #     # deployment is over 500m or half a CPU.
+    #     average_value = "500m"
+    #   }
+    # }
+
     # Define a selector that should be used to
     # decide where workload instances should be
     # launched. You can define multiple selectors
