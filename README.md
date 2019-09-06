@@ -43,7 +43,7 @@ Using macOS as an example:
 
 ```shell
 // TODO add curl command for latest release
-$ mv ./terraform-provider-stackpath-v0.1.0 ~/.terraform.d/plugins/darwin_amd64/
+$ mv ./terraform-provider-stackpath_$VERSION ~/.terraform.d/plugins/darwin_amd64/
 ```
 
 Once the plugin has been installed, run `terraform init` to have terraform discover the StackPath plugin.

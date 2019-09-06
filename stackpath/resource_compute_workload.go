@@ -43,6 +43,9 @@ func resourceComputeWorkload() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 				DiffSuppressFunc: func(key, _, _ string, d *schema.ResourceData) bool {
 					o, n := d.GetChange("annotations")
 					oldData, newData := o.(map[string]interface{}), n.(map[string]interface{})
@@ -53,7 +56,7 @@ func resourceComputeWorkload() *schema.Resource {
 						}
 						// compare the previous value and see if it changed
 						if oldVal, exists := oldData[k]; !exists || oldVal != newVal {
-							return true
+							return false
 						}
 					}
 
@@ -64,11 +67,11 @@ func resourceComputeWorkload() *schema.Resource {
 						}
 						// compare the previous value and see if it changed
 						if newVal, exists := newData[k]; !exists || oldVal != newVal {
-							return true
+							return false
 						}
 					}
 
-					return false
+					return true
 				},
 			},
 			"network_interface": &schema.Schema{
