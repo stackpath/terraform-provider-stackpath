@@ -391,14 +391,35 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	data.Set("name", resp.Payload.NetworkPolicy.Name)
 	data.Set("slug", resp.Payload.NetworkPolicy.Slug)
 	data.Set("description", resp.Payload.NetworkPolicy.Description)
-	data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels))
-	data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations))
-	data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, resp.Payload.NetworkPolicy.Spec.InstanceSelectors))
-	data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, resp.Payload.NetworkPolicy.Spec.NetworkSelectors))
-	data.Set("policy_types", flattenComputeNetworkPolicyTypes(resp.Payload.NetworkPolicy.Spec.PolicyTypes))
+
+	if err := data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels)); err != nil {
+		return fmt.Errorf("Setting labels failed: %v", err)
+	}
+
+	if err := data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations)); err != nil {
+		return fmt.Errorf("Setting annotations failed: %v", err)
+	}
+
+	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, resp.Payload.NetworkPolicy.Spec.InstanceSelectors)); err != nil {
+		return fmt.Errorf("Setting instance_selector failed: %v", err)
+	}
+
+	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, resp.Payload.NetworkPolicy.Spec.NetworkSelectors)); err != nil {
+		return fmt.Errorf("Setting network_selector failed: %v", err)
+	}
+
+	if err := data.Set("policy_types", flattenComputeNetworkPolicyTypes(resp.Payload.NetworkPolicy.Spec.PolicyTypes)); err != nil {
+		return fmt.Errorf("Setting policy_types failed: %v", err)
+	}
+
 	data.Set("priority", resp.Payload.NetworkPolicy.Spec.Priority)
-	data.Set("ingress", flattenComputeNetworkPolicyIngress(resp.Payload.NetworkPolicy.Spec.Ingress))
-	data.Set("egress", flattenComputeNetworkPolicyEgress(resp.Payload.NetworkPolicy.Spec.Egress))
+
+	if err := data.Set("ingress", flattenComputeNetworkPolicyIngress(resp.Payload.NetworkPolicy.Spec.Ingress)); err != nil {
+		return fmt.Errorf("Setting ingress failed: %v", err)
+	}
+	if err := data.Set("egress", flattenComputeNetworkPolicyEgress(resp.Payload.NetworkPolicy.Spec.Egress)); err != nil {
+		return fmt.Errorf("Setting egress failed: %v", err)
+	}
 
 	return nil
 }
