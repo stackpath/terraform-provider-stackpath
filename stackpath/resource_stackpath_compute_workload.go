@@ -2,6 +2,7 @@ package stackpath
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
@@ -422,7 +423,10 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-	flattenComputeWorkload(data, resp.Payload.Workload)
+	if err := flattenComputeWorkload(data, resp.Payload.Workload); err != nil {
+		return err
+	}
+	
 	return resourceComputeWorkloadReadInstances(data, meta)
 }
 
@@ -457,7 +461,10 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		endCursor = resp.Payload.PageInfo.EndCursor
 	}
 
-	data.Set("instances", instances)
+	if err := data.Set("instances", instances); err != nil {
+		return fmt.Errorf("Error setting instances: %v", err)
+	}
+
 	return nil
 }
 

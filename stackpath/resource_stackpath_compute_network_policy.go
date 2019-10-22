@@ -393,32 +393,32 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	data.Set("description", resp.Payload.NetworkPolicy.Description)
 
 	if err := data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels)); err != nil {
-		return fmt.Errorf("Setting labels failed: %v", err)
+		return fmt.Errorf("Error setting labels: %v", err)
 	}
 
 	if err := data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations)); err != nil {
-		return fmt.Errorf("Setting annotations failed: %v", err)
+		return fmt.Errorf("Error setting annotations: %v", err)
 	}
 
 	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, resp.Payload.NetworkPolicy.Spec.InstanceSelectors)); err != nil {
-		return fmt.Errorf("Setting instance_selector failed: %v", err)
+		return fmt.Errorf("Error setting instance_selector: %v", err)
 	}
 
 	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, resp.Payload.NetworkPolicy.Spec.NetworkSelectors)); err != nil {
-		return fmt.Errorf("Setting network_selector failed: %v", err)
+		return fmt.Errorf("Error setting network_selector: %v", err)
 	}
 
 	if err := data.Set("policy_types", flattenComputeNetworkPolicyTypes(resp.Payload.NetworkPolicy.Spec.PolicyTypes)); err != nil {
-		return fmt.Errorf("Setting policy_types failed: %v", err)
+		return fmt.Errorf("Error setting policy_types: %v", err)
 	}
 
 	data.Set("priority", resp.Payload.NetworkPolicy.Spec.Priority)
 
 	if err := data.Set("ingress", flattenComputeNetworkPolicyIngress(resp.Payload.NetworkPolicy.Spec.Ingress)); err != nil {
-		return fmt.Errorf("Setting ingress failed: %v", err)
+		return fmt.Errorf("Error setting ingress: %v", err)
 	}
 	if err := data.Set("egress", flattenComputeNetworkPolicyEgress(resp.Payload.NetworkPolicy.Spec.Egress)); err != nil {
-		return fmt.Errorf("Setting egress failed: %v", err)
+		return fmt.Errorf("Error setting egress: %v", err)
 	}
 
 	return nil
