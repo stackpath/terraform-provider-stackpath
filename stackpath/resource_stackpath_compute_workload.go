@@ -426,7 +426,7 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 	if err := flattenComputeWorkload(data, resp.Payload.Workload); err != nil {
 		return err
 	}
-	
+
 	return resourceComputeWorkloadReadInstances(data, meta)
 }
 

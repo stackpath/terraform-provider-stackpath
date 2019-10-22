@@ -340,7 +340,7 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *models.V1Worklo
 		return fmt.Errorf("Error setting target: %v", err)
 	}
 
-	return nil;
+	return nil
 }
 
 func flattenComputeWorkloadVolumeClaims(claims []*models.V1VolumeClaim) []interface{} {
