@@ -77,14 +77,14 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 ## Argument Reference
 
 * `name` - (Required) A human readable name.
-* `slug` - (Required) A programmatic name for the workload. Workload slugs are used to build the workload's instance names.
+* `slug` - (Required) A programmatic name for the workload. Workload slugs are used to build the workload's instance names and cannot be changed after creation.
 * `labels` - (Optional) Key/value pairs of arbitrary label names and values that can be referenced as [selectors](#selectors) by [network policies](/docs/providers/stackpath/r/compute_network_policy.html). 
 * `annotations` - (Optional) Key/value pairs that define StackPath-specific workload configuration.
 * `network_interface` - (Required) Networks to place the compute instance on. See [Network Interfaces](#network-interfaces) below for details.
-* `image_pull_credentials` - (Optional) Credentials to pull virtual machine and container images with. See [Image Pull Credentials](#image-pull-credentials) below for details.
-* `virtual_machine` - (Optional) Virtual machine configuration. At least one of `virtual_machine` or `container` must be provided. See [Virtual Machines](#virtual-machines) below for details.
+* `image_pull_credentials` - (Optional) Credentials to pull container images with. See [Image Pull Credentials](#image-pull-credentials) below for details.
+* `virtual_machine` - (Optional) Virtual machine configuration. StackPath supports a single virtual machine specification in a workload. At least one of `virtual_machine` or `container` must be provided. See [Virtual Machines](#virtual-machines) below for details.
 * `container` - (Optional) Container configuration. At least one of `virtual_machine` or `container` must be provided. See [Containers](#containers) below for details.
-* `volume_claim` - (Optional) Storage that can be mounted and shared amongst a compute workload's instances. See [Volume Claims](#volume-claims) below for details.
+* `volume_claim` - (Optional) Storage that is mounted to a compute workload's instances. See [Volume Claims](#volume-claims) below for details.
 * `target` - (Required) How the compute workload should be deployed across the StackPath edge platform. See [Deployment Targets](#deployment-targets) below for details.
 
 ### Network Interfaces
@@ -141,7 +141,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 * `key` - (Required) The environment variable name.
 * `value` - (Optional) The environment variable value. One of `value` or `secret_value` must be provided.
-* `secret_value` - (Optional) A sensitive environment variable value. One of `value` or `secret_value` must be provided.
+* `secret_value` - (Optional) A sensitive environment variable value. This value cannot be read after it is set. One of `value` or `secret_value` must be provided.
 
 ### Network Ports
 
@@ -184,7 +184,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 `tcp_socket` takes the following arguments:
 
-`port` - (Required) The TCP port number to connect to. 
+* `port` - (Required) The TCP port number to connect to. 
 
 ### Resources
 
@@ -220,7 +220,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 `metrics` takes the following arguments:
 
-* `metric` - (Required) A hardware metric to use as a scaling basis.
+* `metric` - (Required) A hardware metric to use as a scaling basis. Currently, only the "cpu" metric is supported.
 * `average_utilization` - (Optional) The `metric`'s average utilization that should trigger scaling. One of `average_utilization` or `average_value` must be provided.
 * `average_value` - (Optional) The `metric`'s average value that should trigger scaling. One of `average_utilization` or `average_value` must be provided.
 
@@ -230,11 +230,11 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 * `key` - (Required) The name of the data that a selector is based on.
 * `operator` - (Required) A logical operator to apply to a selector like "=", "!=", "in", or "notin".
-* `values` - (Required) Data values to look for in the selector.
+* `values` - (Required) Data values to look for in a label selector.
 
 ## Instances
 
-Instances are the individual container or virtual machines running in a StackPath Edge Compute workload. Instances are accessed via a `stackpath_resource_compute_workload`'s computed `instances` field.
+A workload instance is a collection of containers or a virtual machine created based on the template provided in a workload. Instances are accessed via a `stackpath_resource_compute_workload`'s computed `instances` field.
 
 ### Example Usage
 
@@ -255,7 +255,7 @@ output "my-compute-workload-instances" {
 ### Instance Fields
 
 * `name` - (Required) An instance's name. Names are generated from their corresponding workload's slug, followed by a unique hash.
-* `metadata` - (Optional) Metadata associated with a running instance, including the workload's `labels` and [annotations](#annotations), both supplied by the user and geneerted by StackPath. 
+* `metadata` - (Optional) Metadata associated with a running instance, including the workload's `labels` and [annotations](#annotations), both supplied by the user and generated by StackPath. 
 * `location` - (Optional) The instance's physical location. See [Locations](#locations) below for details.
 * `external_ip_address` - (Optional) An IP address bound to the instance.
 * `ip_address` - (Optional) An instance's internal IP address.

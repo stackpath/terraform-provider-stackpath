@@ -54,7 +54,7 @@ resource "stackpath_compute_network_policy" "web-server" {
 * `instance_selector` - (Optional) A compute workload instance that the network policy applies to. A network policy with no selectors applies to all networks and all instances in the stack. See [Selectors](#selectors) below for details.
 * `network_selector` - (Optional) A network that the network policy applies to. A network policy with no selectors applies to all networks and all instances in the stack. See [Selectors](#selectors) below for details.
 * `policy_types` - (Required) A list of network policy types, either "INGRESS" and/or "EGRESS". 
-* `priority` - (Required) A priority value between 1 and 65000. Higher priority network policies override lower priority policies.
+* `priority` - (Required) A priority value between 1 and 65000. Higher priority network policies override lower priority policies, and priorities must be unique across the stack.
 * `egress` - (Optional) Outbound networking information. See [Egress](#egress) below for details.
 * `ingress` - (Optional) Inbound networking information. See [Ingress](#ingress) below for details.
 
@@ -116,7 +116,7 @@ resource "stackpath_compute_network_policy" "web-server" {
 
 * `key` - (Required) The name of the data that a selector is based on.
 * `operator` - (Required) A logical operator to apply to a selector like "=", "!=", "in", or "notin".
-* `values` - (Required) Data values to look for in the selector.
+* `values` - (Required) Data values to look for in a label selector.
 
 ## Import
 

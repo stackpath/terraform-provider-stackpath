@@ -34,6 +34,6 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 The following arguments are supported in the `provider` block:
 
-* `stack` - (Optional) This is the ID of stack that all new services are provisioned to. Stacks are folder-like organizational units on the StackPath platform and are typically used to organize services by project or user. Stack IDs are UUID v4 formatted strings. 
-* `client_id` - (Optional) This is the API client ID of the StackPath user that will interact with Terraform. All services provisioned at StackPath through Terraform belong to their creating user.
-* `client_secret` - (Optional) This is the API client secret of the StackPath user that will interact with Terraform. Client secrets should be stored securely and not exposed to the public.
+* `stack` - (Required) This is the ID of stack that all new services are provisioned to. Stacks are folder-like organizational units on the StackPath platform and are typically used to organize services by project or user. Stack IDs are UUID v4 formatted strings. `stack` can be defined in either the provider definition or the `STACKPATH_STACK` environment variable.
+* `client_id` - (Required) This is the API client ID of the StackPath user that will interact with Terraform. All services provisioned at StackPath through Terraform belong to their creating user. `client_id` can be defined in either the provider definition or the `STACKPATH_CLIENT_ID` environment variable.
+* `client_secret` - (Required) This is the API client secret of the StackPath user that will interact with Terraform. Client secrets should be stored securely and not exposed to the public. `client_secret` can be defined in either the provider definition or the `STACKPATH_CLIENT_SECRET` environment variable.
