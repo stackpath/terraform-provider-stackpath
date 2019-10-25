@@ -91,7 +91,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 `network_interfaces` supports the following arguments:
 
-* `network` - (Required) A name that can be that can be referenced a [selector](#selectors) by [network policies](/docs/providers/stackpath/r/compute_network_policy.html).
+* `network` - (Required) A name that can be that can be referenced by a [selector](#selectors) by [network policies](/docs/providers/stackpath/r/compute_network_policy.html). Currently, only the value "default" is supported.
 
 ### Image Pull Credentials
 
