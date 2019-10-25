@@ -1,0 +1,29 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-stackpath-index") %>>
+          <a href="/docs/providers/stackpath/index.html">StackPath Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-stackpath-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-stackpath-resource-compute-workload") %>>
+              <a href="/docs/providers/stackpath/r/compute_workload.html">stackpath_compute_workload</a>
+            </li>
+            <li<%= sidebar_current("docs-stackpath-resource-compute-network-policy") %>>
+              <a href="/docs/providers/stackpath/r/compute_network_policy.html">stackpath_compute_network_policy</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+  <% end %>
