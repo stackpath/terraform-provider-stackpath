@@ -13,7 +13,7 @@ func TestBuildAnInvalidClientIDError(t *testing.T) {
 	err := NewStackPathError(&url.Error{
 		Err: &oauth2.RetrieveError{
 			Response: &http.Response{
-				Status: "404 Not Found",
+				StatusCode: 404,
 			},
 		},
 	})
@@ -32,7 +32,7 @@ func TestBuildAnInvalidClientSecretError(t *testing.T) {
 	err := NewStackPathError(&url.Error{
 		Err: &oauth2.RetrieveError{
 			Response: &http.Response{
-				Status: "401 Unauthorized",
+				StatusCode: 401,
 			},
 		},
 	})

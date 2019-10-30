@@ -2,7 +2,6 @@ package stackpath
 
 import (
 	"net/url"
-	"strings"
 
 	"golang.org/x/oauth2"
 )
@@ -11,7 +10,6 @@ import (
 // invalid, either due to an invalid format or because the client ID does not
 // exist at StackPath.
 type InvalidClientIDError struct {
-	error
 	Err error
 }
 
@@ -28,7 +26,6 @@ func (e *InvalidClientIDError) Error() string {
 // InvalidClientSecretError models when a StackPath API OAuth 2 client ID is
 // correct, but the client secret is incorrect.
 type InvalidClientSecretError struct {
-	error
 	Err error
 }
 
@@ -46,17 +43,20 @@ func (e *InvalidClientSecretError) Error() string {
 // NewStackPathError factories common StackPath error scenarios into their own
 // error types, or returns the original error.
 func NewStackPathError(err error) error {
-	switch err.(type) {
+	switch rootErr := err.(type) {
 	// Look for errors performing underlying OAuth 2 authentication.
 	case *url.Error:
-		switch err.(*url.Error).Err.(type) {
+		switch typedErr := rootErr.Err.(type) {
 		case *oauth2.RetrieveError:
-			if strings.HasPrefix(err.(*url.Error).Err.(*oauth2.RetrieveError).Error(), "oauth2: cannot fetch token: 404 Not Found") {
-				return NewInvalidClientIDError(err)
-			}
-
-			if strings.HasPrefix(err.(*url.Error).Err.(*oauth2.RetrieveError).Error(), "oauth2: cannot fetch token: 401 Unauthorized") {
+			switch typedErr.Response.StatusCode {
+			// A 401 Unauthorized error means the client ID was valid, but the
+			// corresponding secret wasn't.
+			case 401:
 				return NewInvalidClientSecretError(err)
+
+			// A 404 Not Found error means the client ID didn't exist.
+			case 404:
+				return NewInvalidClientIDError(err)
 			}
 		}
 	}
