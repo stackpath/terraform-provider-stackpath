@@ -38,7 +38,7 @@ func Provider() terraform.ResourceProvider {
 				Type:     schema.TypeString,
 				Optional: true,
 				// Default to the official StackPath API
-				Default: defaultBaseURL,
+				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_BASE_URL", defaultBaseURL),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
