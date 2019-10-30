@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	workload "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
-
-	"github.com/hashicorp/terraform/helper/schema"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload
@@ -376,7 +375,7 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 		},
 	}, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create compute workload: %v", NewStackPathError(err))
 	}
 
 	// Set the ID based on the workload created in the API
@@ -401,7 +400,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err))
 	}
 	return resourceComputeWorkloadRead(data, meta)
 }
@@ -420,7 +419,7 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to read compute workload: %v", NewStackPathError(err))
 	}
 
 	if err := flattenComputeWorkload(data, resp.Payload.Workload); err != nil {
@@ -449,7 +448,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		}
 		resp, err := config.compute.GetWorkloadInstances(params, nil)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err))
 		}
 		for _, result := range resp.Payload.Results {
 			instances = append(instances, flattenComputeWorkloadInstance(result))
@@ -482,7 +481,7 @@ func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) 
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to delete compute workload: %v", NewStackPathError(err))
 	}
 	return nil
 }
