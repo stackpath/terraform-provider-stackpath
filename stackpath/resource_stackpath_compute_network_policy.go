@@ -358,7 +358,7 @@ func resourceComputeNetworkPolicyCreate(data *schema.ResourceData, meta interfac
 	config := meta.(*Config)
 	resp, err := config.ipam.CreateNetworkPolicy(&client.CreateNetworkPolicyParams{
 		Context:              context.Background(),
-		NetworkPolicyStackID: config.Stack,
+		NetworkPolicyStackID: config.StackID,
 		Body: &models.V1CreateNetworkPolicyRequest{
 			NetworkPolicy: convertComputeNetworkPolicy(data),
 		},
@@ -375,7 +375,7 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	config := meta.(*Config)
 
 	resp, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
-		StackID:         config.Stack,
+		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),
 		Context:         context.Background(),
 	}, nil)
@@ -431,7 +431,7 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 
 	_, err := config.ipam.UpdateNetworkPolicy(&client.UpdateNetworkPolicyParams{
 		Context:              context.Background(),
-		NetworkPolicyStackID: config.Stack,
+		NetworkPolicyStackID: config.StackID,
 		Body: &models.V1UpdateNetworkPolicyRequest{
 			NetworkPolicy: networkPolicy,
 		},
@@ -452,7 +452,7 @@ func resourceComputeNetworkPolicyDelete(data *schema.ResourceData, meta interfac
 	config := meta.(*Config)
 	_, err := config.ipam.DeleteNetworkPolicy(&client.DeleteNetworkPolicyParams{
 		Context:         context.Background(),
-		StackID:         config.Stack,
+		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),
 	}, nil)
 	if err != nil {

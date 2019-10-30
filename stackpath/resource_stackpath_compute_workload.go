@@ -370,7 +370,7 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 	// Create the workload
 	resp, err := config.compute.CreateWorkload(&workload.CreateWorkloadParams{
 		Context: context.Background(),
-		StackID: config.Stack,
+		StackID: config.StackID,
 		Body: &models.V1CreateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
@@ -389,7 +389,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 	config := meta.(*Config)
 	_, err := config.compute.UpdateWorkload(&workload.UpdateWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 		Body: &models.V1UpdateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
@@ -411,7 +411,7 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 
 	resp, err := config.compute.GetWorkload(&workload.GetWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
 	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
@@ -439,7 +439,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 	var instances []interface{}
 	for {
 		params := &client.GetWorkloadInstancesParams{
-			StackID:          config.Stack,
+			StackID:          config.StackID,
 			WorkloadID:       data.Id(),
 			Context:          context.Background(),
 			PageRequestFirst: &pageSize,
@@ -473,7 +473,7 @@ func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) 
 
 	_, err := config.compute.DeleteWorkload(&workload.DeleteWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
 	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {

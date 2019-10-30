@@ -18,7 +18,10 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 	networkPolicy := &models.V1NetworkPolicy{}
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeNetworkPolicyCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -45,7 +48,7 @@ func testAccComputeCheckNetworkPolicyExists(name string, policy *models.V1Networ
 		config := testAccProvider.Meta().(*Config)
 		found, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
 			NetworkPolicyID: rs.Primary.ID,
-			StackID:         config.Stack,
+			StackID:         config.StackID,
 			Context:         context.Background(),
 		}, nil)
 		if err != nil {
@@ -68,11 +71,11 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 			}
 
 			resp, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
-				StackID:         config.Stack,
+				StackID:         config.StackID,
 				NetworkPolicyID: rs.Primary.ID,
 				Context:         context.Background(),
 			}, nil)
-			// Since compute workloads are deleted asyncronously, we want to look at the fact that
+			// Since compute workloads are deleted asynchronously, we want to look at the fact that
 			// the deleteRequestedAt timestamp was set on the workload. This field is used to indicate
 			// that the workload is being deleted.
 			if err == nil && resp.Payload.NetworkPolicy.Metadata.DeleteRequestedAt == nil {

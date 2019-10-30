@@ -23,7 +23,10 @@ func TestComputeWorkloadContainers(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -107,7 +110,10 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -130,7 +136,10 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -156,7 +165,7 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 			}
 
 			resp, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
-				StackID:    config.Stack,
+				StackID:    config.StackID,
 				WorkloadID: rs.Primary.ID,
 				Context:    context.Background(),
 			}, nil)
@@ -359,7 +368,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 		config := testAccProvider.Meta().(*Config)
 		found, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
 			WorkloadID: rs.Primary.ID,
-			StackID:    config.Stack,
+			StackID:    config.StackID,
 			Context:    context.Background(),
 		}, nil)
 		if err != nil {

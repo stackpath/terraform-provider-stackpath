@@ -1,5 +1,5 @@
 # StackPath provider variables
-variable "stackpath_stack" {}
+variable "stackpath_stack_id" {}
 variable "stackpath_client_id" {}
 variable "stackpath_client_secret" {}
 
@@ -17,7 +17,7 @@ variable "gcp_region" {}
 variable "gcp_zone" {}
 
 provider "stackpath" {
-  stack         = "${var.stackpath_stack}"
+  stack_id      = "${var.stackpath_stack_id}"
   client_id     = "${var.stackpath_client_id}"
   client_secret = "${var.stackpath_client_secret}"
 }

@@ -13,23 +13,26 @@ func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"client_id": &schema.Schema{
-				Type:      schema.TypeString,
-				Sensitive: true,
-				Optional:  true,
+				Type:        schema.TypeString,
+				Sensitive:   true,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_CLIENT_ID", ""),
 			},
 			"client_secret": &schema.Schema{
-				Type:      schema.TypeString,
-				Sensitive: true,
-				Optional:  true,
+				Type:        schema.TypeString,
+				Sensitive:   true,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_CLIENT_SECRET", ""),
 			},
 			"access_token": &schema.Schema{
 				Type:      schema.TypeString,
 				Sensitive: true,
 				Optional:  true,
 			},
-			"stack": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
+			"stack_id": &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_STACK_ID", ""),
 			},
 			"base_url": &schema.Schema{
 				Type:     schema.TypeString,
@@ -48,7 +51,7 @@ func Provider() terraform.ResourceProvider {
 
 func configureProvider(data *schema.ResourceData) (interface{}, error) {
 	config := &Config{
-		Stack:   data.Get("stack").(string),
+		StackID: data.Get("stack_id").(string),
 		BaseURL: data.Get("base_url").(string),
 	}
 

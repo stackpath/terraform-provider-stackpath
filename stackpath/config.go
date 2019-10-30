@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -30,7 +29,7 @@ const (
 // Config is used to configure the StackPath provider.
 type Config struct {
 	// The Stack in which all resources should be created
-	Stack string
+	StackID string
 
 	// The Client ID that should be used to retrieve an access token. This
 	// option must not be used with the access token option.
@@ -60,18 +59,6 @@ type Config struct {
 // LoadAndValidate will load the configuration and validate the configuration
 // options. An error will be returned when the configuration is invalid.
 func (c *Config) LoadAndValidate() error {
-	if v := os.Getenv("STACKPATH_CLIENT_ID"); v != "" {
-		c.ClientID = v
-	}
-	if v := os.Getenv("STACKPATH_CLIENT_SECRET"); v != "" {
-		c.ClientSecret = v
-	}
-	if v := os.Getenv("STACKPATH_STACK"); v != "" {
-		c.Stack = v
-	}
-	if v := os.Getenv("STACKPATH_BASE_URL"); v != "" {
-		c.BaseURL = strings.TrimRight(v, "/")
-	}
 	if c.ClientID == "" && c.ClientSecret == "" && c.AccessToken == "" {
 		// Require the user to provide at least one form of authentication
 		return fmt.Errorf("must provide either an access_token or a client_id and client_secret")
@@ -98,7 +85,7 @@ func (c *Config) LoadAndValidate() error {
 		c.BaseURL = baseURL.Host
 	}
 
-	if c.Stack == "" {
+	if c.StackID == "" {
 		// Require the user to provide a stack
 		return fmt.Errorf("must provide a stack to create resources in")
 	}
