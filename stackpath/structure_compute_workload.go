@@ -661,7 +661,7 @@ func flattenComputeWorkloadHTTPGetAction(httpGet *models.V1HTTPGetAction) []inte
 			"port":    httpGet.Port,
 			"path":    httpGet.Path,
 			"scheme":  httpGet.Scheme,
-			"headers": flattenStringMap(httpGet.HTTPHeaders),
+			"http_headers": flattenStringMap(httpGet.HTTPHeaders),
 		},
 	}
 }
