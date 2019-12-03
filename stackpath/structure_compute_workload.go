@@ -446,10 +446,12 @@ func flattenComputeWorkloadImagePullCredentials(prefix string, data *schema.Reso
 	creds := make([]interface{}, data.Get(prefix+".#").(int))
 	for _, c := range credentials {
 		data := map[string]interface{}{
-			"docker_registry": map[string]interface{}{
-				"server":   c.DockerRegistry.Server,
-				"username": c.DockerRegistry.Username,
-				"email":    c.DockerRegistry.Email,
+			"docker_registry": []map[string]interface{}{
+				{
+					"server":   c.DockerRegistry.Server,
+					"username": c.DockerRegistry.Username,
+					"email":    c.DockerRegistry.Email,
+				},
 			},
 		}
 		if index, exists := ordered[c.DockerRegistry.Server]; exists {
