@@ -58,7 +58,7 @@ provider "stackpath" {
   # only allow version 0.1 of the StackPath provider to be used
   version = "~> 0.1"
   # ID of the stack that resources should be created in
-  stack = "{{ stack-id }}"
+  stack_id = "{{ stack-id }}"
   # The API credentials that should be used for authentication
   client_id = "{{ client-id }}"
   client_secret = "{{ client-secret }}"

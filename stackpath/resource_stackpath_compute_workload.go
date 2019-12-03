@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	workload "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
-
-	"github.com/hashicorp/terraform/helper/schema"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload
@@ -370,13 +369,13 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 	// Create the workload
 	resp, err := config.compute.CreateWorkload(&workload.CreateWorkloadParams{
 		Context: context.Background(),
-		StackID: config.Stack,
+		StackID: config.StackID,
 		Body: &models.V1CreateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create compute workload: %v", NewStackPathError(err))
 	}
 
 	// Set the ID based on the workload created in the API
@@ -389,7 +388,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 	config := meta.(*Config)
 	_, err := config.compute.UpdateWorkload(&workload.UpdateWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 		Body: &models.V1UpdateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
@@ -401,7 +400,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err))
 	}
 	return resourceComputeWorkloadRead(data, meta)
 }
@@ -411,7 +410,7 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 
 	resp, err := config.compute.GetWorkload(&workload.GetWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
 	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
@@ -420,7 +419,7 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to read compute workload: %v", NewStackPathError(err))
 	}
 
 	if err := flattenComputeWorkload(data, resp.Payload.Workload); err != nil {
@@ -439,7 +438,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 	var instances []interface{}
 	for {
 		params := &client.GetWorkloadInstancesParams{
-			StackID:          config.Stack,
+			StackID:          config.StackID,
 			WorkloadID:       data.Id(),
 			Context:          context.Background(),
 			PageRequestFirst: &pageSize,
@@ -449,7 +448,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		}
 		resp, err := config.compute.GetWorkloadInstances(params, nil)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err))
 		}
 		for _, result := range resp.Payload.Results {
 			instances = append(instances, flattenComputeWorkloadInstance(result))
@@ -473,7 +472,7 @@ func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) 
 
 	_, err := config.compute.DeleteWorkload(&workload.DeleteWorkloadParams{
 		Context:    context.Background(),
-		StackID:    config.Stack,
+		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
 	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
@@ -482,7 +481,7 @@ func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) 
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to delete compute workload: %v", NewStackPathError(err))
 	}
 	return nil
 }

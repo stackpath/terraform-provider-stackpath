@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"regexp"
 	"sort"
 	"strconv"
 	"testing"
@@ -22,8 +23,16 @@ func TestComputeWorkloadContainers(t *testing.T) {
 	workload := &models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
+	// By design, the StackPath API does not return image pull secrets to the
+	// user when retrieving a workload. Expect to see an empty secret in the
+	//result and suppress the diff error.
+	emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
+
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -70,7 +79,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			resource.TestStep{
-				Config: testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
+				ExpectError: emptyImagePullSecrets,
+				Config:      testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -78,7 +88,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			resource.TestStep{
-				Config: testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
+				ExpectError: emptyImagePullSecrets,
+				Config:      testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -107,7 +118,10 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -130,7 +144,10 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		Providers: testAccProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			resource.TestStep{
@@ -156,7 +173,7 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 			}
 
 			resp, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
-				StackID:    config.Stack,
+				StackID:    config.StackID,
 				WorkloadID: rs.Primary.ID,
 				Context:    context.Background(),
 			}, nil)
@@ -359,7 +376,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 		config := testAccProvider.Meta().(*Config)
 		found, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
 			WorkloadID: rs.Primary.ID,
-			StackID:    config.Stack,
+			StackID:    config.StackID,
 			Context:    context.Background(),
 		}, nil)
 		if err != nil {
@@ -777,6 +794,15 @@ resource "stackpath_compute_workload" "foo" {
   slug = "my-compute-workload-%s"
   network_interface {
     network = "default"
+  }
+
+  image_pull_credentials {
+    docker_registry {
+      server   = "docker.io"
+      username = "my-registry-user"
+      password = "secret registry password"
+      email    = "developers@stackpath.com"
+    }
   }
 
   container {

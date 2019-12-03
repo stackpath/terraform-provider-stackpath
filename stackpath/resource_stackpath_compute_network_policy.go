@@ -358,13 +358,13 @@ func resourceComputeNetworkPolicyCreate(data *schema.ResourceData, meta interfac
 	config := meta.(*Config)
 	resp, err := config.ipam.CreateNetworkPolicy(&client.CreateNetworkPolicyParams{
 		Context:              context.Background(),
-		NetworkPolicyStackID: config.Stack,
+		NetworkPolicyStackID: config.StackID,
 		Body: &models.V1CreateNetworkPolicyRequest{
 			NetworkPolicy: convertComputeNetworkPolicy(data),
 		},
 	}, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create network policy: %v", err)
+		return fmt.Errorf("failed to create network policy: %v", NewStackPathError(err))
 	}
 
 	data.SetId(resp.Payload.NetworkPolicy.ID)
@@ -375,7 +375,7 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	config := meta.(*Config)
 
 	resp, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
-		StackID:         config.Stack,
+		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),
 		Context:         context.Background(),
 	}, nil)
@@ -385,7 +385,7 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to read network policy: %v", NewStackPathError(err))
 	}
 
 	data.Set("name", resp.Payload.NetworkPolicy.Name)
@@ -431,7 +431,7 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 
 	_, err := config.ipam.UpdateNetworkPolicy(&client.UpdateNetworkPolicyParams{
 		Context:              context.Background(),
-		NetworkPolicyStackID: config.Stack,
+		NetworkPolicyStackID: config.StackID,
 		Body: &models.V1UpdateNetworkPolicyRequest{
 			NetworkPolicy: networkPolicy,
 		},
@@ -442,7 +442,7 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 		data.SetId("")
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("failed to update network policy: %v", NewStackPathError(err))
 	}
 
 	return resourceComputeNetworkPolicyRead(data, meta)
@@ -452,11 +452,11 @@ func resourceComputeNetworkPolicyDelete(data *schema.ResourceData, meta interfac
 	config := meta.(*Config)
 	_, err := config.ipam.DeleteNetworkPolicy(&client.DeleteNetworkPolicyParams{
 		Context:         context.Background(),
-		StackID:         config.Stack,
+		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),
 	}, nil)
 	if err != nil {
-		return fmt.Errorf("failed to delete network policy: %v", err)
+		return fmt.Errorf("failed to delete network policy: %v", NewStackPathError(err))
 	}
 
 	data.SetId("")
