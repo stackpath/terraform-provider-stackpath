@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"regexp"
 	"sort"
 	"strconv"
 	"testing"
@@ -21,6 +22,11 @@ func TestComputeWorkloadContainers(t *testing.T) {
 
 	workload := &models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
+
+	// By design, the StackPath API does not return image pull secrets to the
+	// user when retrieving a workload. Expect to see an empty secret in the
+	//result and suppress the diff error.
+	emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
 
 	resource.Test(t, resource.TestCase{
 		Providers: testAccProviders,
@@ -73,6 +79,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			resource.TestStep{
+				ExpectError: emptyImagePullSecrets,
 				Config: testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -81,6 +88,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			resource.TestStep{
+				ExpectError: emptyImagePullSecrets,
 				Config: testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -786,6 +794,15 @@ resource "stackpath_compute_workload" "foo" {
   slug = "my-compute-workload-%s"
   network_interface {
     network = "default"
+  }
+
+  image_pull_credentials {
+    docker_registry {
+      server   = "docker.io"
+      username = "my-registry-user"
+      password = "secret registry password"
+      email    = "developers@stackpath.com"
+    }
   }
 
   container {
