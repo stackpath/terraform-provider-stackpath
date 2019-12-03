@@ -80,7 +80,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 			},
 			resource.TestStep{
 				ExpectError: emptyImagePullSecrets,
-				Config: testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
+				Config:      testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -89,7 +89,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 			},
 			resource.TestStep{
 				ExpectError: emptyImagePullSecrets,
-				Config: testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
+				Config:      testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),

@@ -660,9 +660,9 @@ func flattenComputeWorkloadHTTPGetAction(httpGet *models.V1HTTPGetAction) []inte
 
 	return []interface{}{
 		map[string]interface{}{
-			"port":    httpGet.Port,
-			"path":    httpGet.Path,
-			"scheme":  httpGet.Scheme,
+			"port":         httpGet.Port,
+			"path":         httpGet.Path,
+			"scheme":       httpGet.Scheme,
 			"http_headers": flattenStringMap(httpGet.HTTPHeaders),
 		},
 	}
