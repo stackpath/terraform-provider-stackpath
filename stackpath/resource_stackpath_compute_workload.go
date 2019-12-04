@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
-	workload "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
+	workload "github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload

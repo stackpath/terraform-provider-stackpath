@@ -3,7 +3,7 @@ package stackpath
 import (
 	"github.com/hashicorp/terraform/helper/schema"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func convertComputeNetworkPolicy(data *schema.ResourceData) *models.V1NetworkPolicy {

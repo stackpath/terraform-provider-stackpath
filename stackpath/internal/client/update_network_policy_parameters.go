@@ -17,7 +17,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 // NewUpdateNetworkPolicyParams creates a new UpdateNetworkPolicyParams object

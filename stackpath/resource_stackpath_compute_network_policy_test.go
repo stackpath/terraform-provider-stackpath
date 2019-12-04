@@ -8,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func TestAccComputeNetworkPolicy(t *testing.T) {

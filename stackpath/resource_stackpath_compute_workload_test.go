@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 
-	compute "github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	compute "github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func TestComputeWorkloadContainers(t *testing.T) {
