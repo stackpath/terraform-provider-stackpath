@@ -14,8 +14,8 @@ import (
 	"github.com/hashicorp/terraform/helper/pathorcontents"
 	"github.com/hashicorp/terraform/httpclient"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/stackpath/terraform-provider-stackpath/version"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
+	"github.com/terraform-providers/terraform-provider-stackpath/version"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"

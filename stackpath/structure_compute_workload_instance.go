@@ -1,7 +1,7 @@
 package stackpath
 
 import (
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func flattenComputeWorkloadInstance(instance *models.Workloadv1Instance) map[string]interface{} {

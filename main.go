@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath"
 )
 
 func main() {
