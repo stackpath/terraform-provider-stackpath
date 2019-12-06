@@ -1,4 +1,4 @@
-module github.com/stackpath/terraform-provider-stackpath
+module github.com/terraform-providers/terraform-provider-stackpath
 
 require (
 	github.com/go-openapi/errors v0.19.2

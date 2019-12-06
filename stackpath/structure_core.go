@@ -2,7 +2,7 @@ package stackpath
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func convertComputeMatchExpression(data []interface{}) []*models.V1MatchExpression {
