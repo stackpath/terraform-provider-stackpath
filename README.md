@@ -1,3 +1,20 @@
+# The StackPath Terraform Provider Has Moved!
+
+<img src="https://www.stackpath.com/content/images/logo-and-branding/stackpath-monogram-reversed-screen.svg" width="145" alt="StackPath"> 
+
+:heavy_plus_sign:
+
+<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="600px" alt="HashiCorp Terraform">
+<br><br>
+
+The StackPath Terraform provider is now an [official Terraform provider](https://www.terraform.io/docs/providers/stackpath/index.html), and its code now lives at [https://github.com/terraform-providers/terraform-provider-stackpath](https://github.com/terraform-providers/terraform-provider-stackpath). Our original releases will stay here for those who need them, but please open issues and pull requests against the official repository. 
+
+Thanks, everyone!
+
+ * SP// 
+
+---
+
 Terraform Provider For StackPath
 ==================
 
