@@ -1,6 +1,7 @@
 module github.com/terraform-providers/terraform-provider-stackpath
 
 require (
+	github.com/antihax/optional v1.0.0
 	github.com/go-openapi/errors v0.19.2
 	github.com/go-openapi/loads v0.19.2 // indirect
 	github.com/go-openapi/runtime v0.0.0-20180509184547-c0cae94704c7
@@ -16,3 +17,5 @@ require (
 	labix.org/v2/mgo v0.0.0-20140701140051-000000000287 // indirect
 	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 )
+
+go 1.13
