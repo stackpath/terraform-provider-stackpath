@@ -49,7 +49,8 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 	config := meta.(*Config)
 	// Create in API
 	resp, _, err := config.apiClient.BucketsApi.CreateBucket(context.Background(), config.StackID, api_client.InlineObject{
-		Label: data.Get("label").(string),
+		Label:  data.Get("label").(string),
+		Region: data.Get("region").(string),
 	})
 	// Handle error
 	if err != nil {
