@@ -32,16 +32,10 @@ func resourceObjectStorageBucket() *schema.Resource {
 				ForceNew: true,
 			},
 			"visibility": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "PRIVATE",
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "PRIVATE" && v != "PUBLIC" {
-						errs = append(errs, fmt.Errorf("%q must be either PRIVATE or PUBLIC got %q", key, v))
-					}
-					return
-				},
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      "PRIVATE",
+				ValidateFunc: validateObjectStorageBucketVisibility,
 			},
 			"endpoint_url": &schema.Schema{
 				Type:     schema.TypeString,
