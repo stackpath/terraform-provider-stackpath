@@ -1,8 +1,11 @@
 package stackpath
 
 import (
+	"errors"
+	"fmt"
 	"net/url"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api_client"
 	"golang.org/x/oauth2"
 )
 
@@ -40,6 +43,15 @@ func (e *InvalidClientSecretError) Error() string {
 // error types, or returns the original error.
 func NewStackPathError(err error) error {
 	switch rootErr := err.(type) {
+	// Handle GenericOpenAPIError
+	case api_client.GenericOpenAPIError:
+		return errors.New(
+			fmt.Sprintf(
+				"HTTP %v, Response %v",
+				rootErr.Error(),
+				string(rootErr.Body()),
+			),
+		)
 	// Look for errors performing underlying OAuth 2 authentication.
 	case *url.Error:
 		switch typedErr := rootErr.Err.(type) {

@@ -53,16 +53,13 @@ func resourceObjectStorageBucket() *schema.Resource {
 
 func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	resp, http, err := config.apiClient.BucketsApi.CreateBucket(context.Background(), config.StackID, api_client.InlineObject{
+	// Create in API
+	resp, _, err := config.apiClient.BucketsApi.CreateBucket(context.Background(), config.StackID, api_client.InlineObject{
 		Label: data.Get("label").(string),
 	})
+	// Handle error
 	if err != nil {
-		if http.StatusCode == 400 {
-			return fmt.Errorf("%v", http.Body)
-		}
-		return fmt.Errorf(
-			"failed to create object storage bucket: %v", NewStackPathError(err),
-		)
+		return fmt.Errorf("failed to create object storage bucket: %v", NewStackPathError(err))
 	}
 	// Assign ID from the response
 	data.SetId(resp.Bucket.Id)
@@ -76,16 +73,17 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 
 func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-
-	resp, _, err := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, data.Id())
-
-	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
-		// Clear out the ID in terraform if the
-		// resource no longer exists in the API
-		data.SetId("")
-		return nil
-	} else if err != nil {
-		return fmt.Errorf("failed to read network policy: %v", NewStackPathError(err))
+	// Read from API
+	resp, httpResponse, err := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, data.Id())
+	// Handle error
+	if err != nil {
+		if httpResponse.StatusCode == http.StatusNotFound {
+			// Clear out the ID in terraform if the
+			// resource no longer exists in the API
+			data.SetId("")
+			return nil
+		}
+		return fmt.Errorf("failed to read object storage bucket: %v", NewStackPathError(err))
 	}
 	// Set properties
 	data.Set("endpoint_url", resp.Bucket.EndpointUrl)
@@ -97,7 +95,8 @@ func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}
 
 func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	_, _, err := config.apiClient.BucketsApi.UpdateBucket(
+	// Update in API
+	_, httpResponse, err := config.apiClient.BucketsApi.UpdateBucket(
 		context.Background(),
 		config.StackID,
 		data.Id(),
@@ -105,19 +104,23 @@ func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface
 			Visibility: data.Get("visibility").(string),
 		},
 	)
-	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
-		// Clear out the ID in terraform if the
-		// resource no longer exists in the API
-		data.SetId("")
-		return nil
-	} else if err != nil {
-		return fmt.Errorf("failed to update network policy: %v", NewStackPathError(err))
+	// Handle error
+	if err != nil {
+		if httpResponse.StatusCode == http.StatusNotFound {
+			// Clear out the ID in terraform if the
+			// resource no longer exists in the API
+			data.SetId("")
+			return nil
+		}
+		return fmt.Errorf("failed to update object storage bucket: %v", NewStackPathError(err))
 	}
+	// Return read
 	return resourceObjectStorageBucketRead(data, meta)
 }
 
 func resourceObjectStorageBucketDelete(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
+	// Delete in API
 	_, err := config.apiClient.BucketsApi.DeleteBucket(
 		context.Background(),
 		config.StackID,
@@ -126,9 +129,11 @@ func resourceObjectStorageBucketDelete(data *schema.ResourceData, meta interface
 			ForceDelete: optional.NewBool(true),
 		},
 	)
+	// Handle error
 	if err != nil {
-		return fmt.Errorf("failed to delete network policy: %v", NewStackPathError(err))
+		return fmt.Errorf("failed to delete object storage bucket: %v", NewStackPathError(err))
 	}
+	// Unset ID
 	data.SetId("")
 	return nil
 }
