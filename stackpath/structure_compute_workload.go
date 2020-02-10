@@ -260,8 +260,9 @@ func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) model
 		// track the port names so we can keep track of what needs to be removed
 		portNames[portData["name"]] = true
 		ports[portData["name"].(string)] = models.V1InstancePort{
-			Port:     int32(portData["port"].(int)),
-			Protocol: strings.ToUpper(portData["protocol"].(string)),
+			EnableImplicitNetworkPolicy: portData["enable_implicit_network_policy"].(bool),
+			Port:                        int32(portData["port"].(int)),
+			Protocol:                    strings.ToUpper(portData["protocol"].(string)),
 		}
 	}
 
@@ -715,9 +716,10 @@ func flattenComputeWorkloadPortsOrdered(prefix string, data *schema.ResourceData
 	newPorts := make([]interface{}, data.Get(prefix+".#").(int))
 	for portName, v := range ports {
 		port := map[string]interface{}{
-			"name":     portName,
-			"port":     v.Port,
-			"protocol": v.Protocol,
+			"name":                           portName,
+			"port":                           v.Port,
+			"protocol":                       v.Protocol,
+			"enable_implicit_network_policy": v.EnableImplicitNetworkPolicy,
 		}
 		if index, exists := ordered[portName]; exists {
 			newPorts[index] = port
