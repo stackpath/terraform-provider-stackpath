@@ -24,7 +24,7 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 		},
 		CheckDestroy: testAccComputeNetworkPolicyCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccComputeNetworkPolicyConfigBasic(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkPolicyExists("stackpath_compute_network_policy.foo", networkPolicy),
@@ -52,7 +52,7 @@ func testAccComputeCheckNetworkPolicyExists(name string, policy *models.V1Networ
 			Context:         context.Background(),
 		}, nil)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve network policy: %v", err)
+			return fmt.Errorf("could not retrieve network policy: %v", err)
 		}
 
 		*policy = *found.Payload.NetworkPolicy
@@ -90,48 +90,48 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 func testAccComputeNetworkPolicyConfigBasic() string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_network_policy" "foo" {
-	name = "test-terraform-workload-allow-port-80"
-	slug = "test-terraform-workload-allow-port-80"
+  name = "test-terraform-workload-allow-port-80"
+  slug = "test-terraform-workload-allow-port-80"
 
-	instance_selector {
-		key      = "workload.platform.stackpath.net/workload-slug"
-		operator = "in"
-		values = [
-			"my-terraform-workload"
-		]
-	}
+  instance_selector {
+    key      = "workload.platform.stackpath.net/workload-slug"
+    operator = "in"
+    values = [
+      "my-terraform-workload"
+    ]
+  }
 
-	policy_types = ["INGRESS", "EGRESS"]
+  policy_types = ["INGRESS", "EGRESS"]
 
-	priority = 1000
+  priority = 1000
 
-	ingress {
-		# Configure the network policy to allow traffic from
-		# the source CIDR range of 0.0.0.0/0 (all traffic) to
-		# hit port 80.
-		description = "Allow all port 80 traffic"
-		action      = "ALLOW"
-		protocol {
-			tcp {
-				# configure the destination ports that should be allowed
-				destination_ports = [80]
-			}
-		}
-		from {
-			ip_block {
-				cidr = "0.0.0.0/0"
-			}
-		}
-	}
+  ingress {
+    # Configure the network policy to allow traffic from
+    # the source CIDR range of 0.0.0.0/0 (all traffic) to
+    # hit port 80.
+    description = "Allow all port 80 traffic"
+    action      = "ALLOW"
+    protocol {
+      tcp {
+        # configure the destination ports that should be allowed
+        destination_ports = [80]
+      }
+    }
+    from {
+      ip_block {
+        cidr = "0.0.0.0/0"
+      }
+    }
+  }
 
-	egress {
-		description = "Allow all outbound traffic"
-		action      = "ALLOW"
-		to {
-			ip_block {
-				cidr = "0.0.0.0/0"
-			}
-		}
-	}
+  egress {
+    description = "Allow all outbound traffic"
+    action      = "ALLOW"
+    to {
+      ip_block {
+        cidr = "0.0.0.0/0"
+      }
+    }
+  }
 }`)
 }

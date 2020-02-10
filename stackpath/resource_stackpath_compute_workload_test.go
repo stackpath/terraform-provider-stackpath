@@ -35,7 +35,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigContainerBasic(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -45,7 +45,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigContainerAddPorts(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -56,7 +56,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigContainerRemoveEnvVar(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -67,7 +67,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigContainerAddProbes(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -78,7 +78,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
 				),
 			},
-			resource.TestStep{
+			{
 				ExpectError: emptyImagePullSecrets,
 				Config:      testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
@@ -87,7 +87,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				ExpectError: emptyImagePullSecrets,
 				Config:      testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
@@ -99,7 +99,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
-			// resource.TestStep{
+			// {
 			// 	Config: testComputeWorkloadConfigContainerAddContainer(),
 			// 	Check: resource.ComposeTestCheckFunc(
 			// 		testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -124,13 +124,13 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigContainerAddVolumeMounts(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo-volume", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadAdditionalVolume(workload, "volume", "10Gi"),
-					testAccComputeWorlloadContainerVolumeMount(workload, "app", "volume", "/var/log"),
+					testAccComputeWorkloadContainerVolumeMount(workload, "app", "volume", "/var/log"),
 				),
 			},
 		},
@@ -150,7 +150,7 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 		},
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
@@ -177,11 +177,11 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 				WorkloadID: rs.Primary.ID,
 				Context:    context.Background(),
 			}, nil)
-			// Since compute workloads are deleted asyncronously, we want to look at the fact that
+			// Since compute workloads are deleted asynchronously, we want to look at the fact that
 			// the deleteRequestedAt timestamp was set on the workload. This field is used to indicate
 			// that the workload is being deleted.
 			if err == nil && resp.Payload.Workload.Metadata.DeleteRequestedAt == nil {
-				return fmt.Errorf("Compute workload still exists: %v", rs.Primary.ID)
+				return fmt.Errorf("compute workload still exists: %v", rs.Primary.ID)
 			}
 		}
 
@@ -189,7 +189,7 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 	}
 }
 
-func testAccComputeWorlloadContainerVolumeMount(workload *models.V1Workload, containerName, volumeSlug, mountPath string) resource.TestCheckFunc {
+func testAccComputeWorkloadContainerVolumeMount(workload *models.V1Workload, containerName, volumeSlug, mountPath string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		container, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -382,7 +382,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 			Context:    context.Background(),
 		}, nil)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve workload: %v", err)
+			return fmt.Errorf("could not retrieve workload: %v", err)
 		}
 
 		*workload = *found.Payload.Workload
@@ -428,11 +428,11 @@ resource "stackpath_compute_workload" "foo" {
     name  = "app"
     image = "nginx:latest"
     resources {
-		requests = {
-			cpu    = "1"
-			memory = "2Gi"
-		}
-	}
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
     port {
       name     = "http"
       port     = 80
@@ -471,21 +471,21 @@ resource "stackpath_compute_workload" "foo" {
     name  = "app"
     image = "nginx:latest"
     resources {
-		requests = {
-			cpu    = "1"
-			memory = "2Gi"
-		}
-	}
-	port {
-      name     = "http"
-      port     = 80
-      protocol = "TCP"
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name                           = "http"
+      port                           = 80
+      protocol                       = "TCP"
       enable_implicit_network_policy = false
     }
     port {
-        name     = "https"
-        port     = 443
-        protocol = "TCP"
+      name                           = "https"
+      port                           = 443
+      protocol                       = "TCP"
       enable_implicit_network_policy = true
     }
     env {
@@ -521,11 +521,11 @@ resource "stackpath_compute_workload" "foo" {
     name  = "app"
     image = "nginx:latest"
     resources {
-		requests = {
-			cpu    = "1"
-			memory = "2Gi"
-		}
-	}
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
     port {
       name     = "http"
       port     = 80
@@ -560,11 +560,11 @@ resource "stackpath_compute_workload" "foo" {
     name  = "app"
     image = "nginx:latest"
     resources {
-		requests = {
-			cpu    = "1"
-			memory = "2Gi"
-		}
-	}
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
     port {
       name     = "http"
       port     = 80
@@ -632,11 +632,11 @@ resource "stackpath_compute_workload" "foo" {
     name  = "app"
     image = "nginx:latest"
     resources {
-		requests = {
-			cpu    = "1"
-			memory = "2Gi"
-		}
-	}
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
   }
 
   target {
@@ -709,19 +709,19 @@ resource "stackpath_compute_workload" "bar" {
 
   virtual_machine {
     name  = "app"
-	image = "stackpath-edge/centos-7:v201905012051"
-	port {
-		name     = "http"
-		port     = 80
-		protocol = "TCP"
-	}
+    image = "stackpath-edge/centos-7:v201905012051"
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
     resources {
       requests = {
         cpu    = "1"
         memory = "2Gi"
       }
     }
-	user_data = <<EOT
+    user_data = <<EOT
 package_update: true
 packages:
 - nginx
