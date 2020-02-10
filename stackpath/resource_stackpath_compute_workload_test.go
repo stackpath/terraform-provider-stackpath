@@ -40,7 +40,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 				),
@@ -50,8 +50,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80),
-					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443, true),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "some value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
 				),
@@ -61,7 +61,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
@@ -72,7 +72,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
@@ -323,7 +323,7 @@ func testAccComputeWorkloadCheckContainerEnvVarNotExist(workload *models.V1Workl
 	}
 }
 
-func testAccComputeWorkloadCheckContainerPort(workload *models.V1Workload, containerName, portName, protocol string, port int32) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerPort(workload *models.V1Workload, containerName, portName, protocol string, port int32, enableImplicitNetworkPolicy bool) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -334,6 +334,8 @@ func testAccComputeWorkloadCheckContainerPort(workload *models.V1Workload, conta
 			return fmt.Errorf("port number '%d' does not match expected port '%d'", portSpec.Port, port)
 		} else if portSpec.Protocol != protocol {
 			return fmt.Errorf("port protocol '%s' does not match expected protocol '%s'", portSpec.Protocol, protocol)
+		} else if portSpec.EnableImplicitNetworkPolicy != enableImplicitNetworkPolicy {
+			return fmt.Errorf("port enable implicit network policy '%t' does not match expected enable implicit network policy '%t'", portSpec.EnableImplicitNetworkPolicy, enableImplicitNetworkPolicy)
 		}
 		return nil
 	}
@@ -478,11 +480,13 @@ resource "stackpath_compute_workload" "foo" {
       name     = "http"
       port     = 80
       protocol = "TCP"
+      enable_implicit_network_policy = false
     }
     port {
         name     = "https"
         port     = 443
         protocol = "TCP"
+      enable_implicit_network_policy = true
     }
     env {
       key   = "MY_ENVIRONMENT_VARIABLE"
