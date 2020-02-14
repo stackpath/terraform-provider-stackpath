@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 func resourceObjectStorageBucket() *schema.Resource {
@@ -49,7 +48,7 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 	config := meta.(*Config)
 	// Create in API
 	resp, err := config.objectStorage.Buckets.CreateBucket(&buckets.CreateBucketParams{
-		Body: &models.CreateBucketParamsBody{
+		Body: buckets.CreateBucketBody{
 			Label:  data.Get("label").(string),
 			Region: data.Get("region").(string),
 		},
@@ -104,7 +103,7 @@ func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface
 		BucketID: data.Id(),
 		Context:  context.Background(),
 		StackID:  config.StackID,
-		Body: &models.UpdateBucketParamsBody{
+		Body: buckets.UpdateBucketBody{
 			Visibility: &visibility,
 		},
 	}, nil)

@@ -11,13 +11,12 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // Create bucket and update visibility
 func TestObjectStorageBucketBasic(t *testing.T) {
 
-	bucket := &models.GetBucketOKBodyBucket{}
+	bucket := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -53,8 +52,8 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 
 func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 
-	bucket1 := &models.GetBucketOKBodyBucket{}
-	bucket2 := &models.GetBucketOKBodyBucket{}
+	bucket1 := &buckets.GetBucketOKBodyBucket{}
+	bucket2 := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -91,8 +90,8 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 
 func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 
-	bucket1 := &models.GetBucketOKBodyBucket{}
-	bucket2 := &models.GetBucketOKBodyBucket{}
+	bucket1 := &buckets.GetBucketOKBodyBucket{}
+	bucket2 := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix1 := strconv.Itoa(int(time.Now().Unix()))
 	labelSuffix2 := strconv.Itoa(int(time.Now().Unix()) + 1)
 
@@ -128,7 +127,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 	})
 }
 
-func testAccObjectStorageBucketCheckExists(name string, bucket *models.GetBucketOKBodyBucket) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckExists(name string, bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -153,7 +152,7 @@ func testAccObjectStorageBucketCheckExists(name string, bucket *models.GetBucket
 	}
 }
 
-func testAccObjectStorageBucketCheckDestroyed(bucket *models.GetBucketOKBodyBucket) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckDestroyed(bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config := testAccProvider.Meta().(*Config)
 		_, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
