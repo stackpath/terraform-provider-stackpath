@@ -10,14 +10,13 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api_client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
 )
 
 // Create bucket and update visibility
 func TestObjectStorageBucketBasic(t *testing.T) {
 
-	bucket := &api_client.InlineResponse200Results{}
+	bucket := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -53,8 +52,8 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 
 func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 
-	bucket1 := &api_client.InlineResponse200Results{}
-	bucket2 := &api_client.InlineResponse200Results{}
+	bucket1 := &buckets.GetBucketOKBodyBucket{}
+	bucket2 := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -91,8 +90,8 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 
 func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 
-	bucket1 := &api_client.InlineResponse200Results{}
-	bucket2 := &api_client.InlineResponse200Results{}
+	bucket1 := &buckets.GetBucketOKBodyBucket{}
+	bucket2 := &buckets.GetBucketOKBodyBucket{}
 	labelSuffix1 := strconv.Itoa(int(time.Now().Unix()))
 	labelSuffix2 := strconv.Itoa(int(time.Now().Unix()) + 1)
 
@@ -128,7 +127,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 	})
 }
 
-func testAccObjectStorageBucketCheckExists(name string, bucket *api_client.InlineResponse200Results) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckExists(name string, bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -140,19 +139,27 @@ func testAccObjectStorageBucketCheckExists(name string, bucket *api_client.Inlin
 		}
 
 		config := testAccProvider.Meta().(*Config)
-		resp, _, err := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, rs.Primary.ID)
+		resp, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
+			BucketID: rs.Primary.ID,
+			StackID:  config.StackID,
+			Context:  context.Background(),
+		}, nil)
 		if err != nil {
 			return fmt.Errorf("Could not retrieve object storage bucket: %v", err)
 		}
-		*bucket = resp.Bucket
+		bucket = resp.GetPayload().Bucket
 		return nil
 	}
 }
 
-func testAccObjectStorageBucketCheckDestroyed(bucket *api_client.InlineResponse200Results) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckDestroyed(bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config := testAccProvider.Meta().(*Config)
-		_, _, err := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, bucket.Id)
+		_, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
+			BucketID: bucket.ID,
+			StackID:  config.StackID,
+			Context:  context.Background(),
+		}, nil)
 		if err == nil {
 			return fmt.Errorf("Bucket still exists")
 		}
@@ -168,9 +175,13 @@ func testAccObjectStorageBucketCheckDestroy() resource.TestCheckFunc {
 			if rs.Type != "stackpath_object_storage_bucket" {
 				continue
 			}
-			_, httpResponse, _ := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, rs.Primary.ID)
-			if httpResponse.StatusCode != http.StatusNotFound {
-				return fmt.Errorf("Object storage bucket still exists: %v HTTP %d", rs.Primary.ID, httpResponse.StatusCode)
+			_, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
+				BucketID: rs.Primary.ID,
+				StackID:  config.StackID,
+				Context:  context.Background(),
+			}, nil)
+			if c, ok := err.(interface{ Code() int }); ok && c.Code() != http.StatusNotFound {
+				return fmt.Errorf("Object storage bucket still exists: %v HTTP %d", rs.Primary.ID, c.Code())
 			}
 		}
 		return nil
