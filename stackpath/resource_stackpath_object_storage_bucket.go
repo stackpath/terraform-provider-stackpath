@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/antihax/optional"
 	"github.com/hashicorp/terraform/helper/schema"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api_client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 func resourceObjectStorageBucket() *schema.Resource {
@@ -48,16 +48,20 @@ func resourceObjectStorageBucket() *schema.Resource {
 func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	// Create in API
-	resp, _, err := config.apiClient.BucketsApi.CreateBucket(context.Background(), config.StackID, api_client.InlineObject{
-		Label:  data.Get("label").(string),
-		Region: data.Get("region").(string),
-	})
+	resp, err := config.objectStorage.Buckets.CreateBucket(&buckets.CreateBucketParams{
+		Body: &models.CreateBucketParamsBody{
+			Label:  data.Get("label").(string),
+			Region: data.Get("region").(string),
+		},
+		StackID: config.StackID,
+		Context: context.Background(),
+	}, nil)
 	// Handle error
 	if err != nil {
 		return fmt.Errorf("failed to create object storage bucket: %v", NewStackPathError(err))
 	}
 	// Assign ID from the response
-	data.SetId(resp.Bucket.Id)
+	data.SetId(resp.Payload.Bucket.ID)
 	// Run update if visibility is set to PUBLIC
 	if data.Get("visibility").(string) != "PRIVATE" {
 		resourceObjectStorageBucketUpdate(data, meta)
@@ -69,10 +73,14 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	// Read from API
-	resp, httpResponse, err := config.apiClient.BucketsApi.GetBucket(context.Background(), config.StackID, data.Id())
+	resp, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
+		BucketID: data.Id(),
+		StackID:  config.StackID,
+		Context:  context.Background(),
+	}, nil)
 	// Handle error
 	if err != nil {
-		if httpResponse.StatusCode == http.StatusNotFound {
+		if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
 			// Clear out the ID in terraform if the
 			// resource no longer exists in the API
 			data.SetId("")
@@ -81,27 +89,28 @@ func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}
 		return fmt.Errorf("failed to read object storage bucket: %v", NewStackPathError(err))
 	}
 	// Set properties
-	data.Set("endpoint_url", resp.Bucket.EndpointUrl)
-	data.Set("label", resp.Bucket.Label)
-	data.Set("region", resp.Bucket.Region)
-	data.Set("visibility", resp.Bucket.Visibility)
+	data.Set("endpoint_url", resp.GetPayload().Bucket.EndpointURL)
+	data.Set("label", resp.GetPayload().Bucket.Label)
+	data.Set("region", resp.GetPayload().Bucket.Region)
+	data.Set("visibility", resp.GetPayload().Bucket.Visibility)
 	return nil
 }
 
 func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
+	visibility := data.Get("visibility").(string)
 	// Update in API
-	_, httpResponse, err := config.apiClient.BucketsApi.UpdateBucket(
-		context.Background(),
-		config.StackID,
-		data.Id(),
-		api_client.InlineObject1{
-			Visibility: data.Get("visibility").(string),
+	_, err := config.objectStorage.Buckets.UpdateBucket(&buckets.UpdateBucketParams{
+		BucketID: data.Id(),
+		Context:  context.Background(),
+		StackID:  config.StackID,
+		Body: &models.UpdateBucketParamsBody{
+			Visibility: &visibility,
 		},
-	)
+	}, nil)
 	// Handle error
 	if err != nil {
-		if httpResponse.StatusCode == http.StatusNotFound {
+		if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
 			// Clear out the ID in terraform if the
 			// resource no longer exists in the API
 			data.SetId("")
@@ -116,14 +125,11 @@ func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface
 func resourceObjectStorageBucketDelete(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	// Delete in API
-	_, err := config.apiClient.BucketsApi.DeleteBucket(
-		context.Background(),
-		config.StackID,
-		data.Id(),
-		&api_client.DeleteBucketOpts{
-			ForceDelete: optional.NewBool(true),
-		},
-	)
+	_, err := config.objectStorage.Buckets.DeleteBucket(&buckets.DeleteBucketParams{
+		BucketID: data.Id(),
+		Context:  context.Background(),
+		StackID:  config.StackID,
+	}, nil)
 	// Handle error
 	if err != nil {
 		return fmt.Errorf("failed to delete object storage bucket: %v", NewStackPathError(err))
