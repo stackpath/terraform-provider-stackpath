@@ -105,95 +105,8 @@
               "description": "The buckets for the given stack"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -290,95 +203,8 @@
               "description": "The bucket created"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -468,95 +294,8 @@
               "description": "The bucket for the given stack"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -586,95 +325,8 @@
           "204": {
             "description": "No content"
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -758,95 +410,8 @@
               "description": "A response of the updated bucket"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -1013,95 +578,8 @@
               "description": "A collection of metrics"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -1264,95 +742,8 @@
               "description": "A collection of metrics"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -1413,95 +804,8 @@
               "description": "A response with new credentials"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -1548,95 +852,8 @@
               "description": "A response with new credentials"
             }
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -1668,95 +885,8 @@
           "204": {
             "description": "No content"
           },
-          "401": {
-            "description": "Returned when an unauthorized request is attempted.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
-          },
           "default": {
-            "description": "Default error structure.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "error": {
-                  "type": "string"
-                },
-                "details": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "@type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "@type"
-                    ],
-                    "discriminator": "@type"
-                  }
-                }
-              }
-            }
+            "$ref": "#/responses/DefaultError"
           }
         },
         "parameters": [
@@ -2099,13 +1229,7 @@
       "type": "object",
       "properties": {
         "status": {
-          "type": "string",
-          "enum": [
-            "SUCCESS",
-            "ERROR"
-          ],
-          "default": "SUCCESS",
-          "description": "A metrics query's resulting status"
+          "$ref": "#/definitions/prometheusMetricsStatus"
         },
         "data": {
           "type": "object",
@@ -2218,334 +1342,6 @@
       "default": "SUCCESS",
       "description": "A metrics query's resulting status"
     },
-    "stackpath.rpc.BadRequest": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "fieldViolations": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "field": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.BadRequest.FieldViolation": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "stackpath.rpc.Help": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "links": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "description": {
-                    "type": "string"
-                  },
-                  "url": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.Help.Link": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
-      }
-    },
-    "stackpath.rpc.LocalizedMessage": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "locale": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.PreconditionFailure": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "violations": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string"
-                  },
-                  "subject": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.PreconditionFailure.Violation": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string"
-        },
-        "subject": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "stackpath.rpc.QuotaFailure": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "violations": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "subject": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.QuotaFailure.Violation": {
-      "type": "object",
-      "properties": {
-        "subject": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
-    "stackpath.rpc.RequestInfo": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "requestId": {
-              "type": "string"
-            },
-            "servingData": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.ResourceInfo": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "resourceType": {
-              "type": "string"
-            },
-            "resourceName": {
-              "type": "string"
-            },
-            "owner": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "stackpath.rpc.RetryInfo": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "@type": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "@type"
-          ],
-          "discriminator": "@type"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "retryDelay": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "stackpathapiStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "error": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "@type": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "@type"
-            ],
-            "discriminator": "@type"
-          }
-        }
-      }
-    },
     "storageBucket": {
       "type": "object",
       "properties": {
@@ -2562,13 +1358,7 @@
           "description": "The URL used to access the bucket"
         },
         "visibility": {
-          "type": "string",
-          "enum": [
-            "PRIVATE",
-            "PUBLIC"
-          ],
-          "default": "PRIVATE",
-          "description": "- PRIVATE: The bucket is private and only accessibly with credentials\n - PUBLIC: The bucket is public and accessible over the internet"
+          "$ref": "#/definitions/storageBucketVisibility"  
         },
         "createdAt": {
           "type": "string",
@@ -2873,6 +1663,23 @@
         }
       },
       "description": "A response of the updated bucket"
+    }
+  },
+  "responses": {
+    "DefaultError": {
+      "description": "Default error structure.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
