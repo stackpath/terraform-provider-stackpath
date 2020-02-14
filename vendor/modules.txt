@@ -12,8 +12,6 @@ github.com/PuerkitoBio/purell
 github.com/PuerkitoBio/urlesc
 # github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
-# github.com/antihax/optional v1.0.0
-github.com/antihax/optional
 # github.com/apparentlymart/go-cidr v1.0.0
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg v1.0.0
