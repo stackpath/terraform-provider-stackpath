@@ -18,7 +18,7 @@ import (
 type StorageGetCredentialsResponse struct {
 
 	// The list of active credentials on account
-	Credentials []*StorageGetCredentialsResponseCredentialsItems `json:"credentials"`
+	Credentials []*StorageGetCredentialsResponseCredentialsItems0 `json:"credentials"`
 }
 
 // Validate validates this storage get credentials response
@@ -71,6 +71,37 @@ func (m *StorageGetCredentialsResponse) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *StorageGetCredentialsResponse) UnmarshalBinary(b []byte) error {
 	var res StorageGetCredentialsResponse
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// StorageGetCredentialsResponseCredentialsItems0 Storage credentials for a user
+// swagger:model StorageGetCredentialsResponseCredentialsItems0
+type StorageGetCredentialsResponseCredentialsItems0 struct {
+
+	// The ID for the access key
+	AccessKey string `json:"accessKey,omitempty"`
+}
+
+// Validate validates this storage get credentials response credentials items0
+func (m *StorageGetCredentialsResponseCredentialsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *StorageGetCredentialsResponseCredentialsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *StorageGetCredentialsResponseCredentialsItems0) UnmarshalBinary(b []byte) error {
+	var res StorageGetCredentialsResponseCredentialsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

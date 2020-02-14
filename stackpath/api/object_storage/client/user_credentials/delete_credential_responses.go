@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // DeleteCredentialReader is a Reader for the DeleteCredential structure.
@@ -30,18 +29,6 @@ func (o *DeleteCredentialReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewDeleteCredentialUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewDeleteCredentialInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewDeleteCredentialDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -75,72 +62,6 @@ func (o *DeleteCredentialNoContent) readResponse(response runtime.ClientResponse
 	return nil
 }
 
-// NewDeleteCredentialUnauthorized creates a DeleteCredentialUnauthorized with default headers values
-func NewDeleteCredentialUnauthorized() *DeleteCredentialUnauthorized {
-	return &DeleteCredentialUnauthorized{}
-}
-
-/*DeleteCredentialUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type DeleteCredentialUnauthorized struct {
-	Payload *models.DeleteCredentialUnauthorizedBody
-}
-
-func (o *DeleteCredentialUnauthorized) Error() string {
-	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] deleteCredentialUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *DeleteCredentialUnauthorized) GetPayload() *models.DeleteCredentialUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *DeleteCredentialUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.DeleteCredentialUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewDeleteCredentialInternalServerError creates a DeleteCredentialInternalServerError with default headers values
-func NewDeleteCredentialInternalServerError() *DeleteCredentialInternalServerError {
-	return &DeleteCredentialInternalServerError{}
-}
-
-/*DeleteCredentialInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type DeleteCredentialInternalServerError struct {
-	Payload *models.DeleteCredentialInternalServerErrorBody
-}
-
-func (o *DeleteCredentialInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] deleteCredentialInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *DeleteCredentialInternalServerError) GetPayload() *models.DeleteCredentialInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *DeleteCredentialInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.DeleteCredentialInternalServerErrorBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
 // NewDeleteCredentialDefault creates a DeleteCredentialDefault with default headers values
 func NewDeleteCredentialDefault(code int) *DeleteCredentialDefault {
 	return &DeleteCredentialDefault{
@@ -155,7 +76,7 @@ Default error structure.
 type DeleteCredentialDefault struct {
 	_statusCode int
 
-	Payload *models.DeleteCredentialDefaultBody
+	Payload *DeleteCredentialDefaultBody
 }
 
 // Code gets the status code for the delete credential default response
@@ -167,18 +88,53 @@ func (o *DeleteCredentialDefault) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] DeleteCredential default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *DeleteCredentialDefault) GetPayload() *models.DeleteCredentialDefaultBody {
+func (o *DeleteCredentialDefault) GetPayload() *DeleteCredentialDefaultBody {
 	return o.Payload
 }
 
 func (o *DeleteCredentialDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.DeleteCredentialDefaultBody)
+	o.Payload = new(DeleteCredentialDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*DeleteCredentialDefaultBody delete credential default body
+swagger:model DeleteCredentialDefaultBody
+*/
+type DeleteCredentialDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this delete credential default body
+func (o *DeleteCredentialDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeleteCredentialDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeleteCredentialDefaultBody) UnmarshalBinary(b []byte) error {
+	var res DeleteCredentialDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

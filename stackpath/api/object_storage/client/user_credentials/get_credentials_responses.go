@@ -8,12 +8,13 @@ package user_credentials
 import (
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // GetCredentialsReader is a Reader for the GetCredentials structure.
@@ -30,18 +31,6 @@ func (o *GetCredentialsReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewGetCredentialsUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewGetCredentialsInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewGetCredentialsDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,86 +53,20 @@ func NewGetCredentialsOK() *GetCredentialsOK {
 GetCredentialsOK get credentials o k
 */
 type GetCredentialsOK struct {
-	Payload *models.GetCredentialsOKBody
+	Payload *GetCredentialsOKBody
 }
 
 func (o *GetCredentialsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsOK  %+v", 200, o.Payload)
 }
 
-func (o *GetCredentialsOK) GetPayload() *models.GetCredentialsOKBody {
+func (o *GetCredentialsOK) GetPayload() *GetCredentialsOKBody {
 	return o.Payload
 }
 
 func (o *GetCredentialsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetCredentialsOKBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetCredentialsUnauthorized creates a GetCredentialsUnauthorized with default headers values
-func NewGetCredentialsUnauthorized() *GetCredentialsUnauthorized {
-	return &GetCredentialsUnauthorized{}
-}
-
-/*GetCredentialsUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type GetCredentialsUnauthorized struct {
-	Payload *models.GetCredentialsUnauthorizedBody
-}
-
-func (o *GetCredentialsUnauthorized) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *GetCredentialsUnauthorized) GetPayload() *models.GetCredentialsUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *GetCredentialsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetCredentialsUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetCredentialsInternalServerError creates a GetCredentialsInternalServerError with default headers values
-func NewGetCredentialsInternalServerError() *GetCredentialsInternalServerError {
-	return &GetCredentialsInternalServerError{}
-}
-
-/*GetCredentialsInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type GetCredentialsInternalServerError struct {
-	Payload *models.GetCredentialsInternalServerErrorBody
-}
-
-func (o *GetCredentialsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *GetCredentialsInternalServerError) GetPayload() *models.GetCredentialsInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *GetCredentialsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetCredentialsInternalServerErrorBody)
+	o.Payload = new(GetCredentialsOKBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -167,7 +90,7 @@ Default error structure.
 type GetCredentialsDefault struct {
 	_statusCode int
 
-	Payload *models.GetCredentialsDefaultBody
+	Payload *GetCredentialsDefaultBody
 }
 
 // Code gets the status code for the get credentials default response
@@ -179,18 +102,151 @@ func (o *GetCredentialsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] GetCredentials default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *GetCredentialsDefault) GetPayload() *models.GetCredentialsDefaultBody {
+func (o *GetCredentialsDefault) GetPayload() *GetCredentialsDefaultBody {
 	return o.Payload
 }
 
 func (o *GetCredentialsDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetCredentialsDefaultBody)
+	o.Payload = new(GetCredentialsDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*CredentialsItems0 Storage credentials for a user
+swagger:model CredentialsItems0
+*/
+type CredentialsItems0 struct {
+
+	// The ID for the access key
+	AccessKey string `json:"accessKey,omitempty"`
+}
+
+// Validate validates this credentials items0
+func (o *CredentialsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CredentialsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CredentialsItems0) UnmarshalBinary(b []byte) error {
+	var res CredentialsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetCredentialsDefaultBody get credentials default body
+swagger:model GetCredentialsDefaultBody
+*/
+type GetCredentialsDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this get credentials default body
+func (o *GetCredentialsDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetCredentialsDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetCredentialsDefaultBody) UnmarshalBinary(b []byte) error {
+	var res GetCredentialsDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetCredentialsOKBody A response with new credentials
+swagger:model GetCredentialsOKBody
+*/
+type GetCredentialsOKBody struct {
+
+	// The list of active credentials on account
+	Credentials []*CredentialsItems0 `json:"credentials"`
+}
+
+// Validate validates this get credentials o k body
+func (o *GetCredentialsOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCredentials(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetCredentialsOKBody) validateCredentials(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Credentials) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Credentials); i++ {
+		if swag.IsZero(o.Credentials[i]) { // not required
+			continue
+		}
+
+		if o.Credentials[i] != nil {
+			if err := o.Credentials[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getCredentialsOK" + "." + "credentials" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetCredentialsOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetCredentialsOKBody) UnmarshalBinary(b []byte) error {
+	var res GetCredentialsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

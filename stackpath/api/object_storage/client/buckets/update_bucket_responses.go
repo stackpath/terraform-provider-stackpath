@@ -6,14 +6,16 @@ package buckets
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // UpdateBucketReader is a Reader for the UpdateBucket structure.
@@ -30,18 +32,6 @@ func (o *UpdateBucketReader) ReadResponse(response runtime.ClientResponse, consu
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewUpdateBucketUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewUpdateBucketInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewUpdateBucketDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,86 +54,20 @@ func NewUpdateBucketOK() *UpdateBucketOK {
 UpdateBucketOK update bucket o k
 */
 type UpdateBucketOK struct {
-	Payload *models.UpdateBucketOKBody
+	Payload *UpdateBucketOKBody
 }
 
 func (o *UpdateBucketOK) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketOK  %+v", 200, o.Payload)
 }
 
-func (o *UpdateBucketOK) GetPayload() *models.UpdateBucketOKBody {
+func (o *UpdateBucketOK) GetPayload() *UpdateBucketOKBody {
 	return o.Payload
 }
 
 func (o *UpdateBucketOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.UpdateBucketOKBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewUpdateBucketUnauthorized creates a UpdateBucketUnauthorized with default headers values
-func NewUpdateBucketUnauthorized() *UpdateBucketUnauthorized {
-	return &UpdateBucketUnauthorized{}
-}
-
-/*UpdateBucketUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type UpdateBucketUnauthorized struct {
-	Payload *models.UpdateBucketUnauthorizedBody
-}
-
-func (o *UpdateBucketUnauthorized) Error() string {
-	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *UpdateBucketUnauthorized) GetPayload() *models.UpdateBucketUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *UpdateBucketUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.UpdateBucketUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewUpdateBucketInternalServerError creates a UpdateBucketInternalServerError with default headers values
-func NewUpdateBucketInternalServerError() *UpdateBucketInternalServerError {
-	return &UpdateBucketInternalServerError{}
-}
-
-/*UpdateBucketInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type UpdateBucketInternalServerError struct {
-	Payload *models.UpdateBucketInternalServerErrorBody
-}
-
-func (o *UpdateBucketInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *UpdateBucketInternalServerError) GetPayload() *models.UpdateBucketInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *UpdateBucketInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.UpdateBucketInternalServerErrorBody)
+	o.Payload = new(UpdateBucketOKBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -167,7 +91,7 @@ Default error structure.
 type UpdateBucketDefault struct {
 	_statusCode int
 
-	Payload *models.UpdateBucketDefaultBody
+	Payload *UpdateBucketDefaultBody
 }
 
 // Code gets the status code for the update bucket default response
@@ -179,18 +103,338 @@ func (o *UpdateBucketDefault) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] UpdateBucket default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *UpdateBucketDefault) GetPayload() *models.UpdateBucketDefaultBody {
+func (o *UpdateBucketDefault) GetPayload() *UpdateBucketDefaultBody {
 	return o.Payload
 }
 
 func (o *UpdateBucketDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.UpdateBucketDefaultBody)
+	o.Payload = new(UpdateBucketDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*UpdateBucketBody update bucket body
+swagger:model UpdateBucketBody
+*/
+type UpdateBucketBody struct {
+
+	// - PRIVATE: The bucket is private and only accessibly with credentials
+	//  - PUBLIC: The bucket is public and accessible over the internet
+	// Enum: [PRIVATE PUBLIC]
+	Visibility *string `json:"visibility,omitempty"`
+}
+
+// Validate validates this update bucket body
+func (o *UpdateBucketBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateVisibility(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var updateBucketBodyTypeVisibilityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["PRIVATE","PUBLIC"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		updateBucketBodyTypeVisibilityPropEnum = append(updateBucketBodyTypeVisibilityPropEnum, v)
+	}
+}
+
+const (
+
+	// UpdateBucketBodyVisibilityPRIVATE captures enum value "PRIVATE"
+	UpdateBucketBodyVisibilityPRIVATE string = "PRIVATE"
+
+	// UpdateBucketBodyVisibilityPUBLIC captures enum value "PUBLIC"
+	UpdateBucketBodyVisibilityPUBLIC string = "PUBLIC"
+)
+
+// prop value enum
+func (o *UpdateBucketBody) validateVisibilityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, updateBucketBodyTypeVisibilityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *UpdateBucketBody) validateVisibility(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Visibility) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := o.validateVisibilityEnum("body"+"."+"visibility", "body", *o.Visibility); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateBucketBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateBucketBody) UnmarshalBinary(b []byte) error {
+	var res UpdateBucketBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*UpdateBucketDefaultBody update bucket default body
+swagger:model UpdateBucketDefaultBody
+*/
+type UpdateBucketDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update bucket default body
+func (o *UpdateBucketDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateBucketDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateBucketDefaultBody) UnmarshalBinary(b []byte) error {
+	var res UpdateBucketDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*UpdateBucketOKBody A response of the updated bucket
+swagger:model UpdateBucketOKBody
+*/
+type UpdateBucketOKBody struct {
+
+	// bucket
+	Bucket *UpdateBucketOKBodyBucket `json:"bucket,omitempty"`
+}
+
+// Validate validates this update bucket o k body
+func (o *UpdateBucketOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateBucket(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateBucketOKBody) validateBucket(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Bucket) { // not required
+		return nil
+	}
+
+	if o.Bucket != nil {
+		if err := o.Bucket.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("updateBucketOK" + "." + "bucket")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateBucketOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateBucketOKBody) UnmarshalBinary(b []byte) error {
+	var res UpdateBucketOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*UpdateBucketOKBodyBucket update bucket o k body bucket
+swagger:model UpdateBucketOKBodyBucket
+*/
+type UpdateBucketOKBodyBucket struct {
+
+	// The date when the bucket was created
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+
+	// The URL used to access the bucket
+	EndpointURL string `json:"endpointUrl,omitempty"`
+
+	// The ID for the bucket
+	ID string `json:"id,omitempty"`
+
+	// The name of the bucket
+	Label string `json:"label,omitempty"`
+
+	// The region in which the bucket is created. Available regions are: us-east-1, us-west-1, eu-central-1
+	Region string `json:"region,omitempty"`
+
+	// The date when the bucket was last updated
+	// Format: date-time
+	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
+
+	// - PRIVATE: The bucket is private and only accessibly with credentials
+	//  - PUBLIC: The bucket is public and accessible over the internet
+	// Enum: [PRIVATE PUBLIC]
+	Visibility *string `json:"visibility,omitempty"`
+}
+
+// Validate validates this update bucket o k body bucket
+func (o *UpdateBucketOKBodyBucket) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateUpdatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVisibility(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UpdateBucketOKBodyBucket) validateCreatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updateBucketOK"+"."+"bucket"+"."+"createdAt", "body", "date-time", o.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *UpdateBucketOKBodyBucket) validateUpdatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.UpdatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updateBucketOK"+"."+"bucket"+"."+"updatedAt", "body", "date-time", o.UpdatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var updateBucketOKBodyBucketTypeVisibilityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["PRIVATE","PUBLIC"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		updateBucketOKBodyBucketTypeVisibilityPropEnum = append(updateBucketOKBodyBucketTypeVisibilityPropEnum, v)
+	}
+}
+
+const (
+
+	// UpdateBucketOKBodyBucketVisibilityPRIVATE captures enum value "PRIVATE"
+	UpdateBucketOKBodyBucketVisibilityPRIVATE string = "PRIVATE"
+
+	// UpdateBucketOKBodyBucketVisibilityPUBLIC captures enum value "PUBLIC"
+	UpdateBucketOKBodyBucketVisibilityPUBLIC string = "PUBLIC"
+)
+
+// prop value enum
+func (o *UpdateBucketOKBodyBucket) validateVisibilityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, updateBucketOKBodyBucketTypeVisibilityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *UpdateBucketOKBodyBucket) validateVisibility(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Visibility) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := o.validateVisibilityEnum("updateBucketOK"+"."+"bucket"+"."+"visibility", "body", *o.Visibility); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateBucketOKBodyBucket) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateBucketOKBodyBucket) UnmarshalBinary(b []byte) error {
+	var res UpdateBucketOKBodyBucket
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

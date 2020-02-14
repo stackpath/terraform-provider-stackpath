@@ -15,8 +15,6 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // NewUpdateBucketParams creates a new UpdateBucketParams object
@@ -64,7 +62,7 @@ for the update bucket operation typically these are written to a http.Request
 type UpdateBucketParams struct {
 
 	/*Body*/
-	Body *models.UpdateBucketParamsBody
+	Body UpdateBucketBody
 	/*BucketID
 	  The ID for the bucket to update
 
@@ -115,13 +113,13 @@ func (o *UpdateBucketParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the update bucket params
-func (o *UpdateBucketParams) WithBody(body *models.UpdateBucketParamsBody) *UpdateBucketParams {
+func (o *UpdateBucketParams) WithBody(body UpdateBucketBody) *UpdateBucketParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the update bucket params
-func (o *UpdateBucketParams) SetBody(body *models.UpdateBucketParamsBody) {
+func (o *UpdateBucketParams) SetBody(body UpdateBucketBody) {
 	o.Body = body
 }
 
@@ -155,10 +153,8 @@ func (o *UpdateBucketParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 	}
 	var res []error
 
-	if o.Body != nil {
-		if err := r.SetBodyParam(o.Body); err != nil {
-			return err
-		}
+	if err := r.SetBodyParam(o.Body); err != nil {
+		return err
 	}
 
 	// path param bucket_id

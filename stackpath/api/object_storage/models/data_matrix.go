@@ -18,7 +18,7 @@ import (
 type DataMatrix struct {
 
 	// A data point's value
-	Results []*DataMatrixResultsItems `json:"results"`
+	Results []*DataMatrixResultsItems0 `json:"results"`
 }
 
 // Validate validates this data matrix
@@ -71,6 +71,108 @@ func (m *DataMatrix) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *DataMatrix) UnmarshalBinary(b []byte) error {
 	var res DataMatrix
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// DataMatrixResultsItems0 Time series containing a range of data points over time for each time series
+// swagger:model DataMatrixResultsItems0
+type DataMatrixResultsItems0 struct {
+
+	// The data points' labels
+	Metric map[string]string `json:"metric,omitempty"`
+
+	// Time series data point values
+	Values []*DataMatrixResultsItems0ValuesItems0 `json:"values"`
+}
+
+// Validate validates this data matrix results items0
+func (m *DataMatrixResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateValues(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *DataMatrixResultsItems0) validateValues(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Values) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Values); i++ {
+		if swag.IsZero(m.Values[i]) { // not required
+			continue
+		}
+
+		if m.Values[i] != nil {
+			if err := m.Values[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("values" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *DataMatrixResultsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *DataMatrixResultsItems0) UnmarshalBinary(b []byte) error {
+	var res DataMatrixResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// DataMatrixResultsItems0ValuesItems0 An individual metric data point
+// swagger:model DataMatrixResultsItems0ValuesItems0
+type DataMatrixResultsItems0ValuesItems0 struct {
+
+	// The time that a data point was recorded
+	UnixTime string `json:"unixTime,omitempty"`
+
+	// A data point's value
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this data matrix results items0 values items0
+func (m *DataMatrixResultsItems0ValuesItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *DataMatrixResultsItems0ValuesItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *DataMatrixResultsItems0ValuesItems0) UnmarshalBinary(b []byte) error {
+	var res DataMatrixResultsItems0ValuesItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

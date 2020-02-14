@@ -20,11 +20,11 @@ type StorageBucketVisibility string
 
 const (
 
-// StorageBucketVisibilityPRIVATE captures enum value "PRIVATE"
-// StorageBucketVisibilityPRIVATE StorageBucketVisibility = "PRIVATE"
+	// StorageBucketVisibilityPRIVATE captures enum value "PRIVATE"
+	StorageBucketVisibilityPRIVATE StorageBucketVisibility = "PRIVATE"
 
-// StorageBucketVisibilityPUBLIC captures enum value "PUBLIC"
-// StorageBucketVisibilityPUBLIC StorageBucketVisibility = "PUBLIC"
+	// StorageBucketVisibilityPUBLIC captures enum value "PUBLIC"
+	StorageBucketVisibilityPUBLIC StorageBucketVisibility = "PUBLIC"
 )
 
 // for schema

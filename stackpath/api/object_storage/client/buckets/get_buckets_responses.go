@@ -6,14 +6,17 @@ package buckets
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // GetBucketsReader is a Reader for the GetBuckets structure.
@@ -30,18 +33,6 @@ func (o *GetBucketsReader) ReadResponse(response runtime.ClientResponse, consume
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewGetBucketsUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewGetBucketsInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewGetBucketsDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,86 +55,20 @@ func NewGetBucketsOK() *GetBucketsOK {
 GetBucketsOK get buckets o k
 */
 type GetBucketsOK struct {
-	Payload *models.GetBucketsOKBody
+	Payload *GetBucketsOKBody
 }
 
 func (o *GetBucketsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets][%d] getBucketsOK  %+v", 200, o.Payload)
 }
 
-func (o *GetBucketsOK) GetPayload() *models.GetBucketsOKBody {
+func (o *GetBucketsOK) GetPayload() *GetBucketsOKBody {
 	return o.Payload
 }
 
 func (o *GetBucketsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetBucketsOKBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetBucketsUnauthorized creates a GetBucketsUnauthorized with default headers values
-func NewGetBucketsUnauthorized() *GetBucketsUnauthorized {
-	return &GetBucketsUnauthorized{}
-}
-
-/*GetBucketsUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type GetBucketsUnauthorized struct {
-	Payload *models.GetBucketsUnauthorizedBody
-}
-
-func (o *GetBucketsUnauthorized) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets][%d] getBucketsUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *GetBucketsUnauthorized) GetPayload() *models.GetBucketsUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *GetBucketsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetBucketsUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetBucketsInternalServerError creates a GetBucketsInternalServerError with default headers values
-func NewGetBucketsInternalServerError() *GetBucketsInternalServerError {
-	return &GetBucketsInternalServerError{}
-}
-
-/*GetBucketsInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type GetBucketsInternalServerError struct {
-	Payload *models.GetBucketsInternalServerErrorBody
-}
-
-func (o *GetBucketsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets][%d] getBucketsInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *GetBucketsInternalServerError) GetPayload() *models.GetBucketsInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *GetBucketsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetBucketsInternalServerErrorBody)
+	o.Payload = new(GetBucketsOKBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -167,7 +92,7 @@ Default error structure.
 type GetBucketsDefault struct {
 	_statusCode int
 
-	Payload *models.GetBucketsDefaultBody
+	Payload *GetBucketsDefaultBody
 }
 
 // Code gets the status code for the get buckets default response
@@ -179,18 +104,330 @@ func (o *GetBucketsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets][%d] GetBuckets default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *GetBucketsDefault) GetPayload() *models.GetBucketsDefaultBody {
+func (o *GetBucketsDefault) GetPayload() *GetBucketsDefaultBody {
 	return o.Payload
 }
 
 func (o *GetBucketsDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetBucketsDefaultBody)
+	o.Payload = new(GetBucketsDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*GetBucketsDefaultBody get buckets default body
+swagger:model GetBucketsDefaultBody
+*/
+type GetBucketsDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this get buckets default body
+func (o *GetBucketsDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetBucketsDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetBucketsDefaultBody) UnmarshalBinary(b []byte) error {
+	var res GetBucketsDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetBucketsOKBody The buckets for the given stack
+swagger:model GetBucketsOKBody
+*/
+type GetBucketsOKBody struct {
+
+	// page info
+	PageInfo *GetBucketsOKBodyPageInfo `json:"pageInfo,omitempty"`
+
+	// The requested buckets
+	Results []*ResultsItems0 `json:"results"`
+}
+
+// Validate validates this get buckets o k body
+func (o *GetBucketsOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validatePageInfo(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateResults(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetBucketsOKBody) validatePageInfo(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.PageInfo) { // not required
+		return nil
+	}
+
+	if o.PageInfo != nil {
+		if err := o.PageInfo.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getBucketsOK" + "." + "pageInfo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetBucketsOKBody) validateResults(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Results) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Results); i++ {
+		if swag.IsZero(o.Results[i]) { // not required
+			continue
+		}
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getBucketsOK" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetBucketsOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetBucketsOKBody) UnmarshalBinary(b []byte) error {
+	var res GetBucketsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetBucketsOKBodyPageInfo Information about a paginated response
+//
+// This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.
+swagger:model GetBucketsOKBodyPageInfo
+*/
+type GetBucketsOKBodyPageInfo struct {
+
+	// The cursor for the last item in the set of data returned
+	EndCursor string `json:"endCursor,omitempty"`
+
+	// Whether or not another page of data is available
+	HasNextPage bool `json:"hasNextPage,omitempty"`
+
+	// Whether or not a previous page of data exists
+	HasPreviousPage bool `json:"hasPreviousPage,omitempty"`
+
+	// The cursor for the first item in the set of data returned
+	StartCursor string `json:"startCursor,omitempty"`
+
+	// The total number of items in the dataset
+	TotalCount string `json:"totalCount,omitempty"`
+}
+
+// Validate validates this get buckets o k body page info
+func (o *GetBucketsOKBodyPageInfo) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetBucketsOKBodyPageInfo) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetBucketsOKBodyPageInfo) UnmarshalBinary(b []byte) error {
+	var res GetBucketsOKBodyPageInfo
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*ResultsItems0 results items0
+swagger:model ResultsItems0
+*/
+type ResultsItems0 struct {
+
+	// The date when the bucket was created
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+
+	// The URL used to access the bucket
+	EndpointURL string `json:"endpointUrl,omitempty"`
+
+	// The ID for the bucket
+	ID string `json:"id,omitempty"`
+
+	// The name of the bucket
+	Label string `json:"label,omitempty"`
+
+	// The region in which the bucket is created. Available regions are: us-east-1, us-west-1, eu-central-1
+	Region string `json:"region,omitempty"`
+
+	// The date when the bucket was last updated
+	// Format: date-time
+	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
+
+	// - PRIVATE: The bucket is private and only accessibly with credentials
+	//  - PUBLIC: The bucket is public and accessible over the internet
+	// Enum: [PRIVATE PUBLIC]
+	Visibility *string `json:"visibility,omitempty"`
+}
+
+// Validate validates this results items0
+func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateUpdatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVisibility(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ResultsItems0) validateCreatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("createdAt", "body", "date-time", o.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *ResultsItems0) validateUpdatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.UpdatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updatedAt", "body", "date-time", o.UpdatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var resultsItems0TypeVisibilityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["PRIVATE","PUBLIC"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		resultsItems0TypeVisibilityPropEnum = append(resultsItems0TypeVisibilityPropEnum, v)
+	}
+}
+
+const (
+
+	// ResultsItems0VisibilityPRIVATE captures enum value "PRIVATE"
+	ResultsItems0VisibilityPRIVATE string = "PRIVATE"
+
+	// ResultsItems0VisibilityPUBLIC captures enum value "PUBLIC"
+	ResultsItems0VisibilityPUBLIC string = "PUBLIC"
+)
+
+// prop value enum
+func (o *ResultsItems0) validateVisibilityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, resultsItems0TypeVisibilityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *ResultsItems0) validateVisibility(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Visibility) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := o.validateVisibilityEnum("visibility", "body", *o.Visibility); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ResultsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ResultsItems0) UnmarshalBinary(b []byte) error {
+	var res ResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"encoding/json"
-
 	"github.com/go-openapi/errors"
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -38,10 +36,8 @@ type StorageBucket struct {
 	// Format: date-time
 	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
 
-	// - PRIVATE: The bucket is private and only accessibly with credentials
-	//  - PUBLIC: The bucket is public and accessible over the internet
-	// Enum: [PRIVATE PUBLIC]
-	Visibility *string `json:"visibility,omitempty"`
+	// visibility
+	Visibility StorageBucketVisibility `json:"visibility,omitempty"`
 }
 
 // Validate validates this storage bucket
@@ -92,43 +88,16 @@ func (m *StorageBucket) validateUpdatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-var storageBucketTypeVisibilityPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["PRIVATE","PUBLIC"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		storageBucketTypeVisibilityPropEnum = append(storageBucketTypeVisibilityPropEnum, v)
-	}
-}
-
-const (
-
-	// StorageBucketVisibilityPRIVATE captures enum value "PRIVATE"
-	StorageBucketVisibilityPRIVATE string = "PRIVATE"
-
-	// StorageBucketVisibilityPUBLIC captures enum value "PUBLIC"
-	StorageBucketVisibilityPUBLIC string = "PUBLIC"
-)
-
-// prop value enum
-func (m *StorageBucket) validateVisibilityEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, storageBucketTypeVisibilityPropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *StorageBucket) validateVisibility(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Visibility) { // not required
 		return nil
 	}
 
-	// value enum
-	if err := m.validateVisibilityEnum("visibility", "body", *m.Visibility); err != nil {
+	if err := m.Visibility.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("visibility")
+		}
 		return err
 	}
 

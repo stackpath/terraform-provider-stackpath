@@ -71,3 +71,37 @@ func (m *DataVectorResult) UnmarshalBinary(b []byte) error {
 	*m = res
 	return nil
 }
+
+// DataVectorResultValue An individual metric data point
+// swagger:model DataVectorResultValue
+type DataVectorResultValue struct {
+
+	// The time that a data point was recorded
+	UnixTime string `json:"unixTime,omitempty"`
+
+	// A data point's value
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this data vector result value
+func (m *DataVectorResultValue) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *DataVectorResultValue) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *DataVectorResultValue) UnmarshalBinary(b []byte) error {
+	var res DataVectorResultValue
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}

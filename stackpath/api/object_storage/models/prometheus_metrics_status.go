@@ -19,11 +19,11 @@ type PrometheusMetricsStatus string
 
 const (
 
-// PrometheusMetricsStatusSUCCESS captures enum value "SUCCESS"
-// PrometheusMetricsStatusSUCCESS PrometheusMetricsStatus = "SUCCESS"
+	// PrometheusMetricsStatusSUCCESS captures enum value "SUCCESS"
+	PrometheusMetricsStatusSUCCESS PrometheusMetricsStatus = "SUCCESS"
 
-// PrometheusMetricsStatusERROR captures enum value "ERROR"
-// PrometheusMetricsStatusERROR PrometheusMetricsStatus = "ERROR"
+	// PrometheusMetricsStatusERROR captures enum value "ERROR"
+	PrometheusMetricsStatusERROR PrometheusMetricsStatus = "ERROR"
 )
 
 // for schema

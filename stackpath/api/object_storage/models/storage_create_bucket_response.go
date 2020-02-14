@@ -6,9 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	"github.com/go-openapi/errors"
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // StorageCreateBucketResponse The bucket created
@@ -62,6 +65,145 @@ func (m *StorageCreateBucketResponse) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *StorageCreateBucketResponse) UnmarshalBinary(b []byte) error {
 	var res StorageCreateBucketResponse
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// StorageCreateBucketResponseBucket storage create bucket response bucket
+// swagger:model StorageCreateBucketResponseBucket
+type StorageCreateBucketResponseBucket struct {
+
+	// The date when the bucket was created
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+
+	// The URL used to access the bucket
+	EndpointURL string `json:"endpointUrl,omitempty"`
+
+	// The ID for the bucket
+	ID string `json:"id,omitempty"`
+
+	// The name of the bucket
+	Label string `json:"label,omitempty"`
+
+	// The region in which the bucket is created. Available regions are: us-east-1, us-west-1, eu-central-1
+	Region string `json:"region,omitempty"`
+
+	// The date when the bucket was last updated
+	// Format: date-time
+	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
+
+	// - PRIVATE: The bucket is private and only accessibly with credentials
+	//  - PUBLIC: The bucket is public and accessible over the internet
+	// Enum: [PRIVATE PUBLIC]
+	Visibility *string `json:"visibility,omitempty"`
+}
+
+// Validate validates this storage create bucket response bucket
+func (m *StorageCreateBucketResponseBucket) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUpdatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVisibility(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StorageCreateBucketResponseBucket) validateCreatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("bucket"+"."+"createdAt", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *StorageCreateBucketResponseBucket) validateUpdatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.UpdatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("bucket"+"."+"updatedAt", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var storageCreateBucketResponseBucketTypeVisibilityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["PRIVATE","PUBLIC"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		storageCreateBucketResponseBucketTypeVisibilityPropEnum = append(storageCreateBucketResponseBucketTypeVisibilityPropEnum, v)
+	}
+}
+
+const (
+
+	// StorageCreateBucketResponseBucketVisibilityPRIVATE captures enum value "PRIVATE"
+	StorageCreateBucketResponseBucketVisibilityPRIVATE string = "PRIVATE"
+
+	// StorageCreateBucketResponseBucketVisibilityPUBLIC captures enum value "PUBLIC"
+	StorageCreateBucketResponseBucketVisibilityPUBLIC string = "PUBLIC"
+)
+
+// prop value enum
+func (m *StorageCreateBucketResponseBucket) validateVisibilityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, storageCreateBucketResponseBucketTypeVisibilityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *StorageCreateBucketResponseBucket) validateVisibility(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Visibility) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateVisibilityEnum("bucket"+"."+"visibility", "body", *m.Visibility); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *StorageCreateBucketResponseBucket) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *StorageCreateBucketResponseBucket) UnmarshalBinary(b []byte) error {
+	var res StorageCreateBucketResponseBucket
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

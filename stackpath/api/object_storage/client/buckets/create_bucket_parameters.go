@@ -15,8 +15,6 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // NewCreateBucketParams creates a new CreateBucketParams object
@@ -64,7 +62,7 @@ for the create bucket operation typically these are written to a http.Request
 type CreateBucketParams struct {
 
 	/*Body*/
-	Body *models.CreateBucketParamsBody
+	Body CreateBucketBody
 	/*StackID
 	  The ID for the stack on which the bucket will be created
 
@@ -110,13 +108,13 @@ func (o *CreateBucketParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the create bucket params
-func (o *CreateBucketParams) WithBody(body *models.CreateBucketParamsBody) *CreateBucketParams {
+func (o *CreateBucketParams) WithBody(body CreateBucketBody) *CreateBucketParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the create bucket params
-func (o *CreateBucketParams) SetBody(body *models.CreateBucketParamsBody) {
+func (o *CreateBucketParams) SetBody(body CreateBucketBody) {
 	o.Body = body
 }
 
@@ -139,10 +137,8 @@ func (o *CreateBucketParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 	}
 	var res []error
 
-	if o.Body != nil {
-		if err := r.SetBodyParam(o.Body); err != nil {
-			return err
-		}
+	if err := r.SetBodyParam(o.Body); err != nil {
+		return err
 	}
 
 	// path param stack_id

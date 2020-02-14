@@ -18,7 +18,7 @@ import (
 type DataVector struct {
 
 	// A data point's value
-	Results []*DataVectorResultsItems `json:"results"`
+	Results []*DataVectorResultsItems0 `json:"results"`
 }
 
 // Validate validates this data vector
@@ -71,6 +71,101 @@ func (m *DataVector) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *DataVector) UnmarshalBinary(b []byte) error {
 	var res DataVector
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// DataVectorResultsItems0 Time series containing a single sample for each time series, all sharing the same timestamp
+// swagger:model DataVectorResultsItems0
+type DataVectorResultsItems0 struct {
+
+	// The data points' labels
+	Metric map[string]string `json:"metric,omitempty"`
+
+	// value
+	Value *DataVectorResultsItems0Value `json:"value,omitempty"`
+}
+
+// Validate validates this data vector results items0
+func (m *DataVectorResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *DataVectorResultsItems0) validateValue(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Value) { // not required
+		return nil
+	}
+
+	if m.Value != nil {
+		if err := m.Value.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("value")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *DataVectorResultsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *DataVectorResultsItems0) UnmarshalBinary(b []byte) error {
+	var res DataVectorResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// DataVectorResultsItems0Value An individual metric data point
+// swagger:model DataVectorResultsItems0Value
+type DataVectorResultsItems0Value struct {
+
+	// The time that a data point was recorded
+	UnixTime string `json:"unixTime,omitempty"`
+
+	// A data point's value
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this data vector results items0 value
+func (m *DataVectorResultsItems0Value) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *DataVectorResultsItems0Value) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *DataVectorResultsItems0Value) UnmarshalBinary(b []byte) error {
+	var res DataVectorResultsItems0Value
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // DeleteBucketReader is a Reader for the DeleteBucket structure.
@@ -30,18 +29,6 @@ func (o *DeleteBucketReader) ReadResponse(response runtime.ClientResponse, consu
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewDeleteBucketUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewDeleteBucketInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewDeleteBucketDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -75,72 +62,6 @@ func (o *DeleteBucketNoContent) readResponse(response runtime.ClientResponse, co
 	return nil
 }
 
-// NewDeleteBucketUnauthorized creates a DeleteBucketUnauthorized with default headers values
-func NewDeleteBucketUnauthorized() *DeleteBucketUnauthorized {
-	return &DeleteBucketUnauthorized{}
-}
-
-/*DeleteBucketUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type DeleteBucketUnauthorized struct {
-	Payload *models.DeleteBucketUnauthorizedBody
-}
-
-func (o *DeleteBucketUnauthorized) Error() string {
-	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] deleteBucketUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *DeleteBucketUnauthorized) GetPayload() *models.DeleteBucketUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *DeleteBucketUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.DeleteBucketUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewDeleteBucketInternalServerError creates a DeleteBucketInternalServerError with default headers values
-func NewDeleteBucketInternalServerError() *DeleteBucketInternalServerError {
-	return &DeleteBucketInternalServerError{}
-}
-
-/*DeleteBucketInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type DeleteBucketInternalServerError struct {
-	Payload *models.DeleteBucketInternalServerErrorBody
-}
-
-func (o *DeleteBucketInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] deleteBucketInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *DeleteBucketInternalServerError) GetPayload() *models.DeleteBucketInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *DeleteBucketInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.DeleteBucketInternalServerErrorBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
 // NewDeleteBucketDefault creates a DeleteBucketDefault with default headers values
 func NewDeleteBucketDefault(code int) *DeleteBucketDefault {
 	return &DeleteBucketDefault{
@@ -155,7 +76,7 @@ Default error structure.
 type DeleteBucketDefault struct {
 	_statusCode int
 
-	Payload *models.DeleteBucketDefaultBody
+	Payload *DeleteBucketDefaultBody
 }
 
 // Code gets the status code for the delete bucket default response
@@ -167,18 +88,53 @@ func (o *DeleteBucketDefault) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] DeleteBucket default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *DeleteBucketDefault) GetPayload() *models.DeleteBucketDefaultBody {
+func (o *DeleteBucketDefault) GetPayload() *DeleteBucketDefaultBody {
 	return o.Payload
 }
 
 func (o *DeleteBucketDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.DeleteBucketDefaultBody)
+	o.Payload = new(DeleteBucketDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*DeleteBucketDefaultBody delete bucket default body
+swagger:model DeleteBucketDefaultBody
+*/
+type DeleteBucketDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this delete bucket default body
+func (o *DeleteBucketDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeleteBucketDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeleteBucketDefaultBody) UnmarshalBinary(b []byte) error {
+	var res DeleteBucketDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

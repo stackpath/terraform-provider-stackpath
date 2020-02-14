@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // GenerateCredentialsReader is a Reader for the GenerateCredentials structure.
@@ -30,18 +29,6 @@ func (o *GenerateCredentialsReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewGenerateCredentialsUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewGenerateCredentialsInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewGenerateCredentialsDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,86 +51,20 @@ func NewGenerateCredentialsOK() *GenerateCredentialsOK {
 GenerateCredentialsOK generate credentials o k
 */
 type GenerateCredentialsOK struct {
-	Payload *models.GenerateCredentialsOKBody
+	Payload *GenerateCredentialsOKBody
 }
 
 func (o *GenerateCredentialsOK) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsOK  %+v", 200, o.Payload)
 }
 
-func (o *GenerateCredentialsOK) GetPayload() *models.GenerateCredentialsOKBody {
+func (o *GenerateCredentialsOK) GetPayload() *GenerateCredentialsOKBody {
 	return o.Payload
 }
 
 func (o *GenerateCredentialsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenerateCredentialsOKBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGenerateCredentialsUnauthorized creates a GenerateCredentialsUnauthorized with default headers values
-func NewGenerateCredentialsUnauthorized() *GenerateCredentialsUnauthorized {
-	return &GenerateCredentialsUnauthorized{}
-}
-
-/*GenerateCredentialsUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type GenerateCredentialsUnauthorized struct {
-	Payload *models.GenerateCredentialsUnauthorizedBody
-}
-
-func (o *GenerateCredentialsUnauthorized) Error() string {
-	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *GenerateCredentialsUnauthorized) GetPayload() *models.GenerateCredentialsUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *GenerateCredentialsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GenerateCredentialsUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGenerateCredentialsInternalServerError creates a GenerateCredentialsInternalServerError with default headers values
-func NewGenerateCredentialsInternalServerError() *GenerateCredentialsInternalServerError {
-	return &GenerateCredentialsInternalServerError{}
-}
-
-/*GenerateCredentialsInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type GenerateCredentialsInternalServerError struct {
-	Payload *models.GenerateCredentialsInternalServerErrorBody
-}
-
-func (o *GenerateCredentialsInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *GenerateCredentialsInternalServerError) GetPayload() *models.GenerateCredentialsInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *GenerateCredentialsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GenerateCredentialsInternalServerErrorBody)
+	o.Payload = new(GenerateCredentialsOKBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -167,7 +88,7 @@ Default error structure.
 type GenerateCredentialsDefault struct {
 	_statusCode int
 
-	Payload *models.GenerateCredentialsDefaultBody
+	Payload *GenerateCredentialsDefaultBody
 }
 
 // Code gets the status code for the generate credentials default response
@@ -179,18 +100,88 @@ func (o *GenerateCredentialsDefault) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] GenerateCredentials default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *GenerateCredentialsDefault) GetPayload() *models.GenerateCredentialsDefaultBody {
+func (o *GenerateCredentialsDefault) GetPayload() *GenerateCredentialsDefaultBody {
 	return o.Payload
 }
 
 func (o *GenerateCredentialsDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenerateCredentialsDefaultBody)
+	o.Payload = new(GenerateCredentialsDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*GenerateCredentialsDefaultBody generate credentials default body
+swagger:model GenerateCredentialsDefaultBody
+*/
+type GenerateCredentialsDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this generate credentials default body
+func (o *GenerateCredentialsDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GenerateCredentialsDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GenerateCredentialsDefaultBody) UnmarshalBinary(b []byte) error {
+	var res GenerateCredentialsDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GenerateCredentialsOKBody A response with new credentials
+swagger:model GenerateCredentialsOKBody
+*/
+type GenerateCredentialsOKBody struct {
+
+	// The ID for the access key
+	AccessKey string `json:"accessKey,omitempty"`
+
+	// The secret key used to sign requests
+	SecretKey string `json:"secretKey,omitempty"`
+}
+
+// Validate validates this generate credentials o k body
+func (o *GenerateCredentialsOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GenerateCredentialsOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GenerateCredentialsOKBody) UnmarshalBinary(b []byte) error {
+	var res GenerateCredentialsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

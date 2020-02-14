@@ -6,14 +6,17 @@ package metrics
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/models"
 )
 
 // GetStackMetricsReader is a Reader for the GetStackMetrics structure.
@@ -30,18 +33,6 @@ func (o *GetStackMetricsReader) ReadResponse(response runtime.ClientResponse, co
 			return nil, err
 		}
 		return result, nil
-	case 401:
-		result := NewGetStackMetricsUnauthorized()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
-	case 500:
-		result := NewGetStackMetricsInternalServerError()
-		if err := result.readResponse(response, consumer, o.formats); err != nil {
-			return nil, err
-		}
-		return nil, result
 	default:
 		result := NewGetStackMetricsDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,86 +55,20 @@ func NewGetStackMetricsOK() *GetStackMetricsOK {
 GetStackMetricsOK get stack metrics o k
 */
 type GetStackMetricsOK struct {
-	Payload *models.GetStackMetricsOKBody
+	Payload *GetStackMetricsOKBody
 }
 
 func (o *GetStackMetricsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsOK  %+v", 200, o.Payload)
 }
 
-func (o *GetStackMetricsOK) GetPayload() *models.GetStackMetricsOKBody {
+func (o *GetStackMetricsOK) GetPayload() *GetStackMetricsOKBody {
 	return o.Payload
 }
 
 func (o *GetStackMetricsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetStackMetricsOKBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetStackMetricsUnauthorized creates a GetStackMetricsUnauthorized with default headers values
-func NewGetStackMetricsUnauthorized() *GetStackMetricsUnauthorized {
-	return &GetStackMetricsUnauthorized{}
-}
-
-/*GetStackMetricsUnauthorized handles this case with default header values.
-
-Returned when an unauthorized request is attempted.
-*/
-type GetStackMetricsUnauthorized struct {
-	Payload *models.GetStackMetricsUnauthorizedBody
-}
-
-func (o *GetStackMetricsUnauthorized) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsUnauthorized  %+v", 401, o.Payload)
-}
-
-func (o *GetStackMetricsUnauthorized) GetPayload() *models.GetStackMetricsUnauthorizedBody {
-	return o.Payload
-}
-
-func (o *GetStackMetricsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetStackMetricsUnauthorizedBody)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
-
-	return nil
-}
-
-// NewGetStackMetricsInternalServerError creates a GetStackMetricsInternalServerError with default headers values
-func NewGetStackMetricsInternalServerError() *GetStackMetricsInternalServerError {
-	return &GetStackMetricsInternalServerError{}
-}
-
-/*GetStackMetricsInternalServerError handles this case with default header values.
-
-Internal server error.
-*/
-type GetStackMetricsInternalServerError struct {
-	Payload *models.GetStackMetricsInternalServerErrorBody
-}
-
-func (o *GetStackMetricsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsInternalServerError  %+v", 500, o.Payload)
-}
-
-func (o *GetStackMetricsInternalServerError) GetPayload() *models.GetStackMetricsInternalServerErrorBody {
-	return o.Payload
-}
-
-func (o *GetStackMetricsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.GetStackMetricsInternalServerErrorBody)
+	o.Payload = new(GetStackMetricsOKBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -167,7 +92,7 @@ Default error structure.
 type GetStackMetricsDefault struct {
 	_statusCode int
 
-	Payload *models.GetStackMetricsDefaultBody
+	Payload *GetStackMetricsDefaultBody
 }
 
 // Code gets the status code for the get stack metrics default response
@@ -179,18 +104,589 @@ func (o *GetStackMetricsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] GetStackMetrics default  %+v", o._statusCode, o.Payload)
 }
 
-func (o *GetStackMetricsDefault) GetPayload() *models.GetStackMetricsDefaultBody {
+func (o *GetStackMetricsDefault) GetPayload() *GetStackMetricsDefaultBody {
 	return o.Payload
 }
 
 func (o *GetStackMetricsDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GetStackMetricsDefaultBody)
+	o.Payload = new(GetStackMetricsDefaultBody)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
+	return nil
+}
+
+/*GetStackMetricsDefaultBody get stack metrics default body
+swagger:model GetStackMetricsDefaultBody
+*/
+type GetStackMetricsDefaultBody struct {
+
+	// code
+	Code int32 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this get stack metrics default body
+func (o *GetStackMetricsDefaultBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsDefaultBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsDefaultBody) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsDefaultBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBody A collection of metrics
+swagger:model GetStackMetricsOKBody
+*/
+type GetStackMetricsOKBody struct {
+
+	// data
+	Data *GetStackMetricsOKBodyData `json:"data,omitempty"`
+
+	// The error encountered when querying for metrics
+	Error string `json:"error,omitempty"`
+
+	// The type of error encountered when querying for metrics
+	ErrorType string `json:"errorType,omitempty"`
+
+	// A metrics query's resulting status
+	// Enum: [SUCCESS ERROR]
+	Status *string `json:"status,omitempty"`
+
+	// Warnings encountered when querying for metrics
+	Warnings []string `json:"warnings"`
+}
+
+// Validate validates this get stack metrics o k body
+func (o *GetStackMetricsOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateData(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBody) validateData(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Data) { // not required
+		return nil
+	}
+
+	if o.Data != nil {
+		if err := o.Data.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getStackMetricsOK" + "." + "data")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+var getStackMetricsOKBodyTypeStatusPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["SUCCESS","ERROR"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		getStackMetricsOKBodyTypeStatusPropEnum = append(getStackMetricsOKBodyTypeStatusPropEnum, v)
+	}
+}
+
+const (
+
+	// GetStackMetricsOKBodyStatusSUCCESS captures enum value "SUCCESS"
+	GetStackMetricsOKBodyStatusSUCCESS string = "SUCCESS"
+
+	// GetStackMetricsOKBodyStatusERROR captures enum value "ERROR"
+	GetStackMetricsOKBodyStatusERROR string = "ERROR"
+)
+
+// prop value enum
+func (o *GetStackMetricsOKBody) validateStatusEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, getStackMetricsOKBodyTypeStatusPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBody) validateStatus(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Status) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := o.validateStatusEnum("getStackMetricsOK"+"."+"status", "body", *o.Status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBody) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyData The data points in a metrics collection
+swagger:model GetStackMetricsOKBodyData
+*/
+type GetStackMetricsOKBodyData struct {
+
+	// matrix
+	Matrix *GetStackMetricsOKBodyDataMatrix `json:"matrix,omitempty"`
+
+	// vector
+	Vector *GetStackMetricsOKBodyDataVector `json:"vector,omitempty"`
+}
+
+// Validate validates this get stack metrics o k body data
+func (o *GetStackMetricsOKBodyData) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateMatrix(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVector(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyData) validateMatrix(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Matrix) { // not required
+		return nil
+	}
+
+	if o.Matrix != nil {
+		if err := o.Matrix.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getStackMetricsOK" + "." + "data" + "." + "matrix")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyData) validateVector(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Vector) { // not required
+		return nil
+	}
+
+	if o.Vector != nil {
+		if err := o.Vector.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getStackMetricsOK" + "." + "data" + "." + "vector")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyData) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyData) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyData
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataMatrix A set of time series containing a range of data points over time for each time series
+swagger:model GetStackMetricsOKBodyDataMatrix
+*/
+type GetStackMetricsOKBodyDataMatrix struct {
+
+	// A data point's value
+	Results []*GetStackMetricsOKBodyDataMatrixResultsItems0 `json:"results"`
+}
+
+// Validate validates this get stack metrics o k body data matrix
+func (o *GetStackMetricsOKBodyDataMatrix) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateResults(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyDataMatrix) validateResults(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Results) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Results); i++ {
+		if swag.IsZero(o.Results[i]) { // not required
+			continue
+		}
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getStackMetricsOK" + "." + "data" + "." + "matrix" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrix) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrix) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataMatrix
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataMatrixResultsItems0 Time series containing a range of data points over time for each time series
+swagger:model GetStackMetricsOKBodyDataMatrixResultsItems0
+*/
+type GetStackMetricsOKBodyDataMatrixResultsItems0 struct {
+
+	// The data points' labels
+	Metric map[string]string `json:"metric,omitempty"`
+
+	// Time series data point values
+	Values []*GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0 `json:"values"`
+}
+
+// Validate validates this get stack metrics o k body data matrix results items0
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateValues(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0) validateValues(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Values) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Values); i++ {
+		if swag.IsZero(o.Values[i]) { // not required
+			continue
+		}
+
+		if o.Values[i] != nil {
+			if err := o.Values[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("values" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataMatrixResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0 An individual metric data point
+swagger:model GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0
+*/
+type GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0 struct {
+
+	// The time that a data point was recorded
+	UnixTime string `json:"unixTime,omitempty"`
+
+	// A data point's value
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this get stack metrics o k body data matrix results items0 values items0
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataMatrixResultsItems0ValuesItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataVector A set of time series containing a single sample for each time series, all sharing the same timestamp
+swagger:model GetStackMetricsOKBodyDataVector
+*/
+type GetStackMetricsOKBodyDataVector struct {
+
+	// A data point's value
+	Results []*GetStackMetricsOKBodyDataVectorResultsItems0 `json:"results"`
+}
+
+// Validate validates this get stack metrics o k body data vector
+func (o *GetStackMetricsOKBodyDataVector) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateResults(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyDataVector) validateResults(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Results) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Results); i++ {
+		if swag.IsZero(o.Results[i]) { // not required
+			continue
+		}
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getStackMetricsOK" + "." + "data" + "." + "vector" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVector) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVector) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataVector
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataVectorResultsItems0 Time series containing a single sample for each time series, all sharing the same timestamp
+swagger:model GetStackMetricsOKBodyDataVectorResultsItems0
+*/
+type GetStackMetricsOKBodyDataVectorResultsItems0 struct {
+
+	// The data points' labels
+	Metric map[string]string `json:"metric,omitempty"`
+
+	// value
+	Value *GetStackMetricsOKBodyDataVectorResultsItems0Value `json:"value,omitempty"`
+}
+
+// Validate validates this get stack metrics o k body data vector results items0
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0) validateValue(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Value) { // not required
+		return nil
+	}
+
+	if o.Value != nil {
+		if err := o.Value.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("value")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataVectorResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetStackMetricsOKBodyDataVectorResultsItems0Value An individual metric data point
+swagger:model GetStackMetricsOKBodyDataVectorResultsItems0Value
+*/
+type GetStackMetricsOKBodyDataVectorResultsItems0Value struct {
+
+	// The time that a data point was recorded
+	UnixTime string `json:"unixTime,omitempty"`
+
+	// A data point's value
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this get stack metrics o k body data vector results items0 value
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0Value) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0Value) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetStackMetricsOKBodyDataVectorResultsItems0Value) UnmarshalBinary(b []byte) error {
+	var res GetStackMetricsOKBodyDataVectorResultsItems0Value
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }
