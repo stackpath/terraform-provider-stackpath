@@ -14,6 +14,10 @@ import (
 // V1InstancePort A network port to be opened to the Internet on an instance of a workload
 // swagger:model v1InstancePort
 type V1InstancePort struct {
+	// Allow the internet to connect to the port
+	//
+	// When true, this port will be given an implicit network policy of priority 65534 permitting 0.0.0.0/0 access to the port. This can be overridden by creating network policies of a higher priority to block the port.
+	EnableImplicitNetworkPolicy bool `json:"enableImplicitNetworkPolicy,omitempty"`
 
 	// The network port to listen on
 	Port int32 `json:"port,omitempty"`

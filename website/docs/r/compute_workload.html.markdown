@@ -150,6 +150,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 * `name` - (Required) The network port's name.
 * `port` - (Required) The network port's number.
 * `protocol` - (Optional) The network port's protocol, either "tcp" or "udp". Defaults to "tcp".
+* `enable_implicit_network_policy` - (Optional) Whether or not the network port has access to the public Internet. Defaults to `false`. 
 
 ### Volume Claims
 

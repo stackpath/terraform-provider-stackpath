@@ -350,6 +350,11 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 					Type:     schema.TypeString,
 					Required: true,
 				},
+				"enable_implicit_network_policy": &schema.Schema{
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
 				"port": &schema.Schema{
 					Type:     schema.TypeInt,
 					Required: true,
