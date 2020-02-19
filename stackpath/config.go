@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform/helper/pathorcontents"
 	"github.com/hashicorp/terraform/httpclient"
 
+	object_storage "github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client"
 	"github.com/terraform-providers/terraform-provider-stackpath/version"
 
 	"golang.org/x/oauth2"
@@ -56,6 +57,7 @@ type Config struct {
 
 	edgeCompute           *workload_client.EdgeCompute
 	edgeComputeNetworking *ipam_client.EdgeComputeNetworking
+	objectStorage         *object_storage.ObjectStorage
 }
 
 // LoadAndValidate will load the configuration and validate the configuration
@@ -118,6 +120,7 @@ func (c *Config) LoadAndValidate() error {
 
 	c.edgeCompute = workload_client.New(runtime, nil)
 	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
+	c.objectStorage = object_storage.New(runtime, nil)
 
 	return nil
 }

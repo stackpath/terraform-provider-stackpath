@@ -44,6 +44,7 @@ func Provider() terraform.ResourceProvider {
 		ResourcesMap: map[string]*schema.Resource{
 			"stackpath_compute_workload":       resourceComputeWorkload(),
 			"stackpath_compute_network_policy": resourceComputeNetworkPolicy(),
+			"stackpath_object_storage_bucket":  resourceObjectStorageBucket(),
 		},
 		ConfigureFunc: configureProvider,
 	}
