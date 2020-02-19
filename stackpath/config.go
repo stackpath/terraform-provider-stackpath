@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform/helper/pathorcontents"
 	"github.com/hashicorp/terraform/httpclient"
 
+	object_storage "github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
 	"github.com/terraform-providers/terraform-provider-stackpath/version"
 
@@ -52,8 +53,9 @@ type Config struct {
 	userAgent   string
 	tokenSource oauth2.TokenSource
 
-	compute client.Compute
-	ipam    client.IPAM
+	compute       client.Compute
+	ipam          client.IPAM
+	objectStorage *object_storage.ObjectStorage
 }
 
 // LoadAndValidate will load the configuration and validate the configuration
@@ -116,6 +118,7 @@ func (c *Config) LoadAndValidate() error {
 
 	c.compute = client.NewCompute(runtime, nil)
 	c.ipam = client.NewIPAM(runtime, nil)
+	c.objectStorage = object_storage.New(runtime, nil)
 
 	return nil
 }
