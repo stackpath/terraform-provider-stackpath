@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 func resourceComputeNetworkPolicy() *schema.Resource {
@@ -356,10 +356,10 @@ func resourceComputeNetworkPolicyHostRuleSchema() *schema.Schema {
 
 func resourceComputeNetworkPolicyCreate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	resp, err := config.ipam.CreateNetworkPolicy(&client.CreateNetworkPolicyParams{
-		Context:              context.Background(),
-		NetworkPolicyStackID: config.StackID,
-		Body: &models.V1CreateNetworkPolicyRequest{
+	resp, err := config.edgeComputeNetworking.NetworkPolicies.CreateNetworkPolicy(&network_policies.CreateNetworkPolicyParams{
+		Context: context.Background(),
+		StackID: config.StackID,
+		Body: &ipam_models.V1CreateNetworkPolicyRequest{
 			NetworkPolicy: convertComputeNetworkPolicy(data),
 		},
 	}, nil)
@@ -374,7 +374,7 @@ func resourceComputeNetworkPolicyCreate(data *schema.ResourceData, meta interfac
 func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	resp, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
+	resp, err := config.edgeComputeNetworking.NetworkPolicies.GetNetworkPolicy(&network_policies.GetNetworkPolicyParams{
 		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),
 		Context:         context.Background(),
@@ -392,19 +392,19 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 	data.Set("slug", resp.Payload.NetworkPolicy.Slug)
 	data.Set("description", resp.Payload.NetworkPolicy.Description)
 
-	if err := data.Set("labels", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Labels)); err != nil {
+	if err := data.Set("labels", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.NetworkPolicy.Metadata.Labels))); err != nil {
 		return fmt.Errorf("Error setting labels: %v", err)
 	}
 
-	if err := data.Set("annotations", flattenStringMap(resp.Payload.NetworkPolicy.Metadata.Annotations)); err != nil {
+	if err := data.Set("annotations", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.NetworkPolicy.Metadata.Annotations))); err != nil {
 		return fmt.Errorf("Error setting annotations: %v", err)
 	}
 
-	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, resp.Payload.NetworkPolicy.Spec.InstanceSelectors)); err != nil {
+	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.InstanceSelectors))); err != nil {
 		return fmt.Errorf("Error setting instance_selector: %v", err)
 	}
 
-	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, resp.Payload.NetworkPolicy.Spec.NetworkSelectors)); err != nil {
+	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.NetworkSelectors))); err != nil {
 		return fmt.Errorf("Error setting network_selector: %v", err)
 	}
 
@@ -429,10 +429,10 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 	networkPolicy := convertComputeNetworkPolicy(data)
 	networkPolicy.ID = data.Id()
 
-	_, err := config.ipam.UpdateNetworkPolicy(&client.UpdateNetworkPolicyParams{
-		Context:              context.Background(),
-		NetworkPolicyStackID: config.StackID,
-		Body: &models.V1UpdateNetworkPolicyRequest{
+	_, err := config.edgeComputeNetworking.NetworkPolicies.UpdateNetworkPolicy(&network_policies.UpdateNetworkPolicyParams{
+		Context: context.Background(),
+		StackID: config.StackID,
+		Body: &ipam_models.V1UpdateNetworkPolicyRequest{
 			NetworkPolicy: networkPolicy,
 		},
 	}, nil)
@@ -450,7 +450,7 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 
 func resourceComputeNetworkPolicyDelete(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	_, err := config.ipam.DeleteNetworkPolicy(&client.DeleteNetworkPolicyParams{
+	_, err := config.edgeComputeNetworking.NetworkPolicies.DeleteNetworkPolicy(&network_policies.DeleteNetworkPolicyParams{
 		Context:         context.Background(),
 		StackID:         config.StackID,
 		NetworkPolicyID: data.Id(),

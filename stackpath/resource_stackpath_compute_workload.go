@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	workload "github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload
@@ -372,10 +373,10 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	// Create the workload
-	resp, err := config.compute.CreateWorkload(&workload.CreateWorkloadParams{
+	resp, err := config.edgeCompute.Workloads.CreateWorkload(&workloads.CreateWorkloadParams{
 		Context: context.Background(),
 		StackID: config.StackID,
-		Body: &models.V1CreateWorkloadRequest{
+		Body: &workload_models.V1CreateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
@@ -391,11 +392,11 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 
 func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	_, err := config.compute.UpdateWorkload(&workload.UpdateWorkloadParams{
+	_, err := config.edgeCompute.Workloads.UpdateWorkload(&workloads.UpdateWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
-		Body: &models.V1UpdateWorkloadRequest{
+		Body: &workload_models.V1UpdateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
@@ -413,7 +414,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	resp, err := config.compute.GetWorkload(&workload.GetWorkloadParams{
+	resp, err := config.edgeCompute.Workloads.GetWorkload(&workloads.GetWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
@@ -440,9 +441,9 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 	pageSize := "50"
 	// variable to keep track of our location through pagination
 	var endCursor string
-	var instances []interface{}
+	var terraformInstances []interface{}
 	for {
-		params := &client.GetWorkloadInstancesParams{
+		params := &instances.GetWorkloadInstancesParams{
 			StackID:          config.StackID,
 			WorkloadID:       data.Id(),
 			Context:          context.Background(),
@@ -451,12 +452,12 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		if endCursor != "" {
 			params.PageRequestAfter = &endCursor
 		}
-		resp, err := config.compute.GetWorkloadInstances(params, nil)
+		resp, err := config.edgeCompute.Instances.GetWorkloadInstances(params, nil)
 		if err != nil {
 			return fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err))
 		}
 		for _, result := range resp.Payload.Results {
-			instances = append(instances, flattenComputeWorkloadInstance(result))
+			terraformInstances = append(terraformInstances, flattenComputeWorkloadInstance(result))
 		}
 		// Continue paginating until we get all the results
 		if !resp.Payload.PageInfo.HasNextPage {
@@ -465,7 +466,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		endCursor = resp.Payload.PageInfo.EndCursor
 	}
 
-	if err := data.Set("instances", instances); err != nil {
+	if err := data.Set("instances", terraformInstances); err != nil {
 		return fmt.Errorf("Error setting instances: %v", err)
 	}
 
@@ -475,7 +476,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	_, err := config.compute.DeleteWorkload(&workload.DeleteWorkloadParams{
+	_, err := config.edgeCompute.Workloads.DeleteWorkload(&workloads.DeleteWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),

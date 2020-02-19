@@ -10,17 +10,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-
-	compute "github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 func TestComputeWorkloadContainers(t *testing.T) {
 	t.Parallel()
 
-	workload := &models.V1Workload{}
+	workload := &workload_models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	// By design, the StackPath API does not return image pull secrets to the
@@ -114,7 +114,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 	t.Parallel()
 
-	workload := &models.V1Workload{}
+	workload := &workload_models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -140,7 +140,7 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	t.Parallel()
 
-	workload := &models.V1Workload{}
+	workload := &workload_models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -172,7 +172,7 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 				continue
 			}
 
-			resp, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
+			resp, err := config.edgeCompute.Workloads.GetWorkload(&workloads.GetWorkloadParams{
 				StackID:    config.StackID,
 				WorkloadID: rs.Primary.ID,
 				Context:    context.Background(),
@@ -189,13 +189,13 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 	}
 }
 
-func testAccComputeWorkloadContainerVolumeMount(workload *models.V1Workload, containerName, volumeSlug, mountPath string) resource.TestCheckFunc {
+func testAccComputeWorkloadContainerVolumeMount(workload *workload_models.V1Workload, containerName, volumeSlug, mountPath string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		container, found := workload.Spec.Containers[containerName]
 		if !found {
 			return fmt.Errorf("container not found: %s", containerName)
 		}
-		var mount *models.V1InstanceVolumeMount
+		var mount *workload_models.V1InstanceVolumeMount
 		for _, v := range container.VolumeMounts {
 			if v.Slug == volumeSlug {
 				mount = v
@@ -211,9 +211,9 @@ func testAccComputeWorkloadContainerVolumeMount(workload *models.V1Workload, con
 	}
 }
 
-func testAccComputeWorkloadAdditionalVolume(workload *models.V1Workload, volumeName, size string) resource.TestCheckFunc {
+func testAccComputeWorkloadAdditionalVolume(workload *workload_models.V1Workload, volumeName, size string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
-		var volume *models.V1VolumeClaim
+		var volume *workload_models.V1VolumeClaim
 		for _, v := range workload.Spec.VolumeClaimTemplates {
 			if v.Name == volumeName {
 				volume = v
@@ -229,7 +229,7 @@ func testAccComputeWorkloadAdditionalVolume(workload *models.V1Workload, volumeN
 	}
 }
 
-func testAccComputeWorkloadCheckVirtualMachinePort(workload *models.V1Workload, vmName, portName, protocol string, portNum int32) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckVirtualMachinePort(workload *workload_models.V1Workload, vmName, portName, protocol string, portNum int32) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		if vm, found := workload.Spec.VirtualMachines[vmName]; !found {
 			return fmt.Errorf("virtual machine was not found: %s", vmName)
@@ -244,7 +244,7 @@ func testAccComputeWorkloadCheckVirtualMachinePort(workload *models.V1Workload, 
 	}
 }
 
-func testAccComputeWorkloadCheckVirtualMachineImage(workload *models.V1Workload, name, image string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckVirtualMachineImage(workload *workload_models.V1Workload, name, image string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		if vm, found := workload.Spec.VirtualMachines[name]; !found {
 			return fmt.Errorf("virtual machine was not found: %s", name)
@@ -255,7 +255,7 @@ func testAccComputeWorkloadCheckVirtualMachineImage(workload *models.V1Workload,
 	}
 }
 
-func testAccComputeWorkloadCheckNoImagePullCredentials(workload *models.V1Workload) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		if len(workload.Spec.ImagePullCredentials) != 0 {
 			return fmt.Errorf("unexpected image pull credentials set on the workload")
@@ -264,7 +264,7 @@ func testAccComputeWorkloadCheckNoImagePullCredentials(workload *models.V1Worklo
 	}
 }
 
-func testAccComputeWorkloadCheckImagePullCredentials(workload *models.V1Workload, server, username, email string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckImagePullCredentials(workload *workload_models.V1Workload, server, username, email string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		if len(workload.Spec.ImagePullCredentials) == 0 {
 			return fmt.Errorf("no image pull credentials set on the workload")
@@ -279,7 +279,7 @@ func testAccComputeWorkloadCheckImagePullCredentials(workload *models.V1Workload
 	}
 }
 
-func testAccComputeWorkloadCheckTarget(workload *models.V1Workload, targetName, scope, operator string, minReplicas int32, values ...string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckTarget(workload *workload_models.V1Workload, targetName, scope, operator string, minReplicas int32, values ...string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		sort.Strings(values)
 		if target, found := workload.Targets[targetName]; !found {
@@ -297,7 +297,7 @@ func testAccComputeWorkloadCheckTarget(workload *models.V1Workload, targetName, 
 	}
 }
 
-func testAccComputeWorkloadCheckContainerEnvVar(workload *models.V1Workload, containerName, envVar, value string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerEnvVar(workload *workload_models.V1Workload, containerName, envVar, value string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -311,7 +311,7 @@ func testAccComputeWorkloadCheckContainerEnvVar(workload *models.V1Workload, con
 	}
 }
 
-func testAccComputeWorkloadCheckContainerEnvVarNotExist(workload *models.V1Workload, containerName, envVar string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerEnvVarNotExist(workload *workload_models.V1Workload, containerName, envVar string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -323,7 +323,7 @@ func testAccComputeWorkloadCheckContainerEnvVarNotExist(workload *models.V1Workl
 	}
 }
 
-func testAccComputeWorkloadCheckContainerPort(workload *models.V1Workload, containerName, portName, protocol string, port int32, enableImplicitNetworkPolicy bool) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerPort(workload *workload_models.V1Workload, containerName, portName, protocol string, port int32, enableImplicitNetworkPolicy bool) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -341,7 +341,7 @@ func testAccComputeWorkloadCheckContainerPort(workload *models.V1Workload, conta
 	}
 }
 
-func testAccComputeWorkloadCheckContainerPortNotExist(workload *models.V1Workload, containerName, portName string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerPortNotExist(workload *workload_models.V1Workload, containerName, portName string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
 		if !found {
@@ -353,7 +353,7 @@ func testAccComputeWorkloadCheckContainerPortNotExist(workload *models.V1Workloa
 	}
 }
 
-func testAccComputeWorkloadCheckContainerImage(workload *models.V1Workload, containerName, image string) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckContainerImage(workload *workload_models.V1Workload, containerName, image string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		if containerSpec, found := workload.Spec.Containers[containerName]; !found {
 			return fmt.Errorf("container not found: %s", containerName)
@@ -364,7 +364,7 @@ func testAccComputeWorkloadCheckContainerImage(workload *models.V1Workload, cont
 	}
 }
 
-func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckExists(name string, workload *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -376,7 +376,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 		}
 
 		config := testAccProvider.Meta().(*Config)
-		found, err := config.compute.GetWorkload(&compute.GetWorkloadParams{
+		found, err := config.edgeCompute.Workloads.GetWorkload(&workloads.GetWorkloadParams{
 			WorkloadID: rs.Primary.ID,
 			StackID:    config.StackID,
 			Context:    context.Background(),
@@ -391,7 +391,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *models.V1Workload)
 	}
 }
 
-func testAccComputeWorkloadCheckTargetAutoScaling(workload *models.V1Workload, targetName, metric string, minReplicas, maxReplicas, averageUtilization int32) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckTargetAutoScaling(workload *workload_models.V1Workload, targetName, metric string, minReplicas, maxReplicas, averageUtilization int32) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		target, found := workload.Targets[targetName]
 		if !found {

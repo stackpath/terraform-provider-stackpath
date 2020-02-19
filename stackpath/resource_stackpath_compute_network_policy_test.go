@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
 func TestAccComputeNetworkPolicy(t *testing.T) {
 	t.Parallel()
 
-	networkPolicy := &models.V1NetworkPolicy{}
+	networkPolicy := &ipam_models.V1NetworkPolicy{}
 
 	resource.Test(t, resource.TestCase{
 		Providers: testAccProviders,
@@ -34,7 +34,7 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 	})
 }
 
-func testAccComputeCheckNetworkPolicyExists(name string, policy *models.V1NetworkPolicy) resource.TestCheckFunc {
+func testAccComputeCheckNetworkPolicyExists(name string, policy *ipam_models.V1NetworkPolicy) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -46,7 +46,7 @@ func testAccComputeCheckNetworkPolicyExists(name string, policy *models.V1Networ
 		}
 
 		config := testAccProvider.Meta().(*Config)
-		found, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
+		found, err := config.edgeComputeNetworking.NetworkPolicies.GetNetworkPolicy(&network_policies.GetNetworkPolicyParams{
 			NetworkPolicyID: rs.Primary.ID,
 			StackID:         config.StackID,
 			Context:         context.Background(),
@@ -70,7 +70,7 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 				continue
 			}
 
-			resp, err := config.ipam.GetNetworkPolicy(&client.GetNetworkPolicyParams{
+			resp, err := config.edgeComputeNetworking.NetworkPolicies.GetNetworkPolicy(&network_policies.GetNetworkPolicyParams{
 				StackID:         config.StackID,
 				NetworkPolicyID: rs.Primary.ID,
 				Context:         context.Background(),
@@ -78,7 +78,7 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 			// Since compute workloads are deleted asynchronously, we want to look at the fact that
 			// the deleteRequestedAt timestamp was set on the workload. This field is used to indicate
 			// that the workload is being deleted.
-			if err == nil && resp.Payload.NetworkPolicy.Metadata.DeleteRequestedAt == nil {
+			if err == nil && resp.Payload.NetworkPolicy.Metadata.DeleteRequestedAt == strfmt.NewDateTime() {
 				return fmt.Errorf("network policy still exists: %v", rs.Primary.ID)
 			}
 		}

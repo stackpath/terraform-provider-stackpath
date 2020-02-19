@@ -8,13 +8,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client"
+
 	httptransport "github.com/go-openapi/runtime/client"
 
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/pathorcontents"
 	"github.com/hashicorp/terraform/httpclient"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
 	"github.com/terraform-providers/terraform-provider-stackpath/version"
 
 	"golang.org/x/oauth2"
@@ -52,8 +54,8 @@ type Config struct {
 	userAgent   string
 	tokenSource oauth2.TokenSource
 
-	compute client.Compute
-	ipam    client.IPAM
+	edgeCompute           *workload_client.EdgeCompute
+	edgeComputeNetworking *ipam_client.EdgeComputeNetworking
 }
 
 // LoadAndValidate will load the configuration and validate the configuration
@@ -114,8 +116,8 @@ func (c *Config) LoadAndValidate() error {
 	// Create a new openAPI runtime
 	runtime := httptransport.NewWithClient(c.BaseURL, "/", []string{"https"}, c.client)
 
-	c.compute = client.NewCompute(runtime, nil)
-	c.ipam = client.NewIPAM(runtime, nil)
+	c.edgeCompute = workload_client.New(runtime, nil)
+	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
 
 	return nil
 }

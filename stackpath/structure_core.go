@@ -2,18 +2,19 @@ package stackpath
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
-func convertComputeMatchExpression(data []interface{}) []*models.V1MatchExpression {
-	selectors := make([]*models.V1MatchExpression, len(data))
+func convertComputeMatchExpression(data []interface{}) []*workload_models.V1MatchExpression {
+	selectors := make([]*workload_models.V1MatchExpression, len(data))
 	for i, s := range data {
 		selector := s.(map[string]interface{})
 		vals := make([]string, len(selector["values"].([]interface{})))
 		for j, v := range selector["values"].([]interface{}) {
 			vals[j] = v.(string)
 		}
-		selectors[i] = &models.V1MatchExpression{
+		selectors[i] = &workload_models.V1MatchExpression{
 			Key:      selector["key"].(string),
 			Operator: selector["operator"].(string),
 			Values:   vals,
@@ -22,8 +23,8 @@ func convertComputeMatchExpression(data []interface{}) []*models.V1MatchExpressi
 	return selectors
 }
 
-func convertToStringMap(data map[string]interface{}) models.V1StringMapEntry {
-	stringMap := make(models.V1StringMapEntry, len(data))
+func convertToStringMap(data map[string]interface{}) workload_models.V1StringMapEntry {
+	stringMap := make(workload_models.V1StringMapEntry, len(data))
 	for k, v := range data {
 		stringMap[k] = v.(string)
 	}
@@ -38,11 +39,59 @@ func convertToStringArray(data []interface{}) []string {
 	return s
 }
 
+func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchExpression) []*ipam_models.V1MatchExpression {
+	converted := make([]*ipam_models.V1MatchExpression, len(selectors))
+
+	for i, selector := range selectors {
+		converted[i] = &ipam_models.V1MatchExpression{
+			Key:      selector.Key,
+			Operator: selector.Operator,
+			Values:   selector.Values,
+		}
+	}
+
+	return converted
+}
+
+func convertIPAMToWorkloadMatchExpression(selectors []*ipam_models.V1MatchExpression) []*workload_models.V1MatchExpression {
+	converted := make([]*workload_models.V1MatchExpression, len(selectors))
+
+	for i, selector := range selectors {
+		converted[i] = &workload_models.V1MatchExpression{
+			Key:      selector.Key,
+			Operator: selector.Operator,
+			Values:   selector.Values,
+		}
+	}
+
+	return converted
+}
+
+func convertWorkloadToIPAMStringMapEntry(mapEntries workload_models.V1StringMapEntry) ipam_models.NetworkStringMapEntry {
+	converted := make(ipam_models.NetworkStringMapEntry, len(mapEntries))
+
+	for k, v := range mapEntries {
+		converted[k] = v
+	}
+
+	return converted
+}
+
+func convertIPAMToWorkloadStringMapEntry(mapEntries ipam_models.NetworkStringMapEntry) workload_models.V1StringMapEntry {
+	converted := make(workload_models.V1StringMapEntry, len(mapEntries))
+
+	for k, v := range mapEntries {
+		converted[k] = v
+	}
+
+	return converted
+}
+
 // flattenComputeMatchExpressions flattens the provided workload match expressions
 // with respect to the order of any existing match expressions defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
-func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*models.V1MatchExpression) []interface{} {
+func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*workload_models.V1MatchExpression) []interface{} {
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
 	for i, d := range selectors {
 		ordered[d.Key] = i
@@ -67,7 +116,7 @@ func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceD
 // as given with no respect to ordering. If the order of the resulting match expressions
 // is important, eg when using for diff logic, then flattenComputeMatchExpressionsOrdered
 // should be used.
-func flattenComputeMatchExpressions(selectors []*models.V1MatchExpression) []interface{} {
+func flattenComputeMatchExpressions(selectors []*workload_models.V1MatchExpression) []interface{} {
 	s := make([]interface{}, len(selectors))
 	for i, v := range selectors {
 		s[i] = map[string]interface{}{
@@ -79,7 +128,7 @@ func flattenComputeMatchExpressions(selectors []*models.V1MatchExpression) []int
 	return s
 }
 
-func flattenStringMap(stringMap models.V1StringMapEntry) map[string]interface{} {
+func flattenStringMap(stringMap workload_models.V1StringMapEntry) map[string]interface{} {
 	m := make(map[string]interface{}, len(stringMap))
 	for k, v := range stringMap {
 		m[k] = v
