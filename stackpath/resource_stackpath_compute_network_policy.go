@@ -21,111 +21,111 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 			State: resourceComputeNetworkPolicyImportState,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"slug": &schema.Schema{
+			"slug": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"labels": &schema.Schema{
+			"labels": {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"annotations": &schema.Schema{
+			"annotations": {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"instance_selector": &schema.Schema{
+			"instance_selector": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     resourceComputeMatchExpressionSchema(),
 			},
-			"network_selector": &schema.Schema{
+			"network_selector": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     resourceComputeMatchExpressionSchema(),
 			},
-			"policy_types": &schema.Schema{
+			"policy_types": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"priority": &schema.Schema{
+			"priority": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
-			"egress": &schema.Schema{
+			"egress": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"action": &schema.Schema{
+						"action": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"description": &schema.Schema{
+						"description": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"protocol": &schema.Schema{
+						"protocol": {
 							Type:     schema.TypeList,
 							Optional: true,
 							MaxItems: 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"ah": &schema.Schema{
+									"ah": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"esp": &schema.Schema{
+									"esp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"gre": &schema.Schema{
+									"gre": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"icmp": &schema.Schema{
+									"icmp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"tcp": &schema.Schema{
+									"tcp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -135,20 +135,20 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 											},
 										},
 									},
-									"tcp_udp": &schema.Schema{
+									"tcp_udp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -158,20 +158,20 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 											},
 										},
 									},
-									"udp": &schema.Schema{
+									"udp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -188,63 +188,63 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 					},
 				},
 			},
-			"ingress": &schema.Schema{
+			"ingress": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"action": &schema.Schema{
+						"action": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"description": &schema.Schema{
+						"description": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"protocol": &schema.Schema{
+						"protocol": {
 							Type:     schema.TypeList,
 							Optional: true,
 							MaxItems: 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"ah": &schema.Schema{
+									"ah": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"esp": &schema.Schema{
+									"esp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"gre": &schema.Schema{
+									"gre": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"icmp": &schema.Schema{
+									"icmp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem:     &schema.Resource{},
 									},
-									"tcp": &schema.Schema{
+									"tcp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -254,20 +254,20 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 											},
 										},
 									},
-									"tcp_udp": &schema.Schema{
+									"tcp_udp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -277,20 +277,20 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 											},
 										},
 									},
-									"udp": &schema.Schema{
+									"udp": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"destination_ports": &schema.Schema{
+												"destination_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
 														Type: schema.TypeString,
 													},
 												},
-												"source_ports": &schema.Schema{
+												"source_ports": {
 													Type:     schema.TypeList,
 													Optional: true,
 													Elem: &schema.Schema{
@@ -318,27 +318,27 @@ func resourceComputeNetworkPolicyHostRuleSchema() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"instance_selector": &schema.Schema{
+				"instance_selector": {
 					Type:     schema.TypeList,
 					Optional: true,
 					Elem:     resourceComputeMatchExpressionSchema(),
 				},
-				"network_selector": &schema.Schema{
+				"network_selector": {
 					Type:     schema.TypeList,
 					Optional: true,
 					Elem:     resourceComputeMatchExpressionSchema(),
 				},
-				"ip_block": &schema.Schema{
+				"ip_block": {
 					Type:     schema.TypeList,
 					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"cidr": &schema.Schema{
+							"cidr": {
 								Type:         schema.TypeString,
 								Required:     true,
 								ValidateFunc: validateSubnet,
 							},
-							"except": &schema.Schema{
+							"except": {
 								Type:     schema.TypeList,
 								Optional: true,
 								Elem: &schema.Schema{
@@ -388,37 +388,47 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 		return fmt.Errorf("failed to read network policy: %v", NewStackPathError(err))
 	}
 
-	data.Set("name", resp.Payload.NetworkPolicy.Name)
-	data.Set("slug", resp.Payload.NetworkPolicy.Slug)
-	data.Set("description", resp.Payload.NetworkPolicy.Description)
+	if err := data.Set("name", resp.Payload.NetworkPolicy.Name); err != nil {
+		return fmt.Errorf("error setting name: %v", err)
+	}
+
+	if err := data.Set("slug", resp.Payload.NetworkPolicy.Slug); err != nil {
+		return fmt.Errorf("error setting slug: %v", err)
+	}
+
+	if err := data.Set("description", resp.Payload.NetworkPolicy.Description); err != nil {
+		return fmt.Errorf("error setting description: %v", err)
+	}
 
 	if err := data.Set("labels", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.NetworkPolicy.Metadata.Labels))); err != nil {
-		return fmt.Errorf("Error setting labels: %v", err)
+		return fmt.Errorf("error setting labels: %v", err)
 	}
 
 	if err := data.Set("annotations", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.NetworkPolicy.Metadata.Annotations))); err != nil {
-		return fmt.Errorf("Error setting annotations: %v", err)
+		return fmt.Errorf("error setting annotations: %v", err)
 	}
 
 	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.InstanceSelectors))); err != nil {
-		return fmt.Errorf("Error setting instance_selector: %v", err)
+		return fmt.Errorf("error setting instance_selector: %v", err)
 	}
 
 	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.NetworkSelectors))); err != nil {
-		return fmt.Errorf("Error setting network_selector: %v", err)
+		return fmt.Errorf("error setting network_selector: %v", err)
 	}
 
 	if err := data.Set("policy_types", flattenComputeNetworkPolicyTypes(resp.Payload.NetworkPolicy.Spec.PolicyTypes)); err != nil {
-		return fmt.Errorf("Error setting policy_types: %v", err)
+		return fmt.Errorf("error setting policy_types: %v", err)
 	}
 
-	data.Set("priority", resp.Payload.NetworkPolicy.Spec.Priority)
+	if err := data.Set("priority", resp.Payload.NetworkPolicy.Spec.Priority); err != nil {
+		return fmt.Errorf("error setting priority: %v", err)
+	}
 
 	if err := data.Set("ingress", flattenComputeNetworkPolicyIngress(resp.Payload.NetworkPolicy.Spec.Ingress)); err != nil {
-		return fmt.Errorf("Error setting ingress: %v", err)
+		return fmt.Errorf("error setting ingress: %v", err)
 	}
 	if err := data.Set("egress", flattenComputeNetworkPolicyEgress(resp.Payload.NetworkPolicy.Spec.Egress)); err != nil {
-		return fmt.Errorf("Error setting egress: %v", err)
+		return fmt.Errorf("error setting egress: %v", err)
 	}
 
 	return nil

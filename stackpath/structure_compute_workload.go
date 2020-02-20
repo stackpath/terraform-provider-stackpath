@@ -307,39 +307,44 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 }
 
 func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models.V1Workload) error {
-	data.Set("name", workload.Name)
-	data.Set("slug", workload.Slug)
+	if err := data.Set("name", workload.Name); err != nil {
+		return fmt.Errorf("error setting name: %v", err)
+	}
+
+	if err := data.Set("slug", workload.Slug); err != nil {
+		return fmt.Errorf("error setting slug: %v", err)
+	}
 
 	if err := data.Set("labels", flattenStringMap(workload.Metadata.Labels)); err != nil {
-		return fmt.Errorf("Error setting labels: %v", err)
+		return fmt.Errorf("error setting labels: %v", err)
 	}
 
 	if err := data.Set("annotations", flattenStringMap(workload.Metadata.Annotations)); err != nil {
-		return fmt.Errorf("Error setting annotations: %v", err)
+		return fmt.Errorf("error setting annotations: %v", err)
 	}
 
 	if err := data.Set("network_interface", flattenComputeWorkloadNetworkInterfaces(workload.Spec.NetworkInterfaces)); err != nil {
-		return fmt.Errorf("Error setting network_interface: %v", err)
+		return fmt.Errorf("error setting network_interface: %v", err)
 	}
 
 	if err := data.Set("container", flattenComputeWorkloadContainers("container", data, workload.Spec.Containers)); err != nil {
-		return fmt.Errorf("Error setting container: %v", err)
+		return fmt.Errorf("error setting container: %v", err)
 	}
 
 	if err := data.Set("image_pull_credentials", flattenComputeWorkloadImagePullCredentials("image_pull_credentials", data, workload.Spec.ImagePullCredentials)); err != nil {
-		return fmt.Errorf("Error setting image_pull_credentials: %v", err)
+		return fmt.Errorf("error setting image_pull_credentials: %v", err)
 	}
 
 	if err := data.Set("virtual_machine", flattenComputeWorkloadVirtualMachines("virtual_machine", data, workload.Spec.VirtualMachines)); err != nil {
-		return fmt.Errorf("Error setting virtual_machine: %v", err)
+		return fmt.Errorf("error setting virtual_machine: %v", err)
 	}
 
 	if err := data.Set("volume_claim", flattenComputeWorkloadVolumeClaims(workload.Spec.VolumeClaimTemplates)); err != nil {
-		return fmt.Errorf("Error setting volume_claim: %v", err)
+		return fmt.Errorf("error setting volume_claim: %v", err)
 	}
 
 	if err := data.Set("target", flattenComputeWorkloadTargets("target", data, workload.Targets)); err != nil {
-		return fmt.Errorf("Error setting target: %v", err)
+		return fmt.Errorf("error setting target: %v", err)
 	}
 
 	return nil

@@ -5,79 +5,79 @@ import "github.com/hashicorp/terraform/helper/schema"
 func resourceComputeWorkloadInstance() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"metadata": &schema.Schema{
+			"metadata": {
 				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem:     resourceComputeMetadata(),
 			},
-			"location": &schema.Schema{
+			"location": {
 				Type:     schema.TypeList,
 				MaxItems: 1,
 				Optional: true,
 				Elem:     resourceComputeLocation(),
 			},
-			"external_ip_address": &schema.Schema{
+			"external_ip_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"ip_address": &schema.Schema{
+			"ip_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"network_interface": &schema.Schema{
+			"network_interface": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"network": &schema.Schema{
+						"network": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"ip_address": &schema.Schema{
+						"ip_address": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"ip_address_aliases": &schema.Schema{
+						"ip_address_aliases": {
 							Type:     schema.TypeList,
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
-						"gateway": &schema.Schema{
+						"gateway": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 					},
 				},
 			},
-			"virtual_machine": &schema.Schema{
+			"virtual_machine": {
 				Type:          schema.TypeList,
 				ConflictsWith: []string{"container"},
 				MaxItems:      1,
 				Optional:      true,
 				Elem:          resourceComputeWorkloadVirtualMachine(),
 			},
-			"container": &schema.Schema{
+			"container": {
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"virtual_machine"},
 				Elem:          resourceComputeWorkloadContainer(),
 			},
-			"reason": &schema.Schema{
+			"reason": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"message": &schema.Schema{
+			"message": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"phase": &schema.Schema{
+			"phase": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -88,19 +88,19 @@ func resourceComputeWorkloadInstance() *schema.Resource {
 func resourceComputeWorkloadVirtualMachineStatus() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"phase": &schema.Schema{
+			"phase": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"reason": &schema.Schema{
+			"reason": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"message": &schema.Schema{
+			"message": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -111,87 +111,87 @@ func resourceComputeWorkloadVirtualMachineStatus() *schema.Resource {
 func resourceComputeWorkloadContainerStatus() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"phase": &schema.Schema{
+			"phase": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"started_at": &schema.Schema{
+			"started_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"finished_at": &schema.Schema{
+			"finished_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"waiting": &schema.Schema{
+			"waiting": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"reason": &schema.Schema{
+						"reason": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"message": &schema.Schema{
+						"message": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 					},
 				},
 			},
-			"running": &schema.Schema{
+			"running": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"started_at": &schema.Schema{
+						"started_at": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 					},
 				},
 			},
-			"terminated": &schema.Schema{
+			"terminated": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"reason": &schema.Schema{
+						"reason": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"message": &schema.Schema{
+						"message": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"started_at": &schema.Schema{
+						"started_at": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"finished_at": &schema.Schema{
+						"finished_at": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"exit_code": &schema.Schema{
+						"exit_code": {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
 					},
 				},
 			},
-			"ready": &schema.Schema{
+			"ready": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"restart_count": &schema.Schema{
+			"restart_count": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"container_id": &schema.Schema{
+			"container_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

@@ -26,7 +26,7 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket),
@@ -36,7 +36,7 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketPublic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket),
@@ -62,7 +62,7 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket1),
@@ -72,7 +72,7 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-west-1"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckDestroyed(bucket1),
@@ -100,7 +100,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix1, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket1),
@@ -110,7 +110,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix2, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckDestroyed(bucket1),
@@ -143,7 +143,7 @@ func testAccObjectStorageBucketCheckExists(name string, bucket *storage_models.S
 			Context:  context.Background(),
 		}, nil)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve object storage bucket: %v", err)
+			return fmt.Errorf("could not retrieve object storage bucket: %v", err)
 		}
 		bucket = resp.GetPayload().Bucket
 		return nil
@@ -159,7 +159,7 @@ func testAccObjectStorageBucketCheckDestroyed(bucket *storage_models.StorageBuck
 			Context:  context.Background(),
 		}, nil)
 		if err == nil {
-			return fmt.Errorf("Bucket still exists")
+			return fmt.Errorf("bucket still exists")
 		}
 		return nil
 	}
@@ -179,7 +179,7 @@ func testAccObjectStorageBucketCheckDestroy() resource.TestCheckFunc {
 				Context:  context.Background(),
 			}, nil)
 			if c, ok := err.(interface{ Code() int }); ok && c.Code() != http.StatusNotFound {
-				return fmt.Errorf("Object storage bucket still exists: %v HTTP %d", rs.Primary.ID, c.Code())
+				return fmt.Errorf("object storage bucket still exists: %v HTTP %d", rs.Primary.ID, c.Code())
 			}
 		}
 		return nil
