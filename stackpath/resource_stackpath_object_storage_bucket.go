@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
 func resourceObjectStorageBucket() *schema.Resource {
@@ -20,23 +21,23 @@ func resourceObjectStorageBucket() *schema.Resource {
 			State: resourceObjectStorageBucketImportState,
 		},
 		Schema: map[string]*schema.Schema{
-			"label": &schema.Schema{
+			"label": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"region": &schema.Schema{
+			"region": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"visibility": &schema.Schema{
+			"visibility": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "PRIVATE",
 				ValidateFunc: validateObjectStorageBucketVisibility,
 			},
-			"endpoint_url": &schema.Schema{
+			"endpoint_url": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -48,7 +49,7 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 	config := meta.(*Config)
 	// Create in API
 	resp, err := config.objectStorage.Buckets.CreateBucket(&buckets.CreateBucketParams{
-		Body: buckets.CreateBucketBody{
+		Body: &storage_models.StorageCreateBucketRequest{
 			Label:  data.Get("label").(string),
 			Region: data.Get("region").(string),
 		},
@@ -63,7 +64,9 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 	data.SetId(resp.Payload.Bucket.ID)
 	// Run update if visibility is set to PUBLIC
 	if data.Get("visibility").(string) != "PRIVATE" {
-		resourceObjectStorageBucketUpdate(data, meta)
+		if err := resourceObjectStorageBucketUpdate(data, meta); err != nil {
+			return fmt.Errorf("failed to set object storage bucket visibility: %v", NewStackPathError(err))
+		}
 	}
 	// Return read
 	return resourceObjectStorageBucketRead(data, meta)
@@ -88,23 +91,39 @@ func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}
 		return fmt.Errorf("failed to read object storage bucket: %v", NewStackPathError(err))
 	}
 	// Set properties
-	data.Set("endpoint_url", resp.GetPayload().Bucket.EndpointURL)
-	data.Set("label", resp.GetPayload().Bucket.Label)
-	data.Set("region", resp.GetPayload().Bucket.Region)
-	data.Set("visibility", resp.GetPayload().Bucket.Visibility)
+	if err := data.Set("endpoint_url", resp.GetPayload().Bucket.EndpointURL); err != nil {
+		return fmt.Errorf("failed to set object storage bucket endpoint_url: %v", err)
+	}
+
+	if err := data.Set("label", resp.GetPayload().Bucket.Label); err != nil {
+		return fmt.Errorf("failed to set object storage bucket label: %v", err)
+	}
+
+	if err := data.Set("region", resp.GetPayload().Bucket.Region); err != nil {
+		return fmt.Errorf("failed to set object storage bucket region: %v", err)
+	}
+
+	if err := data.Set("visibility", resp.GetPayload().Bucket.Visibility); err != nil {
+		return fmt.Errorf("failed to set object storage bucket visibility: %v", err)
+	}
+
 	return nil
 }
 
 func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	visibility := data.Get("visibility").(string)
+	visibility := storage_models.StorageBucketVisibilityPRIVATE
+	if strings.ToUpper(data.Get("visibility").(string)) == "PUBLIC" {
+		visibility = storage_models.StorageBucketVisibilityPUBLIC
+	}
+
 	// Update in API
 	_, err := config.objectStorage.Buckets.UpdateBucket(&buckets.UpdateBucketParams{
 		BucketID: data.Id(),
 		Context:  context.Background(),
 		StackID:  config.StackID,
-		Body: buckets.UpdateBucketBody{
-			Visibility: &visibility,
+		Body: &storage_models.StorageUpdateBucketRequest{
+			Visibility: visibility,
 		},
 	}, nil)
 	// Handle error
@@ -142,6 +161,8 @@ func resourceObjectStorageBucketImportState(data *schema.ResourceData, meta inte
 	// We expect that to import a resource, the user will pass in the
 	// full UUID of the bucket they're attempting to import.
 	// Update data from the read method and return
-	resourceObjectStorageBucketRead(data, meta)
+	if err := resourceObjectStorageBucketRead(data, meta); err != nil {
+		return nil, fmt.Errorf("failed to read storage bucket: %v", err)
+	}
 	return []*schema.ResourceData{data}, nil
 }

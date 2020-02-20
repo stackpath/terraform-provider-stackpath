@@ -12,29 +12,29 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"client_id": &schema.Schema{
+			"client_id": {
 				Type:        schema.TypeString,
 				Sensitive:   true,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_CLIENT_ID", ""),
 			},
-			"client_secret": &schema.Schema{
+			"client_secret": {
 				Type:        schema.TypeString,
 				Sensitive:   true,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_CLIENT_SECRET", ""),
 			},
-			"access_token": &schema.Schema{
+			"access_token": {
 				Type:      schema.TypeString,
 				Sensitive: true,
 				Optional:  true,
 			},
-			"stack_id": &schema.Schema{
+			"stack_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("STACKPATH_STACK_ID", ""),
 			},
-			"base_url": &schema.Schema{
+			"base_url": {
 				Type:     schema.TypeString,
 				Optional: true,
 				// Default to the official StackPath API

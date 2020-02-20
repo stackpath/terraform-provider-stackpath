@@ -8,15 +8,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client"
+
 	httptransport "github.com/go-openapi/runtime/client"
 
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/pathorcontents"
-	"github.com/hashicorp/terraform/httpclient"
-
-	object_storage "github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/version"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -50,12 +49,11 @@ type Config struct {
 	BaseURL string
 
 	client      *http.Client
-	userAgent   string
 	tokenSource oauth2.TokenSource
 
-	compute       client.Compute
-	ipam          client.IPAM
-	objectStorage *object_storage.ObjectStorage
+	edgeCompute           *workload_client.EdgeCompute
+	edgeComputeNetworking *ipam_client.EdgeComputeNetworking
+	objectStorage         *storage_client.ObjectStorage
 }
 
 // LoadAndValidate will load the configuration and validate the configuration
@@ -106,19 +104,13 @@ func (c *Config) LoadAndValidate() error {
 	// timeout for the maximum amount of time a logical request can take.
 	c.client.Timeout = 60 * time.Second
 
-	// Set the user agent that's used by the Terraform Provider
-	c.userAgent = fmt.Sprintf(
-		"%s terraform-provider-stackpath/%s (+https://www.terraform.io)",
-		httpclient.UserAgentString(),
-		version.ProviderVersion,
-	)
-
 	// Create a new openAPI runtime
 	runtime := httptransport.NewWithClient(c.BaseURL, "/", []string{"https"}, c.client)
+	runtime.Transport = NewUserAgentTransport(runtime.Transport)
 
-	c.compute = client.NewCompute(runtime, nil)
-	c.ipam = client.NewIPAM(runtime, nil)
-	c.objectStorage = object_storage.New(runtime, nil)
+	c.edgeCompute = workload_client.New(runtime, nil)
+	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
+	c.objectStorage = storage_client.New(runtime, nil)
 
 	return nil
 }

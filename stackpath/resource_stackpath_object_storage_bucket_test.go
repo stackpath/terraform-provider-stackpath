@@ -10,13 +10,13 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
 // Create bucket and update visibility
 func TestObjectStorageBucketBasic(t *testing.T) {
-
-	bucket := &buckets.GetBucketOKBodyBucket{}
+	bucket := &storage_models.StorageBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -26,7 +26,7 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket),
@@ -36,7 +36,7 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketPublic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket),
@@ -51,9 +51,8 @@ func TestObjectStorageBucketBasic(t *testing.T) {
 }
 
 func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
-
-	bucket1 := &buckets.GetBucketOKBodyBucket{}
-	bucket2 := &buckets.GetBucketOKBodyBucket{}
+	bucket1 := &storage_models.StorageBucket{}
+	bucket2 := &storage_models.StorageBucket{}
 	labelSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
@@ -63,7 +62,7 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket1),
@@ -73,7 +72,7 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix, "us-west-1"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckDestroyed(bucket1),
@@ -89,9 +88,8 @@ func TestObjectStorageBucketBasicRegionChange(t *testing.T) {
 }
 
 func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
-
-	bucket1 := &buckets.GetBucketOKBodyBucket{}
-	bucket2 := &buckets.GetBucketOKBodyBucket{}
+	bucket1 := &storage_models.StorageBucket{}
+	bucket2 := &storage_models.StorageBucket{}
 	labelSuffix1 := strconv.Itoa(int(time.Now().Unix()))
 	labelSuffix2 := strconv.Itoa(int(time.Now().Unix()) + 1)
 
@@ -102,7 +100,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 		},
 		CheckDestroy: testAccObjectStorageBucketCheckDestroy(),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix1, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckExists("stackpath_object_storage_bucket.bucket", bucket1),
@@ -112,7 +110,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 					resource.TestCheckResourceAttr("stackpath_object_storage_bucket.bucket", "endpoint_url", "https://s3.us-east-2.stackpathstorage.com"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testObjectStorageBucketBasic(labelSuffix2, "us-east-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccObjectStorageBucketCheckDestroyed(bucket1),
@@ -127,7 +125,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 	})
 }
 
-func testAccObjectStorageBucketCheckExists(name string, bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckExists(name string, bucket *storage_models.StorageBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -145,14 +143,14 @@ func testAccObjectStorageBucketCheckExists(name string, bucket *buckets.GetBucke
 			Context:  context.Background(),
 		}, nil)
 		if err != nil {
-			return fmt.Errorf("Could not retrieve object storage bucket: %v", err)
+			return fmt.Errorf("could not retrieve object storage bucket: %v", err)
 		}
 		bucket = resp.GetPayload().Bucket
 		return nil
 	}
 }
 
-func testAccObjectStorageBucketCheckDestroyed(bucket *buckets.GetBucketOKBodyBucket) resource.TestCheckFunc {
+func testAccObjectStorageBucketCheckDestroyed(bucket *storage_models.StorageBucket) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config := testAccProvider.Meta().(*Config)
 		_, err := config.objectStorage.Buckets.GetBucket(&buckets.GetBucketParams{
@@ -161,7 +159,7 @@ func testAccObjectStorageBucketCheckDestroyed(bucket *buckets.GetBucketOKBodyBuc
 			Context:  context.Background(),
 		}, nil)
 		if err == nil {
-			return fmt.Errorf("Bucket still exists")
+			return fmt.Errorf("bucket still exists")
 		}
 		return nil
 	}
@@ -181,7 +179,7 @@ func testAccObjectStorageBucketCheckDestroy() resource.TestCheckFunc {
 				Context:  context.Background(),
 			}, nil)
 			if c, ok := err.(interface{ Code() int }); ok && c.Code() != http.StatusNotFound {
-				return fmt.Errorf("Object storage bucket still exists: %v HTTP %d", rs.Primary.ID, c.Code())
+				return fmt.Errorf("object storage bucket still exists: %v HTTP %d", rs.Primary.ID, c.Code())
 			}
 		}
 		return nil

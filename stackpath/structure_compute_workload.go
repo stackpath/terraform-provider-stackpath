@@ -3,24 +3,25 @@ package stackpath
 import (
 	"encoding/base64"
 	"fmt"
+
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+
 	"log"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 // convert from the terraform data structure to the workload data structure we need for API calls
-func convertComputeWorkload(data *schema.ResourceData) *models.V1Workload {
-	return &models.V1Workload{
+func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Workload {
+	return &workload_models.V1Workload{
 		Name: data.Get("name").(string),
 		Slug: data.Get("slug").(string),
-		Metadata: &models.V1Metadata{
+		Metadata: &workload_models.V1Metadata{
 			Annotations: convertToStringMap(data.Get("annotations").(map[string]interface{})),
 			Labels:      convertToStringMap(data.Get("labels").(map[string]interface{})),
 		},
-		Spec: &models.V1WorkloadSpec{
+		Spec: &workload_models.V1WorkloadSpec{
 			Containers:           convertComputeWorkloadContainers("container", data),
 			VirtualMachines:      convertComputeWorkloadVirtualMachines("virtual_machine", data),
 			NetworkInterfaces:    convertComputeWorkloadNetworkInterfaces(data.Get("network_interface").([]interface{})),
@@ -31,11 +32,11 @@ func convertComputeWorkload(data *schema.ResourceData) *models.V1Workload {
 	}
 }
 
-func convertComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceData) models.V1VirtualMachineSpecMapEntry {
-	vms := make(models.V1VirtualMachineSpecMapEntry, data.Get(prefix+".#").(int))
+func convertComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceData) workload_models.V1VirtualMachineSpecMapEntry {
+	vms := make(workload_models.V1VirtualMachineSpecMapEntry, data.Get(prefix+".#").(int))
 	for i, vm := range data.Get(prefix).([]interface{}) {
 		vmData := vm.(map[string]interface{})
-		vms[vmData["name"].(string)] = models.V1VirtualMachineSpec{
+		vms[vmData["name"].(string)] = workload_models.V1VirtualMachineSpec{
 			Image:          vmData["image"].(string),
 			LivenessProbe:  convertComputeWorkloadProbe(fmt.Sprintf("%s.%d.liveness_probe", prefix, i), data),
 			ReadinessProbe: convertComputeWorkloadProbe(fmt.Sprintf("%s.%d.readiness_probe", prefix, i), data),
@@ -48,14 +49,14 @@ func convertComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 	return vms
 }
 
-func convertComputeWorkloadVolumeClaims(prefix string, data *schema.ResourceData) []*models.V1VolumeClaim {
-	volumes := make([]*models.V1VolumeClaim, 0, data.Get(prefix+".#").(int))
+func convertComputeWorkloadVolumeClaims(prefix string, data *schema.ResourceData) []*workload_models.V1VolumeClaim {
+	volumes := make([]*workload_models.V1VolumeClaim, 0, data.Get(prefix+".#").(int))
 	for i, vol := range data.Get(prefix).([]interface{}) {
 		volumeData := vol.(map[string]interface{})
-		volumes = append(volumes, &models.V1VolumeClaim{
+		volumes = append(volumes, &workload_models.V1VolumeClaim{
 			Name: volumeData["name"].(string),
 			Slug: volumeData["slug"].(string),
-			Spec: &models.V1VolumeClaimSpec{
+			Spec: &workload_models.V1VolumeClaimSpec{
 				Resources: convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
 			},
 		})
@@ -63,13 +64,13 @@ func convertComputeWorkloadVolumeClaims(prefix string, data *schema.ResourceData
 	return volumes
 }
 
-func convertComputeWorkloadImagePullCredentials(prefix string, data *schema.ResourceData) []*models.V1ImagePullCredential {
-	credentials := make([]*models.V1ImagePullCredential, 0, data.Get(prefix+".#").(int))
+func convertComputeWorkloadImagePullCredentials(prefix string, data *schema.ResourceData) workload_models.V1WrappedImagePullCredentials {
+	credentials := make([]*workload_models.V1ImagePullCredential, 0, data.Get(prefix+".#").(int))
 	for _, c := range data.Get(prefix).([]interface{}) {
 		// only docker registry credentials are allowed for pull credentials, these credentials are guaranteed to exist
 		creds := c.(map[string]interface{})["docker_registry"].([]interface{})[0].(map[string]interface{})
-		credentials = append(credentials, &models.V1ImagePullCredential{
-			DockerRegistry: &models.V1DockerRegistryCredentials{
+		credentials = append(credentials, &workload_models.V1ImagePullCredential{
+			DockerRegistry: &workload_models.V1DockerRegistryCredentials{
 				Server:   creds["server"].(string),
 				Username: creds["username"].(string),
 				Password: creds["password"].(string),
@@ -80,14 +81,14 @@ func convertComputeWorkloadImagePullCredentials(prefix string, data *schema.Reso
 	return credentials
 }
 
-func convertComputeWorkloadTargets(data []interface{}) models.V1TargetMapEntry {
-	targets := make(models.V1TargetMapEntry, len(data))
+func convertComputeWorkloadTargets(data []interface{}) workload_models.V1TargetMapEntry {
+	targets := make(workload_models.V1TargetMapEntry, len(data))
 	for _, t := range data {
 		target := t.(map[string]interface{})
-		targets[target["name"].(string)] = models.V1Target{
-			Spec: &models.V1TargetSpec{
+		targets[target["name"].(string)] = workload_models.V1Target{
+			Spec: &workload_models.V1TargetSpec{
 				DeploymentScope: target["deployment_scope"].(string),
-				Deployments: &models.V1DeploymentSpec{
+				Deployments: &workload_models.V1DeploymentSpec{
 					MinReplicas:   int32(target["min_replicas"].(int)),
 					MaxReplicas:   int32(target["max_replicas"].(int)),
 					ScaleSettings: convertComputeWorkloadTargetScaleSettings(target["scale_settings"].([]interface{})),
@@ -99,43 +100,43 @@ func convertComputeWorkloadTargets(data []interface{}) models.V1TargetMapEntry {
 	return targets
 }
 
-func convertComputeWorkloadTargetScaleSettings(data []interface{}) *models.V1ScaleSettings {
+func convertComputeWorkloadTargetScaleSettings(data []interface{}) *workload_models.V1ScaleSettings {
 	if len(data) == 0 {
 		return nil
 	}
 
 	settings := data[0].(map[string]interface{})
 
-	metrics := make([]*models.V1MetricSpec, len(settings["metrics"].([]interface{})))
+	metrics := make([]*workload_models.V1MetricSpec, len(settings["metrics"].([]interface{})))
 	for i, metric := range settings["metrics"].([]interface{}) {
 		metricData := metric.(map[string]interface{})
-		metrics[i] = &models.V1MetricSpec{
+		metrics[i] = &workload_models.V1MetricSpec{
 			Metric:             metricData["metric"].(string),
 			AverageValue:       metricData["average_value"].(string),
 			AverageUtilization: int32(metricData["average_utilization"].(int)),
 		}
 	}
 
-	return &models.V1ScaleSettings{
+	return &workload_models.V1ScaleSettings{
 		Metrics: metrics,
 	}
 }
 
-func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*models.V1NetworkInterface {
-	interfaces := make([]*models.V1NetworkInterface, len(data))
+func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*workload_models.V1NetworkInterface {
+	interfaces := make([]*workload_models.V1NetworkInterface, len(data))
 	for i, n := range data {
-		interfaces[i] = &models.V1NetworkInterface{
+		interfaces[i] = &workload_models.V1NetworkInterface{
 			Network: n.(map[string]interface{})["network"].(string),
 		}
 	}
 	return interfaces
 }
 
-func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) models.V1ContainerSpecMapEntry {
+func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) workload_models.V1ContainerSpecMapEntry {
 	// Keep track of the names of containers that exist in the new workload definition
 	containerNames := make(map[interface{}]bool, data.Get(prefix+".#").(int))
 	// First we need to add the containers that still exist within the workload definition
-	containers := make(models.V1ContainerSpecMapEntry, data.Get(prefix+".#").(int))
+	containers := make(workload_models.V1ContainerSpecMapEntry, data.Get(prefix+".#").(int))
 	for i, s := range data.Get(prefix).([]interface{}) {
 		containerData := s.(map[string]interface{})
 		// Track that we saw this container name, we check
@@ -158,7 +159,7 @@ func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) 
 			// it means the container was removed from the definition and
 			// should be removed from the API.
 			if !containerNames[containerData["name"]] {
-				containers[containerData["name"].(string)] = models.V1ContainerSpec{}
+				containers[containerData["name"].(string)] = workload_models.V1ContainerSpec{}
 			}
 		}
 	}
@@ -166,8 +167,8 @@ func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) 
 	return containers
 }
 
-func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) models.V1ContainerSpec {
-	return models.V1ContainerSpec{
+func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) workload_models.V1ContainerSpec {
+	return workload_models.V1ContainerSpec{
 		Image:          data.Get(prefix).(map[string]interface{})["image"].(string),
 		Command:        convertToStringArray(data.Get(prefix + ".command").([]interface{})),
 		Ports:          convertComputeWorkloadPorts(prefix+".port", data),
@@ -179,11 +180,11 @@ func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) m
 	}
 }
 
-func convertComputeWorkloadVolumeMounts(prefix string, data *schema.ResourceData) []*models.V1InstanceVolumeMount {
-	mounts := make([]*models.V1InstanceVolumeMount, 0, data.Get(prefix+".#").(int))
+func convertComputeWorkloadVolumeMounts(prefix string, data *schema.ResourceData) []*workload_models.V1InstanceVolumeMount {
+	mounts := make([]*workload_models.V1InstanceVolumeMount, 0, data.Get(prefix+".#").(int))
 	for _, m := range data.Get(prefix).([]interface{}) {
 		mount := m.(map[string]interface{})
-		mounts = append(mounts, &models.V1InstanceVolumeMount{
+		mounts = append(mounts, &workload_models.V1InstanceVolumeMount{
 			Slug:      mount["slug"].(string),
 			MountPath: mount["mount_path"].(string),
 		})
@@ -191,19 +192,19 @@ func convertComputeWorkloadVolumeMounts(prefix string, data *schema.ResourceData
 	return mounts
 }
 
-func convertComputeWorkloadResourceRequirements(prefix string, data *schema.ResourceData) *models.V1ResourceRequirements {
-	return &models.V1ResourceRequirements{
+func convertComputeWorkloadResourceRequirements(prefix string, data *schema.ResourceData) *workload_models.V1ResourceRequirements {
+	return &workload_models.V1ResourceRequirements{
 		Requests: convertToStringMap(data.Get(prefix).([]interface{})[0].(map[string]interface{})["requests"].(map[string]interface{})),
 	}
 }
 
-func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *models.V1Probe {
+func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *workload_models.V1Probe {
 	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
 		return nil
 	} else if data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
 		log.Printf("[DEBUG] removing probe from container: %v", prefix)
 		// we are removing the probe so we should set the probe to an empty value
-		return &models.V1Probe{}
+		return &workload_models.V1Probe{}
 	}
 
 	probe := data.Get(prefix + ".0").(map[string]interface{})
@@ -214,7 +215,7 @@ func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *mode
 
 	log.Printf("[DEBUG] adding probe for container: %v", prefix)
 
-	return &models.V1Probe{
+	return &workload_models.V1Probe{
 		FailureThreshold:    int32(probe["failure_threshold"].(int)),
 		SuccessThreshold:    int32(probe["success_threshold"].(int)),
 		InitialDelaySeconds: int32(probe["initial_delay_seconds"].(int)),
@@ -225,26 +226,26 @@ func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *mode
 	}
 }
 
-func convertComputeWorkloadProbeTCPSocket(data []interface{}) *models.V1TCPSocketAction {
+func convertComputeWorkloadProbeTCPSocket(data []interface{}) *workload_models.V1TCPSocketAction {
 	if len(data) == 0 {
 		return nil
 	}
 
 	tcpAction := data[0].(map[string]interface{})
 
-	return &models.V1TCPSocketAction{
+	return &workload_models.V1TCPSocketAction{
 		Port: int32(tcpAction["port"].(int)),
 	}
 }
 
-func convertComputeWorkloadProbeHTTPGet(data []interface{}) *models.V1HTTPGetAction {
+func convertComputeWorkloadProbeHTTPGet(data []interface{}) *workload_models.V1HTTPGetAction {
 	if len(data) == 0 {
 		return nil
 	}
 
 	httpAction := data[0].(map[string]interface{})
 
-	return &models.V1HTTPGetAction{
+	return &workload_models.V1HTTPGetAction{
 		Path:        httpAction["path"].(string),
 		Port:        int32(httpAction["port"].(int)),
 		Scheme:      strings.ToUpper(httpAction["scheme"].(string)),
@@ -252,14 +253,14 @@ func convertComputeWorkloadProbeHTTPGet(data []interface{}) *models.V1HTTPGetAct
 	}
 }
 
-func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) models.V1InstancePortMapEntry {
+func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) workload_models.V1InstancePortMapEntry {
 	portNames := make(map[interface{}]bool, data.Get(prefix+".#").(int))
-	ports := make(models.V1InstancePortMapEntry, data.Get(prefix+".#").(int))
+	ports := make(workload_models.V1InstancePortMapEntry, data.Get(prefix+".#").(int))
 	for _, s := range data.Get(prefix).([]interface{}) {
 		portData := s.(map[string]interface{})
 		// track the port names so we can keep track of what needs to be removed
 		portNames[portData["name"]] = true
-		ports[portData["name"].(string)] = models.V1InstancePort{
+		ports[portData["name"].(string)] = workload_models.V1InstancePort{
 			EnableImplicitNetworkPolicy: portData["enable_implicit_network_policy"].(bool),
 			Port:                        int32(portData["port"].(int)),
 			Protocol:                    strings.ToUpper(portData["protocol"].(string)),
@@ -272,7 +273,7 @@ func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) model
 		for _, s := range old.([]interface{}) {
 			portData := s.(map[string]interface{})
 			if !portNames[portData["name"]] {
-				ports[portData["name"].(string)] = models.V1InstancePort{}
+				ports[portData["name"].(string)] = workload_models.V1InstancePort{}
 			}
 		}
 	}
@@ -280,14 +281,14 @@ func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) model
 	return ports
 }
 
-func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.ResourceData) models.V1EnvironmentVariableMapEntry {
+func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.ResourceData) workload_models.V1EnvironmentVariableMapEntry {
 	envVarNames := make(map[interface{}]bool, data.Get(prefix+".#").(int))
-	envVars := make(models.V1EnvironmentVariableMapEntry, data.Get(prefix+".#").(int))
+	envVars := make(workload_models.V1EnvironmentVariableMapEntry, data.Get(prefix+".#").(int))
 	for _, s := range data.Get(prefix).([]interface{}) {
 		envVarData := s.(map[string]interface{})
 		log.Printf("[DEBUG] setting environment variable '%s'", envVarData["key"])
 		envVarNames[envVarData["key"]] = true
-		envVars[envVarData["key"].(string)] = models.V1EnvironmentVariable{
+		envVars[envVarData["key"].(string)] = workload_models.V1EnvironmentVariable{
 			Value:       envVarData["value"].(string),
 			SecretValue: envVarData["secret_value"].(string),
 		}
@@ -298,53 +299,58 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 			envVarData := s.(map[string]interface{})
 			if !envVarNames[envVarData["key"]] {
 				log.Printf("[DEBUG] removing env var %v", envVarData["key"])
-				envVars[envVarData["key"].(string)] = models.V1EnvironmentVariable{}
+				envVars[envVarData["key"].(string)] = workload_models.V1EnvironmentVariable{}
 			}
 		}
 	}
 	return envVars
 }
 
-func flattenComputeWorkload(data *schema.ResourceData, workload *models.V1Workload) error {
-	data.Set("name", workload.Name)
-	data.Set("slug", workload.Slug)
+func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models.V1Workload) error {
+	if err := data.Set("name", workload.Name); err != nil {
+		return fmt.Errorf("error setting name: %v", err)
+	}
+
+	if err := data.Set("slug", workload.Slug); err != nil {
+		return fmt.Errorf("error setting slug: %v", err)
+	}
 
 	if err := data.Set("labels", flattenStringMap(workload.Metadata.Labels)); err != nil {
-		return fmt.Errorf("Error setting labels: %v", err)
+		return fmt.Errorf("error setting labels: %v", err)
 	}
 
 	if err := data.Set("annotations", flattenStringMap(workload.Metadata.Annotations)); err != nil {
-		return fmt.Errorf("Error setting annotations: %v", err)
+		return fmt.Errorf("error setting annotations: %v", err)
 	}
 
 	if err := data.Set("network_interface", flattenComputeWorkloadNetworkInterfaces(workload.Spec.NetworkInterfaces)); err != nil {
-		return fmt.Errorf("Error setting network_interface: %v", err)
+		return fmt.Errorf("error setting network_interface: %v", err)
 	}
 
 	if err := data.Set("container", flattenComputeWorkloadContainers("container", data, workload.Spec.Containers)); err != nil {
-		return fmt.Errorf("Error setting container: %v", err)
+		return fmt.Errorf("error setting container: %v", err)
 	}
 
 	if err := data.Set("image_pull_credentials", flattenComputeWorkloadImagePullCredentials("image_pull_credentials", data, workload.Spec.ImagePullCredentials)); err != nil {
-		return fmt.Errorf("Error setting image_pull_credentials: %v", err)
+		return fmt.Errorf("error setting image_pull_credentials: %v", err)
 	}
 
 	if err := data.Set("virtual_machine", flattenComputeWorkloadVirtualMachines("virtual_machine", data, workload.Spec.VirtualMachines)); err != nil {
-		return fmt.Errorf("Error setting virtual_machine: %v", err)
+		return fmt.Errorf("error setting virtual_machine: %v", err)
 	}
 
 	if err := data.Set("volume_claim", flattenComputeWorkloadVolumeClaims(workload.Spec.VolumeClaimTemplates)); err != nil {
-		return fmt.Errorf("Error setting volume_claim: %v", err)
+		return fmt.Errorf("error setting volume_claim: %v", err)
 	}
 
 	if err := data.Set("target", flattenComputeWorkloadTargets("target", data, workload.Targets)); err != nil {
-		return fmt.Errorf("Error setting target: %v", err)
+		return fmt.Errorf("error setting target: %v", err)
 	}
 
 	return nil
 }
 
-func flattenComputeWorkloadVolumeClaims(claims []*models.V1VolumeClaim) []interface{} {
+func flattenComputeWorkloadVolumeClaims(claims []*workload_models.V1VolumeClaim) []interface{} {
 	flattened := make([]interface{}, len(claims))
 	for i, claim := range claims {
 		flattened[i] = map[string]interface{}{
@@ -366,7 +372,7 @@ func flattenComputeWorkloadVolumeClaims(claims []*models.V1VolumeClaim) []interf
 // with respect to the order of any virtual machines defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of virtual
 // machines in the ResourceData.
-func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceData, vms models.V1VirtualMachineSpecMapEntry) []interface{} {
+func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceData, vms workload_models.V1VirtualMachineSpecMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
 	for i, k := range data.Get(prefix).([]interface{}) {
@@ -388,7 +394,7 @@ func flattenComputeWorkloadVirtualMachines(prefix string, data *schema.ResourceD
 // flattenComputeWorkloadVirtualMachineOrdered flattens a workload virtual machine but
 // respects the ordering of the previous virtual machine entry. Ordering is important
 // when dealing with updates to existing resources and accurate diffs are desired.
-func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *schema.ResourceData, vm models.V1VirtualMachineSpec) map[string]interface{} {
+func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *schema.ResourceData, vm workload_models.V1VirtualMachineSpec) map[string]interface{} {
 	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
 	if err != nil {
 		// This error should never happen as the API only allows valid
@@ -411,7 +417,7 @@ func flattenComputeWorkloadVirtualMachineOrdered(prefix, name string, data *sche
 // spec as given. This implementation should only be used when the ordering of
 // the returned virtual machines does not matter. When ordering is important,
 // use flattenComputeWorkloadVirtualMachineOrdered.
-func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachineSpec) map[string]interface{} {
+func flattenComputeWorkloadVirtualMachine(name string, vm workload_models.V1VirtualMachineSpec) map[string]interface{} {
 	decodedUserData, err := base64.StdEncoding.DecodeString(vm.UserData)
 	if err != nil {
 		// This error should never happen as the API only allows valid
@@ -434,7 +440,7 @@ func flattenComputeWorkloadVirtualMachine(name string, vm models.V1VirtualMachin
 // credentials with respect to the order of any image pull credentials defined
 // in the provided ResourceData. The prefix should be the flattened key of the
 // list of image pull credentials in the ResourceData.
-func flattenComputeWorkloadImagePullCredentials(prefix string, data *schema.ResourceData, credentials []*models.V1ImagePullCredential) []interface{} {
+func flattenComputeWorkloadImagePullCredentials(prefix string, data *schema.ResourceData, credentials workload_models.V1WrappedImagePullCredentials) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
 	for i, k := range data.Get(prefix).([]interface{}) {
@@ -467,7 +473,7 @@ func flattenComputeWorkloadImagePullCredentials(prefix string, data *schema.Reso
 // flattenComputeWorkloadTargets flattens the provided workload targets with
 // respect to the order of any targets defined in the provided ResourceData.
 // The prefix should be the flattened key of the list of targets in the ResourceData.
-func flattenComputeWorkloadTargets(prefix string, data *schema.ResourceData, targets models.V1TargetMapEntry) []interface{} {
+func flattenComputeWorkloadTargets(prefix string, data *schema.ResourceData, targets workload_models.V1TargetMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
 	for i, k := range data.Get(prefix).([]interface{}) {
@@ -489,7 +495,7 @@ func flattenComputeWorkloadTargets(prefix string, data *schema.ResourceData, tar
 // flattenComputeWorkloadTarget will flatten the provided workload target with
 // respect to the original order of the target in the ResourceData. The prefix
 // should be the flattened key of the target in the ResourceData.
-func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData, target models.V1Target) map[string]interface{} {
+func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData, target workload_models.V1Target) map[string]interface{} {
 	return map[string]interface{}{
 		"name":             name,
 		"min_replicas":     target.Spec.Deployments.MinReplicas,
@@ -500,7 +506,7 @@ func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData
 	}
 }
 
-func flattenComputeWorkloadTargetScaleSettings(prefix string, data *schema.ResourceData, settings *models.V1ScaleSettings) []interface{} {
+func flattenComputeWorkloadTargetScaleSettings(prefix string, data *schema.ResourceData, settings *workload_models.V1ScaleSettings) []interface{} {
 	if settings == nil {
 		return nil
 	}
@@ -536,7 +542,7 @@ func flattenComputeWorkloadTargetScaleSettings(prefix string, data *schema.Resou
 	}
 }
 
-func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*models.V1NetworkInterface) []interface{} {
+func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*workload_models.V1NetworkInterface) []interface{} {
 	flattened := make([]interface{}, len(networkInterfaces))
 	for i, n := range networkInterfaces {
 		flattened[i] = map[string]interface{}{
@@ -549,7 +555,7 @@ func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*models.V1Netwo
 // flattenComputeWorkloadContainers flattens the provided workload containers
 // with respect to the order of any containers defined in the provided ResourceData.
 // The prefix should be the flattened key of the list of containers in the ResourceData.
-func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, containers models.V1ContainerSpecMapEntry) []interface{} {
+func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, containers workload_models.V1ContainerSpecMapEntry) []interface{} {
 	// Ensure we keep the original order so terraform doesn't mistaken things as out of sync
 	ordered := make(map[string]int, data.Get(prefix+".#").(int))
 	for i, k := range data.Get(prefix).([]interface{}) {
@@ -573,7 +579,7 @@ func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, 
 // flattenComputeWorkloadContainerOrdered flattens a workload container but respects
 // the ordering of the previous container entry. Ordering is important when dealing
 // with updates to existing resources and accurate diffs are desired.
-func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.ResourceData, container models.V1ContainerSpec) map[string]interface{} {
+func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.ResourceData, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
 		"name":            name,
 		"image":           container.Image,
@@ -590,7 +596,7 @@ func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.Re
 // flattenComputeWorkloadContainer flattens a workload container as given with no
 // respect to ordering. The order of the returned data is not guaranteed. If ordering
 // is important, flattenComputeWorkloadContainerOrdered should be used.
-func flattenComputeWorkloadContainer(name string, container models.V1ContainerSpec) map[string]interface{} {
+func flattenComputeWorkloadContainer(name string, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
 		"name":            name,
 		"image":           container.Image,
@@ -604,7 +610,7 @@ func flattenComputeWorkloadContainer(name string, container models.V1ContainerSp
 	}
 }
 
-func flattenComputeWorkloadVolumeMounts(mounts []*models.V1InstanceVolumeMount) []interface{} {
+func flattenComputeWorkloadVolumeMounts(mounts []*workload_models.V1InstanceVolumeMount) []interface{} {
 	flattened := make([]interface{}, len(mounts))
 	for i, mount := range mounts {
 		flattened[i] = map[string]interface{}{
@@ -615,7 +621,7 @@ func flattenComputeWorkloadVolumeMounts(mounts []*models.V1InstanceVolumeMount) 
 	return flattened
 }
 
-func flattenComputeWorkloadResourceRequirements(r *models.V1ResourceRequirements) []interface{} {
+func flattenComputeWorkloadResourceRequirements(r *workload_models.V1ResourceRequirements) []interface{} {
 	return []interface{}{map[string]interface{}{
 		"requests": map[string]interface{}{
 			"cpu":    r.Requests["cpu"],
@@ -624,7 +630,7 @@ func flattenComputeWorkloadResourceRequirements(r *models.V1ResourceRequirements
 	}}
 }
 
-func flattenComputeWorkloadProbe(p *models.V1Probe) []interface{} {
+func flattenComputeWorkloadProbe(p *workload_models.V1Probe) []interface{} {
 	if p == nil {
 		return nil
 	}
@@ -642,7 +648,7 @@ func flattenComputeWorkloadProbe(p *models.V1Probe) []interface{} {
 	}
 }
 
-func flattenComputeWorkloadTCPSocket(tcp *models.V1TCPSocketAction) []interface{} {
+func flattenComputeWorkloadTCPSocket(tcp *workload_models.V1TCPSocketAction) []interface{} {
 	if tcp == nil {
 		return nil
 	}
@@ -654,7 +660,7 @@ func flattenComputeWorkloadTCPSocket(tcp *models.V1TCPSocketAction) []interface{
 	}
 }
 
-func flattenComputeWorkloadHTTPGetAction(httpGet *models.V1HTTPGetAction) []interface{} {
+func flattenComputeWorkloadHTTPGetAction(httpGet *workload_models.V1HTTPGetAction) []interface{} {
 	if httpGet == nil {
 		return nil
 	}
@@ -672,7 +678,7 @@ func flattenComputeWorkloadHTTPGetAction(httpGet *models.V1HTTPGetAction) []inte
 // flattenComputeWorkloadEnvVarsOrdered flattens the environment variables for a workload
 // while respecting the original order of the previous environment variables. Ordering is
 // important when dealing with updates to existing resources and accurate diffs are desired.
-func flattenComputeWorkloadEnvVarsOrdered(prefix string, data *schema.ResourceData, envVars models.V1EnvironmentVariableMapEntry) []interface{} {
+func flattenComputeWorkloadEnvVarsOrdered(prefix string, data *schema.ResourceData, envVars workload_models.V1EnvironmentVariableMapEntry) []interface{} {
 	ordered := make(map[interface{}]int, data.Get(prefix+".#").(int))
 	for i, n := range data.Get(prefix).([]interface{}) {
 		ordered[n.(map[string]interface{})["key"].(string)] = i
@@ -693,7 +699,7 @@ func flattenComputeWorkloadEnvVarsOrdered(prefix string, data *schema.ResourceDa
 	return e
 }
 
-func flattenComputeWorkloadEnvVars(envVars models.V1EnvironmentVariableMapEntry) []interface{} {
+func flattenComputeWorkloadEnvVars(envVars workload_models.V1EnvironmentVariableMapEntry) []interface{} {
 	e := make([]interface{}, 0, len(envVars))
 	for k, v := range envVars {
 		e = append(e, map[string]interface{}{
@@ -707,7 +713,7 @@ func flattenComputeWorkloadEnvVars(envVars models.V1EnvironmentVariableMapEntry)
 // flattenComputeWorkloadPortsOrdered flattens the port definitions for a workload while
 // respecting the original order of the previous port definitions. Ordering is important
 // when dealing with updates to existing resources and accurate diffs are desired.
-func flattenComputeWorkloadPortsOrdered(prefix string, data *schema.ResourceData, ports models.V1InstancePortMapEntry) []interface{} {
+func flattenComputeWorkloadPortsOrdered(prefix string, data *schema.ResourceData, ports workload_models.V1InstancePortMapEntry) []interface{} {
 	ordered := make(map[interface{}]int, data.Get(prefix+".#").(int))
 	for i, n := range data.Get(prefix).([]interface{}) {
 		ordered[n.(map[string]interface{})["name"].(string)] = i
@@ -730,7 +736,7 @@ func flattenComputeWorkloadPortsOrdered(prefix string, data *schema.ResourceData
 	return newPorts
 }
 
-func flattenComputeWorkloadPorts(ports models.V1InstancePortMapEntry) []interface{} {
+func flattenComputeWorkloadPorts(ports workload_models.V1InstancePortMapEntry) []interface{} {
 	p := make([]interface{}, 0, len(ports))
 	for k, v := range ports {
 		p = append(p, map[string]interface{}{
