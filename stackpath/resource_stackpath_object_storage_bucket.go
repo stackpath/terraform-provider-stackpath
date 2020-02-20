@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/object_storage/client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
 func resourceObjectStorageBucket() *schema.Resource {
@@ -48,7 +49,7 @@ func resourceObjectStorageBucketCreate(data *schema.ResourceData, meta interface
 	config := meta.(*Config)
 	// Create in API
 	resp, err := config.objectStorage.Buckets.CreateBucket(&buckets.CreateBucketParams{
-		Body: buckets.CreateBucketBody{
+		Body: &storage_models.StorageCreateBucketRequest{
 			Label:  data.Get("label").(string),
 			Region: data.Get("region").(string),
 		},
@@ -97,14 +98,18 @@ func resourceObjectStorageBucketRead(data *schema.ResourceData, meta interface{}
 
 func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	visibility := data.Get("visibility").(string)
+	visibility := storage_models.StorageBucketVisibilityPRIVATE
+	if strings.ToUpper(data.Get("visibility").(string)) == "PUBLIC" {
+		visibility = storage_models.StorageBucketVisibilityPUBLIC
+	}
+
 	// Update in API
 	_, err := config.objectStorage.Buckets.UpdateBucket(&buckets.UpdateBucketParams{
 		BucketID: data.Id(),
 		Context:  context.Background(),
 		StackID:  config.StackID,
-		Body: buckets.UpdateBucketBody{
-			Visibility: &visibility,
+		Body: &storage_models.StorageUpdateBucketRequest{
+			Visibility: visibility,
 		},
 	}, nil)
 	// Handle error

@@ -1,0 +1,1011 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Edge Compute Networking",
+    "version": "1.0.0",
+    "contact": {
+      "name": "StackPath Support",
+      "url": "https://support.stackpath.com/"
+    }
+  },
+  "host": "gateway.stackpath.com",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ipam/v1/stacks/{stack_id}/network_policies": {
+      "post": {
+        "summary": "Create a new network policy",
+        "operationId": "CreateNetworkPolicy",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1CreateNetworkPolicyResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "The ID of the stack that a network policy belongs to",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateNetworkPolicyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Network Policies"
+        ]
+      },
+      "get": {
+        "summary": "Get a list of network policies by stack id",
+        "operationId": "GetNetworkPolicies",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetNetworkPoliciesResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "The ID of the stack to retrieve network policies from",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Network Policies"
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}": {
+      "put": {
+        "summary": "Update a network policy",
+        "operationId": "UpdateNetworkPolicy",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateNetworkPolicyResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "The ID of the stack that a network policy belongs to",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_policy_id",
+            "description": "A network policy's unique identifier",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateNetworkPolicyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Network Policies"
+        ]
+      },
+      "get": {
+        "summary": "Get a network policy",
+        "operationId": "GetNetworkPolicy",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetNetworkPolicyResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "The ID of the stack containing the network policy to retrieve",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_policy_id",
+            "description": "The ID the network policy to retrieve",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Network Policies"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a network policy",
+        "operationId": "DeleteNetworkPolicy",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "The ID of the stack containing the network policy to delete",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_policy_id",
+            "description": "The ID of the network policy to delete",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Network Policies"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "NetworkPolicySpecPolicyType": {
+      "type": "string",
+      "enum": [
+        "POLICY_TYPE_NOT_SPECIFIED",
+        "INGRESS",
+        "EGRESS"
+      ],
+      "default": "POLICY_TYPE_NOT_SPECIFIED"
+    },
+    "apiStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "error": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiStatusDetail"
+          }
+        }
+      }
+    },
+    "apiStatusDetail": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "networkMetadata": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/definitions/networkStringMapEntry"
+        },
+        "labels": {
+          "$ref": "#/definitions/networkStringMapEntry"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The date that a metadata entry was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The date that a metadata entry was last updated"
+        },
+        "deleteRequestedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The date that a network policy was requested for deletion"
+        },
+        "version": {
+          "type": "string",
+          "description": "An entity's version number\n\nVersions start at 1 when they are created and increment by 1 every time they are updated."
+        }
+      },
+      "description": "Metadata associated with an entity"
+    },
+    "networkStringMapEntry": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "A string to string key/value pair"
+    },
+    "paginationPageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "string",
+          "description": "The total number of items in the dataset"
+        },
+        "hasPreviousPage": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Whether or not a previous page of data exists"
+        },
+        "hasNextPage": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Whether or not another page of data is available"
+        },
+        "startCursor": {
+          "type": "string",
+          "description": "The cursor for the first item in the set of data returned"
+        },
+        "endCursor": {
+          "type": "string",
+          "description": "The cursor for the last item in the set of data returned"
+        }
+      },
+      "description": "Information about a paginated response\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
+    },
+    "paginationPageRequest": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "string",
+          "description": "The number of items desired"
+        },
+        "after": {
+          "type": "string",
+          "description": "The cursor value after which data will be returned"
+        },
+        "filter": {
+          "type": "string",
+          "description": "SQL-style constraint filters"
+        },
+        "sortBy": {
+          "type": "string",
+          "description": "Sort the response by the given field"
+        }
+      },
+      "description": "Pagination request information\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
+    },
+    "stackpath.rpc.BadRequest": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "fieldViolations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/stackpath.rpc.BadRequest.FieldViolation"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.BadRequest.FieldViolation": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "stackpath.rpc.Help": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "links": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/stackpath.rpc.Help.Link"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.Help.Link": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "stackpath.rpc.LocalizedMessage": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "locale": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.PreconditionFailure": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "violations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/stackpath.rpc.PreconditionFailure.Violation"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.PreconditionFailure.Violation": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "stackpath.rpc.QuotaFailure": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "violations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/stackpath.rpc.QuotaFailure.Violation"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.QuotaFailure.Violation": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "stackpath.rpc.RequestInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string"
+            },
+            "servingData": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.ResourceInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "resourceType": {
+              "type": "string"
+            },
+            "resourceName": {
+              "type": "string"
+            },
+            "owner": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "stackpath.rpc.RetryInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/apiStatusDetail"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "retryDelay": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "v1Action": {
+      "type": "string",
+      "enum": [
+        "UNDEFINED",
+        "BLOCK",
+        "ALLOW"
+      ],
+      "default": "UNDEFINED",
+      "description": "Which action to apply"
+    },
+    "v1CreateNetworkPolicyRequest": {
+      "type": "object",
+      "properties": {
+        "networkPolicy": {
+          "$ref": "#/definitions/v1NetworkPolicy"
+        }
+      },
+      "title": ""
+    },
+    "v1CreateNetworkPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "networkPolicy": {
+          "$ref": "#/definitions/v1NetworkPolicy"
+        }
+      },
+      "description": "A response from a request to add a network policy to a stack"
+    },
+    "v1Egress": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Detailed summary of what the egress rule does"
+        },
+        "action": {
+          "$ref": "#/definitions/v1Action"
+        },
+        "to": {
+          "$ref": "#/definitions/v1HostRule"
+        },
+        "protocols": {
+          "$ref": "#/definitions/v1Protocols"
+        }
+      },
+      "description": "An outbound rule from workload instances"
+    },
+    "v1GetNetworkPoliciesResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1NetworkPolicy"
+          },
+          "description": "The requested network policies"
+        }
+      },
+      "description": "A response from a request to retrieve a stack's network policies"
+    },
+    "v1GetNetworkPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "networkPolicy": {
+          "$ref": "#/definitions/v1NetworkPolicy"
+        }
+      },
+      "description": "A response from a request to get a network policy to a stack"
+    },
+    "v1HostRule": {
+      "type": "object",
+      "properties": {
+        "ipBlock": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1IpBlock"
+          },
+          "description": "List of ip blocks"
+        },
+        "instanceSelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          },
+          "description": "List of instance selectors"
+        },
+        "networkSelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          },
+          "description": "List of network selectors"
+        }
+      },
+      "description": "Defines IPs, instances, or networks"
+    },
+    "v1Ingress": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Detailed summary of what the ingress rule does"
+        },
+        "action": {
+          "$ref": "#/definitions/v1Action"
+        },
+        "from": {
+          "$ref": "#/definitions/v1HostRule"
+        },
+        "protocols": {
+          "$ref": "#/definitions/v1Protocols"
+        }
+      },
+      "description": "An inbound rule to workload instances"
+    },
+    "v1IpBlock": {
+      "type": "object",
+      "properties": {
+        "cidr": {
+          "type": "string",
+          "description": "A subnet that will define all the IPs allowed by a rule"
+        },
+        "except": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of subnets that will be excluded from the above subnet\n\nThis allows a convenient way to allow multiple ip ranges in a single expression"
+        }
+      },
+      "description": "Defines an IP block"
+    },
+    "v1MatchExpression": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The name of the selector to perform a match against"
+        },
+        "operator": {
+          "type": "string",
+          "description": "The operation to perform to match a selector\n\nValid values are \"in\" with support for more possible in the future"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The values to match in the selector"
+        }
+      },
+      "description": "An expression to match selectors against a set of values"
+    },
+    "v1NetworkPolicy": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The ID of the stack that a network policy belongs to"
+        },
+        "id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "A network policy's unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "A network policy's name as it appears in the StackPath portal"
+        },
+        "slug": {
+          "type": "string",
+          "description": "A network policy's programmatic name\n\nNetwork policy slugs are used to build its instances names"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed summary of what the policy does"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        },
+        "spec": {
+          "$ref": "#/definitions/v1NetworkPolicySpec"
+        }
+      },
+      "description": "A network policy\n\nNetwork policies define an ACL that applies to one or many workload instances"
+    },
+    "v1NetworkPolicySpec": {
+      "type": "object",
+      "properties": {
+        "instanceSelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          },
+          "description": "A selector to match workload instances"
+        },
+        "networkSelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          },
+          "description": "A selector to match networks"
+        },
+        "policyTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NetworkPolicySpecPolicyType"
+          },
+          "description": "A list of policy types\n\nPolicy types are used to specify what rules will be defined. If a policy type is given but not defined it will default. If it is not provided then no action will be used."
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "A priority for all rules in the network policy. 1-65000"
+        },
+        "ingress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Ingress"
+          },
+          "description": "A list of rules for inbound traffic to instances\n\nIf the ingress policy type is given but not defined here the default is to block all"
+        },
+        "egress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Egress"
+          },
+          "description": "A list of rules for outbound traffic from instances\n\nIf the egress policy type is given but not defined here the default is to allow all"
+        }
+      },
+      "description": "The specification for the desired state of a network policy"
+    },
+    "v1ProtocolAh": {
+      "type": "object",
+      "description": "Authentication Header (AH) protocol matching"
+    },
+    "v1ProtocolEsp": {
+      "type": "object",
+      "description": "Encapsulating Security Payload (ESP) protocol matching"
+    },
+    "v1ProtocolGre": {
+      "type": "object",
+      "description": "Generic Routing Encapsulation (GRE) protocol matching"
+    },
+    "v1ProtocolIcmp": {
+      "type": "object",
+      "description": "ICMP protocol matching"
+    },
+    "v1ProtocolTcp": {
+      "type": "object",
+      "properties": {
+        "destinationPorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of destination ports to allow 1-65535"
+        },
+        "sourcePorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+        }
+      },
+      "description": "TCP protocol matching"
+    },
+    "v1ProtocolTcpUdp": {
+      "type": "object",
+      "properties": {
+        "destinationPorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of destination ports to allow 1-65535"
+        },
+        "sourcePorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+        }
+      },
+      "description": "TCP or UDP protocol convenience matching"
+    },
+    "v1ProtocolUdp": {
+      "type": "object",
+      "properties": {
+        "destinationPorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of destination ports to allow 1-65535"
+        },
+        "sourcePorts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+        }
+      },
+      "description": "UDP protocol matching"
+    },
+    "v1Protocols": {
+      "type": "object",
+      "properties": {
+        "tcp": {
+          "$ref": "#/definitions/v1ProtocolTcp"
+        },
+        "udp": {
+          "$ref": "#/definitions/v1ProtocolUdp"
+        },
+        "tcpUdp": {
+          "$ref": "#/definitions/v1ProtocolTcpUdp"
+        },
+        "icmp": {
+          "$ref": "#/definitions/v1ProtocolIcmp"
+        },
+        "ah": {
+          "$ref": "#/definitions/v1ProtocolAh"
+        },
+        "esp": {
+          "$ref": "#/definitions/v1ProtocolEsp"
+        },
+        "gre": {
+          "$ref": "#/definitions/v1ProtocolGre"
+        }
+      },
+      "description": "An object of all supported protocols and any attributes for them"
+    },
+    "v1UpdateNetworkPolicyRequest": {
+      "type": "object",
+      "properties": {
+        "networkPolicy": {
+          "$ref": "#/definitions/v1NetworkPolicy"
+        }
+      },
+      "title": ""
+    },
+    "v1UpdateNetworkPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "networkPolicy": {
+          "$ref": "#/definitions/v1NetworkPolicy"
+        }
+      },
+      "description": "A response from a request to update a network policy"
+    }
+  },
+  "securityDefinitions": {
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://gateway.stackpath.com/identity/v1/oauth2/token"
+    }
+  },
+  "security": [
+    {
+      "oauth2": []
+    }
+  ],
+  "externalDocs": {
+    "description": "The StackPath API Reference",
+    "url": "https://stackpath.dev/reference"
+  },
+  "x-explorer-enabled": true,
+  "x-proxy-enabled": true,
+  "x-samples-enabled": true,
+  "x-samples-languages": [
+    "curl",
+    "node",
+    "ruby",
+    "javascript",
+    "python"
+  ]
+}
