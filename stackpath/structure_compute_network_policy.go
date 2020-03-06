@@ -2,44 +2,43 @@ package stackpath
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
-func convertComputeNetworkPolicy(data *schema.ResourceData) *models.V1NetworkPolicy {
-	return &models.V1NetworkPolicy{
+func convertComputeNetworkPolicy(data *schema.ResourceData) *ipam_models.V1NetworkPolicy {
+	return &ipam_models.V1NetworkPolicy{
 		Name:        data.Get("name").(string),
 		Slug:        data.Get("slug").(string),
 		Description: data.Get("description").(string),
-		Metadata: &models.V1Metadata{
-			Labels:      convertToStringMap(data.Get("labels").(map[string]interface{})),
-			Annotations: convertToStringMap(data.Get("annotations").(map[string]interface{})),
+		Metadata: &ipam_models.NetworkMetadata{
+			Labels:      convertWorkloadToIPAMStringMapEntry(convertToStringMap(data.Get("labels").(map[string]interface{}))),
+			Annotations: convertWorkloadToIPAMStringMapEntry(convertToStringMap(data.Get("annotations").(map[string]interface{}))),
 		},
-		Spec: &models.V1NetworkPolicySpec{
+		Spec: &ipam_models.V1NetworkPolicySpec{
 			Priority:          int32(data.Get("priority").(int)),
 			PolicyTypes:       convertComputeNetworkPolicyTypes(data.Get("policy_types").([]interface{})),
-			InstanceSelectors: convertComputeMatchExpression(data.Get("instance_selector").([]interface{})),
-			NetworkSelectors:  convertComputeMatchExpression(data.Get("network_selector").([]interface{})),
+			InstanceSelectors: convertWorkloadToIPAMMatchExpression(convertComputeMatchExpression(data.Get("instance_selector").([]interface{}))),
+			NetworkSelectors:  convertWorkloadToIPAMMatchExpression(convertComputeMatchExpression(data.Get("network_selector").([]interface{}))),
 			Ingress:           convertComputeNetworkPolicyIngress("ingress", data),
 			Egress:            convertComputeNetworkPolicyEgress("egress", data),
 		},
 	}
 }
 
-func convertComputeNetworkPolicyTypes(t []interface{}) []models.NetworkPolicySpecPolicyType {
-	types := make([]models.NetworkPolicySpecPolicyType, len(t))
+func convertComputeNetworkPolicyTypes(t []interface{}) []ipam_models.NetworkPolicySpecPolicyType {
+	types := make([]ipam_models.NetworkPolicySpecPolicyType, len(t))
 	for i, v := range t {
-		types[i] = models.NetworkPolicySpecPolicyType(v.(string))
+		types[i] = ipam_models.NetworkPolicySpecPolicyType(v.(string))
 	}
 	return types
 }
 
-func convertComputeNetworkPolicyIngress(prefix string, data *schema.ResourceData) []*models.V1Ingress {
-	ingress := make([]*models.V1Ingress, data.Get(prefix+".#").(int))
+func convertComputeNetworkPolicyIngress(prefix string, data *schema.ResourceData) []*ipam_models.V1Ingress {
+	ingress := make([]*ipam_models.V1Ingress, data.Get(prefix+".#").(int))
 	for i, v := range data.Get(prefix).([]interface{}) {
 		ingressData := v.(map[string]interface{})
-		ingress[i] = &models.V1Ingress{
-			Action:      models.V1Action(ingressData["action"].(string)),
+		ingress[i] = &ipam_models.V1Ingress{
+			Action:      ipam_models.V1Action(ingressData["action"].(string)),
 			Description: ingressData["description"].(string),
 			Protocols:   convertComputeNetworkPolicyProtocols(ingressData["protocol"].([]interface{})),
 			From:        convertComputeNetworkPolicyHostRule(ingressData["from"].([]interface{})),
@@ -48,12 +47,12 @@ func convertComputeNetworkPolicyIngress(prefix string, data *schema.ResourceData
 	return ingress
 }
 
-func convertComputeNetworkPolicyEgress(prefix string, data *schema.ResourceData) []*models.V1Egress {
-	egress := make([]*models.V1Egress, data.Get(prefix+".#").(int))
+func convertComputeNetworkPolicyEgress(prefix string, data *schema.ResourceData) []*ipam_models.V1Egress {
+	egress := make([]*ipam_models.V1Egress, data.Get(prefix+".#").(int))
 	for i, v := range data.Get(prefix).([]interface{}) {
 		egressData := v.(map[string]interface{})
-		egress[i] = &models.V1Egress{
-			Action:      models.V1Action(egressData["action"].(string)),
+		egress[i] = &ipam_models.V1Egress{
+			Action:      ipam_models.V1Action(egressData["action"].(string)),
 			Description: egressData["description"].(string),
 			Protocols:   convertComputeNetworkPolicyProtocols(egressData["protocol"].([]interface{})),
 			To:          convertComputeNetworkPolicyHostRule(egressData["to"].([]interface{})),
@@ -62,7 +61,7 @@ func convertComputeNetworkPolicyEgress(prefix string, data *schema.ResourceData)
 	return egress
 }
 
-func convertComputeNetworkPolicyHostRule(data []interface{}) *models.V1HostRule {
+func convertComputeNetworkPolicyHostRule(data []interface{}) *ipam_models.V1HostRule {
 	if len(data) == 0 {
 		return nil
 	}
@@ -70,18 +69,18 @@ func convertComputeNetworkPolicyHostRule(data []interface{}) *models.V1HostRule 
 	// will only ever have one rule defined
 	rule := data[0].(map[string]interface{})
 
-	return &models.V1HostRule{
-		InstanceSelectors: convertComputeMatchExpression(rule["instance_selector"].([]interface{})),
-		NetworkSelectors:  convertComputeMatchExpression(rule["network_selector"].([]interface{})),
+	return &ipam_models.V1HostRule{
+		InstanceSelectors: convertWorkloadToIPAMMatchExpression(convertComputeMatchExpression(rule["instance_selector"].([]interface{}))),
+		NetworkSelectors:  convertWorkloadToIPAMMatchExpression(convertComputeMatchExpression(rule["network_selector"].([]interface{}))),
 		IPBlock:           convertComputeNetworkPolicyIPBlock(rule["ip_block"].([]interface{})),
 	}
 }
 
-func convertComputeNetworkPolicyIPBlock(data []interface{}) []*models.V1IPBlock {
-	blocks := make([]*models.V1IPBlock, len(data))
+func convertComputeNetworkPolicyIPBlock(data []interface{}) []*ipam_models.V1IPBlock {
+	blocks := make([]*ipam_models.V1IPBlock, len(data))
 	for i, v := range data {
 		ipBlock := v.(map[string]interface{})
-		blocks[i] = &models.V1IPBlock{
+		blocks[i] = &ipam_models.V1IPBlock{
 			Cidr:   ipBlock["cidr"].(string),
 			Except: convertToStringArray(ipBlock["except"].([]interface{})),
 		}
@@ -89,15 +88,15 @@ func convertComputeNetworkPolicyIPBlock(data []interface{}) []*models.V1IPBlock 
 	return blocks
 }
 
-func convertComputeNetworkPolicyProtocols(data []interface{}) *models.V1Protocols {
+func convertComputeNetworkPolicyProtocols(data []interface{}) *ipam_models.V1Protocols {
 	if len(data) == 0 {
-		return &models.V1Protocols{}
+		return &ipam_models.V1Protocols{}
 	}
 
 	// will only ever have one protocol
 	protocol := data[0].(map[string]interface{})
 
-	return &models.V1Protocols{
+	return &ipam_models.V1Protocols{
 		Ah:     convertComputeNetworkPolicyProtocolAH(protocol["ah"].([]interface{})),
 		Esp:    convertComputeNetworkPolicyProtocolESP(protocol["esp"].([]interface{})),
 		Gre:    convertComputeNetworkPolicyProtocolGRE(protocol["gre"].([]interface{})),
@@ -108,75 +107,75 @@ func convertComputeNetworkPolicyProtocols(data []interface{}) *models.V1Protocol
 	}
 }
 
-func convertComputeNetworkPolicyProtocolAH(data []interface{}) *models.V1ProtocolAh {
+func convertComputeNetworkPolicyProtocolAH(data []interface{}) *ipam_models.V1ProtocolAh {
 	if len(data) == 0 {
 		return nil
 	}
 	// no configuration options available
-	return &models.V1ProtocolAh{}
+	return &ipam_models.V1ProtocolAh{}
 }
 
-func convertComputeNetworkPolicyProtocolESP(data []interface{}) *models.V1ProtocolEsp {
+func convertComputeNetworkPolicyProtocolESP(data []interface{}) *ipam_models.V1ProtocolEsp {
 	if len(data) == 0 {
 		return nil
 	}
 	// no configuration options available
-	return &models.V1ProtocolEsp{}
+	return &ipam_models.V1ProtocolEsp{}
 }
 
-func convertComputeNetworkPolicyProtocolGRE(data []interface{}) *models.V1ProtocolGre {
+func convertComputeNetworkPolicyProtocolGRE(data []interface{}) *ipam_models.V1ProtocolGre {
 	if len(data) == 0 {
 		return nil
 	}
 	// no configuration options available
-	return &models.V1ProtocolGre{}
+	return &ipam_models.V1ProtocolGre{}
 }
 
-func convertComputeNetworkPolicyProtocolICMP(data []interface{}) *models.V1ProtocolIcmp {
+func convertComputeNetworkPolicyProtocolICMP(data []interface{}) *ipam_models.V1ProtocolIcmp {
 	if len(data) == 0 {
 		return nil
 	}
 	// no configuration options available
-	return &models.V1ProtocolIcmp{}
+	return &ipam_models.V1ProtocolIcmp{}
 }
 
-func convertComputeNetworkPolicyProtocolUDP(data []interface{}) *models.V1ProtocolUDP {
+func convertComputeNetworkPolicyProtocolUDP(data []interface{}) *ipam_models.V1ProtocolUDP {
 	if len(data) == 0 {
 		return nil
 	}
 	// will only ever have one UDP protocol defined
 	protocol := data[0].(map[string]interface{})
-	return &models.V1ProtocolUDP{
+	return &ipam_models.V1ProtocolUDP{
 		DestinationPorts: convertToStringArray(protocol["destination_ports"].([]interface{})),
 		SourcePorts:      convertToStringArray(protocol["source_ports"].([]interface{})),
 	}
 }
 
-func convertComputeNetworkPolicyProtocolTCP(data []interface{}) *models.V1ProtocolTCP {
+func convertComputeNetworkPolicyProtocolTCP(data []interface{}) *ipam_models.V1ProtocolTCP {
 	if len(data) == 0 {
 		return nil
 	}
 	// will only ever have one UDP protocol defined
 	protocol := data[0].(map[string]interface{})
-	return &models.V1ProtocolTCP{
+	return &ipam_models.V1ProtocolTCP{
 		DestinationPorts: convertToStringArray(protocol["destination_ports"].([]interface{})),
 		SourcePorts:      convertToStringArray(protocol["source_ports"].([]interface{})),
 	}
 }
 
-func convertComputeNetworkPolicyProtocolTCPUDP(data []interface{}) *models.V1ProtocolTCPUDP {
+func convertComputeNetworkPolicyProtocolTCPUDP(data []interface{}) *ipam_models.V1ProtocolTCPUDP {
 	if len(data) == 0 {
 		return nil
 	}
 	// will only ever have one UDP protocol defined
 	protocol := data[0].(map[string]interface{})
-	return &models.V1ProtocolTCPUDP{
+	return &ipam_models.V1ProtocolTCPUDP{
 		DestinationPorts: convertToStringArray(protocol["destination_ports"].([]interface{})),
 		SourcePorts:      convertToStringArray(protocol["source_ports"].([]interface{})),
 	}
 }
 
-func flattenComputeNetworkPolicyIngress(data []*models.V1Ingress) []interface{} {
+func flattenComputeNetworkPolicyIngress(data []*ipam_models.V1Ingress) []interface{} {
 	d := make([]interface{}, len(data))
 	for i, ingress := range data {
 		d[i] = map[string]interface{}{
@@ -189,7 +188,7 @@ func flattenComputeNetworkPolicyIngress(data []*models.V1Ingress) []interface{} 
 	return d
 }
 
-func flattenComputeNetworkPolicyEgress(data []*models.V1Egress) []interface{} {
+func flattenComputeNetworkPolicyEgress(data []*ipam_models.V1Egress) []interface{} {
 	d := make([]interface{}, len(data))
 	for i, egress := range data {
 		d[i] = map[string]interface{}{
@@ -202,7 +201,7 @@ func flattenComputeNetworkPolicyEgress(data []*models.V1Egress) []interface{} {
 	return d
 }
 
-func isProtocolEmpty(p *models.V1Protocols) bool {
+func isProtocolEmpty(p *ipam_models.V1Protocols) bool {
 	if p == nil {
 		return true
 	}
@@ -210,7 +209,7 @@ func isProtocolEmpty(p *models.V1Protocols) bool {
 	return p.Ah == nil && p.Esp == nil && p.Gre == nil && p.Icmp == nil && p.TCP == nil && p.TCPUDP == nil && p.UDP == nil
 }
 
-func flattenComputeNetworkPolicyProtocols(data *models.V1Protocols) []interface{} {
+func flattenComputeNetworkPolicyProtocols(data *ipam_models.V1Protocols) []interface{} {
 	// The API will return an object regardless if one is passed in or not. This causes
 	// terraform to believe the protocol object is defined in the API response but not
 	// in terraform itself leading to an inconsistency in the state. To work around this
@@ -263,21 +262,21 @@ func flattenComputeNetworkPolicyProtocols(data *models.V1Protocols) []interface{
 	return []interface{}{protocol}
 }
 
-func flattenComputeNetworkPolicyHostRule(data *models.V1HostRule) []interface{} {
+func flattenComputeNetworkPolicyHostRule(data *ipam_models.V1HostRule) []interface{} {
 	if data == nil {
 		return nil
 	}
 
 	return []interface{}{
 		map[string]interface{}{
-			"instance_selector": flattenComputeMatchExpressions(data.InstanceSelectors),
-			"network_selector":  flattenComputeMatchExpressions(data.NetworkSelectors),
+			"instance_selector": flattenComputeMatchExpressions(convertIPAMToWorkloadMatchExpression(data.InstanceSelectors)),
+			"network_selector":  flattenComputeMatchExpressions(convertIPAMToWorkloadMatchExpression(data.NetworkSelectors)),
 			"ip_block":          flattenComputeNetworkPolicyIPBlock(data.IPBlock),
 		},
 	}
 }
 
-func flattenComputeNetworkPolicyIPBlock(data []*models.V1IPBlock) []interface{} {
+func flattenComputeNetworkPolicyIPBlock(data []*ipam_models.V1IPBlock) []interface{} {
 	flattened := make([]interface{}, len(data))
 	for i, block := range data {
 		flattened[i] = map[string]interface{}{
@@ -288,7 +287,7 @@ func flattenComputeNetworkPolicyIPBlock(data []*models.V1IPBlock) []interface{} 
 	return flattened
 }
 
-func flattenComputeNetworkPolicyTypes(types []models.NetworkPolicySpecPolicyType) []interface{} {
+func flattenComputeNetworkPolicyTypes(types []ipam_models.NetworkPolicySpecPolicyType) []interface{} {
 	t := make([]interface{}, len(types))
 	for i, v := range types {
 		t[i] = string(v)

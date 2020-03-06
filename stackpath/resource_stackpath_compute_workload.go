@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	workload "github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload
@@ -26,20 +27,20 @@ func resourceComputeWorkload() *schema.Resource {
 			State: resourceComputeWorkloadImportState,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"slug": &schema.Schema{
+			"slug": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
 			},
-			"labels": &schema.Schema{
+			"labels": {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			"annotations": &schema.Schema{
+			"annotations": {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Computed: true,
@@ -74,44 +75,44 @@ func resourceComputeWorkload() *schema.Resource {
 					return true
 				},
 			},
-			"network_interface": &schema.Schema{
+			"network_interface": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"network": &schema.Schema{
+						"network": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 					},
 				},
 			},
-			"image_pull_credentials": &schema.Schema{
+			"image_pull_credentials": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"docker_registry": &schema.Schema{
+						"docker_registry": {
 							Type:     schema.TypeList,
 							MaxItems: 1,
 							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"server": &schema.Schema{
+									"server": {
 										Type:     schema.TypeString,
 										Optional: true,
 									},
-									"username": &schema.Schema{
+									"username": {
 										Type:     schema.TypeString,
 										Required: true,
 									},
-									"password": &schema.Schema{
+									"password": {
 										Type:      schema.TypeString,
 										Required:  true,
 										Sensitive: true,
 									},
-									"email": &schema.Schema{
+									"email": {
 										Type:      schema.TypeString,
 										Optional:  true,
 										Sensitive: true,
@@ -122,29 +123,29 @@ func resourceComputeWorkload() *schema.Resource {
 					},
 				},
 			},
-			"virtual_machine": &schema.Schema{
+			"virtual_machine": {
 				Type:          schema.TypeList,
 				ConflictsWith: []string{"container"},
 				MaxItems:      1,
 				Optional:      true,
 				Elem:          resourceComputeWorkloadVirtualMachine(),
 			},
-			"container": &schema.Schema{
+			"container": {
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"virtual_machine"},
 				Elem:          resourceComputeWorkloadContainer(),
 			},
-			"volume_claim": &schema.Schema{
+			"volume_claim": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"slug": &schema.Schema{
+						"slug": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -152,45 +153,45 @@ func resourceComputeWorkload() *schema.Resource {
 					},
 				},
 			},
-			"target": &schema.Schema{
+			"target": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"min_replicas": &schema.Schema{
+						"min_replicas": {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
-						"max_replicas": &schema.Schema{
+						"max_replicas": {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
-						"scale_settings": &schema.Schema{
+						"scale_settings": {
 							Type:     schema.TypeList,
 							Optional: true,
 							MaxItems: 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"metrics": &schema.Schema{
+									"metrics": {
 										Type:     schema.TypeList,
 										Required: true,
 										MinItems: 1,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"metric": &schema.Schema{
+												"metric": {
 													Type:     schema.TypeString,
 													Required: true,
 												},
-												"average_utilization": &schema.Schema{
+												"average_utilization": {
 													Type:     schema.TypeInt,
 													Optional: true,
 												},
-												"average_value": &schema.Schema{
+												"average_value": {
 													Type:     schema.TypeString,
 													Optional: true,
 												},
@@ -200,12 +201,12 @@ func resourceComputeWorkload() *schema.Resource {
 								},
 							},
 						},
-						"deployment_scope": &schema.Schema{
+						"deployment_scope": {
 							Type:     schema.TypeString,
 							Optional: true,
 							Default:  "cityCode",
 						},
-						"selector": &schema.Schema{
+						"selector": {
 							Type:     schema.TypeList,
 							Required: true,
 							MinItems: 1,
@@ -214,7 +215,7 @@ func resourceComputeWorkload() *schema.Resource {
 					},
 				},
 			},
-			"instances": &schema.Schema{
+			"instances": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Optional: true,
@@ -230,11 +231,11 @@ func resourceComputeWorkloadVolumeMountSchema() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"slug": &schema.Schema{
+				"slug": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"mount_path": &schema.Schema{
+				"mount_path": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
@@ -250,27 +251,27 @@ func resourceComputeWorkloadProbeSchema() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"http_get": &schema.Schema{
+				"http_get": {
 					Type:     schema.TypeList,
 					MaxItems: 1,
 					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"path": &schema.Schema{
+							"path": {
 								Type:     schema.TypeString,
 								Optional: true,
 								Default:  "/",
 							},
-							"port": &schema.Schema{
+							"port": {
 								Type:     schema.TypeInt,
 								Required: true,
 							},
-							"scheme": &schema.Schema{
+							"scheme": {
 								Type:     schema.TypeString,
 								Optional: true,
 								Default:  "http",
 							},
-							"http_headers": &schema.Schema{
+							"http_headers": {
 								Type:     schema.TypeMap,
 								Optional: true,
 								Elem: &schema.Schema{
@@ -280,39 +281,39 @@ func resourceComputeWorkloadProbeSchema() *schema.Schema {
 						},
 					},
 				},
-				"tcp_socket": &schema.Schema{
+				"tcp_socket": {
 					Type:     schema.TypeList,
 					MaxItems: 1,
 					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"port": &schema.Schema{
+							"port": {
 								Type:     schema.TypeInt,
 								Required: true,
 							},
 						},
 					},
 				},
-				"initial_delay_seconds": &schema.Schema{
+				"initial_delay_seconds": {
 					Type:     schema.TypeInt,
 					Optional: true,
 					Default:  0,
 				},
-				"timeout_seconds": &schema.Schema{
+				"timeout_seconds": {
 					Type:     schema.TypeInt,
 					Optional: true,
 					Default:  10,
 				},
-				"period_seconds": &schema.Schema{
+				"period_seconds": {
 					Type:     schema.TypeInt,
 					Optional: true,
 					Default:  60,
 				},
-				"success_threshold": &schema.Schema{
+				"success_threshold": {
 					Type:     schema.TypeInt,
 					Required: true,
 				},
-				"failure_threshold": &schema.Schema{
+				"failure_threshold": {
 					Type:     schema.TypeInt,
 					Required: true,
 				},
@@ -328,7 +329,7 @@ func resourceComputeWorkloadResourcesSchema() *schema.Schema {
 		Required: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"requests": &schema.Schema{
+				"requests": {
 					Type:     schema.TypeMap,
 					Required: true,
 					Elem: &schema.Schema{
@@ -346,20 +347,20 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name": &schema.Schema{
+				"name": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"enable_implicit_network_policy": &schema.Schema{
+				"enable_implicit_network_policy": {
 					Type:     schema.TypeBool,
 					Optional: true,
 					Default:  false,
 				},
-				"port": &schema.Schema{
+				"port": {
 					Type:     schema.TypeInt,
 					Required: true,
 				},
-				"protocol": &schema.Schema{
+				"protocol": {
 					Type:     schema.TypeString,
 					Optional: true,
 					Default:  "tcp",
@@ -372,10 +373,10 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 	// Create the workload
-	resp, err := config.compute.CreateWorkload(&workload.CreateWorkloadParams{
+	resp, err := config.edgeCompute.Workloads.CreateWorkload(&workloads.CreateWorkloadParams{
 		Context: context.Background(),
 		StackID: config.StackID,
-		Body: &models.V1CreateWorkloadRequest{
+		Body: &workload_models.V1CreateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
@@ -391,11 +392,11 @@ func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) 
 
 func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
-	_, err := config.compute.UpdateWorkload(&workload.UpdateWorkloadParams{
+	_, err := config.edgeCompute.Workloads.UpdateWorkload(&workloads.UpdateWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
-		Body: &models.V1UpdateWorkloadRequest{
+		Body: &workload_models.V1UpdateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
@@ -413,7 +414,7 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	resp, err := config.compute.GetWorkload(&workload.GetWorkloadParams{
+	resp, err := config.edgeCompute.Workloads.GetWorkload(&workloads.GetWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
@@ -440,9 +441,9 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 	pageSize := "50"
 	// variable to keep track of our location through pagination
 	var endCursor string
-	var instances []interface{}
+	var terraformInstances []interface{}
 	for {
-		params := &client.GetWorkloadInstancesParams{
+		params := &instances.GetWorkloadInstancesParams{
 			StackID:          config.StackID,
 			WorkloadID:       data.Id(),
 			Context:          context.Background(),
@@ -451,12 +452,12 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		if endCursor != "" {
 			params.PageRequestAfter = &endCursor
 		}
-		resp, err := config.compute.GetWorkloadInstances(params, nil)
+		resp, err := config.edgeCompute.Instances.GetWorkloadInstances(params, nil)
 		if err != nil {
 			return fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err))
 		}
 		for _, result := range resp.Payload.Results {
-			instances = append(instances, flattenComputeWorkloadInstance(result))
+			terraformInstances = append(terraformInstances, flattenComputeWorkloadInstance(result))
 		}
 		// Continue paginating until we get all the results
 		if !resp.Payload.PageInfo.HasNextPage {
@@ -465,8 +466,8 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		endCursor = resp.Payload.PageInfo.EndCursor
 	}
 
-	if err := data.Set("instances", instances); err != nil {
-		return fmt.Errorf("Error setting instances: %v", err)
+	if err := data.Set("instances", terraformInstances); err != nil {
+		return fmt.Errorf("error setting instances: %v", err)
 	}
 
 	return nil
@@ -475,7 +476,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	_, err := config.compute.DeleteWorkload(&workload.DeleteWorkloadParams{
+	_, err := config.edgeCompute.Workloads.DeleteWorkload(&workloads.DeleteWorkloadParams{
 		Context:    context.Background(),
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),

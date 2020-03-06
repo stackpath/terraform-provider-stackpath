@@ -7,15 +7,15 @@ import (
 func resourceComputeMatchExpressionSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"key": &schema.Schema{
+			"key": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"operator": &schema.Schema{
+			"operator": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"values": &schema.Schema{
+			"values": {
 				Type:     schema.TypeList,
 				Required: true,
 				MinItems: 1,
@@ -30,35 +30,35 @@ func resourceComputeMatchExpressionSchema() *schema.Resource {
 func resourceComputeWorkloadContainer() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"image": &schema.Schema{
+			"image": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"command": &schema.Schema{
+			"command": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"env": &schema.Schema{
+			"env": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"key": &schema.Schema{
+						"key": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"value": &schema.Schema{
+						"value": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"secret_value": &schema.Schema{
+						"secret_value": {
 							Type:      schema.TypeString,
 							Optional:  true,
 							Sensitive: true,
@@ -78,11 +78,11 @@ func resourceComputeWorkloadContainer() *schema.Resource {
 func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"image": &schema.Schema{
+			"image": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -91,7 +91,7 @@ func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 			"readiness_probe": resourceComputeWorkloadProbeSchema(),
 			"resources":       resourceComputeWorkloadResourcesSchema(),
 			"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
-			"user_data": &schema.Schema{
+			"user_data": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -102,11 +102,11 @@ func resourceComputeWorkloadVirtualMachine() *schema.Resource {
 func resourceComputeMetadata() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"labels": &schema.Schema{
+			"labels": {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			"annotations": &schema.Schema{
+			"annotations": {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
@@ -117,55 +117,55 @@ func resourceComputeMetadata() *schema.Resource {
 func resourceComputeLocation() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"city": &schema.Schema{
+			"city": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"city_code": &schema.Schema{
+			"city_code": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"subdivision": &schema.Schema{
+			"subdivision": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"subdivision_code": &schema.Schema{
+			"subdivision_code": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"country": &schema.Schema{
+			"country": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"country_code": &schema.Schema{
+			"country_code": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"region": &schema.Schema{
+			"region": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"region_code": &schema.Schema{
+			"region_code": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"continent": &schema.Schema{
+			"continent": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"continent_code": &schema.Schema{
+			"continent_code": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"latitude": &schema.Schema{
+			"latitude": {
 				Type:     schema.TypeFloat,
 				Optional: true,
 			},
-			"longitude": &schema.Schema{
+			"longitude": {
 				Type:     schema.TypeFloat,
 				Optional: true,
 			},

@@ -1,10 +1,10 @@
 package stackpath
 
 import (
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/internal/models"
+	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
-func flattenComputeWorkloadInstance(instance *models.Workloadv1Instance) map[string]interface{} {
+func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance) map[string]interface{} {
 	// We don't need to worry about the order of these containers or VMs
 	// since workload instances are a computed resource and Terraform
 	// doesn't need to create a diff.
@@ -35,7 +35,7 @@ func flattenComputeWorkloadInstance(instance *models.Workloadv1Instance) map[str
 	}
 }
 
-func flattenComputeWorkloadContainerStatus(status *models.V1ContainerStatus) map[string]interface{} {
+func flattenComputeWorkloadContainerStatus(status *workload_models.V1ContainerStatus) map[string]interface{} {
 	var waiting []interface{}
 	if status.Waiting != nil {
 		waiting = []interface{}{
