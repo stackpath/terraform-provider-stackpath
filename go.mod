@@ -8,10 +8,9 @@ require (
 	github.com/go-openapi/swag v0.19.2
 	github.com/go-openapi/validate v0.0.0-20180502213133-9286f6d0e5c1
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/terraform v0.12.7
+	github.com/hashicorp/terraform-plugin-sdk v1.7.0
 	github.com/mailru/easyjson v0.0.0-20190620125010-da37f6c1e481 // indirect
-	golang.org/x/net v0.0.0-20190613194153-d28f0bde5980
-	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
+	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 )
 
 go 1.13

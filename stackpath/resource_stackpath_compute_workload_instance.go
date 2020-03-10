@@ -1,6 +1,6 @@
 package stackpath
 
-import "github.com/hashicorp/terraform/helper/schema"
+import "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 func resourceComputeWorkloadInstance() *schema.Resource {
 	return &schema.Resource{
