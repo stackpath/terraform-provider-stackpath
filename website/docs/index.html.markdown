@@ -19,9 +19,9 @@ Use the navigation to the left to read about the available resources.
 ```hcl
 # Configure the StackPath Provider
 provider "stackpath" {
-  stack_id      = "${var.stackpath_stack_id}"
-  client_id     = "${var.stackpath_client_id}"
-  client_secret = "${var.stackpath_client_secret}"
+  stack_id      = var.stackpath_stack_id
+  client_id     = var.stackpath_client_id
+  client_secret = var.stackpath_client_secret
 }
 
 # Create a new Edge Compute workload
