@@ -113,7 +113,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 `virtual_machine` supports the following arguments:
 
 * `name` - (Required) A virtual machine's name.
-* `image` - (Required) The location of a Docker image to run as a virtual machine.
+* `image` - (Required) The disk image to run as a virtual machine.
 * `port` - (Optional) Network ports to expose from the virtual machine. See [Network Ports](#network-ports) below for details.
 * `liveness_probe` - (Optional) Criteria to determine if the compute workload is online. See [Probes](#probes) below for details.
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
