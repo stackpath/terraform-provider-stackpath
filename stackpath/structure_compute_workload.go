@@ -9,7 +9,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // convert from the terraform data structure to the workload data structure we need for API calls

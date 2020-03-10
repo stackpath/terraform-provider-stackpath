@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	terraform_version "github.com/hashicorp/terraform/version"
 	"github.com/terraform-providers/terraform-provider-stackpath/version"
 )
 
@@ -13,19 +12,20 @@ const userAgentFormat = "HashiCorp Terraform/%s (+https://www.terraform.io) terr
 // UserAgentTransport is an http RoundTripper that sets a descriptive User-Agent
 //header for all StackPath API requests.
 type UserAgentTransport struct {
+	terraformVersion string
 	http.RoundTripper
 	parent http.RoundTripper
 }
 
 // NewUserAgentTransport builds a new UserAgentTransport around the underlying
 // RoundTripper.
-func NewUserAgentTransport(parent http.RoundTripper) *UserAgentTransport {
-	return &UserAgentTransport{parent: parent}
+func NewUserAgentTransport(parent http.RoundTripper, terraformVersion string) *UserAgentTransport {
+	return &UserAgentTransport{parent: parent, terraformVersion: terraformVersion}
 }
 
 // RoundTrip implements the http.RoundTripper interface, setting a User-Agent
 // header on the HTTP request.
 func (t *UserAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Set("User-Agent", fmt.Sprintf(userAgentFormat, terraform_version.Version, version.ProviderVersion))
+	req.Header.Set("User-Agent", fmt.Sprintf(userAgentFormat, t.terraformVersion, version.ProviderVersion))
 	return t.parent.RoundTrip(req)
 }

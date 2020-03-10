@@ -14,8 +14,8 @@ import (
 
 	httptransport "github.com/go-openapi/runtime/client"
 
-	"github.com/hashicorp/terraform/helper/logging"
-	"github.com/hashicorp/terraform/helper/pathorcontents"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/pathorcontents"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -58,7 +58,7 @@ type Config struct {
 
 // LoadAndValidate will load the configuration and validate the configuration
 // options. An error will be returned when the configuration is invalid.
-func (c *Config) LoadAndValidate() error {
+func (c *Config) LoadAndValidate(terraformVersion string) error {
 	if c.ClientID == "" && c.ClientSecret == "" && c.AccessToken == "" {
 		// Require the user to provide at least one form of authentication
 		return fmt.Errorf("must provide either an access_token or a client_id and client_secret")
@@ -106,7 +106,7 @@ func (c *Config) LoadAndValidate() error {
 
 	// Create a new openAPI runtime
 	runtime := httptransport.NewWithClient(c.BaseURL, "/", []string{"https"}, c.client)
-	runtime.Transport = NewUserAgentTransport(runtime.Transport)
+	runtime.Transport = NewUserAgentTransport(runtime.Transport, terraformVersion)
 
 	c.edgeCompute = workload_client.New(runtime, nil)
 	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
