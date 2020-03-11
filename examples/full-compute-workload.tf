@@ -10,8 +10,8 @@ resource "stackpath_compute_workload" "my-compute-workload" {
   # labels can be used as label selectors when applying
   # network policies.
   labels = {
-    "role"        = "web-server"
-    "environment" = "production"
+    role        = "web-server"
+    environment = "production"
   }
 
   # Define the network interfaces that should
@@ -48,8 +48,8 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     # command = []
     resources {
       requests = {
-        "cpu"    = "1"
-        "memory" = "2Gi"
+        cpu    = "1"
+        memory = "2Gi"
       }
     }
     # The ports that should be publicly exposed on
@@ -238,7 +238,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     # supported is storage requests.
     resources {
       requests = {
-        "storage" = "100Gi"
+        storage = "100Gi"
       }
     }
   }
