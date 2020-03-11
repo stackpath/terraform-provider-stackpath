@@ -17,20 +17,20 @@ variable "gcp_region" {}
 variable "gcp_zone" {}
 
 provider "stackpath" {
-  stack_id      = "${var.stackpath_stack_id}"
-  client_id     = "${var.stackpath_client_id}"
-  client_secret = "${var.stackpath_client_secret}"
+  stack_id      = var.stackpath_stack_id
+  client_id     = var.stackpath_client_id
+  client_secret = var.stackpath_client_secret
 }
 
 provider "aws" {
-  region     = "${var.aws_region}"
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
+  region     = var.aws_region
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
 
 provider "google" {
-  credentials = "${file(var.gcp_credentials_file)}"
-  project     = "${var.gcp_project}"
-  region      = "${var.gcp_region}"
-  zone        = "${var.gcp_zone}"
+  credentials = file(var.gcp_credentials_file)
+  project     = var.gcp_project
+  region      = var.gcp_region
+  zone        = var.gcp_zone
 }

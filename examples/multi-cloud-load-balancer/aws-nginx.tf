@@ -28,7 +28,7 @@ resource "aws_vpc" "main" {
 
 # Create a new subnet for the created VPC
 resource "aws_subnet" "main" {
-  vpc_id                  = "${aws_vpc.main.id}"
+  vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 
@@ -39,7 +39,7 @@ resource "aws_subnet" "main" {
 
 # Create a new internet gateway for the VPC
 resource "aws_internet_gateway" "main" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
   tags = {
     Name = "main"
   }
@@ -49,13 +49,13 @@ resource "aws_internet_gateway" "main" {
 # add a route for 0.0.0.0/0 that sends traffic
 # to the managed internet gateway.
 resource "aws_default_route_table" "main" {
-  default_route_table_id = "${aws_vpc.main.default_route_table_id}"
+  default_route_table_id = aws_vpc.main.default_route_table_id
   tags = {
     "Name" = "main"
   }
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.main.id}"
+    gateway_id = aws_internet_gateway.main.id
   }
 }
 
@@ -63,7 +63,7 @@ resource "aws_default_route_table" "main" {
 resource "aws_security_group" "allow_inbound_http" {
   name        = "allow-inbound-http"
   description = "Allow inbound HTTP traffic"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 80
@@ -77,7 +77,7 @@ resource "aws_security_group" "allow_inbound_http" {
 resource "aws_security_group" "allow_outbound_traffic" {
   name        = "allow-outbound-traffic"
   description = "Allow all outbound traffic"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
 
   egress {
     from_port   = 0
@@ -89,15 +89,15 @@ resource "aws_security_group" "allow_outbound_traffic" {
 
 # Define an output value of the IP of the EC2 instance
 output "aws-nginx-ip" {
-  value = "${aws_instance.web_server_01.public_ip}"
+  value = aws_instance.web_server_01.public_ip
 }
 
 # Create a new instance of the latest Ubuntu 14.04 on an
 # t2.micro node with an AWS Tag naming it "web-server-01"
 resource "aws_instance" "web_server_01" {
-  ami           = "${data.aws_ami.ubuntu.id}"
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  subnet_id     = "${aws_subnet.main.id}"
+  subnet_id     = aws_subnet.main.id
   user_data     = <<EOT
 #cloud-config
 # update apt on boot

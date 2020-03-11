@@ -71,10 +71,10 @@ output "traefik-anycast-ip" {
 
 output "traefik-workload-instances" {
   value = {
-    for instance in stackpath_compute_workload.traefik-lb.instances :
+    for instance in stackpath_compute_workload.traefik-lb.instances:
     instance.name => {
-      "ip_address" = instance.external_ip_address
-      "phase"      = instance.phase
+      ip_address = instance.external_ip_address
+      phase      = instance.phase
     }
   }
 }
