@@ -1,4 +1,14 @@
-## 1.3.0 (Unreleased)
+## 1.2.1 (Unreleased)
+
+BUG FIXES:
+
+- Correct the documentation for the virtual machine `image` field ([#7](https://github.com/terraform-providers/terraform-provider-stackpath/pull/7))
+
+ENHANCEMENTS:
+
+- Migrate internal code from Terraform Core to the Terraform provider SDK ([#6](https://github.com/terraform-providers/terraform-provider-stackpath/pull/6))
+- Various syntactic touch-ups of example Terraform files and snippets ([#7](https://github.com/terraform-providers/terraform-provider-stackpath/pull/7))
+
 ## 1.2.0 (February 21, 2020)
 
 FEATURES:
