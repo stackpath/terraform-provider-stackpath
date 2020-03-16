@@ -13,7 +13,7 @@
 # port 80 on all instances that have a label match of role=web-server.
 #
 # You can create multiple network policies on your stack.
-resource "stackpath_network_policy" "my-compute-network-policy" {
+resource "stackpath_compute_network_policy" "my-compute-network-policy" {
   # A human friendly name
   name = "My compute network policy"
   # A DNS compatible label value that is unique to your stack. This value
