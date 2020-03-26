@@ -1292,7 +1292,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "error": {
+        "message": {
           "type": "string"
         },
         "details": {
