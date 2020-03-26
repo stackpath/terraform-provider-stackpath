@@ -17,7 +17,7 @@ swagger generate client \
   --client-package=ipam_client
 
 swagger generate client \
-  --spec=swagger/stackpath_object_storage.oas2.json \
+  --spec=swagger/stackpath_storage.oas2.json \
   --target=stackpath/api/storage \
   --model-package=storage_models \
   --client-package=storage_client
