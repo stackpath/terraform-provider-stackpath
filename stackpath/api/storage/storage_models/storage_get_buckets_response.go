@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StorageGetBucketsResponse The buckets for the given stack
+//
 // swagger:model storageGetBucketsResponse
 type StorageGetBucketsResponse struct {
 

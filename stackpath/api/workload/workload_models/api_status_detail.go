@@ -13,11 +13,12 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // APIStatusDetail api status detail
+//
 // swagger:discriminator apiStatusDetail @type
 type APIStatusDetail interface {
 	runtime.Validatable
@@ -26,6 +27,9 @@ type APIStatusDetail interface {
 	// Required: true
 	AtType() string
 	SetAtType(string)
+
+	// AdditionalProperties in base type shoud be handled just like regular properties
+	// At this moment, the base type property is pushed down to the subtype
 }
 
 type apiStatusDetail struct {
@@ -39,7 +43,6 @@ func (m *apiStatusDetail) AtType() string {
 
 // SetAtType sets the at type of this polymorphic type
 func (m *apiStatusDetail) SetAtType(val string) {
-
 }
 
 // UnmarshalAPIStatusDetailSlice unmarshals polymorphic slices of APIStatusDetail
@@ -94,66 +97,56 @@ func unmarshalAPIStatusDetail(data []byte, consumer runtime.Consumer) (APIStatus
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.BadRequest":
 		var result StackpathRPCBadRequest
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.Help":
 		var result StackpathRPCHelp
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.LocalizedMessage":
 		var result StackpathRPCLocalizedMessage
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.PreconditionFailure":
 		var result StackpathRPCPreconditionFailure
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.QuotaFailure":
 		var result StackpathRPCQuotaFailure
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.RequestInfo":
 		var result StackpathRPCRequestInfo
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.ResourceInfo":
 		var result StackpathRPCResourceInfo
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	case "stackpath.rpc.RetryInfo":
 		var result StackpathRPCRetryInfo
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
-
 	}
 	return nil, errors.New(422, "invalid @type value: %q", getType.AtType)
-
 }
 
 // Validate validates this api status detail

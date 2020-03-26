@@ -7,11 +7,12 @@ package ipam_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1Protocols An object of all supported protocols and any attributes for them
+//
 // swagger:model v1Protocols
 type V1Protocols struct {
 

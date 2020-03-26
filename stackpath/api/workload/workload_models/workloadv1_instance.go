@@ -9,12 +9,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Workloadv1Instance An instance of a workload deployment
+//
 // swagger:model workloadv1Instance
 type Workloadv1Instance struct {
 

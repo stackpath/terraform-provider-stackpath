@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -20,6 +20,7 @@ import (
 //  - RUNNING: The container is running
 //  - FAILED: The container has terminated due to a failure
 //  - STOPPED: The container was terminated by the user
+//
 // swagger:model v1ContainerStatusContainerPhase
 type V1ContainerStatusContainerPhase string
 

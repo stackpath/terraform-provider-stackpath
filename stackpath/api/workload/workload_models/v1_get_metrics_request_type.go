@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -17,6 +17,7 @@ import (
 //
 // - BANDWIDTH: Bandwidth ingress and egress metrics
 //  - INSTANCE: Instance CPU, memory, and filesystem metrics
+//
 // swagger:model v1GetMetricsRequestType
 type V1GetMetricsRequestType string
 

@@ -6,11 +6,12 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCPreconditionFailureViolation stackpath rpc precondition failure violation
+//
 // swagger:model stackpath.rpc.PreconditionFailure.Violation
 type StackpathRPCPreconditionFailureViolation struct {
 

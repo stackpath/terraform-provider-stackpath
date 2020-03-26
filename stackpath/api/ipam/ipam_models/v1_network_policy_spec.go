@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1NetworkPolicySpec The specification for the desired state of a network policy
+//
 // swagger:model v1NetworkPolicySpec
 type V1NetworkPolicySpec struct {
 

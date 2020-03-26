@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1VirtualMachineSpec The specification for the desired state of a virtual machine in a workload
+//
 // swagger:model v1VirtualMachineSpec
 type V1VirtualMachineSpec struct {
 

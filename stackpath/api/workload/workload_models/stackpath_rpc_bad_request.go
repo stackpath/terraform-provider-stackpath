@@ -11,11 +11,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCBadRequest stackpath rpc bad request
+//
 // swagger:model stackpath.rpc.BadRequest
 type StackpathRPCBadRequest struct {
 
@@ -30,10 +31,7 @@ func (m *StackpathRPCBadRequest) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCBadRequest) SetAtType(val string) {
-
 }
-
-// FieldViolations gets the field violations of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCBadRequest) UnmarshalJSON(raw []byte) error {
@@ -88,8 +86,7 @@ func (m StackpathRPCBadRequest) MarshalJSON() ([]byte, error) {
 	}{
 
 		FieldViolations: m.FieldViolations,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +95,7 @@ func (m StackpathRPCBadRequest) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

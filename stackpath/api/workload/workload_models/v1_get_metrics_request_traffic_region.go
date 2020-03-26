@@ -9,13 +9,14 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1GetMetricsRequestTrafficRegion A geographic or network region to filter traffic metrics for
 //
 // This field does not apply when retrieving INSTANCE type metrics
+//
 // swagger:model v1GetMetricsRequestTrafficRegion
 type V1GetMetricsRequestTrafficRegion string
 

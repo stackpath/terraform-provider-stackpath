@@ -6,11 +6,12 @@ package storage_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCQuotaFailureViolation stackpath rpc quota failure violation
+//
 // swagger:model stackpath.rpc.QuotaFailure.Violation
 type StackpathRPCQuotaFailureViolation struct {
 

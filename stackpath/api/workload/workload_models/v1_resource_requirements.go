@@ -7,13 +7,14 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1ResourceRequirements Resource requirements for an object
 //
 // Resource requirements are key/value pairs.
+//
 // swagger:model v1ResourceRequirements
 type V1ResourceRequirements struct {
 

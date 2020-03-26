@@ -6,11 +6,12 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1IPBlock Defines an IP block
+//
 // swagger:model v1IpBlock
 type V1IPBlock struct {
 

@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // NetworkPolicySpecPolicyType network policy spec policy type
+//
 // swagger:model NetworkPolicySpecPolicyType
 type NetworkPolicySpecPolicyType string
 

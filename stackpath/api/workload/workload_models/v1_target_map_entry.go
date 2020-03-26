@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1TargetMapEntry A string to deployment target key/value pair
+//
 // swagger:model v1TargetMapEntry
 type V1TargetMapEntry map[string]V1Target
 

@@ -7,11 +7,12 @@ package ipam_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1Ingress An inbound rule to workload instances
+//
 // swagger:model v1Ingress
 type V1Ingress struct {
 

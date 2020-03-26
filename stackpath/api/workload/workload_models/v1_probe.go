@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1Probe A health check probe against a workload instance to determine if it is alive or ready to receive traffic
+//
 // swagger:model v1Probe
 type V1Probe struct {
 

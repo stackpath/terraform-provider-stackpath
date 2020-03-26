@@ -6,5 +6,6 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 // V1ProtocolEsp Encapsulating Security Payload (ESP) protocol matching
+//
 // swagger:model v1ProtocolEsp
 type V1ProtocolEsp struct{}

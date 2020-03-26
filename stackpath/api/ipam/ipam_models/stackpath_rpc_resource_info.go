@@ -10,11 +10,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCResourceInfo stackpath rpc resource info
+//
 // swagger:model stackpath.rpc.ResourceInfo
 type StackpathRPCResourceInfo struct {
 
@@ -38,16 +39,7 @@ func (m *StackpathRPCResourceInfo) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCResourceInfo) SetAtType(val string) {
-
 }
-
-// Description gets the description of this subtype
-
-// Owner gets the owner of this subtype
-
-// ResourceName gets the resource name of this subtype
-
-// ResourceType gets the resource type of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCResourceInfo) UnmarshalJSON(raw []byte) error {
@@ -94,11 +86,8 @@ func (m *StackpathRPCResourceInfo) UnmarshalJSON(raw []byte) error {
 	}
 
 	result.Description = data.Description
-
 	result.Owner = data.Owner
-
 	result.ResourceName = data.ResourceName
-
 	result.ResourceType = data.ResourceType
 
 	*m = result
@@ -132,8 +121,7 @@ func (m StackpathRPCResourceInfo) MarshalJSON() ([]byte, error) {
 		ResourceName: m.ResourceName,
 
 		ResourceType: m.ResourceType,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -142,8 +130,7 @@ func (m StackpathRPCResourceInfo) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

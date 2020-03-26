@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1ImagePullCredential The credentials that should be used to pull the container image
+//
 // swagger:model v1ImagePullCredential
 type V1ImagePullCredential struct {
 

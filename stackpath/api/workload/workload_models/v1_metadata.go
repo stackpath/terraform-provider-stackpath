@@ -7,12 +7,13 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // V1Metadata Metadata associated with an entity
+//
 // swagger:model v1Metadata
 type V1Metadata struct {
 

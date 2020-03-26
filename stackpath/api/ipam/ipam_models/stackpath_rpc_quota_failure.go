@@ -11,11 +11,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCQuotaFailure stackpath rpc quota failure
+//
 // swagger:model stackpath.rpc.QuotaFailure
 type StackpathRPCQuotaFailure struct {
 
@@ -30,10 +31,7 @@ func (m *StackpathRPCQuotaFailure) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCQuotaFailure) SetAtType(val string) {
-
 }
-
-// Violations gets the violations of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCQuotaFailure) UnmarshalJSON(raw []byte) error {
@@ -88,8 +86,7 @@ func (m StackpathRPCQuotaFailure) MarshalJSON() ([]byte, error) {
 	}{
 
 		Violations: m.Violations,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +95,7 @@ func (m StackpathRPCQuotaFailure) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

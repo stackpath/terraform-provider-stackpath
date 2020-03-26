@@ -6,5 +6,6 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 // V1ProtocolIcmp ICMP protocol matching
+//
 // swagger:model v1ProtocolIcmp
 type V1ProtocolIcmp struct{}

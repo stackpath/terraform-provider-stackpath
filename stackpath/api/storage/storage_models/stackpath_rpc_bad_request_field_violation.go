@@ -6,11 +6,12 @@ package storage_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCBadRequestFieldViolation stackpath rpc bad request field violation
+//
 // swagger:model stackpath.rpc.BadRequest.FieldViolation
 type StackpathRPCBadRequestFieldViolation struct {
 

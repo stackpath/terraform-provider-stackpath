@@ -7,12 +7,13 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // V1ContainerStatus The status of a container in a workload
+//
 // swagger:model v1ContainerStatus
 type V1ContainerStatus struct {
 

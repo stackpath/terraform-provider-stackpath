@@ -6,11 +6,12 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1LogChunk A chunk of raw log data
+//
 // swagger:model v1LogChunk
 type V1LogChunk struct {
 

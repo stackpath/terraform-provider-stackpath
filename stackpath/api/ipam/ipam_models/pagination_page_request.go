@@ -6,13 +6,14 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PaginationPageRequest Pagination request information
 //
 // This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.
+//
 // swagger:model paginationPageRequest
 type PaginationPageRequest struct {
 

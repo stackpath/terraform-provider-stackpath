@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // DataVector A set of time series containing a single sample for each time series, all sharing the same timestamp
+//
 // swagger:model DataVector
 type DataVector struct {
 

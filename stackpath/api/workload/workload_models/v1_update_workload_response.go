@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1UpdateWorkloadResponse A response from a request to update a workload
+//
 // swagger:model v1UpdateWorkloadResponse
 type V1UpdateWorkloadResponse struct {
 

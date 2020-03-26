@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1Action Which action to apply
+//
 // swagger:model v1Action
 type V1Action string
 

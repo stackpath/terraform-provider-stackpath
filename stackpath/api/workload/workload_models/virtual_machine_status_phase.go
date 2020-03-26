@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // VirtualMachineStatusPhase virtual machine status phase
+//
 // swagger:model VirtualMachineStatusPhase
 type VirtualMachineStatusPhase string
 

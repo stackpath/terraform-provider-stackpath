@@ -10,11 +10,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCRetryInfo stackpath rpc retry info
+//
 // swagger:model stackpath.rpc.RetryInfo
 type StackpathRPCRetryInfo struct {
 
@@ -29,10 +30,7 @@ func (m *StackpathRPCRetryInfo) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCRetryInfo) SetAtType(val string) {
-
 }
-
-// RetryDelay gets the retry delay of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCRetryInfo) UnmarshalJSON(raw []byte) error {
@@ -87,8 +85,7 @@ func (m StackpathRPCRetryInfo) MarshalJSON() ([]byte, error) {
 	}{
 
 		RetryDelay: m.RetryDelay,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +94,7 @@ func (m StackpathRPCRetryInfo) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

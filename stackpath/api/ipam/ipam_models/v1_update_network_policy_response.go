@@ -7,11 +7,12 @@ package ipam_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1UpdateNetworkPolicyResponse A response from a request to update a network policy
+//
 // swagger:model v1UpdateNetworkPolicyResponse
 type V1UpdateNetworkPolicyResponse struct {
 

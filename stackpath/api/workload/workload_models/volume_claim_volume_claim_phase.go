@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -19,6 +19,7 @@ import (
 //  - PENDING: The volume claim is pending
 //  - UNBOUND: The volume claim is unbound
 //  - BOUND: The volume claim is bound to an instance
+//
 // swagger:model VolumeClaimVolumeClaimPhase
 type VolumeClaimVolumeClaimPhase string
 

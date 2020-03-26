@@ -7,13 +7,14 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1VolumeClaim A claim for a volume
 //
 // Volumes may be attached to workload instance containers or virtual machines
+//
 // swagger:model v1VolumeClaim
 type V1VolumeClaim struct {
 

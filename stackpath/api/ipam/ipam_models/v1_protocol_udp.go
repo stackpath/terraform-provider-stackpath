@@ -6,11 +6,12 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1ProtocolUDP UDP protocol matching
+//
 // swagger:model v1ProtocolUdp
 type V1ProtocolUDP struct {
 
