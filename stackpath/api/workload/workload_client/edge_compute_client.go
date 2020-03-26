@@ -6,9 +6,8 @@ package workload_client
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	httptransport "github.com/go-openapi/runtime/client"
-
 	"github.com/go-openapi/runtime"
+	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance"

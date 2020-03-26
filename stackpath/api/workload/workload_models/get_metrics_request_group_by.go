@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // GetMetricsRequestGroupBy The available fields to group instance metrics by
+//
 // swagger:model GetMetricsRequestGroupBy
 type GetMetricsRequestGroupBy string
 

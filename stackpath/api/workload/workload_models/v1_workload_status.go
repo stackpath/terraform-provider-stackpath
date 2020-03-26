@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -19,6 +19,7 @@ import (
 //  - SUSPENDED: The workload is suspended
 //  - BILLING_SUSPENDED: The workload is suspended due to non-payment
 //  - INACTIVE: The workload is inactive or has been deleted
+//
 // swagger:model v1WorkloadStatus
 type V1WorkloadStatus string
 

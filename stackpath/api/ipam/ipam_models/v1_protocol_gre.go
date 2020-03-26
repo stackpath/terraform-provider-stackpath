@@ -6,5 +6,6 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 // V1ProtocolGre Generic Routing Encapsulation (GRE) protocol matching
+//
 // swagger:model v1ProtocolGre
 type V1ProtocolGre struct{}

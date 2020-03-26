@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1ContainerSpecMapEntry A string to container configuration key/value pair
+//
 // swagger:model v1ContainerSpecMapEntry
 type V1ContainerSpecMapEntry map[string]V1ContainerSpec
 

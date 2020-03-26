@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1VirtualMachineSpecMapEntry A string to virtual machine configuration key/value pair
+//
 // swagger:model v1VirtualMachineSpecMapEntry
 type V1VirtualMachineSpecMapEntry map[string]V1VirtualMachineSpec
 

@@ -11,11 +11,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCHelp stackpath rpc help
+//
 // swagger:model stackpath.rpc.Help
 type StackpathRPCHelp struct {
 
@@ -30,10 +31,7 @@ func (m *StackpathRPCHelp) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCHelp) SetAtType(val string) {
-
 }
-
-// Links gets the links of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCHelp) UnmarshalJSON(raw []byte) error {
@@ -88,8 +86,7 @@ func (m StackpathRPCHelp) MarshalJSON() ([]byte, error) {
 	}{
 
 		Links: m.Links,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +95,7 @@ func (m StackpathRPCHelp) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

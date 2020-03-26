@@ -7,12 +7,13 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ContainerStatusTerminated Properties related to terminated containers
+//
 // swagger:model ContainerStatusTerminated
 type ContainerStatusTerminated struct {
 

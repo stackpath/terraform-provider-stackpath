@@ -9,12 +9,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // StorageBucketVisibility - PRIVATE: The bucket is private and only accessibly with credentials
 //  - PUBLIC: The bucket is public and accessible over the internet
+//
 // swagger:model storageBucketVisibility
 type StorageBucketVisibility string
 

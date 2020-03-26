@@ -10,11 +10,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathRPCRequestInfo stackpath rpc request info
+//
 // swagger:model stackpath.rpc.RequestInfo
 type StackpathRPCRequestInfo struct {
 
@@ -32,12 +33,7 @@ func (m *StackpathRPCRequestInfo) AtType() string {
 
 // SetAtType sets the at type of this subtype
 func (m *StackpathRPCRequestInfo) SetAtType(val string) {
-
 }
-
-// RequestID gets the request Id of this subtype
-
-// ServingData gets the serving data of this subtype
 
 // UnmarshalJSON unmarshals this object with a polymorphic type from a JSON structure
 func (m *StackpathRPCRequestInfo) UnmarshalJSON(raw []byte) error {
@@ -78,7 +74,6 @@ func (m *StackpathRPCRequestInfo) UnmarshalJSON(raw []byte) error {
 	}
 
 	result.RequestID = data.RequestID
-
 	result.ServingData = data.ServingData
 
 	*m = result
@@ -102,8 +97,7 @@ func (m StackpathRPCRequestInfo) MarshalJSON() ([]byte, error) {
 		RequestID: m.RequestID,
 
 		ServingData: m.ServingData,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -112,8 +106,7 @@ func (m StackpathRPCRequestInfo) MarshalJSON() ([]byte, error) {
 	}{
 
 		AtType: m.AtType(),
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

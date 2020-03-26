@@ -9,13 +9,14 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1WrappedImagePullCredentials The credentials that should be used to pull the container image
 //
 // The credentials that should be used to pull the container image
+//
 // swagger:model v1WrappedImagePullCredentials
 type V1WrappedImagePullCredentials []*V1ImagePullCredential
 

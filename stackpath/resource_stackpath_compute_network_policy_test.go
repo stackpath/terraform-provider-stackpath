@@ -78,7 +78,7 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 			// Since compute workloads are deleted asynchronously, we want to look at the fact that
 			// the deleteRequestedAt timestamp was set on the workload. This field is used to indicate
 			// that the workload is being deleted.
-			if err == nil && resp.Payload.NetworkPolicy.Metadata.DeleteRequestedAt == strfmt.NewDateTime() {
+			if err == nil && *resp.Payload.NetworkPolicy.Metadata.DeleteRequestedAt == strfmt.NewDateTime() {
 				return fmt.Errorf("network policy still exists: %v", rs.Primary.ID)
 			}
 		}

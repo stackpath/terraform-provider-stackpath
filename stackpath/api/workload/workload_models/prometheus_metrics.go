@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PrometheusMetrics A collection of metrics
+//
 // swagger:model prometheusMetrics
 type PrometheusMetrics struct {
 

@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -22,6 +22,7 @@ import (
 //  - COMPLETED: The instance finished running
 //  - SCHEDULING: The instance is being scheduled
 //  - STOPPED: The instance is stopped
+//
 // swagger:model workloadv1InstanceInstancePhase
 type Workloadv1InstanceInstancePhase string
 

@@ -6,11 +6,12 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1NetworkInterface Network interfaces that will be created on instances in the workload
+//
 // swagger:model v1NetworkInterface
 type V1NetworkInterface struct {
 

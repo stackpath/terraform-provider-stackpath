@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
@@ -22,6 +22,7 @@ import (
 //  - PT1H: Metrics every hour
 //  - P1D: Metrics every day
 //  - PT1M: Metrics every one minute
+//
 // swagger:model v1GetMetricsRequestGranularity
 type V1GetMetricsRequestGranularity string
 

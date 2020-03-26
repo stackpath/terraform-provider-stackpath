@@ -6,11 +6,12 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1DockerRegistryCredentials The authentication configuration that should be used to pull images from a docker registry
+//
 // swagger:model v1DockerRegistryCredentials
 type V1DockerRegistryCredentials struct {
 

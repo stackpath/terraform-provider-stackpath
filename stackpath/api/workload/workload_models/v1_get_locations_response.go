@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1GetLocationsResponse A response from a request to retrieve the locations a workload may be created at
+//
 // swagger:model v1GetLocationsResponse
 type V1GetLocationsResponse struct {
 

@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1VirtualMachineStatus The status of a Virtual Machine
+//
 // swagger:model v1VirtualMachineStatus
 type V1VirtualMachineStatus struct {
 

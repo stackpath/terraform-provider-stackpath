@@ -6,13 +6,14 @@ package storage_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PaginationPageInfo Information about a paginated response
 //
 // This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.
+//
 // swagger:model paginationPageInfo
 type PaginationPageInfo struct {
 

@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1GetWorkloadsResponse A response from a request to retrieve a stack's workloads
+//
 // swagger:model v1GetWorkloadsResponse
 type V1GetWorkloadsResponse struct {
 

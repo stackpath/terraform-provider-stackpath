@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // PrometheusMetricsStatus A metrics query's resulting status
+//
 // swagger:model prometheusMetricsStatus
 type PrometheusMetricsStatus string
 

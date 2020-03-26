@@ -7,12 +7,13 @@ package storage_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // StorageBucket storage bucket
+//
 // swagger:model storageBucket
 type StorageBucket struct {
 

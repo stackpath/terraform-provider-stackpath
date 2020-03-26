@@ -13,11 +13,12 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StackpathapiStatus stackpathapi status
+//
 // swagger:model stackpathapiStatus
 type StackpathapiStatus struct {
 
@@ -26,8 +27,8 @@ type StackpathapiStatus struct {
 
 	detailsField []APIStatusDetail
 
-	// error
-	Error string `json:"error,omitempty"`
+	// message
+	Message string `json:"message,omitempty"`
 }
 
 // Details gets the details of this base type
@@ -47,7 +48,7 @@ func (m *StackpathapiStatus) UnmarshalJSON(raw []byte) error {
 
 		Details json.RawMessage `json:"details"`
 
-		Error string `json:"error,omitempty"`
+		Message string `json:"message,omitempty"`
 	}
 	buf := bytes.NewBuffer(raw)
 	dec := json.NewDecoder(buf)
@@ -74,8 +75,8 @@ func (m *StackpathapiStatus) UnmarshalJSON(raw []byte) error {
 	// details
 	result.detailsField = propDetails
 
-	// error
-	result.Error = data.Error
+	// message
+	result.Message = data.Message
 
 	*m = result
 
@@ -89,14 +90,13 @@ func (m StackpathapiStatus) MarshalJSON() ([]byte, error) {
 	b1, err = json.Marshal(struct {
 		Code int32 `json:"code,omitempty"`
 
-		Error string `json:"error,omitempty"`
+		Message string `json:"message,omitempty"`
 	}{
 
 		Code: m.Code,
 
-		Error: m.Error,
-	},
-	)
+		Message: m.Message,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -105,8 +105,7 @@ func (m StackpathapiStatus) MarshalJSON() ([]byte, error) {
 	}{
 
 		Details: m.detailsField,
-	},
-	)
+	})
 	if err != nil {
 		return nil, err
 	}

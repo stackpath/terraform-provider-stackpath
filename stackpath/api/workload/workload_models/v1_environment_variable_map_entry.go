@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1EnvironmentVariableMapEntry A string to environment variable key/value pair
+//
 // swagger:model v1EnvironmentVariableMapEntry
 type V1EnvironmentVariableMapEntry map[string]V1EnvironmentVariable
 

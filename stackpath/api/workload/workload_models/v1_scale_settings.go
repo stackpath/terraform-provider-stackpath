@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1ScaleSettings v1 scale settings
+//
 // swagger:model v1ScaleSettings
 type V1ScaleSettings struct {
 

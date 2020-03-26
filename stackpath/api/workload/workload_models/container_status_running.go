@@ -7,12 +7,13 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ContainerStatusRunning Properties related to running containers
+//
 // swagger:model ContainerStatusRunning
 type ContainerStatusRunning struct {
 

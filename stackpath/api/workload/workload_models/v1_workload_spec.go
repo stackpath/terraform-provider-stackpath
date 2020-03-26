@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1WorkloadSpec The specification for the desired state of a workload
+//
 // swagger:model v1WorkloadSpec
 type V1WorkloadSpec struct {
 

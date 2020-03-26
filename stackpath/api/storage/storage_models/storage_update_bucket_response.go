@@ -7,11 +7,12 @@ package storage_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StorageUpdateBucketResponse A response of the updated bucket
+//
 // swagger:model storageUpdateBucketResponse
 type StorageUpdateBucketResponse struct {
 

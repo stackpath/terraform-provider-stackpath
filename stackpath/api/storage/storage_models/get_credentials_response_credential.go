@@ -6,11 +6,12 @@ package storage_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // GetCredentialsResponseCredential Storage credentials for a user
+//
 // swagger:model GetCredentialsResponseCredential
 type GetCredentialsResponseCredential struct {
 

@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // DataMatrixResult Time series containing a range of data points over time for each time series
+//
 // swagger:model DataMatrixResult
 type DataMatrixResult struct {
 

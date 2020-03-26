@@ -7,13 +7,14 @@ package ipam_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1NetworkPolicy A network policy
 //
 // Network policies define an ACL that applies to one or many workload instances
+//
 // swagger:model v1NetworkPolicy
 type V1NetworkPolicy struct {
 

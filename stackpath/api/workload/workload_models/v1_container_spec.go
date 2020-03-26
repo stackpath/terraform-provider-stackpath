@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1ContainerSpec The specification for the desired state of a container in a workload
+//
 // swagger:model v1ContainerSpec
 type V1ContainerSpec struct {
 

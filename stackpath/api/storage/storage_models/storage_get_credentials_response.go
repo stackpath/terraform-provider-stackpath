@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // StorageGetCredentialsResponse A response with new credentials
+//
 // swagger:model storageGetCredentialsResponse
 type StorageGetCredentialsResponse struct {
 

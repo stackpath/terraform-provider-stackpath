@@ -7,11 +7,12 @@ package storage_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // DataVectorResult Time series containing a single sample for each time series, all sharing the same timestamp
+//
 // swagger:model DataVectorResult
 type DataVectorResult struct {
 

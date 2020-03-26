@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1VolumeClaimSpec The specification for a volume claim
+//
 // swagger:model v1VolumeClaimSpec
 type V1VolumeClaimSpec struct {
 

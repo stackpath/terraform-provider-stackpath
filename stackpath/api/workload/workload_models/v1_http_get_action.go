@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1HTTPGetAction Execute an HTTP GET request against an endpoint running on an instance
+//
 // swagger:model v1HTTPGetAction
 type V1HTTPGetAction struct {
 

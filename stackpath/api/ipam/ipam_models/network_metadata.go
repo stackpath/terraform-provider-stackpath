@@ -7,12 +7,13 @@ package ipam_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // NetworkMetadata Metadata associated with an entity
+//
 // swagger:model networkMetadata
 type NetworkMetadata struct {
 
@@ -22,12 +23,12 @@ type NetworkMetadata struct {
 	// The date that a metadata entry was created
 	// Read Only: true
 	// Format: date-time
-	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+	CreatedAt *strfmt.DateTime `json:"createdAt,omitempty"`
 
 	// The date that a network policy was requested for deletion
 	// Read Only: true
 	// Format: date-time
-	DeleteRequestedAt strfmt.DateTime `json:"deleteRequestedAt,omitempty"`
+	DeleteRequestedAt *strfmt.DateTime `json:"deleteRequestedAt,omitempty"`
 
 	// labels
 	Labels NetworkStringMapEntry `json:"labels,omitempty"`
@@ -35,7 +36,7 @@ type NetworkMetadata struct {
 	// The date that a metadata entry was last updated
 	// Read Only: true
 	// Format: date-time
-	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
+	UpdatedAt *strfmt.DateTime `json:"updatedAt,omitempty"`
 
 	// An entity's version number
 	//

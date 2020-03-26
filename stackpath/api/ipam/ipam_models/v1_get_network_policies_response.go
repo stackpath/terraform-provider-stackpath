@@ -9,11 +9,12 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1GetNetworkPoliciesResponse A response from a request to retrieve a stack's network policies
+//
 // swagger:model v1GetNetworkPoliciesResponse
 type V1GetNetworkPoliciesResponse struct {
 

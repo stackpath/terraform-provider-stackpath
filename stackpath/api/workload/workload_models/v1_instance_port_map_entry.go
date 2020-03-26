@@ -7,11 +7,12 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 )
 
 // V1InstancePortMapEntry A string to network port key/value pair
+//
 // swagger:model v1InstancePortMapEntry
 type V1InstancePortMapEntry map[string]V1InstancePort
 

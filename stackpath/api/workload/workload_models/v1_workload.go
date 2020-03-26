@@ -7,13 +7,14 @@ package workload_models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // V1Workload A computing workload
 //
 // Workloads define a computing application to deploy to StackPath's edge network.
+//
 // swagger:model v1Workload
 type V1Workload struct {
 
