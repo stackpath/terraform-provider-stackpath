@@ -119,7 +119,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
 * `resources` - (Required) Hardware resources required by the virtual machine. See [Resources](#resources) below for details.
 * `volume_mount` - (Optional) Storage volumes to mount in the virtual machine. See [Volume Mounts](#volume-mounts) below for details.
-* `user_data` - (Optional) Base64-encoded [cloud-init](https://cloud-init.io/) user data.
+* `user_data` - (Optional) [Cloud-init](https://cloud-init.io/) user data.
 
 ### Containers
 
