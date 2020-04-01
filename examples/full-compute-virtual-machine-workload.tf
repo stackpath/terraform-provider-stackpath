@@ -1,4 +1,5 @@
-# Create a new Network Policy to allow port 80 traffic to the instance
+# Create a new Ubuntu virtual machine workload deployed
+# to Seattle, WA, USA and New York City, NY, USA.
 resource "stackpath_compute_workload" "my-compute-workload" {
   # A human friendly name for the workload
   name = "My Compute Workload"
@@ -6,7 +7,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
   # a workload.
   slug = "my-compute-workload"
 
-  # Define multiple labels on the workload container. These
+  # Define multiple labels on the workload VM. These
   # labels can be used as label selectors when applying
   # network policies.
   labels = {
@@ -22,49 +23,26 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     network = "default"
   }
 
-  # Define the ImagePullSecrets that are required for
-  # pulling the containers defined in the workload spec.
-  # This option must not be provided for virtual machine
-  # workloads. This block can be repeated for each image
-  # pull credential needed.
-  #
-  # Uncomment if you need private registry support
-  # image_pull_credentials {
-  #   docker_registry {
-  #     username = "private-registry-username"
-  #     password = "${file("./docker-registry-password.txt")}"
-  #   }
-  # }
-  # Define an nginx container
-  container {
-    # Name that should be given to the container
+  # Define an Ubuntu virtual machine
+  virtual_machine {
+    # Name that should be given to the VM
     name = "app"
-    # Nginx image to use for the container
-    image = "nginx:latest"
-    # Override the command that's used to execute
-    # the container. If this option is not provided
-    # the default entrypoint and command defined
-    # by the docker image will be used.
-    # command = []
-    resources {
-      requests = {
-        cpu    = "1"
-        memory = "2Gi"
-      }
-    }
+    # StackPath image to use for the VM
+    image = "stackpath-edge/ubuntu-1804-bionic:v201909061930"
     # The ports that should be publicly exposed on
-    # the containers. Warning, exposing these ports
-    # will allow all internet traffic to access the
-    # port.This option should be repeated for each
-    # port that should be exposed.
+    # the VM. Warning, exposing these ports will allow
+    # all internet traffic to access the port. This
+    # option should be repeated for each port that
+    # should be exposed.
     #
     # Use network policies to add ACLs for what IPs
-    # should be allowed to access a container port.
+    # should be allowed to access a virtual machine
+    # port.
     port {
-      # name that is given to the container port
+      # name that is given to the VM port
       name = "http"
       # the port number that should be opened on
-      # the container.
+      # the VM.
       port = 80
       # The protocol that should be allowed the
       # port that is expose. This option must be
@@ -72,22 +50,15 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       protocol = "TCP"
     }
 
-    # Environment variables are defined as key/value pairs. You can
-    # define multiple environment variables for each container. Each
-    # environment variable defined in a container must be unique within
-    # that container.
-    env {
-      key   = "MY_ENVIRONMENT_VARIABLE"
-      value = "this is a normal variable"
-    }
-
-    # You can also define sensitive environment variables using the
-    # secret_value option. This values will not be exposed in the API
-    # and will only be exposed to your container at runtime.
-    env {
-      key          = "MY_SECRET_VARIABLE"
-      secret_value = "this is a secret variable"
-    }
+    # Cloud-init user data. Provide at least a public key
+    # so you can SSH into VM instances after they're started.
+    # See https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+    # for more information.
+    user_data = <<EOT
+#cloud-config
+ssh_authorized_keys:
+ - ssh-rsa <your public key>
+EOT
 
     # Define a liveness probe that is used to determine the
     # heath of an instance. The workload instance will be restarted
@@ -142,10 +113,10 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       # executed for the liveness probe
     }
 
-    # Mount the additional volume into the container. A volume
-    # must not be mounted more than once to the same container.
-    # A volume can be mounted to multiple containers defined
-    # in the same workload.
+    # Mount the additional volume into the virtual machine. A
+    # volume must not be mounted more than once to the same VM.
+    # A volume can be mounted to multiple VMs defined in the
+    # same workload.
     volume_mount {
       slug       = "logging-volume"
       mount_path = "/var/log"

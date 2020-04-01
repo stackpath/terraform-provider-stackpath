@@ -19,10 +19,25 @@ resource "stackpath_compute_network_policy" "web-server" {
   description = "A network policy that allows HTTP access to instances with the web server role"
   priority    = 20000
 
+  # Apply this network policy to every workload instance on the stack with the 
+  # "web-server" role.
   instance_selector {
     key      = "role"
     operator = "in"
     values   = ["web-server"]
+  }
+
+  # Apply this network policy to specific workload instances. Use the key 
+  # "workload.platform.stackpath.net/workload-slug" to target instances by slug 
+  # or use the key "workload.platform.stackpath.net/workload-id" to target 
+  # instances by ID.
+  # 
+  # Use the priority value 65534 to define multiple workload-specific policies 
+  # to avoid priority collisions.
+  instance_selector {
+    key      = "workload.platform.stackpath.net/workload-slug"
+    operator = "in"
+    values   = ["my-workload-slug"]
   }
 
   policy_types = ["INGRESS"]

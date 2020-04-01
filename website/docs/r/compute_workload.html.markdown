@@ -11,7 +11,7 @@ description: |-
 A computing application deployed to StackPath's edge network.
 
 ## Example Usage
-
+### Containers
 ```hcl
 resource "stackpath_compute_workload" "my-compute-workload" {
   name = "my-compute-workload"
@@ -47,6 +47,71 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     env {
       key   = "VARIABLE_NAME"
       value = "VALUE"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    max_replicas = 2
+    scale_settings {
+      metrics {
+        metric = "cpu"
+        # Scale up when CPU averages 50%.
+        average_utilization = 50
+      }
+    }
+    # Deploy these 1 to 2 instances in Dallas, TX, USA and Amsterdam, NL.
+    deployment_scope = "cityCode"
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values   = [
+        "DFW", "AMS"
+      ]
+    }
+  }
+}
+```
+
+### Virtual Machines
+```hcl
+resource "stackpath_compute_workload" "my-compute-workload" {
+  name = "my-compute-workload"
+  slug = "my-compute-workload"
+
+  annotations = {
+    # request an anycast IP
+    "anycast.platform.stackpath.net" = "true"
+  }
+
+  network_interface {
+    network = "default"
+  }
+
+  virtual_machine {
+    # Name that should be given to the VM
+    name = "app"
+    
+    # StackPath image to use for the VM
+    image = "stackpath-edge/ubuntu-1804-bionic:v201909061930"
+
+    # Cloud-init user data. 
+    #
+    # Provide at least a public key so you can SSH into VM instances after
+    # they're started. See https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+    # for more information.
+    user_data = <<EOT
+#cloud-config
+ssh_authorized_keys:
+ - ssh-rsa <your public key>
+EOT
+
+    resources {
+      requests = {
+        "cpu"    = "1"
+        "memory" = "2Gi"
+      }
     }
   }
 
