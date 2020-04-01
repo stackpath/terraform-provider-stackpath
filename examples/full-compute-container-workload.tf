@@ -71,6 +71,9 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       # port that is expose. This option must be
       # "TCP" (default) or "UDP".
       protocol = "TCP"
+      # Whether or not the port is available from the public
+      # internet. This defaults to false.
+      # enable_implicit_network_policy = false
     }
 
     # Environment variables are defined as key/value pairs. You can
