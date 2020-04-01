@@ -20,7 +20,8 @@ resource "stackpath_compute_network_policy" "web-server" {
   priority    = 20000
 
   # Apply this network policy to every workload instance on the stack with the 
-  # "web-server" role.
+  # "web-server" role. Instance selectors can also use any labels present on
+  # workloads or instances in the stack.
   instance_selector {
     key      = "role"
     operator = "in"
