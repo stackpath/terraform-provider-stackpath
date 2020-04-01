@@ -1,4 +1,19 @@
 ## 1.3.0 (Unreleased)
+
+BUG FIXES:
+
+- Numerous documentation and example fixes ([#10](https://github.com/terraform-providers/terraform-provider-stackpath/pull/10) and [#12](https://github.com/terraform-providers/terraform-provider-stackpath/pull/12), thanks [@prhomhyse](https://github.com/prhomhyse)!):
+  - Virtual machine `user_data` should not be base64 encoded.
+  - Added a full compute workload example using virtual machines.
+  - Clarified the `enable_implicit_network_policy` port field's effect.
+  - Clarified use of selectors in network policy and compute workload resources.
+  - Clarified use of volume claims in compute workload resources. 
+  - Fixed incorrect naming and documentation in the full network policy example.
+
+ENHANCEMENTS:
+
+- Errors from the StackPath API are presented in a much more readable format along with a request ID that can be reported to StackPath support. ([#11](https://github.com/terraform-providers/terraform-provider-stackpath/pull/11))
+
 ## 1.2.1 (March 11, 2020)
 
 BUG FIXES:
