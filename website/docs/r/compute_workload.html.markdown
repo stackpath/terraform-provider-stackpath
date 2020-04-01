@@ -11,7 +11,7 @@ description: |-
 A computing application deployed to StackPath's edge network.
 
 ## Example Usage
-
+### Containers
 ```hcl
 resource "stackpath_compute_workload" "my-compute-workload" {
   name = "my-compute-workload"
@@ -47,6 +47,71 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     env {
       key   = "VARIABLE_NAME"
       value = "VALUE"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    max_replicas = 2
+    scale_settings {
+      metrics {
+        metric = "cpu"
+        # Scale up when CPU averages 50%.
+        average_utilization = 50
+      }
+    }
+    # Deploy these 1 to 2 instances in Dallas, TX, USA and Amsterdam, NL.
+    deployment_scope = "cityCode"
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values   = [
+        "DFW", "AMS"
+      ]
+    }
+  }
+}
+```
+
+### Virtual Machines
+```hcl
+resource "stackpath_compute_workload" "my-compute-workload" {
+  name = "my-compute-workload"
+  slug = "my-compute-workload"
+
+  annotations = {
+    # request an anycast IP
+    "anycast.platform.stackpath.net" = "true"
+  }
+
+  network_interface {
+    network = "default"
+  }
+
+  virtual_machine {
+    # Name that should be given to the VM
+    name = "app"
+    
+    # StackPath image to use for the VM
+    image = "stackpath-edge/ubuntu-1804-bionic:v201909061930"
+
+    # Cloud-init user data. 
+    #
+    # Provide at least a public key so you can SSH into VM instances after
+    # they're started. See https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+    # for more information.
+    user_data = <<EOT
+#cloud-config
+ssh_authorized_keys:
+ - ssh-rsa <your public key>
+EOT
+
+    resources {
+      requests = {
+        "cpu"    = "1"
+        "memory" = "2Gi"
+      }
     }
   }
 
@@ -114,12 +179,12 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
 * `name` - (Required) A virtual machine's name.
 * `image` - (Required) The disk image to run as a virtual machine.
-* `port` - (Optional) Network ports to expose from the virtual machine. See [Network Ports](#network-ports) below for details.
+* `port` - (Optional) Network ports to expose from the virtual machine. Ports can also be used for internal DNS-based service discovery. See [Network Ports](#network-ports) below for details.
 * `liveness_probe` - (Optional) Criteria to determine if the compute workload is online. See [Probes](#probes) below for details.
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
 * `resources` - (Required) Hardware resources required by the virtual machine. See [Resources](#resources) below for details.
 * `volume_mount` - (Optional) Storage volumes to mount in the virtual machine. See [Volume Mounts](#volume-mounts) below for details.
-* `user_data` - (Optional) Base64-encoded [cloud-init](https://cloud-init.io/) user data.
+* `user_data` - (Optional) [Cloud-init](https://cloud-init.io/) user data.
 
 ### Containers
 
@@ -129,7 +194,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 * `image` - (Required) A container's image location.
 * `command` - (Optional) The command to execute a container.
 * `env` - (Optional) Environment variables to set in the container instance. See [Environment Variables](#environment-variables) below for details. 
-* `port` - (Optional) Networking ports to expose from the container. See [Network Ports](#network-ports) below for details.
+* `port` - (Optional) Networking ports to expose from the container. Ports can also be used for internal DNS-based service discovery. See [Network Ports](#network-ports) below for details.
 * `liveness_probe` - (Optional) Criteria to determine if the compute workload is online. See [Probes](#probes) below for details.
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
 * `resources` - (Required) Hardware resources required by the container. See [Resources](#resources) below for details.
@@ -150,7 +215,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 * `name` - (Required) The network port's name.
 * `port` - (Required) The network port's number.
 * `protocol` - (Optional) The network port's protocol, either "tcp" or "udp". Defaults to "tcp".
-* `enable_implicit_network_policy` - (Optional) Whether or not the network port has access to the public Internet. Defaults to `false`. 
+* `enable_implicit_network_policy` - (Optional) Whether or not the network port is accessible from the public Internet. Defaults to `false`. 
 
 ### Volume Claims
 
@@ -230,7 +295,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 `selector` takes the following arguments:
 
 * `key` - (Required) The name of the data that a selector is based on.
-* `operator` - (Required) A logical operator to apply to a selector like "=", "!=", "in", or "notin".
+* `operator` - (Required) A logical operator to apply to a selector. Only the "in" operator is supported.
 * `values` - (Required) Data values to look for in a label selector.
 
 ## Instances
