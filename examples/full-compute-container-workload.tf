@@ -61,6 +61,9 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     #
     # Use network policies to add ACLs for what IPs
     # should be allowed to access a container port.
+    #
+    # Ports are recorded in internal DNS SRV records
+    # for DNS-based service discovery.
     port {
       # name that is given to the container port
       name = "http"

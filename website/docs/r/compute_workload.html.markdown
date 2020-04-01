@@ -179,7 +179,7 @@ EOT
 
 * `name` - (Required) A virtual machine's name.
 * `image` - (Required) The disk image to run as a virtual machine.
-* `port` - (Optional) Network ports to expose from the virtual machine. See [Network Ports](#network-ports) below for details.
+* `port` - (Optional) Network ports to expose from the virtual machine. Ports can also be used for internal DNS-based service discovery. See [Network Ports](#network-ports) below for details.
 * `liveness_probe` - (Optional) Criteria to determine if the compute workload is online. See [Probes](#probes) below for details.
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
 * `resources` - (Required) Hardware resources required by the virtual machine. See [Resources](#resources) below for details.
@@ -194,7 +194,7 @@ EOT
 * `image` - (Required) A container's image location.
 * `command` - (Optional) The command to execute a container.
 * `env` - (Optional) Environment variables to set in the container instance. See [Environment Variables](#environment-variables) below for details. 
-* `port` - (Optional) Networking ports to expose from the container. See [Network Ports](#network-ports) below for details.
+* `port` - (Optional) Networking ports to expose from the container. Ports can also be used for internal DNS-based service discovery. See [Network Ports](#network-ports) below for details.
 * `liveness_probe` - (Optional) Criteria to determine if the compute workload is online. See [Probes](#probes) below for details.
 * `readiness_probe` - (Optional) Criteria to determine if the compute workload is ready to serve requests. See [Probes](#probes) below for details.
 * `resources` - (Required) Hardware resources required by the container. See [Resources](#resources) below for details.
