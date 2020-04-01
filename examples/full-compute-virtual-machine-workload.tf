@@ -202,8 +202,7 @@ EOT
 
   # Provision a new additional volume that can be
   # mounted to the containers and virtual machines
-  # defined in the workload. You can define multiple
-  # volume claims on a workload.
+  # defined in the workload.
   volume_claim {
     # A human friendly label that can be updated
     name = "Logging volume"
