@@ -56,7 +56,7 @@ EOT
     # The key is the label that should be used
     key = "role"
     # the operator is the operation that should be applied to the value
-    # of the label.
+    # of the label. Only the "in" operator is supported.
     operator = "in"
     # the values that the label value should be compared to using the operator
     values = ["database"]

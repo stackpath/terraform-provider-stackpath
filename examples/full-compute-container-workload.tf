@@ -213,14 +213,14 @@ resource "stackpath_compute_workload" "my-compute-workload" {
 
     # Define a selector that should be used to
     # decide where workload instances should be
-    # launched. You can define multiple selectors
-    # for a workload.
+    # launched.
     selector {
       # Select the location to create an instance by
       # the city code of the location. This is currently
       # the only supported option.
       key = "cityCode"
-      # The operator to use when comparing values
+      # The operator to use when comparing values. Only the
+      # "in" operator is supported.
       operator = "in"
       # The city code that instances should be created in.
       values = [

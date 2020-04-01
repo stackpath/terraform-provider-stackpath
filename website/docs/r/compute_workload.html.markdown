@@ -295,7 +295,7 @@ EOT
 `selector` takes the following arguments:
 
 * `key` - (Required) The name of the data that a selector is based on.
-* `operator` - (Required) A logical operator to apply to a selector like "=", "!=", "in", or "notin".
+* `operator` - (Required) A logical operator to apply to a selector. Only the "in" operator is supported.
 * `values` - (Required) Data values to look for in a label selector.
 
 ## Instances

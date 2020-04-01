@@ -130,7 +130,7 @@ resource "stackpath_compute_network_policy" "web-server" {
 `instance_selector` and `network_selector` take the following arguments:
 
 * `key` - (Required) The name of the data that a selector is based on.
-* `operator` - (Required) A logical operator to apply to a selector like "=", "!=", "in", or "notin".
+* `operator` - (Required) A logical operator to apply to a selector. Only the "in" operator is supported.
 * `values` - (Required) Data values to look for in a label selector.
 
 ## Import
