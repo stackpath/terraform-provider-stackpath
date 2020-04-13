@@ -34,7 +34,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
         # The number of CPU cores to allocate
         "cpu" = "1"
         # The amount of memory the VM should have
-        "memory" = "2Gib"
+        "memory" = "2Gi"
       }
     }
 
@@ -58,6 +58,11 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       protocol = "TCP"
       # Whether or not the port is available from the public internet. This
       # defaults to false.
+      #
+      # The stackpath_compute_network_policy resource provides more granular
+      # access to a port. See
+      # https://www.terraform.io/docs/providers/stackpath/r/compute_network_policy.html
+      # for more information.
       # enable_implicit_network_policy = false
     }
 
