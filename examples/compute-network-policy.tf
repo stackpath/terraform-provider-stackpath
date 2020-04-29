@@ -34,7 +34,7 @@ EOT
   # Below is an example of a label selector that applies the policy all of the
   # instances created by the workload with the slug value "my-compute-workload".
   instance_selector {
-    # Every workload instance is provisioned with a label of the workloa slug
+    # Every workload instance is provisioned with a label of the workload slug
     # that created the instance. Apply the label selector to a specific workload
     # by leveraging the workload slug label.
     key = "workload.platform.stackpath.net/workload-slug"

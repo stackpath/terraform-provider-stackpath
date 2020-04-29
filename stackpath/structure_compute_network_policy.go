@@ -13,6 +13,7 @@ func convertComputeNetworkPolicy(data *schema.ResourceData) *ipam_models.V1Netwo
 		Metadata: &ipam_models.NetworkMetadata{
 			Labels:      convertWorkloadToIPAMStringMapEntry(convertToStringMap(data.Get("labels").(map[string]interface{}))),
 			Annotations: convertWorkloadToIPAMStringMapEntry(convertToStringMap(data.Get("annotations").(map[string]interface{}))),
+			Version:     data.Get("version").(string),
 		},
 		Spec: &ipam_models.V1NetworkPolicySpec{
 			Priority:          int32(data.Get("priority").(int)),
