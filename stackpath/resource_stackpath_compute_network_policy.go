@@ -34,6 +34,10 @@ func resourceComputeNetworkPolicy() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"version": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"labels": {
 				Type:     schema.TypeMap,
 				Optional: true,
@@ -400,6 +404,10 @@ func resourceComputeNetworkPolicyRead(data *schema.ResourceData, meta interface{
 		return fmt.Errorf("error setting description: %v", err)
 	}
 
+	if err := data.Set("version", resp.Payload.NetworkPolicy.Metadata.Version); err != nil {
+		return fmt.Errorf("error setting version: %v", err)
+	}
+
 	if err := data.Set("labels", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.NetworkPolicy.Metadata.Labels))); err != nil {
 		return fmt.Errorf("error setting labels: %v", err)
 	}
@@ -440,8 +448,9 @@ func resourceComputeNetworkPolicyUpdate(data *schema.ResourceData, meta interfac
 	networkPolicy.ID = data.Id()
 
 	_, err := config.edgeComputeNetworking.NetworkPolicies.UpdateNetworkPolicy(&network_policies.UpdateNetworkPolicyParams{
-		Context: context.Background(),
-		StackID: config.StackID,
+		Context:         context.Background(),
+		StackID:         config.StackID,
+		NetworkPolicyID: data.Id(),
 		Body: &ipam_models.V1UpdateNetworkPolicyRequest{
 			NetworkPolicy: networkPolicy,
 		},
