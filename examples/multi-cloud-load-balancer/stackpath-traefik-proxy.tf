@@ -3,7 +3,9 @@ resource "stackpath_compute_workload" "traefik-lb" {
   slug = "traefik-lb"
 
   annotations = {
-    # request an anycast IP for a workload
+    # Request an anycast IP for a workload
+    #
+    # Any value set will request an anycast IP.
     "anycast.platform.stackpath.net" = "true"
   }
 

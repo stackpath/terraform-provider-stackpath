@@ -14,7 +14,7 @@ import (
 
 // annotation keys that should be ignored when diffing the state of a workload
 var ignoredComputeWorkloadAnnotations = map[string]bool{
-	"annotations.anycast.platform.stackpath.net/subnets": true,
+	"anycast.platform.stackpath.net/subnets": true,
 }
 
 func resourceComputeWorkload() *schema.Resource {
