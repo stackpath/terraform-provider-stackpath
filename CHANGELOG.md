@@ -1,4 +1,14 @@
-## 1.4.0 (Unreleased)
+## 1.3.1 (Unreleased)
+
+BUG FIXES:
+
+- Prevent various errors updating network policies. ([#14](https://github.com/terraform-providers/terraform-provider-stackpath/pull/14))
+- Prevent workloads with anycast subnets from re-creating when `terraform apply` is run with no workload changes. ([#15](https://github.com/terraform-providers/terraform-provider-stackpath/pull/15))
+
+ENHANCEMENTS:
+
+- Tweak example files for correctness and readability. ([#13](https://github.com/terraform-providers/terraform-provider-stackpath/pull/13))
+
 ## 1.3.0 (April 01, 2020)
 
 BUG FIXES:
