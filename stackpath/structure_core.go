@@ -87,25 +87,25 @@ func convertIPAMToWorkloadStringMapEntry(mapEntries ipam_models.NetworkStringMap
 	return converted
 }
 
-// flattenComputeMatchExpressions flattens the provided workload match expressions
+// flattenComputeMatchExpressionsOrdered flattens the provided workload match expressions
 // with respect to the order of any existing match expressions defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
 func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*workload_models.V1MatchExpression) []interface{} {
 	ordered := make(map[string]int, len(selectors))
-	for i, d := range selectors {
-		ordered[d.Key] = i
+	for i, selector := range selectors {
+		ordered[selector.Key] = i
 	}
-	s := make([]interface{}, len(selectors))
-	for _, v := range selectors {
+	flattened := make([]interface{}, len(selectors))
+	for _, selector := range selectors {
 		data := map[string]interface{}{
-			"key":      v.Key,
-			"operator": v.Operator,
-			"values":   flattenStringArray(v.Values),
+			"key":      selector.Key,
+			"operator": selector.Operator,
+			"values":   flattenStringArray(selector.Values),
 		}
-		s[ordered[v.Key]] = data
+		flattened[ordered[selector.Key]] = data
 	}
-	return s
+	return flattened
 }
 
 // flattenComputeMatchExpressions flattens the provided workload match expressions
@@ -113,15 +113,15 @@ func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceD
 // is important, eg when using for diff logic, then flattenComputeMatchExpressionsOrdered
 // should be used.
 func flattenComputeMatchExpressions(selectors []*workload_models.V1MatchExpression) []interface{} {
-	s := make([]interface{}, len(selectors))
-	for i, v := range selectors {
-		s[i] = map[string]interface{}{
-			"key":      v.Key,
-			"operator": v.Operator,
-			"values":   flattenStringArray(v.Values),
+	flattened := make([]interface{}, len(selectors))
+	for i, selector := range selectors {
+		flattened[i] = map[string]interface{}{
+			"key":      selector.Key,
+			"operator": selector.Operator,
+			"values":   flattenStringArray(selector.Values),
 		}
 	}
-	return s
+	return flattened
 }
 
 func flattenStringMap(stringMap workload_models.V1StringMapEntry) map[string]interface{} {
