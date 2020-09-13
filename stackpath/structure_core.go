@@ -92,22 +92,18 @@ func convertIPAMToWorkloadStringMapEntry(mapEntries ipam_models.NetworkStringMap
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
 func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*workload_models.V1MatchExpression) []interface{} {
-	ordered := make(map[string]int, data.Get(prefix+".#").(int))
+	ordered := make(map[string]int, len(selectors))
 	for i, d := range selectors {
 		ordered[d.Key] = i
 	}
-	s := make([]interface{}, data.Get(prefix+".#").(int))
+	s := make([]interface{}, len(selectors))
 	for _, v := range selectors {
 		data := map[string]interface{}{
 			"key":      v.Key,
 			"operator": v.Operator,
 			"values":   flattenStringArray(v.Values),
 		}
-		if index, exists := ordered[v.Key]; exists {
-			s[index] = data
-		} else {
-			s = append(s, data)
-		}
+		s[ordered[v.Key]] = data
 	}
 	return s
 }
