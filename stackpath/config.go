@@ -17,7 +17,7 @@ import (
 
 	httptransport "github.com/go-openapi/runtime/client"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )

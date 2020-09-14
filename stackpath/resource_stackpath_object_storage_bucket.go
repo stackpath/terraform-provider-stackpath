@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
