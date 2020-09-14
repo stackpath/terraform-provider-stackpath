@@ -10,6 +10,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/terraform-plugin-sdk v1.15.0
 	github.com/mailru/easyjson v0.0.0-20190620125010-da37f6c1e481 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 )
 
