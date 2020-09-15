@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"reflect"
-	"regexp"
 	"sort"
 	"strconv"
 	"testing"
@@ -25,8 +24,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 
 	// By design, the StackPath API does not return image pull secrets to the
 	// user when retrieving a workload. Expect to see an empty secret in the
-	//result and suppress the diff error.
-	emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
+	// result and suppress the diff error.
+	//emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
 
 	resource.Test(t, resource.TestCase{
 		Providers: testAccProviders,
@@ -79,7 +78,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			{
-				ExpectError: emptyImagePullSecrets,
+				ExpectNonEmptyPlan: true,
 				Config:      testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
@@ -88,7 +87,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 				),
 			},
 			{
-				ExpectError: emptyImagePullSecrets,
+				ExpectNonEmptyPlan: true,
 				Config:      testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
