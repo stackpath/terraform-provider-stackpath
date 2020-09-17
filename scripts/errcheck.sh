@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Check gofmt
 echo "==> Checking for unchecked errors..."
 
 if ! which errcheck > /dev/null; then
@@ -8,7 +7,8 @@ if ! which errcheck > /dev/null; then
     go get -u github.com/kisielk/errcheck
 fi
 
-err_files=$(errcheck -ignoretests \
+echo "==> Running errcheck..."
+err_files=$(~/go/bin/errcheck -ignoretests \
                      -ignore 'github.com/hashicorp/terraform/helper/schema:Set' \
                      -ignore 'bytes:.*' \
                      -ignore 'io:Close|Write' \
