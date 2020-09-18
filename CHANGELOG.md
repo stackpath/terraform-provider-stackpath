@@ -1,4 +1,8 @@
-## 1.4.0 (Unreleased)
+## 1.3.2 (Unreleased)
+
+ENHANCEMENTS: 
+ - This release has internal changes to support migration to the [Terraform provider registry](https://registry.terraform.io/). There are no user-facing changes in this release. ([#16](https://github.com/stackpath/terraform-provider-stackpath/pull/16))
+
 ## 1.3.1 (July 21, 2020)
 
 BUG FIXES:
