@@ -6,7 +6,7 @@ OS_ARCH=darwin_amd64
 
 default: build
 
-build: fmtcheck vet errcheck
+build:
 	@echo "==> Building ${BINARY}..."
 	go build -o ${BINARY}
 	@echo
@@ -17,13 +17,13 @@ install: build
 	mv ${BINARY} ~/.terraform.d/plugins/${OS_ARCH}
 	@echo
 
-test: fmtcheck vet errcheck
+test:
 	@echo "==> Running tests..."
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
 	@echo
 
-testacc: fmtcheck vet errcheck
+testacc:
 	@echo "==> Running acceptance tests..."
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 	@echo
