@@ -52,7 +52,7 @@ func init() {
 }
 
 func (m V1WorkloadStatus) validateV1WorkloadStatusEnum(path, location string, value V1WorkloadStatus) error {
-	if err := validate.Enum(path, location, value, v1WorkloadStatusEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, v1WorkloadStatusEnum, true); err != nil {
 		return err
 	}
 	return nil

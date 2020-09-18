@@ -58,7 +58,7 @@ func init() {
 }
 
 func (m V1GetMetricsRequestGranularity) validateV1GetMetricsRequestGranularityEnum(path, location string, value V1GetMetricsRequestGranularity) error {
-	if err := validate.Enum(path, location, value, v1GetMetricsRequestGranularityEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, v1GetMetricsRequestGranularityEnum, true); err != nil {
 		return err
 	}
 	return nil

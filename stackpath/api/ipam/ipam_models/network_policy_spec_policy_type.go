@@ -44,7 +44,7 @@ func init() {
 }
 
 func (m NetworkPolicySpecPolicyType) validateNetworkPolicySpecPolicyTypeEnum(path, location string, value NetworkPolicySpecPolicyType) error {
-	if err := validate.Enum(path, location, value, networkPolicySpecPolicyTypeEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, networkPolicySpecPolicyTypeEnum, true); err != nil {
 		return err
 	}
 	return nil

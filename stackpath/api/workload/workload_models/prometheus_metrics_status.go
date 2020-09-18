@@ -41,7 +41,7 @@ func init() {
 }
 
 func (m PrometheusMetricsStatus) validatePrometheusMetricsStatusEnum(path, location string, value PrometheusMetricsStatus) error {
-	if err := validate.Enum(path, location, value, prometheusMetricsStatusEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, prometheusMetricsStatusEnum, true); err != nil {
 		return err
 	}
 	return nil

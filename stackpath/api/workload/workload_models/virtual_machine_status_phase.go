@@ -56,7 +56,7 @@ func init() {
 }
 
 func (m VirtualMachineStatusPhase) validateVirtualMachineStatusPhaseEnum(path, location string, value VirtualMachineStatusPhase) error {
-	if err := validate.Enum(path, location, value, virtualMachineStatusPhaseEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, virtualMachineStatusPhaseEnum, true); err != nil {
 		return err
 	}
 	return nil
