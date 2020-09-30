@@ -1,6 +1,13 @@
-## 1.3.2 (Unreleased)
+## 1.3.3 (September 30, 2020)
+
+BUG FIXES:
+
+ - Fix a crash when importing workloads ([#19](https://github.com/stackpath/terraform-provider-stackpath/pull/19)). Thanks for the report, [@laurenkosub](https://github.com/laurenkosub)!
+
+## 1.3.2 (July 28, 2020)
 
 ENHANCEMENTS: 
+
  - This release has internal changes to support migration to the [Terraform provider registry](https://registry.terraform.io/). There are no user-facing changes in this release. ([#16](https://github.com/stackpath/terraform-provider-stackpath/pull/16))
 
 ## 1.3.1 (July 21, 2020)
