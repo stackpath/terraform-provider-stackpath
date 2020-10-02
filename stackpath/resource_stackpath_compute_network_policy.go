@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceComputeNetworkPolicy() *schema.Resource {

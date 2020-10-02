@@ -1,94 +1,48 @@
-Terraform Provider For StackPath
-==================
+<a href="https://terraform.io">
+  <img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" alt="Terraform logo" title="Terraform" align="right" height="50" />
+</a>
 
-- Website: https://www.terraform.io
-- [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
-- Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
+# Terraform Provider for StackPath
 
-<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="600px">
+The StackPath provider is a plugin for Terraform to interact with resources on the StackPath edge platform. It is publicly available on the [Terraform registry](https://registry.terraform.io/providers/stackpath/stackpath/latest). Please see the [official documentation](https://registry.terraform.io/providers/stackpath/stackpath/latest/docs) to get started.
 
-Maintainers
-------------------
+## Provider development
 
-This terraform provider plugin is maintained by the Engineering team at [StackPath](https://www.stackpath.com/).
+### Requirements
 
-Requirements
-------------------
+* [Terraform](https://www.terraform.io/downloads.html) 0.12+ (to run acceptance tests)
+* [Go](https://golang.org/doc/install) 1.14+ (to build the provider plugin)
 
-- [Terraform](https://www.terraform.io/downloads.html) 0.10.x+
-- [Go](https://golang.org/doc/install) 1.11+ (to build the provider plugin)
+### Building the provider
 
-Building The Provider
-------------------
+Run the following command to build the provider:
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/terraform-providers; cd $GOPATH/src/github.com/terraform-providers
-$ git clone git@github.com:terraform-providers/terraform-provider-template
-```
-
-Enter the provider directory and build the provider
-
-```sh
-$ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-template
 $ make build
 ```
 
-Installing the provider
-------------------
+### Installing the built provider
 
-After downloading the latest release from GitHub, move the binary into the third party plugin directory on your workstation.
-Third-party plugins (both providers and provisioners) can be manually installed into the user plugins directory, located at `%APPDATA%\terraform.d\plugins\<OS>_<ARCH>` on Windows and `~/.terraform.d/plugins/<OS>_<ARCH>` on other systems.
+Run the following command to install the built provider:
 
-Using macOS as an example:
-
-```shell
-// TODO add curl command for latest release
-$ mv ./terraform-provider-stackpath_$VERSION ~/.terraform.d/plugins/darwin_amd64/
+```sh
+$ make install
 ```
 
 Once the plugin has been installed, run `terraform init` to have terraform discover the StackPath plugin.
 
-Using the provider
-------------------
+### Testing the provider
 
-Before you can use the StackPath provider, you will need to configure the provider with the stack ID and API credentials that should be used for managing resources. See StackPath's [getting started guide](https://stackpath.dev/docs/getting-started) for more information on finding your stack ID and API credentials.
-
-```terraform
-provider "stackpath" {
-  # only allow version 0.1 of the StackPath provider to be used
-  version = "~> 0.1"
-  # ID of the stack that resources should be created in
-  stack_id = "{{ stack-id }}"
-  # The API credentials that should be used for authentication
-  client_id = "{{ client-id }}"
-  client_secret = "{{ client-secret }}"
-}
-```
-
-Developing the Provider
-------------------
-
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.11+ is *required*). You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
-
-To compile the provider, run `make build`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
-
-```sh
-$ make build
-...
-$ $GOPATH/bin/terraform-provider-template
-...
-```
-
-In order to test the provider, you can simply run `make test`.
+Run the following command to run the provider's unit tests:
 
 ```sh
 $ make test
 ```
 
-In order to run the full suite of Acceptance tests, run `make testacc`.
+In order to run the full suite of acceptance tests, run `make testacc`. You must declare a valid StackPath stack ID or slug, API client ID, and API client secret in the `STACKPATH_STACK_ID`, `STACKPATH_CLIENT_ID`, and `STACKPATH_CLIENT_SECRET` environment variables:
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+*Note:* Acceptance tests create real resources, and often cost money to run. 
 
 ```sh
-$ make testacc
+$ STACKPATH_STACK_ID=my-stack-id STACKPATH_CLIENT_ID=my-client-id STACKPATH_CLIENT_SECRET=my-client-secret make testacc
 ```

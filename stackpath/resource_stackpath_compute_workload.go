@@ -9,7 +9,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // annotation keys that should be ignored when diffing the state of a workload

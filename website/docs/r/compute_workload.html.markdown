@@ -300,7 +300,7 @@ EOT
 
 ## Instances
 
-A workload instance is a collection of containers or a virtual machine created based on the template provided in a workload. Instances are accessed via a `stackpath_resource_compute_workload`'s computed `instances` field.
+A workload instance is a collection of containers or a virtual machine created based on the template provided in a workload. Instances are accessed via a `stackpath_compute_workload`'s computed `instances` field.
 
 ### Example Usage
 

@@ -5,20 +5,19 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var clientID, clientSecret, stackID string
-var testAccProviders map[string]terraform.ResourceProvider
+var testAccProviders map[string]*schema.Provider
 var testAccProvider *schema.Provider
 
 func init() {
 	clientID = os.Getenv("STACKPATH_CLIENT_ID")
 	clientSecret = os.Getenv("STACKPATH_CLIENT_SECRET")
 	stackID = os.Getenv("STACKPATH_STACK_ID")
-	testAccProvider = Provider().(*schema.Provider)
-	testAccProviders = map[string]terraform.ResourceProvider{
+	testAccProvider = Provider()
+	testAccProviders = map[string]*schema.Provider{
 		"stackpath": testAccProvider,
 	}
 }
@@ -44,7 +43,7 @@ func testAccPreCheck(t *testing.T) {
 }
 
 func TestProvider(t *testing.T) {
-	if err := Provider().(*schema.Provider).InternalValidate(); err != nil {
+	if err := Provider().InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
 	}
 }

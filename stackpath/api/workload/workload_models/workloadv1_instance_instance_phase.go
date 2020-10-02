@@ -64,7 +64,7 @@ func init() {
 }
 
 func (m Workloadv1InstanceInstancePhase) validateWorkloadv1InstanceInstancePhaseEnum(path, location string, value Workloadv1InstanceInstancePhase) error {
-	if err := validate.Enum(path, location, value, workloadv1InstanceInstancePhaseEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, workloadv1InstanceInstancePhaseEnum, true); err != nil {
 		return err
 	}
 	return nil

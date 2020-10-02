@@ -3,20 +3,21 @@ package stackpath
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client"
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client"
 
 	httptransport "github.com/go-openapi/runtime/client"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/pathorcontents"
-
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
@@ -117,7 +118,7 @@ func (c *Config) LoadAndValidate(terraformVersion string) error {
 
 func (c *Config) getTokenSource() (oauth2.TokenSource, error) {
 	if c.AccessToken != "" {
-		contents, _, err := pathorcontents.Read(c.AccessToken)
+		contents, _, err := pathOrContentsRead(c.AccessToken)
 		if err != nil {
 			return nil, fmt.Errorf("error loading access_token: %v", err)
 		}
@@ -126,12 +127,12 @@ func (c *Config) getTokenSource() (oauth2.TokenSource, error) {
 		return oauth2.StaticTokenSource(&oauth2.Token{AccessToken: contents}), nil
 	}
 
-	clientID, _, err := pathorcontents.Read(c.ClientID)
+	clientID, _, err := pathOrContentsRead(c.ClientID)
 	if err != nil {
 		return nil, fmt.Errorf("error loading client_id: %v", err)
 	}
 
-	clientSecret, _, err := pathorcontents.Read(c.ClientSecret)
+	clientSecret, _, err := pathOrContentsRead(c.ClientSecret)
 	if err != nil {
 		return nil, fmt.Errorf("error loading client_secret: %v", err)
 	}
@@ -144,4 +145,43 @@ func (c *Config) getTokenSource() (oauth2.TokenSource, error) {
 	}
 
 	return oauthConfig.TokenSource(context.Background()), nil
+}
+
+// If the argument is a path, Read loads it and returns the contents,
+// otherwise the argument is assumed to be the desired contents and is simply
+// returned.
+//
+// The boolean second return value can be called `wasPath` - it indicates if a
+// path was detected and a file loaded.
+//
+// Note: This function was originally provided as
+// github.com/hashicorp/terraform-plugin-sdk/helper/pathorcontents.Read() in
+// version 1 of the Terraform provider SDK but removed in version 2. It's been
+// copied here to avoid refactoring calling code.
+//
+// See https://www.terraform.io/docs/extend/guides/v2-upgrade-guide.html#removal-of-helper-pathorcontents-package
+// for more information.
+func pathOrContentsRead(poc string) (string, bool, error) {
+	if len(poc) == 0 {
+		return poc, false, nil
+	}
+
+	path := poc
+	if path[0] == '~' {
+		var err error
+		path, err = homedir.Expand(path)
+		if err != nil {
+			return path, true, err
+		}
+	}
+
+	if _, err := os.Stat(path); err == nil {
+		contents, err := ioutil.ReadFile(path)
+		if err != nil {
+			return string(contents), true, err
+		}
+		return string(contents), true, nil
+	}
+
+	return poc, false, nil
 }

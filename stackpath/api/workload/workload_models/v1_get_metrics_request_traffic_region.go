@@ -70,7 +70,7 @@ func init() {
 }
 
 func (m V1GetMetricsRequestTrafficRegion) validateV1GetMetricsRequestTrafficRegionEnum(path, location string, value V1GetMetricsRequestTrafficRegion) error {
-	if err := validate.Enum(path, location, value, v1GetMetricsRequestTrafficRegionEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, v1GetMetricsRequestTrafficRegionEnum, true); err != nil {
 		return err
 	}
 	return nil

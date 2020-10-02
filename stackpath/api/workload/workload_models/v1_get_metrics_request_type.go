@@ -44,7 +44,7 @@ func init() {
 }
 
 func (m V1GetMetricsRequestType) validateV1GetMetricsRequestTypeEnum(path, location string, value V1GetMetricsRequestType) error {
-	if err := validate.Enum(path, location, value, v1GetMetricsRequestTypeEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, v1GetMetricsRequestTypeEnum, true); err != nil {
 		return err
 	}
 	return nil

@@ -52,7 +52,7 @@ func init() {
 }
 
 func (m VolumeClaimVolumeClaimPhase) validateVolumeClaimVolumeClaimPhaseEnum(path, location string, value VolumeClaimVolumeClaimPhase) error {
-	if err := validate.Enum(path, location, value, volumeClaimVolumeClaimPhaseEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, volumeClaimVolumeClaimPhaseEnum, true); err != nil {
 		return err
 	}
 	return nil

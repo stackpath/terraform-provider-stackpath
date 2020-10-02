@@ -42,7 +42,7 @@ func init() {
 }
 
 func (m StorageBucketVisibility) validateStorageBucketVisibilityEnum(path, location string, value StorageBucketVisibility) error {
-	if err := validate.Enum(path, location, value, storageBucketVisibilityEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, storageBucketVisibilityEnum, true); err != nil {
 		return err
 	}
 	return nil

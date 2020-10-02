@@ -56,7 +56,7 @@ func init() {
 }
 
 func (m V1ContainerStatusContainerPhase) validateV1ContainerStatusContainerPhaseEnum(path, location string, value V1ContainerStatusContainerPhase) error {
-	if err := validate.Enum(path, location, value, v1ContainerStatusContainerPhaseEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, v1ContainerStatusContainerPhaseEnum, true); err != nil {
 		return err
 	}
 	return nil
