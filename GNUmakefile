@@ -25,6 +25,7 @@ test:
 
 testacc:
 	@echo "==> Running acceptance tests..."
+	@echo "DEBUG: STACK SLUG: $(STACKPATH_STACK_ID)"
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 	@echo
 
