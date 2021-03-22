@@ -3,7 +3,7 @@ name: Run accpetance tests
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
