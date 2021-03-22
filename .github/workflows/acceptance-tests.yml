@@ -1,0 +1,27 @@
+name: Run accpetance tests
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Run all tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14
+        id: go
+
+      - name: make testacc
+        run: make testacc
+        env:
+          STACKPATH_STACK_ID: ${{ secrets.ACCEPTANCE_TEST_STACK_SLUG }}
+          STACKPATH_CLIENT_ID: ${{ secrets.ACCEPTANCE_TEST_API_CLIENT_ID }}
+          STACKPATH_CLIENT_SECRET: ${{ secrets.ACCEPTANCE_TEST_API_CLIENT_SECRET }}
