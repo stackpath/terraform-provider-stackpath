@@ -274,7 +274,7 @@ func NewStackPathError(err error) error {
 	}
 
 	// Log the underlying error in case the user is interested.
-	log.Printf("Error received from the StackPath API. Request ID: \"%s\". Error: %s", requestID, err)
+	log.Printf("Error received from the StackPath API: %s", err)
 
 	return &APIError{
 		statusCode:      statusCode,
