@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client"
 
 	httptransport "github.com/go-openapi/runtime/client"
 

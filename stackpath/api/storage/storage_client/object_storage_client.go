@@ -10,9 +10,9 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/metrics"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_client/user_credentials"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client/metrics"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client/user_credentials"
 )
 
 // Default object storage HTTP client.

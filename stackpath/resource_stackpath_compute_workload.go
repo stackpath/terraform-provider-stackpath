@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )

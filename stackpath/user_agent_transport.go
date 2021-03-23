@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/version"
+	"github.com/stackpath/terraform-provider-stackpath/version"
 )
 
 const userAgentFormat = "HashiCorp Terraform/%s (+https://www.terraform.io) terraform-provider-stackpath/%s (+https://www.terraform.io/docs/providers/stackpath)"
