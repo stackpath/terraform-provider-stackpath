@@ -58,7 +58,7 @@ func NewDeleteCredentialNoContent() *DeleteCredentialNoContent {
 	return &DeleteCredentialNoContent{}
 }
 
-/*DeleteCredentialNoContent handles this case with default header values.
+/* DeleteCredentialNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -79,7 +79,7 @@ func NewDeleteCredentialUnauthorized() *DeleteCredentialUnauthorized {
 	return &DeleteCredentialUnauthorized{}
 }
 
-/*DeleteCredentialUnauthorized handles this case with default header values.
+/* DeleteCredentialUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -90,7 +90,6 @@ type DeleteCredentialUnauthorized struct {
 func (o *DeleteCredentialUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] deleteCredentialUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *DeleteCredentialUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -112,7 +111,7 @@ func NewDeleteCredentialInternalServerError() *DeleteCredentialInternalServerErr
 	return &DeleteCredentialInternalServerError{}
 }
 
-/*DeleteCredentialInternalServerError handles this case with default header values.
+/* DeleteCredentialInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -123,7 +122,6 @@ type DeleteCredentialInternalServerError struct {
 func (o *DeleteCredentialInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] deleteCredentialInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DeleteCredentialInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -147,7 +145,7 @@ func NewDeleteCredentialDefault(code int) *DeleteCredentialDefault {
 	}
 }
 
-/*DeleteCredentialDefault handles this case with default header values.
+/* DeleteCredentialDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -165,7 +163,6 @@ func (o *DeleteCredentialDefault) Code() int {
 func (o *DeleteCredentialDefault) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}][%d] DeleteCredential default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *DeleteCredentialDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

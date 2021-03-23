@@ -58,7 +58,7 @@ func NewCreateWorkloadOK() *CreateWorkloadOK {
 	return &CreateWorkloadOK{}
 }
 
-/*CreateWorkloadOK handles this case with default header values.
+/* CreateWorkloadOK describes a response with status code 200, with default header values.
 
 CreateWorkloadOK create workload o k
 */
@@ -69,7 +69,6 @@ type CreateWorkloadOK struct {
 func (o *CreateWorkloadOK) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads][%d] createWorkloadOK  %+v", 200, o.Payload)
 }
-
 func (o *CreateWorkloadOK) GetPayload() *workload_models.V1CreateWorkloadResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewCreateWorkloadUnauthorized() *CreateWorkloadUnauthorized {
 	return &CreateWorkloadUnauthorized{}
 }
 
-/*CreateWorkloadUnauthorized handles this case with default header values.
+/* CreateWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type CreateWorkloadUnauthorized struct {
 func (o *CreateWorkloadUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads][%d] createWorkloadUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *CreateWorkloadUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewCreateWorkloadInternalServerError() *CreateWorkloadInternalServerError {
 	return &CreateWorkloadInternalServerError{}
 }
 
-/*CreateWorkloadInternalServerError handles this case with default header values.
+/* CreateWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type CreateWorkloadInternalServerError struct {
 func (o *CreateWorkloadInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads][%d] createWorkloadInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *CreateWorkloadInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewCreateWorkloadDefault(code int) *CreateWorkloadDefault {
 	}
 }
 
-/*CreateWorkloadDefault handles this case with default header values.
+/* CreateWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *CreateWorkloadDefault) Code() int {
 func (o *CreateWorkloadDefault) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads][%d] CreateWorkload default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *CreateWorkloadDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

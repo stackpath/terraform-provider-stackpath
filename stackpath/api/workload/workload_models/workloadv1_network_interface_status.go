@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -30,6 +32,11 @@ type Workloadv1NetworkInterfaceStatus struct {
 
 // Validate validates this workloadv1 network interface status
 func (m *Workloadv1NetworkInterfaceStatus) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this workloadv1 network interface status based on context it is used
+func (m *Workloadv1NetworkInterfaceStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

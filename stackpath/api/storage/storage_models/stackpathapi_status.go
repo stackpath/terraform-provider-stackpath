@@ -7,6 +7,7 @@ package storage_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"strconv"
@@ -128,7 +129,6 @@ func (m *StackpathapiStatus) Validate(formats strfmt.Registry) error {
 }
 
 func (m *StackpathapiStatus) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Details()) { // not required
 		return nil
 	}
@@ -136,6 +136,36 @@ func (m *StackpathapiStatus) validateDetails(formats strfmt.Registry) error {
 	for i := 0; i < len(m.Details()); i++ {
 
 		if err := m.detailsField[i].Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("details" + "." + strconv.Itoa(i))
+			}
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this stackpathapi status based on the context it is used
+func (m *StackpathapiStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StackpathapiStatus) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Details()); i++ {
+
+		if err := m.detailsField[i].ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("details" + "." + strconv.Itoa(i))
 			}

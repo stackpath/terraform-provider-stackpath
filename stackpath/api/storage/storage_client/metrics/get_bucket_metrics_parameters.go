@@ -16,74 +16,95 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetBucketMetricsParams creates a new GetBucketMetricsParams object
-// with the default values initialized.
+// NewGetBucketMetricsParams creates a new GetBucketMetricsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetBucketMetricsParams() *GetBucketMetricsParams {
-	var ()
 	return &GetBucketMetricsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetBucketMetricsParamsWithTimeout creates a new GetBucketMetricsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetBucketMetricsParamsWithTimeout(timeout time.Duration) *GetBucketMetricsParams {
-	var ()
 	return &GetBucketMetricsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetBucketMetricsParamsWithContext creates a new GetBucketMetricsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetBucketMetricsParamsWithContext(ctx context.Context) *GetBucketMetricsParams {
-	var ()
 	return &GetBucketMetricsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetBucketMetricsParamsWithHTTPClient creates a new GetBucketMetricsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetBucketMetricsParamsWithHTTPClient(client *http.Client) *GetBucketMetricsParams {
-	var ()
 	return &GetBucketMetricsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetBucketMetricsParams contains all the parameters to send to the API endpoint
-for the get bucket metrics operation typically these are written to a http.Request
+/* GetBucketMetricsParams contains all the parameters to send to the API endpoint
+   for the get bucket metrics operation.
+
+   Typically these are written to a http.Request.
 */
 type GetBucketMetricsParams struct {
 
-	/*BucketID
-	  The ID for the bucket to retrieve metrics for
+	/* BucketID.
 
+	   The ID for the bucket to retrieve metrics for
 	*/
 	BucketID string
-	/*EndTime
-	  The end date for the range of metrics.
 
+	/* EndTime.
+
+	   The end date for the range of metrics.
+
+	   Format: date-time
 	*/
 	EndTime *strfmt.DateTime
-	/*StackID
-	  The ID for the stack on which the bucket belongs to
 
+	/* StackID.
+
+	   The ID for the stack on which the bucket belongs to
 	*/
 	StackID string
-	/*StartTime
-	  The start date for the range of metrics.
 
+	/* StartTime.
+
+	   The start date for the range of metrics.
+
+	   Format: date-time
 	*/
 	StartTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get bucket metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBucketMetricsParams) WithDefaults() *GetBucketMetricsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get bucket metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBucketMetricsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get bucket metrics params
@@ -180,16 +201,17 @@ func (o *GetBucketMetricsParams) WriteToRequest(r runtime.ClientRequest, reg str
 
 		// query param end_time
 		var qrEndTime strfmt.DateTime
+
 		if o.EndTime != nil {
 			qrEndTime = *o.EndTime
 		}
 		qEndTime := qrEndTime.String()
 		if qEndTime != "" {
+
 			if err := r.SetQueryParam("end_time", qEndTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id
@@ -201,16 +223,17 @@ func (o *GetBucketMetricsParams) WriteToRequest(r runtime.ClientRequest, reg str
 
 		// query param start_time
 		var qrStartTime strfmt.DateTime
+
 		if o.StartTime != nil {
 			qrStartTime = *o.StartTime
 		}
 		qStartTime := qrStartTime.String()
 		if qStartTime != "" {
+
 			if err := r.SetQueryParam("start_time", qStartTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

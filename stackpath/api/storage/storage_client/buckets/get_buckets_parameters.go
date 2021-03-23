@@ -16,79 +16,97 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetBucketsParams creates a new GetBucketsParams object
-// with the default values initialized.
+// NewGetBucketsParams creates a new GetBucketsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetBucketsParams() *GetBucketsParams {
-	var ()
 	return &GetBucketsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetBucketsParamsWithTimeout creates a new GetBucketsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetBucketsParamsWithTimeout(timeout time.Duration) *GetBucketsParams {
-	var ()
 	return &GetBucketsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetBucketsParamsWithContext creates a new GetBucketsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetBucketsParamsWithContext(ctx context.Context) *GetBucketsParams {
-	var ()
 	return &GetBucketsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetBucketsParamsWithHTTPClient creates a new GetBucketsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetBucketsParamsWithHTTPClient(client *http.Client) *GetBucketsParams {
-	var ()
 	return &GetBucketsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetBucketsParams contains all the parameters to send to the API endpoint
-for the get buckets operation typically these are written to a http.Request
+/* GetBucketsParams contains all the parameters to send to the API endpoint
+   for the get buckets operation.
+
+   Typically these are written to a http.Request.
 */
 type GetBucketsParams struct {
 
-	/*PageRequestAfter
-	  The cursor value after which data will be returned.
+	/* PageRequestAfter.
 
+	   The cursor value after which data will be returned.
 	*/
 	PageRequestAfter *string
-	/*PageRequestFilter
-	  SQL-style constraint filters.
 
+	/* PageRequestFilter.
+
+	   SQL-style constraint filters.
 	*/
 	PageRequestFilter *string
-	/*PageRequestFirst
-	  The number of items desired.
 
+	/* PageRequestFirst.
+
+	   The number of items desired.
 	*/
 	PageRequestFirst *string
-	/*PageRequestSortBy
-	  Sort the response by the given field.
 
+	/* PageRequestSortBy.
+
+	   Sort the response by the given field.
 	*/
 	PageRequestSortBy *string
-	/*StackID
-	  The ID for the stack for which the buckets will be retrieved
 
+	/* StackID.
+
+	   The ID for the stack for which the buckets will be retrieved
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get buckets params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBucketsParams) WithDefaults() *GetBucketsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get buckets params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBucketsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get buckets params
@@ -191,64 +209,68 @@ func (o *GetBucketsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 		// query param page_request.after
 		var qrPageRequestAfter string
+
 		if o.PageRequestAfter != nil {
 			qrPageRequestAfter = *o.PageRequestAfter
 		}
 		qPageRequestAfter := qrPageRequestAfter
 		if qPageRequestAfter != "" {
+
 			if err := r.SetQueryParam("page_request.after", qPageRequestAfter); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestFilter != nil {
 
 		// query param page_request.filter
 		var qrPageRequestFilter string
+
 		if o.PageRequestFilter != nil {
 			qrPageRequestFilter = *o.PageRequestFilter
 		}
 		qPageRequestFilter := qrPageRequestFilter
 		if qPageRequestFilter != "" {
+
 			if err := r.SetQueryParam("page_request.filter", qPageRequestFilter); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestFirst != nil {
 
 		// query param page_request.first
 		var qrPageRequestFirst string
+
 		if o.PageRequestFirst != nil {
 			qrPageRequestFirst = *o.PageRequestFirst
 		}
 		qPageRequestFirst := qrPageRequestFirst
 		if qPageRequestFirst != "" {
+
 			if err := r.SetQueryParam("page_request.first", qPageRequestFirst); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestSortBy != nil {
 
 		// query param page_request.sort_by
 		var qrPageRequestSortBy string
+
 		if o.PageRequestSortBy != nil {
 			qrPageRequestSortBy = *o.PageRequestSortBy
 		}
 		qPageRequestSortBy := qrPageRequestSortBy
 		if qPageRequestSortBy != "" {
+
 			if err := r.SetQueryParam("page_request.sort_by", qPageRequestSortBy); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id

@@ -7,6 +7,7 @@ package ipam_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -104,6 +105,16 @@ func (m StackpathRPCRetryInfo) MarshalJSON() ([]byte, error) {
 
 // Validate validates this stackpath rpc retry info
 func (m *StackpathRPCRetryInfo) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc retry info based on the context it is used
+func (m *StackpathRPCRetryInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if len(res) > 0 {

@@ -123,7 +123,7 @@ func resourceObjectStorageBucketUpdate(data *schema.ResourceData, meta interface
 		Context:  context.Background(),
 		StackID:  config.StackID,
 		Body: &storage_models.StorageUpdateBucketRequest{
-			Visibility: visibility,
+			Visibility: &visibility,
 		},
 	}, nil)
 	// Handle error

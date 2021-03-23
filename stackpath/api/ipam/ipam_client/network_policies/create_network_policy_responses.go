@@ -58,7 +58,7 @@ func NewCreateNetworkPolicyOK() *CreateNetworkPolicyOK {
 	return &CreateNetworkPolicyOK{}
 }
 
-/*CreateNetworkPolicyOK handles this case with default header values.
+/* CreateNetworkPolicyOK describes a response with status code 200, with default header values.
 
 CreateNetworkPolicyOK create network policy o k
 */
@@ -69,7 +69,6 @@ type CreateNetworkPolicyOK struct {
 func (o *CreateNetworkPolicyOK) Error() string {
 	return fmt.Sprintf("[POST /ipam/v1/stacks/{stack_id}/network_policies][%d] createNetworkPolicyOK  %+v", 200, o.Payload)
 }
-
 func (o *CreateNetworkPolicyOK) GetPayload() *ipam_models.V1CreateNetworkPolicyResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewCreateNetworkPolicyUnauthorized() *CreateNetworkPolicyUnauthorized {
 	return &CreateNetworkPolicyUnauthorized{}
 }
 
-/*CreateNetworkPolicyUnauthorized handles this case with default header values.
+/* CreateNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type CreateNetworkPolicyUnauthorized struct {
 func (o *CreateNetworkPolicyUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /ipam/v1/stacks/{stack_id}/network_policies][%d] createNetworkPolicyUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *CreateNetworkPolicyUnauthorized) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewCreateNetworkPolicyInternalServerError() *CreateNetworkPolicyInternalSer
 	return &CreateNetworkPolicyInternalServerError{}
 }
 
-/*CreateNetworkPolicyInternalServerError handles this case with default header values.
+/* CreateNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type CreateNetworkPolicyInternalServerError struct {
 func (o *CreateNetworkPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /ipam/v1/stacks/{stack_id}/network_policies][%d] createNetworkPolicyInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *CreateNetworkPolicyInternalServerError) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewCreateNetworkPolicyDefault(code int) *CreateNetworkPolicyDefault {
 	}
 }
 
-/*CreateNetworkPolicyDefault handles this case with default header values.
+/* CreateNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *CreateNetworkPolicyDefault) Code() int {
 func (o *CreateNetworkPolicyDefault) Error() string {
 	return fmt.Sprintf("[POST /ipam/v1/stacks/{stack_id}/network_policies][%d] CreateNetworkPolicy default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *CreateNetworkPolicyDefault) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }

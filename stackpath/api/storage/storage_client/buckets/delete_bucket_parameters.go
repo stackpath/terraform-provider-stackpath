@@ -17,69 +17,87 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewDeleteBucketParams creates a new DeleteBucketParams object
-// with the default values initialized.
+// NewDeleteBucketParams creates a new DeleteBucketParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDeleteBucketParams() *DeleteBucketParams {
-	var ()
 	return &DeleteBucketParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDeleteBucketParamsWithTimeout creates a new DeleteBucketParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDeleteBucketParamsWithTimeout(timeout time.Duration) *DeleteBucketParams {
-	var ()
 	return &DeleteBucketParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDeleteBucketParamsWithContext creates a new DeleteBucketParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDeleteBucketParamsWithContext(ctx context.Context) *DeleteBucketParams {
-	var ()
 	return &DeleteBucketParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDeleteBucketParamsWithHTTPClient creates a new DeleteBucketParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDeleteBucketParamsWithHTTPClient(client *http.Client) *DeleteBucketParams {
-	var ()
 	return &DeleteBucketParams{
 		HTTPClient: client,
 	}
 }
 
-/*DeleteBucketParams contains all the parameters to send to the API endpoint
-for the delete bucket operation typically these are written to a http.Request
+/* DeleteBucketParams contains all the parameters to send to the API endpoint
+   for the delete bucket operation.
+
+   Typically these are written to a http.Request.
 */
 type DeleteBucketParams struct {
 
-	/*BucketID
-	  The ID for the bucket to delete
+	/* BucketID.
 
+	   The ID for the bucket to delete
 	*/
 	BucketID string
-	/*ForceDelete
-	  Force bucket deletion even if there is contents inside it.
 
+	/* ForceDelete.
+
+	   Force bucket deletion even if there is contents inside it.
+
+	   Format: boolean
 	*/
 	ForceDelete *bool
-	/*StackID
-	  The ID for the stack in which the bucket belongs
 
+	/* StackID.
+
+	   The ID for the stack in which the bucket belongs
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the delete bucket params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteBucketParams) WithDefaults() *DeleteBucketParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the delete bucket params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteBucketParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the delete bucket params
@@ -165,16 +183,17 @@ func (o *DeleteBucketParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 
 		// query param force_delete
 		var qrForceDelete bool
+
 		if o.ForceDelete != nil {
 			qrForceDelete = *o.ForceDelete
 		}
 		qForceDelete := swag.FormatBool(qrForceDelete)
 		if qForceDelete != "" {
+
 			if err := r.SetQueryParam("force_delete", qForceDelete); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id

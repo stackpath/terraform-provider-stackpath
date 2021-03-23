@@ -6,6 +6,8 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -75,23 +77,23 @@ func (m *NetworkMetadata) Validate(formats strfmt.Registry) error {
 }
 
 func (m *NetworkMetadata) validateAnnotations(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Annotations) { // not required
 		return nil
 	}
 
-	if err := m.Annotations.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("annotations")
+	if m.Annotations != nil {
+		if err := m.Annotations.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("annotations")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *NetworkMetadata) validateCreatedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.CreatedAt) { // not required
 		return nil
 	}
@@ -104,7 +106,6 @@ func (m *NetworkMetadata) validateCreatedAt(formats strfmt.Registry) error {
 }
 
 func (m *NetworkMetadata) validateDeleteRequestedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.DeleteRequestedAt) { // not required
 		return nil
 	}
@@ -117,12 +118,97 @@ func (m *NetworkMetadata) validateDeleteRequestedAt(formats strfmt.Registry) err
 }
 
 func (m *NetworkMetadata) validateLabels(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Labels) { // not required
 		return nil
 	}
 
-	if err := m.Labels.Validate(formats); err != nil {
+	if m.Labels != nil {
+		if err := m.Labels.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("labels")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *NetworkMetadata) validateUpdatedAt(formats strfmt.Registry) error {
+	if swag.IsZero(m.UpdatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updatedAt", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this network metadata based on the context it is used
+func (m *NetworkMetadata) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAnnotations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateCreatedAt(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDeleteRequestedAt(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLabels(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateUpdatedAt(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *NetworkMetadata) contextValidateAnnotations(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Annotations.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("annotations")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *NetworkMetadata) contextValidateCreatedAt(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "createdAt", "body", m.CreatedAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *NetworkMetadata) contextValidateDeleteRequestedAt(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deleteRequestedAt", "body", m.DeleteRequestedAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *NetworkMetadata) contextValidateLabels(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Labels.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("labels")
 		}
@@ -132,13 +218,9 @@ func (m *NetworkMetadata) validateLabels(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkMetadata) validateUpdatedAt(formats strfmt.Registry) error {
+func (m *NetworkMetadata) contextValidateUpdatedAt(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.UpdatedAt) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("updatedAt", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
+	if err := validate.ReadOnly(ctx, "updatedAt", "body", m.UpdatedAt); err != nil {
 		return err
 	}
 

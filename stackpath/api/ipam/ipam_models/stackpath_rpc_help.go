@@ -7,6 +7,7 @@ package ipam_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"strconv"
 
@@ -130,6 +131,38 @@ func (m *StackpathRPCHelp) validateLinks(formats strfmt.Registry) error {
 
 		if m.Links[i] != nil {
 			if err := m.Links[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("links" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc help based on the context it is used
+func (m *StackpathRPCHelp) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StackpathRPCHelp) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Links); i++ {
+
+		if m.Links[i] != nil {
+			if err := m.Links[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("links" + "." + strconv.Itoa(i))
 				}

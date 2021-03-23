@@ -58,7 +58,7 @@ func NewUpdateBucketOK() *UpdateBucketOK {
 	return &UpdateBucketOK{}
 }
 
-/*UpdateBucketOK handles this case with default header values.
+/* UpdateBucketOK describes a response with status code 200, with default header values.
 
 UpdateBucketOK update bucket o k
 */
@@ -69,7 +69,6 @@ type UpdateBucketOK struct {
 func (o *UpdateBucketOK) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketOK  %+v", 200, o.Payload)
 }
-
 func (o *UpdateBucketOK) GetPayload() *storage_models.StorageUpdateBucketResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewUpdateBucketUnauthorized() *UpdateBucketUnauthorized {
 	return &UpdateBucketUnauthorized{}
 }
 
-/*UpdateBucketUnauthorized handles this case with default header values.
+/* UpdateBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type UpdateBucketUnauthorized struct {
 func (o *UpdateBucketUnauthorized) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *UpdateBucketUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewUpdateBucketInternalServerError() *UpdateBucketInternalServerError {
 	return &UpdateBucketInternalServerError{}
 }
 
-/*UpdateBucketInternalServerError handles this case with default header values.
+/* UpdateBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type UpdateBucketInternalServerError struct {
 func (o *UpdateBucketInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] updateBucketInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *UpdateBucketInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewUpdateBucketDefault(code int) *UpdateBucketDefault {
 	}
 }
 
-/*UpdateBucketDefault handles this case with default header values.
+/* UpdateBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *UpdateBucketDefault) Code() int {
 func (o *UpdateBucketDefault) Error() string {
 	return fmt.Sprintf("[PUT /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] UpdateBucket default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *UpdateBucketDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

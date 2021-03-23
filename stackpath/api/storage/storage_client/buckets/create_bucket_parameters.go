@@ -18,61 +18,76 @@ import (
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
-// NewCreateBucketParams creates a new CreateBucketParams object
-// with the default values initialized.
+// NewCreateBucketParams creates a new CreateBucketParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCreateBucketParams() *CreateBucketParams {
-	var ()
 	return &CreateBucketParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCreateBucketParamsWithTimeout creates a new CreateBucketParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCreateBucketParamsWithTimeout(timeout time.Duration) *CreateBucketParams {
-	var ()
 	return &CreateBucketParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCreateBucketParamsWithContext creates a new CreateBucketParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCreateBucketParamsWithContext(ctx context.Context) *CreateBucketParams {
-	var ()
 	return &CreateBucketParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCreateBucketParamsWithHTTPClient creates a new CreateBucketParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCreateBucketParamsWithHTTPClient(client *http.Client) *CreateBucketParams {
-	var ()
 	return &CreateBucketParams{
 		HTTPClient: client,
 	}
 }
 
-/*CreateBucketParams contains all the parameters to send to the API endpoint
-for the create bucket operation typically these are written to a http.Request
+/* CreateBucketParams contains all the parameters to send to the API endpoint
+   for the create bucket operation.
+
+   Typically these are written to a http.Request.
 */
 type CreateBucketParams struct {
 
-	/*Body*/
+	// Body.
 	Body *storage_models.StorageCreateBucketRequest
-	/*StackID
-	  The ID for the stack on which the bucket will be created
 
+	/* StackID.
+
+	   The ID for the stack on which the bucket will be created
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the create bucket params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateBucketParams) WithDefaults() *CreateBucketParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the create bucket params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateBucketParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the create bucket params
@@ -137,7 +152,6 @@ func (o *CreateBucketParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
-
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
 			return err

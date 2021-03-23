@@ -58,7 +58,7 @@ func NewGetWorkloadInstanceOK() *GetWorkloadInstanceOK {
 	return &GetWorkloadInstanceOK{}
 }
 
-/*GetWorkloadInstanceOK handles this case with default header values.
+/* GetWorkloadInstanceOK describes a response with status code 200, with default header values.
 
 GetWorkloadInstanceOK get workload instance o k
 */
@@ -69,7 +69,6 @@ type GetWorkloadInstanceOK struct {
 func (o *GetWorkloadInstanceOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceOK  %+v", 200, o.Payload)
 }
-
 func (o *GetWorkloadInstanceOK) GetPayload() *workload_models.V1GetWorkloadInstanceResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetWorkloadInstanceUnauthorized() *GetWorkloadInstanceUnauthorized {
 	return &GetWorkloadInstanceUnauthorized{}
 }
 
-/*GetWorkloadInstanceUnauthorized handles this case with default header values.
+/* GetWorkloadInstanceUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetWorkloadInstanceUnauthorized struct {
 func (o *GetWorkloadInstanceUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetWorkloadInstanceUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetWorkloadInstanceInternalServerError() *GetWorkloadInstanceInternalSer
 	return &GetWorkloadInstanceInternalServerError{}
 }
 
-/*GetWorkloadInstanceInternalServerError handles this case with default header values.
+/* GetWorkloadInstanceInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetWorkloadInstanceInternalServerError struct {
 func (o *GetWorkloadInstanceInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetWorkloadInstanceInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetWorkloadInstanceDefault(code int) *GetWorkloadInstanceDefault {
 	}
 }
 
-/*GetWorkloadInstanceDefault handles this case with default header values.
+/* GetWorkloadInstanceDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetWorkloadInstanceDefault) Code() int {
 func (o *GetWorkloadInstanceDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] GetWorkloadInstance default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetWorkloadInstanceDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

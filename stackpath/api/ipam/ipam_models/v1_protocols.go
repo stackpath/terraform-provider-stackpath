@@ -6,6 +6,8 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -61,7 +63,6 @@ func (m *V1Protocols) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1Protocols) validateTCP(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.TCP) { // not required
 		return nil
 	}
@@ -79,7 +80,6 @@ func (m *V1Protocols) validateTCP(formats strfmt.Registry) error {
 }
 
 func (m *V1Protocols) validateTCPUDP(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.TCPUDP) { // not required
 		return nil
 	}
@@ -97,13 +97,76 @@ func (m *V1Protocols) validateTCPUDP(formats strfmt.Registry) error {
 }
 
 func (m *V1Protocols) validateUDP(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.UDP) { // not required
 		return nil
 	}
 
 	if m.UDP != nil {
 		if err := m.UDP.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("udp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 protocols based on the context it is used
+func (m *V1Protocols) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateTCP(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTCPUDP(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateUDP(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1Protocols) contextValidateTCP(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.TCP != nil {
+		if err := m.TCP.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tcp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Protocols) contextValidateTCPUDP(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.TCPUDP != nil {
+		if err := m.TCPUDP.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tcpUdp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Protocols) contextValidateUDP(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.UDP != nil {
+		if err := m.UDP.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("udp")
 			}

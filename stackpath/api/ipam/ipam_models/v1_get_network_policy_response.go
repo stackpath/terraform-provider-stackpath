@@ -6,6 +6,8 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -35,13 +37,40 @@ func (m *V1GetNetworkPolicyResponse) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1GetNetworkPolicyResponse) validateNetworkPolicy(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.NetworkPolicy) { // not required
 		return nil
 	}
 
 	if m.NetworkPolicy != nil {
 		if err := m.NetworkPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("networkPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 get network policy response based on the context it is used
+func (m *V1GetNetworkPolicyResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateNetworkPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1GetNetworkPolicyResponse) contextValidateNetworkPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.NetworkPolicy != nil {
+		if err := m.NetworkPolicy.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("networkPolicy")
 			}

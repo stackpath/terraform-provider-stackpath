@@ -58,7 +58,7 @@ func NewCreateBucketOK() *CreateBucketOK {
 	return &CreateBucketOK{}
 }
 
-/*CreateBucketOK handles this case with default header values.
+/* CreateBucketOK describes a response with status code 200, with default header values.
 
 CreateBucketOK create bucket o k
 */
@@ -69,7 +69,6 @@ type CreateBucketOK struct {
 func (o *CreateBucketOK) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/buckets][%d] createBucketOK  %+v", 200, o.Payload)
 }
-
 func (o *CreateBucketOK) GetPayload() *storage_models.StorageCreateBucketResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewCreateBucketUnauthorized() *CreateBucketUnauthorized {
 	return &CreateBucketUnauthorized{}
 }
 
-/*CreateBucketUnauthorized handles this case with default header values.
+/* CreateBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type CreateBucketUnauthorized struct {
 func (o *CreateBucketUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/buckets][%d] createBucketUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *CreateBucketUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewCreateBucketInternalServerError() *CreateBucketInternalServerError {
 	return &CreateBucketInternalServerError{}
 }
 
-/*CreateBucketInternalServerError handles this case with default header values.
+/* CreateBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type CreateBucketInternalServerError struct {
 func (o *CreateBucketInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/buckets][%d] createBucketInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *CreateBucketInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewCreateBucketDefault(code int) *CreateBucketDefault {
 	}
 }
 
-/*CreateBucketDefault handles this case with default header values.
+/* CreateBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *CreateBucketDefault) Code() int {
 func (o *CreateBucketDefault) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/buckets][%d] CreateBucket default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *CreateBucketDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

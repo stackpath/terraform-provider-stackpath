@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -78,23 +79,23 @@ func (m *V1ContainerSpec) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerSpec) validateEnv(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Env) { // not required
 		return nil
 	}
 
-	if err := m.Env.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("env")
+	if m.Env != nil {
+		if err := m.Env.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("env")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1ContainerSpec) validateLivenessProbe(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.LivenessProbe) { // not required
 		return nil
 	}
@@ -112,23 +113,23 @@ func (m *V1ContainerSpec) validateLivenessProbe(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerSpec) validatePorts(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Ports) { // not required
 		return nil
 	}
 
-	if err := m.Ports.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("ports")
+	if m.Ports != nil {
+		if err := m.Ports.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("ports")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1ContainerSpec) validateReadinessProbe(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ReadinessProbe) { // not required
 		return nil
 	}
@@ -146,7 +147,6 @@ func (m *V1ContainerSpec) validateReadinessProbe(formats strfmt.Registry) error 
 }
 
 func (m *V1ContainerSpec) validateResources(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Resources) { // not required
 		return nil
 	}
@@ -164,7 +164,6 @@ func (m *V1ContainerSpec) validateResources(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerSpec) validateVolumeMounts(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.VolumeMounts) { // not required
 		return nil
 	}
@@ -176,6 +175,124 @@ func (m *V1ContainerSpec) validateVolumeMounts(formats strfmt.Registry) error {
 
 		if m.VolumeMounts[i] != nil {
 			if err := m.VolumeMounts[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 container spec based on the context it is used
+func (m *V1ContainerSpec) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateEnv(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLivenessProbe(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePorts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateReadinessProbe(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVolumeMounts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidateEnv(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Env.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("env")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidateLivenessProbe(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LivenessProbe != nil {
+		if err := m.LivenessProbe.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("livenessProbe")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidatePorts(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Ports.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("ports")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidateReadinessProbe(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ReadinessProbe != nil {
+		if err := m.ReadinessProbe.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("readinessProbe")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Resources != nil {
+		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerSpec) contextValidateVolumeMounts(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.VolumeMounts); i++ {
+
+		if m.VolumeMounts[i] != nil {
+			if err := m.VolumeMounts[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
 				}

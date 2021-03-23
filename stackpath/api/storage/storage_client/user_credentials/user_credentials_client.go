@@ -23,13 +23,16 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	DeleteCredential(params *DeleteCredentialParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteCredentialNoContent, error)
+	DeleteCredential(params *DeleteCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteCredentialNoContent, error)
 
-	GenerateCredentials(params *GenerateCredentialsParams, authInfo runtime.ClientAuthInfoWriter) (*GenerateCredentialsOK, error)
+	GenerateCredentials(params *GenerateCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GenerateCredentialsOK, error)
 
-	GetCredentials(params *GetCredentialsParams, authInfo runtime.ClientAuthInfoWriter) (*GetCredentialsOK, error)
+	GetCredentials(params *GetCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetCredentialsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -37,13 +40,12 @@ type ClientService interface {
 /*
   DeleteCredential deletes provided storage access credentials for the given user
 */
-func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteCredentialNoContent, error) {
+func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteCredentialNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteCredentialParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "DeleteCredential",
 		Method:             "DELETE",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/users/{user_id}/credentials/{access_key}",
@@ -55,7 +57,12 @@ func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -73,13 +80,12 @@ func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runti
 
   Generate storage credentials for the given user. Users can only have one set of credentials, so calling this method will generate a new set and invalidate any existing ones.
 */
-func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo runtime.ClientAuthInfoWriter) (*GenerateCredentialsOK, error) {
+func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GenerateCredentialsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGenerateCredentialsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GenerateCredentials",
 		Method:             "POST",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate",
@@ -91,7 +97,12 @@ func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -107,13 +118,12 @@ func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo
 /*
   GetCredentials gets credentials for a given user
 */
-func (a *Client) GetCredentials(params *GetCredentialsParams, authInfo runtime.ClientAuthInfoWriter) (*GetCredentialsOK, error) {
+func (a *Client) GetCredentials(params *GetCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetCredentialsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetCredentialsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetCredentials",
 		Method:             "GET",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/users/{user_id}/credentials",
@@ -125,7 +135,12 @@ func (a *Client) GetCredentials(params *GetCredentialsParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

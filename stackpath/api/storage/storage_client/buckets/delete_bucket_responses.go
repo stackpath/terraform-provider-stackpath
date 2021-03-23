@@ -58,7 +58,7 @@ func NewDeleteBucketNoContent() *DeleteBucketNoContent {
 	return &DeleteBucketNoContent{}
 }
 
-/*DeleteBucketNoContent handles this case with default header values.
+/* DeleteBucketNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -79,7 +79,7 @@ func NewDeleteBucketUnauthorized() *DeleteBucketUnauthorized {
 	return &DeleteBucketUnauthorized{}
 }
 
-/*DeleteBucketUnauthorized handles this case with default header values.
+/* DeleteBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -90,7 +90,6 @@ type DeleteBucketUnauthorized struct {
 func (o *DeleteBucketUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] deleteBucketUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *DeleteBucketUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -112,7 +111,7 @@ func NewDeleteBucketInternalServerError() *DeleteBucketInternalServerError {
 	return &DeleteBucketInternalServerError{}
 }
 
-/*DeleteBucketInternalServerError handles this case with default header values.
+/* DeleteBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -123,7 +122,6 @@ type DeleteBucketInternalServerError struct {
 func (o *DeleteBucketInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] deleteBucketInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DeleteBucketInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -147,7 +145,7 @@ func NewDeleteBucketDefault(code int) *DeleteBucketDefault {
 	}
 }
 
-/*DeleteBucketDefault handles this case with default header values.
+/* DeleteBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -165,7 +163,6 @@ func (o *DeleteBucketDefault) Code() int {
 func (o *DeleteBucketDefault) Error() string {
 	return fmt.Sprintf("[DELETE /storage/v1/stacks/{stack_id}/buckets/{bucket_id}][%d] DeleteBucket default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *DeleteBucketDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

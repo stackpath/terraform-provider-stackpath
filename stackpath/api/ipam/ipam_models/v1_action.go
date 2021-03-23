@@ -6,6 +6,7 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -62,5 +63,10 @@ func (m V1Action) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this v1 action based on context it is used
+func (m V1Action) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

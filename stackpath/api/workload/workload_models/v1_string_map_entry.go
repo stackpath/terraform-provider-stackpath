@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 )
 
@@ -16,5 +18,10 @@ type V1StringMapEntry map[string]string
 
 // Validate validates this v1 string map entry
 func (m V1StringMapEntry) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this v1 string map entry based on context it is used
+func (m V1StringMapEntry) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

@@ -6,9 +6,12 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // V1Workload A computing workload
@@ -42,7 +45,7 @@ type V1Workload struct {
 
 	// status
 	// Read Only: true
-	Status V1WorkloadStatus `json:"status,omitempty"`
+	Status *V1WorkloadStatus `json:"status,omitempty"`
 
 	// targets
 	Targets V1TargetMapEntry `json:"targets,omitempty"`
@@ -75,7 +78,6 @@ func (m *V1Workload) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1Workload) validateMetadata(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Metadata) { // not required
 		return nil
 	}
@@ -93,7 +95,6 @@ func (m *V1Workload) validateMetadata(formats strfmt.Registry) error {
 }
 
 func (m *V1Workload) validateSpec(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Spec) { // not required
 		return nil
 	}
@@ -111,28 +112,136 @@ func (m *V1Workload) validateSpec(formats strfmt.Registry) error {
 }
 
 func (m *V1Workload) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
 
-	if err := m.Status.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("status")
+	if m.Status != nil {
+		if err := m.Status.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1Workload) validateTargets(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Targets) { // not required
 		return nil
 	}
 
-	if err := m.Targets.Validate(formats); err != nil {
+	if m.Targets != nil {
+		if err := m.Targets.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("targets")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 workload based on the context it is used
+func (m *V1Workload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateID(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateMetadata(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSpec(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStackID(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTargets(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1Workload) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1Workload) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Metadata != nil {
+		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("metadata")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Workload) contextValidateSpec(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Spec != nil {
+		if err := m.Spec.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("spec")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Workload) contextValidateStackID(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "stackId", "body", string(m.StackID)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1Workload) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Status != nil {
+		if err := m.Status.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Workload) contextValidateTargets(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Targets.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("targets")
 		}

@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -28,7 +30,7 @@ type V1ContainerStatus struct {
 	Name string `json:"name,omitempty"`
 
 	// phase
-	Phase V1ContainerStatusContainerPhase `json:"phase,omitempty"`
+	Phase *V1ContainerStatusContainerPhase `json:"phase,omitempty"`
 
 	// Whether or not a container is running and ready for service
 	Ready bool `json:"ready,omitempty"`
@@ -85,7 +87,6 @@ func (m *V1ContainerStatus) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerStatus) validateFinishedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.FinishedAt) { // not required
 		return nil
 	}
@@ -98,23 +99,23 @@ func (m *V1ContainerStatus) validateFinishedAt(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerStatus) validatePhase(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Phase) { // not required
 		return nil
 	}
 
-	if err := m.Phase.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("phase")
+	if m.Phase != nil {
+		if err := m.Phase.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("phase")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1ContainerStatus) validateRunning(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Running) { // not required
 		return nil
 	}
@@ -132,7 +133,6 @@ func (m *V1ContainerStatus) validateRunning(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerStatus) validateStartedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.StartedAt) { // not required
 		return nil
 	}
@@ -145,7 +145,6 @@ func (m *V1ContainerStatus) validateStartedAt(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerStatus) validateTerminated(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Terminated) { // not required
 		return nil
 	}
@@ -163,13 +162,94 @@ func (m *V1ContainerStatus) validateTerminated(formats strfmt.Registry) error {
 }
 
 func (m *V1ContainerStatus) validateWaiting(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Waiting) { // not required
 		return nil
 	}
 
 	if m.Waiting != nil {
 		if err := m.Waiting.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("waiting")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 container status based on the context it is used
+func (m *V1ContainerStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePhase(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRunning(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTerminated(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateWaiting(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ContainerStatus) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Phase != nil {
+		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("phase")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerStatus) contextValidateRunning(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Running != nil {
+		if err := m.Running.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("running")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerStatus) contextValidateTerminated(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Terminated != nil {
+		if err := m.Terminated.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("terminated")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ContainerStatus) contextValidateWaiting(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Waiting != nil {
+		if err := m.Waiting.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("waiting")
 			}

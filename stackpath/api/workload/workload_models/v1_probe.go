@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -65,7 +67,6 @@ func (m *V1Probe) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1Probe) validateHTTPGet(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.HTTPGet) { // not required
 		return nil
 	}
@@ -83,13 +84,58 @@ func (m *V1Probe) validateHTTPGet(formats strfmt.Registry) error {
 }
 
 func (m *V1Probe) validateTCPSocket(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.TCPSocket) { // not required
 		return nil
 	}
 
 	if m.TCPSocket != nil {
 		if err := m.TCPSocket.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tcpSocket")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 probe based on the context it is used
+func (m *V1Probe) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateHTTPGet(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTCPSocket(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1Probe) contextValidateHTTPGet(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.HTTPGet != nil {
+		if err := m.HTTPGet.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("httpGet")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Probe) contextValidateTCPSocket(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.TCPSocket != nil {
+		if err := m.TCPSocket.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tcpSocket")
 			}

@@ -16,69 +16,89 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetStackMetricsParams creates a new GetStackMetricsParams object
-// with the default values initialized.
+// NewGetStackMetricsParams creates a new GetStackMetricsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetStackMetricsParams() *GetStackMetricsParams {
-	var ()
 	return &GetStackMetricsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetStackMetricsParamsWithTimeout creates a new GetStackMetricsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetStackMetricsParamsWithTimeout(timeout time.Duration) *GetStackMetricsParams {
-	var ()
 	return &GetStackMetricsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetStackMetricsParamsWithContext creates a new GetStackMetricsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetStackMetricsParamsWithContext(ctx context.Context) *GetStackMetricsParams {
-	var ()
 	return &GetStackMetricsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetStackMetricsParamsWithHTTPClient creates a new GetStackMetricsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetStackMetricsParamsWithHTTPClient(client *http.Client) *GetStackMetricsParams {
-	var ()
 	return &GetStackMetricsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetStackMetricsParams contains all the parameters to send to the API endpoint
-for the get stack metrics operation typically these are written to a http.Request
+/* GetStackMetricsParams contains all the parameters to send to the API endpoint
+   for the get stack metrics operation.
+
+   Typically these are written to a http.Request.
 */
 type GetStackMetricsParams struct {
 
-	/*EndTime
-	  The end date for the range of metrics.
+	/* EndTime.
 
+	   The end date for the range of metrics.
+
+	   Format: date-time
 	*/
 	EndTime *strfmt.DateTime
-	/*StackID
-	  The ID for the stack to collect metrics on
 
+	/* StackID.
+
+	   The ID for the stack to collect metrics on
 	*/
 	StackID string
-	/*StartTime
-	  The start date for the range of metrics.
 
+	/* StartTime.
+
+	   The start date for the range of metrics.
+
+	   Format: date-time
 	*/
 	StartTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get stack metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetStackMetricsParams) WithDefaults() *GetStackMetricsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get stack metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetStackMetricsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get stack metrics params
@@ -159,16 +179,17 @@ func (o *GetStackMetricsParams) WriteToRequest(r runtime.ClientRequest, reg strf
 
 		// query param end_time
 		var qrEndTime strfmt.DateTime
+
 		if o.EndTime != nil {
 			qrEndTime = *o.EndTime
 		}
 		qEndTime := qrEndTime.String()
 		if qEndTime != "" {
+
 			if err := r.SetQueryParam("end_time", qEndTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id
@@ -180,16 +201,17 @@ func (o *GetStackMetricsParams) WriteToRequest(r runtime.ClientRequest, reg strf
 
 		// query param start_time
 		var qrStartTime strfmt.DateTime
+
 		if o.StartTime != nil {
 			qrStartTime = *o.StartTime
 		}
 		qStartTime := qrStartTime.String()
 		if qStartTime != "" {
+
 			if err := r.SetQueryParam("start_time", qStartTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

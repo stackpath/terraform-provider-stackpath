@@ -23,17 +23,20 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateNetworkPolicyOK, error)
+	CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkPolicyOK, error)
 
-	DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteNetworkPolicyNoContent, error)
+	DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkPolicyNoContent, error)
 
-	GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo runtime.ClientAuthInfoWriter) (*GetNetworkPoliciesOK, error)
+	GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPoliciesOK, error)
 
-	GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*GetNetworkPolicyOK, error)
+	GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPolicyOK, error)
 
-	UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateNetworkPolicyOK, error)
+	UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkPolicyOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -41,13 +44,12 @@ type ClientService interface {
 /*
   CreateNetworkPolicy creates a new network policy
 */
-func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateNetworkPolicyOK, error) {
+func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateNetworkPolicyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "CreateNetworkPolicy",
 		Method:             "POST",
 		PathPattern:        "/ipam/v1/stacks/{stack_id}/network_policies",
@@ -59,7 +61,12 @@ func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +82,12 @@ func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo
 /*
   DeleteNetworkPolicy deletes a network policy
 */
-func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteNetworkPolicyNoContent, error) {
+func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkPolicyNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteNetworkPolicyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "DeleteNetworkPolicy",
 		Method:             "DELETE",
 		PathPattern:        "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}",
@@ -93,7 +99,12 @@ func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +120,12 @@ func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo
 /*
   GetNetworkPolicies gets a list of network policies by stack id
 */
-func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo runtime.ClientAuthInfoWriter) (*GetNetworkPoliciesOK, error) {
+func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPoliciesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetNetworkPoliciesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetNetworkPolicies",
 		Method:             "GET",
 		PathPattern:        "/ipam/v1/stacks/{stack_id}/network_policies",
@@ -127,7 +137,12 @@ func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -143,13 +158,12 @@ func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo r
 /*
   GetNetworkPolicy gets a network policy
 */
-func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*GetNetworkPolicyOK, error) {
+func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetNetworkPolicyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetNetworkPolicy",
 		Method:             "GET",
 		PathPattern:        "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}",
@@ -161,7 +175,12 @@ func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -177,13 +196,12 @@ func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runti
 /*
   UpdateNetworkPolicy updates a network policy
 */
-func (a *Client) UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateNetworkPolicyOK, error) {
+func (a *Client) UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateNetworkPolicyParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "UpdateNetworkPolicy",
 		Method:             "PUT",
 		PathPattern:        "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}",
@@ -195,7 +213,12 @@ func (a *Client) UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

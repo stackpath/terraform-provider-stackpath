@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -26,7 +28,7 @@ type PrometheusMetrics struct {
 	ErrorType string `json:"errorType,omitempty"`
 
 	// status
-	Status PrometheusMetricsStatus `json:"status,omitempty"`
+	Status *PrometheusMetricsStatus `json:"status,omitempty"`
 
 	// Warnings encountered when querying for metrics
 	Warnings []string `json:"warnings"`
@@ -51,7 +53,6 @@ func (m *PrometheusMetrics) Validate(formats strfmt.Registry) error {
 }
 
 func (m *PrometheusMetrics) validateData(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Data) { // not required
 		return nil
 	}
@@ -69,16 +70,63 @@ func (m *PrometheusMetrics) validateData(formats strfmt.Registry) error {
 }
 
 func (m *PrometheusMetrics) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
 
-	if err := m.Status.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("status")
+	if m.Status != nil {
+		if err := m.Status.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			}
+			return err
 		}
-		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this prometheus metrics based on the context it is used
+func (m *PrometheusMetrics) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PrometheusMetrics) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Data != nil {
+		if err := m.Data.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("data")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *PrometheusMetrics) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Status != nil {
+		if err := m.Status.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("status")
+			}
+			return err
+		}
 	}
 
 	return nil

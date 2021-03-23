@@ -68,9 +68,14 @@ func flattenComputeWorkloadContainerStatus(status *workload_models.V1ContainerSt
 		}
 	}
 
+	var phase string
+	if status.Phase != nil {
+		phase = string(*status.Phase)
+	}
+
 	return map[string]interface{}{
 		"name":          status.Name,
-		"phase":         string(status.Phase),
+		"phase":         phase,
 		"started_at":    status.StartedAt.String(),
 		"finished_at":   status.FinishedAt.String(),
 		"ready":         status.Ready,

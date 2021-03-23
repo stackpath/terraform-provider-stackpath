@@ -23,9 +23,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstancesOK, error)
+	GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstancesOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -33,13 +36,12 @@ type ClientService interface {
 /*
   GetWorkloadInstances retrieves a workload s instances
 */
-func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstancesOK, error) {
+func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstancesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetWorkloadInstancesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetWorkloadInstances",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances",
@@ -51,7 +53,12 @@ func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authIn
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

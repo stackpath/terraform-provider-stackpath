@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -50,7 +51,6 @@ func (m *V1DeploymentSpec) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1DeploymentSpec) validateScaleSettings(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ScaleSettings) { // not required
 		return nil
 	}
@@ -68,7 +68,6 @@ func (m *V1DeploymentSpec) validateScaleSettings(formats strfmt.Registry) error 
 }
 
 func (m *V1DeploymentSpec) validateSelectors(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Selectors) { // not required
 		return nil
 	}
@@ -80,6 +79,56 @@ func (m *V1DeploymentSpec) validateSelectors(formats strfmt.Registry) error {
 
 		if m.Selectors[i] != nil {
 			if err := m.Selectors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 deployment spec based on the context it is used
+func (m *V1DeploymentSpec) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateScaleSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSelectors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1DeploymentSpec) contextValidateScaleSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ScaleSettings != nil {
+		if err := m.ScaleSettings.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("scaleSettings")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1DeploymentSpec) contextValidateSelectors(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Selectors); i++ {
+
+		if m.Selectors[i] != nil {
+			if err := m.Selectors[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
 				}

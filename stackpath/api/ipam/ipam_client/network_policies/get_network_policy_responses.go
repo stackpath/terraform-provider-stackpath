@@ -58,7 +58,7 @@ func NewGetNetworkPolicyOK() *GetNetworkPolicyOK {
 	return &GetNetworkPolicyOK{}
 }
 
-/*GetNetworkPolicyOK handles this case with default header values.
+/* GetNetworkPolicyOK describes a response with status code 200, with default header values.
 
 GetNetworkPolicyOK get network policy o k
 */
@@ -69,7 +69,6 @@ type GetNetworkPolicyOK struct {
 func (o *GetNetworkPolicyOK) Error() string {
 	return fmt.Sprintf("[GET /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] getNetworkPolicyOK  %+v", 200, o.Payload)
 }
-
 func (o *GetNetworkPolicyOK) GetPayload() *ipam_models.V1GetNetworkPolicyResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetNetworkPolicyUnauthorized() *GetNetworkPolicyUnauthorized {
 	return &GetNetworkPolicyUnauthorized{}
 }
 
-/*GetNetworkPolicyUnauthorized handles this case with default header values.
+/* GetNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetNetworkPolicyUnauthorized struct {
 func (o *GetNetworkPolicyUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] getNetworkPolicyUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetNetworkPolicyUnauthorized) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetNetworkPolicyInternalServerError() *GetNetworkPolicyInternalServerErr
 	return &GetNetworkPolicyInternalServerError{}
 }
 
-/*GetNetworkPolicyInternalServerError handles this case with default header values.
+/* GetNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetNetworkPolicyInternalServerError struct {
 func (o *GetNetworkPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] getNetworkPolicyInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetNetworkPolicyInternalServerError) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetNetworkPolicyDefault(code int) *GetNetworkPolicyDefault {
 	}
 }
 
-/*GetNetworkPolicyDefault handles this case with default header values.
+/* GetNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetNetworkPolicyDefault) Code() int {
 func (o *GetNetworkPolicyDefault) Error() string {
 	return fmt.Sprintf("[GET /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] GetNetworkPolicy default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetNetworkPolicyDefault) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }

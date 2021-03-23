@@ -58,7 +58,7 @@ func NewGetStackMetricsOK() *GetStackMetricsOK {
 	return &GetStackMetricsOK{}
 }
 
-/*GetStackMetricsOK handles this case with default header values.
+/* GetStackMetricsOK describes a response with status code 200, with default header values.
 
 GetStackMetricsOK get stack metrics o k
 */
@@ -69,7 +69,6 @@ type GetStackMetricsOK struct {
 func (o *GetStackMetricsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetStackMetricsOK) GetPayload() *storage_models.PrometheusMetrics {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetStackMetricsUnauthorized() *GetStackMetricsUnauthorized {
 	return &GetStackMetricsUnauthorized{}
 }
 
-/*GetStackMetricsUnauthorized handles this case with default header values.
+/* GetStackMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetStackMetricsUnauthorized struct {
 func (o *GetStackMetricsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetStackMetricsUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetStackMetricsInternalServerError() *GetStackMetricsInternalServerError
 	return &GetStackMetricsInternalServerError{}
 }
 
-/*GetStackMetricsInternalServerError handles this case with default header values.
+/* GetStackMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetStackMetricsInternalServerError struct {
 func (o *GetStackMetricsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] getStackMetricsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetStackMetricsInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetStackMetricsDefault(code int) *GetStackMetricsDefault {
 	}
 }
 
-/*GetStackMetricsDefault handles this case with default header values.
+/* GetStackMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetStackMetricsDefault) Code() int {
 func (o *GetStackMetricsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/metrics][%d] GetStackMetrics default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetStackMetricsDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

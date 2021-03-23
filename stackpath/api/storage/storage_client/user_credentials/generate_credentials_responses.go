@@ -58,7 +58,7 @@ func NewGenerateCredentialsOK() *GenerateCredentialsOK {
 	return &GenerateCredentialsOK{}
 }
 
-/*GenerateCredentialsOK handles this case with default header values.
+/* GenerateCredentialsOK describes a response with status code 200, with default header values.
 
 GenerateCredentialsOK generate credentials o k
 */
@@ -69,7 +69,6 @@ type GenerateCredentialsOK struct {
 func (o *GenerateCredentialsOK) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsOK  %+v", 200, o.Payload)
 }
-
 func (o *GenerateCredentialsOK) GetPayload() *storage_models.StorageGenerateCredentialsResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGenerateCredentialsUnauthorized() *GenerateCredentialsUnauthorized {
 	return &GenerateCredentialsUnauthorized{}
 }
 
-/*GenerateCredentialsUnauthorized handles this case with default header values.
+/* GenerateCredentialsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GenerateCredentialsUnauthorized struct {
 func (o *GenerateCredentialsUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GenerateCredentialsUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGenerateCredentialsInternalServerError() *GenerateCredentialsInternalSer
 	return &GenerateCredentialsInternalServerError{}
 }
 
-/*GenerateCredentialsInternalServerError handles this case with default header values.
+/* GenerateCredentialsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GenerateCredentialsInternalServerError struct {
 func (o *GenerateCredentialsInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] generateCredentialsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GenerateCredentialsInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGenerateCredentialsDefault(code int) *GenerateCredentialsDefault {
 	}
 }
 
-/*GenerateCredentialsDefault handles this case with default header values.
+/* GenerateCredentialsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GenerateCredentialsDefault) Code() int {
 func (o *GenerateCredentialsDefault) Error() string {
 	return fmt.Sprintf("[POST /storage/v1/stacks/{stack_id}/users/{user_id}/credentials/generate][%d] GenerateCredentials default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GenerateCredentialsDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

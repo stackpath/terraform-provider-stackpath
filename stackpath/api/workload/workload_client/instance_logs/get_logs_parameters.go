@@ -17,113 +17,145 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetLogsParams creates a new GetLogsParams object
-// with the default values initialized.
+// NewGetLogsParams creates a new GetLogsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetLogsParams() *GetLogsParams {
-	var ()
 	return &GetLogsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetLogsParamsWithTimeout creates a new GetLogsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetLogsParamsWithTimeout(timeout time.Duration) *GetLogsParams {
-	var ()
 	return &GetLogsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetLogsParamsWithContext creates a new GetLogsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetLogsParamsWithContext(ctx context.Context) *GetLogsParams {
-	var ()
 	return &GetLogsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetLogsParamsWithHTTPClient creates a new GetLogsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetLogsParamsWithHTTPClient(client *http.Client) *GetLogsParams {
-	var ()
 	return &GetLogsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetLogsParams contains all the parameters to send to the API endpoint
-for the get logs operation typically these are written to a http.Request
+/* GetLogsParams contains all the parameters to send to the API endpoint
+   for the get logs operation.
+
+   Typically these are written to a http.Request.
 */
 type GetLogsParams struct {
 
-	/*ContainerName
-	  The name of the container to obtain logs for. This defaults to first container in instance.
+	/* ContainerName.
 
+	   The name of the container to obtain logs for. This defaults to first container in instance.
 	*/
 	ContainerName *string
-	/*Follow
-	  Whether or not to follow the instance's log stream. This defaults to false.
 
+	/* Follow.
+
+	   Whether or not to follow the instance's log stream. This defaults to false.
+
+	   Format: boolean
 	*/
 	Follow *bool
-	/*InstanceName
-	  The name of the instance to obtain logs for
 
+	/* InstanceName.
+
+	   The name of the instance to obtain logs for
 	*/
 	InstanceName string
-	/*LimitBytes
-	  The number of bytes to read from the server before terminating log output. This may not display a complete final line of logging, and may return slightly more or slightly less than the specified limit.
 
+	/* LimitBytes.
+
+	   The number of bytes to read from the server before terminating log output. This may not display a complete final line of logging, and may return slightly more or slightly less than the specified limit.
 	*/
 	LimitBytes *string
-	/*Previous
-	  Whether or not to return log entries made by previously terminated containers. This defaults to false.
 
+	/* Previous.
+
+	   Whether or not to return log entries made by previously terminated containers. This defaults to false.
+
+	   Format: boolean
 	*/
 	Previous *bool
-	/*SinceSeconds
-	  A relative time in seconds before the current time from which to show logs. If this value precedes the time an instance was started, only logs since the instance's start time will be returned. If this value is in the future, no logs will be returned.
+
+	/* SinceSeconds.
+
+	     A relative time in seconds before the current time from which to show logs. If this value precedes the time an instance was started, only logs since the instance's start time will be returned. If this value is in the future, no logs will be returned.
 
 	Only one of since_seconds or since_time may be specified
-
 	*/
 	SinceSeconds *string
-	/*SinceTime
-	  An RFC3339 timestamp from which to show logs. If this value precedes the time an instance was started, only logs since the instance's start time will be returned. If this value is in the future, no logs will be returned.
+
+	/* SinceTime.
+
+	     An RFC3339 timestamp from which to show logs. If this value precedes the time an instance was started, only logs since the instance's start time will be returned. If this value is in the future, no logs will be returned.
 
 	Only one of since_seconds or since_time may be specified
 
+	     Format: date-time
 	*/
 	SinceTime *strfmt.DateTime
-	/*StackID
-	  The ID of the stack containing the workload whose instances to retrieve
 
+	/* StackID.
+
+	   The ID of the stack containing the workload whose instances to retrieve
 	*/
 	StackID string
-	/*TailLines
-	  The number of lines from the end of the logs to show. If not specified, logs are shown from the creation of the container or since_seconds or since_time.
 
+	/* TailLines.
+
+	   The number of lines from the end of the logs to show. If not specified, logs are shown from the creation of the container or since_seconds or since_time.
 	*/
 	TailLines *string
-	/*Timestamps
-	  Whether or not to add an RFC3339 or RFC3339Nano timestamp at the beginning of every line of log output. This defaults to false.
 
+	/* Timestamps.
+
+	   Whether or not to add an RFC3339 or RFC3339Nano timestamp at the beginning of every line of log output. This defaults to false.
+
+	   Format: boolean
 	*/
 	Timestamps *bool
-	/*WorkloadID
-	  The ID the workload whose instances to retrieve
 
+	/* WorkloadID.
+
+	   The ID the workload whose instances to retrieve
 	*/
 	WorkloadID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get logs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetLogsParams) WithDefaults() *GetLogsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get logs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetLogsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get logs params
@@ -292,32 +324,34 @@ func (o *GetLogsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 
 		// query param container_name
 		var qrContainerName string
+
 		if o.ContainerName != nil {
 			qrContainerName = *o.ContainerName
 		}
 		qContainerName := qrContainerName
 		if qContainerName != "" {
+
 			if err := r.SetQueryParam("container_name", qContainerName); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Follow != nil {
 
 		// query param follow
 		var qrFollow bool
+
 		if o.Follow != nil {
 			qrFollow = *o.Follow
 		}
 		qFollow := swag.FormatBool(qrFollow)
 		if qFollow != "" {
+
 			if err := r.SetQueryParam("follow", qFollow); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param instance_name
@@ -329,64 +363,68 @@ func (o *GetLogsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 
 		// query param limit_bytes
 		var qrLimitBytes string
+
 		if o.LimitBytes != nil {
 			qrLimitBytes = *o.LimitBytes
 		}
 		qLimitBytes := qrLimitBytes
 		if qLimitBytes != "" {
+
 			if err := r.SetQueryParam("limit_bytes", qLimitBytes); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Previous != nil {
 
 		// query param previous
 		var qrPrevious bool
+
 		if o.Previous != nil {
 			qrPrevious = *o.Previous
 		}
 		qPrevious := swag.FormatBool(qrPrevious)
 		if qPrevious != "" {
+
 			if err := r.SetQueryParam("previous", qPrevious); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.SinceSeconds != nil {
 
 		// query param since_seconds
 		var qrSinceSeconds string
+
 		if o.SinceSeconds != nil {
 			qrSinceSeconds = *o.SinceSeconds
 		}
 		qSinceSeconds := qrSinceSeconds
 		if qSinceSeconds != "" {
+
 			if err := r.SetQueryParam("since_seconds", qSinceSeconds); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.SinceTime != nil {
 
 		// query param since_time
 		var qrSinceTime strfmt.DateTime
+
 		if o.SinceTime != nil {
 			qrSinceTime = *o.SinceTime
 		}
 		qSinceTime := qrSinceTime.String()
 		if qSinceTime != "" {
+
 			if err := r.SetQueryParam("since_time", qSinceTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id
@@ -398,32 +436,34 @@ func (o *GetLogsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 
 		// query param tail_lines
 		var qrTailLines string
+
 		if o.TailLines != nil {
 			qrTailLines = *o.TailLines
 		}
 		qTailLines := qrTailLines
 		if qTailLines != "" {
+
 			if err := r.SetQueryParam("tail_lines", qTailLines); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Timestamps != nil {
 
 		// query param timestamps
 		var qrTimestamps bool
+
 		if o.Timestamps != nil {
 			qrTimestamps = *o.Timestamps
 		}
 		qTimestamps := swag.FormatBool(qrTimestamps)
 		if qTimestamps != "" {
+
 			if err := r.SetQueryParam("timestamps", qTimestamps); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param workload_id

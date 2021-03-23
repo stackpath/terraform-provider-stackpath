@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -70,5 +71,10 @@ func (m VolumeClaimVolumeClaimPhase) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this volume claim volume claim phase based on context it is used
+func (m VolumeClaimVolumeClaimPhase) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

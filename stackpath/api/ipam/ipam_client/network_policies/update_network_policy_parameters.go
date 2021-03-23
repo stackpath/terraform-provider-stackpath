@@ -18,66 +18,82 @@ import (
 	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
-// NewUpdateNetworkPolicyParams creates a new UpdateNetworkPolicyParams object
-// with the default values initialized.
+// NewUpdateNetworkPolicyParams creates a new UpdateNetworkPolicyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewUpdateNetworkPolicyParams() *UpdateNetworkPolicyParams {
-	var ()
 	return &UpdateNetworkPolicyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewUpdateNetworkPolicyParamsWithTimeout creates a new UpdateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewUpdateNetworkPolicyParamsWithTimeout(timeout time.Duration) *UpdateNetworkPolicyParams {
-	var ()
 	return &UpdateNetworkPolicyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewUpdateNetworkPolicyParamsWithContext creates a new UpdateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewUpdateNetworkPolicyParamsWithContext(ctx context.Context) *UpdateNetworkPolicyParams {
-	var ()
 	return &UpdateNetworkPolicyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewUpdateNetworkPolicyParamsWithHTTPClient creates a new UpdateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewUpdateNetworkPolicyParamsWithHTTPClient(client *http.Client) *UpdateNetworkPolicyParams {
-	var ()
 	return &UpdateNetworkPolicyParams{
 		HTTPClient: client,
 	}
 }
 
-/*UpdateNetworkPolicyParams contains all the parameters to send to the API endpoint
-for the update network policy operation typically these are written to a http.Request
+/* UpdateNetworkPolicyParams contains all the parameters to send to the API endpoint
+   for the update network policy operation.
+
+   Typically these are written to a http.Request.
 */
 type UpdateNetworkPolicyParams struct {
 
-	/*Body*/
+	// Body.
 	Body *ipam_models.V1UpdateNetworkPolicyRequest
-	/*NetworkPolicyID
-	  A network policy's unique identifier
 
+	/* NetworkPolicyID.
+
+	   A network policy's unique identifier
 	*/
 	NetworkPolicyID string
-	/*StackID
-	  The ID of the stack that a network policy belongs to
 
+	/* StackID.
+
+	   The ID of the stack that a network policy belongs to
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the update network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *UpdateNetworkPolicyParams) WithDefaults() *UpdateNetworkPolicyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the update network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *UpdateNetworkPolicyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the update network policy params
@@ -153,7 +169,6 @@ func (o *UpdateNetworkPolicyParams) WriteToRequest(r runtime.ClientRequest, reg 
 		return err
 	}
 	var res []error
-
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
 			return err

@@ -7,6 +7,7 @@ package ipam_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -22,6 +23,7 @@ import (
 // swagger:discriminator apiStatusDetail @type
 type APIStatusDetail interface {
 	runtime.Validatable
+	runtime.ContextValidatable
 
 	// at type
 	// Required: true
@@ -151,5 +153,10 @@ func unmarshalAPIStatusDetail(data []byte, consumer runtime.Consumer) (APIStatus
 
 // Validate validates this api status detail
 func (m *apiStatusDetail) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this api status detail based on context it is used
+func (m *apiStatusDetail) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

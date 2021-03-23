@@ -17,133 +17,153 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetMetricsParams creates a new GetMetricsParams object
-// with the default values initialized.
+// NewGetMetricsParams creates a new GetMetricsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetMetricsParams() *GetMetricsParams {
-	var (
-		granularityDefault = string("DEFAULT")
-		groupByDefault     = string("NONE")
-		regionDefault      = string("ALL")
-		typeVarDefault     = string("BANDWIDTH")
-	)
 	return &GetMetricsParams{
-		Granularity: &granularityDefault,
-		GroupBy:     &groupByDefault,
-		Region:      &regionDefault,
-		Type:        &typeVarDefault,
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetMetricsParamsWithTimeout creates a new GetMetricsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetMetricsParamsWithTimeout(timeout time.Duration) *GetMetricsParams {
-	var (
-		granularityDefault = string("DEFAULT")
-		groupByDefault     = string("NONE")
-		regionDefault      = string("ALL")
-		typeVarDefault     = string("BANDWIDTH")
-	)
 	return &GetMetricsParams{
-		Granularity: &granularityDefault,
-		GroupBy:     &groupByDefault,
-		Region:      &regionDefault,
-		Type:        &typeVarDefault,
-
 		timeout: timeout,
 	}
 }
 
 // NewGetMetricsParamsWithContext creates a new GetMetricsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetMetricsParamsWithContext(ctx context.Context) *GetMetricsParams {
-	var (
-		granularityDefault = string("DEFAULT")
-		groupByDefault     = string("NONE")
-		regionDefault      = string("ALL")
-		typeDefault        = string("BANDWIDTH")
-	)
 	return &GetMetricsParams{
-		Granularity: &granularityDefault,
-		GroupBy:     &groupByDefault,
-		Region:      &regionDefault,
-		Type:        &typeDefault,
-
 		Context: ctx,
 	}
 }
 
 // NewGetMetricsParamsWithHTTPClient creates a new GetMetricsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetMetricsParamsWithHTTPClient(client *http.Client) *GetMetricsParams {
-	var (
-		granularityDefault = string("DEFAULT")
-		groupByDefault     = string("NONE")
-		regionDefault      = string("ALL")
-		typeDefault        = string("BANDWIDTH")
-	)
 	return &GetMetricsParams{
-		Granularity: &granularityDefault,
-		GroupBy:     &groupByDefault,
-		Region:      &regionDefault,
-		Type:        &typeDefault,
-		HTTPClient:  client,
+		HTTPClient: client,
 	}
 }
 
-/*GetMetricsParams contains all the parameters to send to the API endpoint
-for the get metrics operation typically these are written to a http.Request
+/* GetMetricsParams contains all the parameters to send to the API endpoint
+   for the get metrics operation.
+
+   Typically these are written to a http.Request.
 */
 type GetMetricsParams struct {
 
-	/*EndDate
-	  An upper bound date to search metrics for.
+	/* EndDate.
 
+	   An upper bound date to search metrics for.
+
+	   Format: date-time
 	*/
 	EndDate *strfmt.DateTime
-	/*Granularity*/
-	Granularity *string
-	/*GroupBy*/
-	GroupBy *string
-	/*Grouping
-	  List of fields to group by.
 
+	// Granularity.
+	//
+	// Default: "DEFAULT"
+	Granularity *string
+
+	// GroupBy.
+	//
+	// Default: "NONE"
+	GroupBy *string
+
+	/* Grouping.
+
+	   List of fields to group by.
 	*/
 	Grouping []string
-	/*InstanceName
-	  The name of instance name within a workload to filter metrics for.
 
+	/* InstanceName.
+
+	   The name of instance name within a workload to filter metrics for.
 	*/
 	InstanceName *string
-	/*Pop
-	  A StackPath POP to filter traffic metrics for. This field does not apply when retrieving INSTANCE type metrics
 
+	/* Pop.
+
+	   A StackPath POP to filter traffic metrics for. This field does not apply when retrieving INSTANCE type metrics
 	*/
 	Pop *string
-	/*Region*/
-	Region *string
-	/*StackID
-	  The ID of the stack containing the workloads and instances to retrieve metrics for
 
+	// Region.
+	//
+	// Default: "ALL"
+	Region *string
+
+	/* StackID.
+
+	   The ID of the stack containing the workloads and instances to retrieve metrics for
 	*/
 	StackID string
-	/*StartDate
-	  A lower bound date to search metrics for.
 
+	/* StartDate.
+
+	   A lower bound date to search metrics for.
+
+	   Format: date-time
 	*/
 	StartDate *strfmt.DateTime
-	/*Type*/
-	Type *string
-	/*WorkloadID
-	  The ID of a workload to filter metrics for.
 
+	// Type.
+	//
+	// Default: "BANDWIDTH"
+	Type *string
+
+	/* WorkloadID.
+
+	   The ID of a workload to filter metrics for.
 	*/
 	WorkloadID *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetMetricsParams) WithDefaults() *GetMetricsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get metrics params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetMetricsParams) SetDefaults() {
+	var (
+		granularityDefault = string("DEFAULT")
+
+		groupByDefault = string("NONE")
+
+		regionDefault = string("ALL")
+
+		typeVarDefault = string("BANDWIDTH")
+	)
+
+	val := GetMetricsParams{
+		Granularity: &granularityDefault,
+		GroupBy:     &groupByDefault,
+		Region:      &regionDefault,
+		Type:        &typeVarDefault,
+	}
+
+	val.timeout = o.timeout
+	val.Context = o.Context
+	val.HTTPClient = o.HTTPClient
+	*o = val
 }
 
 // WithTimeout adds the timeout to the get metrics params
@@ -312,104 +332,113 @@ func (o *GetMetricsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 		// query param end_date
 		var qrEndDate strfmt.DateTime
+
 		if o.EndDate != nil {
 			qrEndDate = *o.EndDate
 		}
 		qEndDate := qrEndDate.String()
 		if qEndDate != "" {
+
 			if err := r.SetQueryParam("end_date", qEndDate); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Granularity != nil {
 
 		// query param granularity
 		var qrGranularity string
+
 		if o.Granularity != nil {
 			qrGranularity = *o.Granularity
 		}
 		qGranularity := qrGranularity
 		if qGranularity != "" {
+
 			if err := r.SetQueryParam("granularity", qGranularity); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.GroupBy != nil {
 
 		// query param group_by
 		var qrGroupBy string
+
 		if o.GroupBy != nil {
 			qrGroupBy = *o.GroupBy
 		}
 		qGroupBy := qrGroupBy
 		if qGroupBy != "" {
+
 			if err := r.SetQueryParam("group_by", qGroupBy); err != nil {
 				return err
 			}
 		}
-
 	}
 
-	valuesGrouping := o.Grouping
+	if o.Grouping != nil {
 
-	joinedGrouping := swag.JoinByFormat(valuesGrouping, "")
-	// query array param grouping
-	if err := r.SetQueryParam("grouping", joinedGrouping...); err != nil {
-		return err
+		// binding items for grouping
+		joinedGrouping := o.bindParamGrouping(reg)
+
+		// query array param grouping
+		if err := r.SetQueryParam("grouping", joinedGrouping...); err != nil {
+			return err
+		}
 	}
 
 	if o.InstanceName != nil {
 
 		// query param instance_name
 		var qrInstanceName string
+
 		if o.InstanceName != nil {
 			qrInstanceName = *o.InstanceName
 		}
 		qInstanceName := qrInstanceName
 		if qInstanceName != "" {
+
 			if err := r.SetQueryParam("instance_name", qInstanceName); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Pop != nil {
 
 		// query param pop
 		var qrPop string
+
 		if o.Pop != nil {
 			qrPop = *o.Pop
 		}
 		qPop := qrPop
 		if qPop != "" {
+
 			if err := r.SetQueryParam("pop", qPop); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Region != nil {
 
 		// query param region
 		var qrRegion string
+
 		if o.Region != nil {
 			qrRegion = *o.Region
 		}
 		qRegion := qrRegion
 		if qRegion != "" {
+
 			if err := r.SetQueryParam("region", qRegion); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id
@@ -421,52 +450,72 @@ func (o *GetMetricsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 		// query param start_date
 		var qrStartDate strfmt.DateTime
+
 		if o.StartDate != nil {
 			qrStartDate = *o.StartDate
 		}
 		qStartDate := qrStartDate.String()
 		if qStartDate != "" {
+
 			if err := r.SetQueryParam("start_date", qStartDate); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Type != nil {
 
 		// query param type
 		var qrType string
+
 		if o.Type != nil {
 			qrType = *o.Type
 		}
 		qType := qrType
 		if qType != "" {
+
 			if err := r.SetQueryParam("type", qType); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.WorkloadID != nil {
 
 		// query param workload_id
 		var qrWorkloadID string
+
 		if o.WorkloadID != nil {
 			qrWorkloadID = *o.WorkloadID
 		}
 		qWorkloadID := qrWorkloadID
 		if qWorkloadID != "" {
+
 			if err := r.SetQueryParam("workload_id", qWorkloadID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
+}
+
+// bindParamGetMetrics binds the parameter grouping
+func (o *GetMetricsParams) bindParamGrouping(formats strfmt.Registry) []string {
+	groupingIR := o.Grouping
+
+	var groupingIC []string
+	for _, groupingIIR := range groupingIR { // explode []string
+
+		groupingIIV := groupingIIR // string as string
+		groupingIC = append(groupingIC, groupingIIV)
+	}
+
+	// items.CollectionFormat: ""
+	groupingIS := swag.JoinByFormat(groupingIC, "")
+
+	return groupingIS
 }

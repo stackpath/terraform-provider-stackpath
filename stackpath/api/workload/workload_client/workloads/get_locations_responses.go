@@ -58,7 +58,7 @@ func NewGetLocationsOK() *GetLocationsOK {
 	return &GetLocationsOK{}
 }
 
-/*GetLocationsOK handles this case with default header values.
+/* GetLocationsOK describes a response with status code 200, with default header values.
 
 GetLocationsOK get locations o k
 */
@@ -69,7 +69,6 @@ type GetLocationsOK struct {
 func (o *GetLocationsOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetLocationsOK) GetPayload() *workload_models.V1GetLocationsResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetLocationsUnauthorized() *GetLocationsUnauthorized {
 	return &GetLocationsUnauthorized{}
 }
 
-/*GetLocationsUnauthorized handles this case with default header values.
+/* GetLocationsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetLocationsUnauthorized struct {
 func (o *GetLocationsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetLocationsUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetLocationsInternalServerError() *GetLocationsInternalServerError {
 	return &GetLocationsInternalServerError{}
 }
 
-/*GetLocationsInternalServerError handles this case with default header values.
+/* GetLocationsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetLocationsInternalServerError struct {
 func (o *GetLocationsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetLocationsInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetLocationsDefault(code int) *GetLocationsDefault {
 	}
 }
 
-/*GetLocationsDefault handles this case with default header values.
+/* GetLocationsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetLocationsDefault) Code() int {
 func (o *GetLocationsDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] GetLocations default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetLocationsDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

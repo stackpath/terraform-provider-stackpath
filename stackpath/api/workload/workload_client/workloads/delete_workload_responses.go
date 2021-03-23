@@ -58,7 +58,7 @@ func NewDeleteWorkloadNoContent() *DeleteWorkloadNoContent {
 	return &DeleteWorkloadNoContent{}
 }
 
-/*DeleteWorkloadNoContent handles this case with default header values.
+/* DeleteWorkloadNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -79,7 +79,7 @@ func NewDeleteWorkloadUnauthorized() *DeleteWorkloadUnauthorized {
 	return &DeleteWorkloadUnauthorized{}
 }
 
-/*DeleteWorkloadUnauthorized handles this case with default header values.
+/* DeleteWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -90,7 +90,6 @@ type DeleteWorkloadUnauthorized struct {
 func (o *DeleteWorkloadUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *DeleteWorkloadUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -112,7 +111,7 @@ func NewDeleteWorkloadInternalServerError() *DeleteWorkloadInternalServerError {
 	return &DeleteWorkloadInternalServerError{}
 }
 
-/*DeleteWorkloadInternalServerError handles this case with default header values.
+/* DeleteWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -123,7 +122,6 @@ type DeleteWorkloadInternalServerError struct {
 func (o *DeleteWorkloadInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DeleteWorkloadInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -147,7 +145,7 @@ func NewDeleteWorkloadDefault(code int) *DeleteWorkloadDefault {
 	}
 }
 
-/*DeleteWorkloadDefault handles this case with default header values.
+/* DeleteWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -165,7 +163,6 @@ func (o *DeleteWorkloadDefault) Code() int {
 func (o *DeleteWorkloadDefault) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] DeleteWorkload default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *DeleteWorkloadDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

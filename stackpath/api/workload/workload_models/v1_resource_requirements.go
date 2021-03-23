@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -44,12 +46,60 @@ func (m *V1ResourceRequirements) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1ResourceRequirements) validateLimits(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Limits) { // not required
 		return nil
 	}
 
-	if err := m.Limits.Validate(formats); err != nil {
+	if m.Limits != nil {
+		if err := m.Limits.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("limits")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1ResourceRequirements) validateRequests(formats strfmt.Registry) error {
+	if swag.IsZero(m.Requests) { // not required
+		return nil
+	}
+
+	if m.Requests != nil {
+		if err := m.Requests.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("requests")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 resource requirements based on the context it is used
+func (m *V1ResourceRequirements) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateLimits(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRequests(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ResourceRequirements) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Limits.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("limits")
 		}
@@ -59,13 +109,9 @@ func (m *V1ResourceRequirements) validateLimits(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *V1ResourceRequirements) validateRequests(formats strfmt.Registry) error {
+func (m *V1ResourceRequirements) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Requests) { // not required
-		return nil
-	}
-
-	if err := m.Requests.Validate(formats); err != nil {
+	if err := m.Requests.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("requests")
 		}
