@@ -18,8 +18,8 @@ jobs:
 
       - name: Compile
         run: make build
-      - name: Look for unchecked errors
-        run: make errcheck
+      - name: Compile test binary
+        run: TEST=./stackpath make test-compile
       - name: Check fmt
         run: make fmtcheck
       - name: Vet
