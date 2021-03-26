@@ -18,7 +18,7 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 	networkPolicy := &ipam_models.V1NetworkPolicy{}
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},

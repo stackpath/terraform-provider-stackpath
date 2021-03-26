@@ -59,7 +59,7 @@ type Config struct {
 
 // LoadAndValidate will load the configuration and validate the configuration
 // options. An error will be returned when the configuration is invalid.
-func (c *Config) LoadAndValidate(terraformVersion string) error {
+func (c *Config) LoadAndValidate(ctx context.Context, terraformVersion string) error {
 	if c.ClientID == "" && c.ClientSecret == "" && c.AccessToken == "" {
 		// Require the user to provide at least one form of authentication
 		return fmt.Errorf("must provide either an access_token or a client_id and client_secret")
@@ -91,14 +91,14 @@ func (c *Config) LoadAndValidate(terraformVersion string) error {
 		return fmt.Errorf("must provide a stack to create resources in")
 	}
 
-	tokenSource, err := c.getTokenSource()
+	tokenSource, err := c.getTokenSource(ctx)
 	if err != nil {
 		return err
 	}
 
 	// Create a new http Client that will pull authentication tokens
 	// from the configured token source
-	c.client = oauth2.NewClient(context.Background(), tokenSource)
+	c.client = oauth2.NewClient(ctx, tokenSource)
 	c.client.Transport = logging.NewTransport("StackPath", c.client.Transport)
 	// Each individual request should return within 60s - timeouts will be retried.
 	// This is a timeout for, e.g. a single GET request of an operation - not a
@@ -116,7 +116,7 @@ func (c *Config) LoadAndValidate(terraformVersion string) error {
 	return nil
 }
 
-func (c *Config) getTokenSource() (oauth2.TokenSource, error) {
+func (c *Config) getTokenSource(ctx context.Context) (oauth2.TokenSource, error) {
 	if c.AccessToken != "" {
 		contents, _, err := pathOrContentsRead(c.AccessToken)
 		if err != nil {

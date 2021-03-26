@@ -28,7 +28,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 	//emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},
@@ -117,7 +117,7 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},
@@ -143,7 +143,7 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},

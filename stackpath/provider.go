@@ -1,9 +1,11 @@
 package stackpath
 
 import (
+	"context"
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -47,22 +49,14 @@ func Provider() *schema.Provider {
 		},
 	}
 
-	provider.ConfigureFunc = func(data *schema.ResourceData) (interface{}, error) {
-		// Taken from https://github.com/terraform-providers/terraform-provider-kubernetes/pull/620/files#diff-da3a5957d1adf1d97d4dec9f43b36ec1R171
-		// as an example for how to get the Terraform version into ConfigureFunc.
-		terraformVersion := provider.TerraformVersion
-		if terraformVersion == "" {
-			// Terraform 0.12 introduced this field to the protocol
-			// We can therefore assume that if it's missing it's 0.10 or 0.11
-			terraformVersion = "0.11+compatible"
-		}
-		return configureProvider(data, terraformVersion)
+	provider.ConfigureContextFunc = func(ctx context.Context, data *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		return configureProvider(ctx, data, provider.TerraformVersion)
 	}
 
 	return provider
 }
 
-func configureProvider(data *schema.ResourceData, terraformVersion string) (interface{}, error) {
+func configureProvider(ctx context.Context, data *schema.ResourceData, terraformVersion string) (interface{}, diag.Diagnostics) {
 	config := &Config{
 		StackID: data.Get("stack_id").(string),
 		BaseURL: data.Get("base_url").(string),
@@ -79,9 +73,9 @@ func configureProvider(data *schema.ResourceData, terraformVersion string) (inte
 	}
 
 	log.Printf("[INFO] configuring stackpath provider")
-	if err := config.LoadAndValidate(terraformVersion); err != nil {
-		return nil, fmt.Errorf("unable to validate configuration: %v", err)
+	if err := config.LoadAndValidate(ctx, terraformVersion); err != nil {
+		return nil, diag.FromErr(fmt.Errorf("unable to validate configuration: %w", err))
 	}
 
-	return config, nil
+	return config, diag.Diagnostics{}
 }

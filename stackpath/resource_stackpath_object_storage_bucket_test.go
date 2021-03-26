@@ -94,7 +94,7 @@ func TestObjectStorageBucketBasicLabelChange(t *testing.T) {
 	labelSuffix2 := strconv.Itoa(int(time.Now().Unix()) + 1)
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},

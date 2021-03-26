@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
@@ -19,12 +20,12 @@ var ignoredComputeWorkloadAnnotations = map[string]bool{
 
 func resourceComputeWorkload() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceComputeWorkloadCreate,
-		Read:   resourceComputeWorkloadRead,
-		Update: resourceComputeWorkloadUpdate,
-		Delete: resourceComputeWorkloadDelete,
+		CreateContext: resourceComputeWorkloadCreate,
+		ReadContext:   resourceComputeWorkloadRead,
+		UpdateContext: resourceComputeWorkloadUpdate,
+		DeleteContext: resourceComputeWorkloadDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceComputeWorkloadImportState,
+			StateContext: resourceComputeWorkloadImportState,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -370,30 +371,30 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 	}
 }
 
-func resourceComputeWorkloadCreate(data *schema.ResourceData, meta interface{}) error {
+func resourceComputeWorkloadCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	// Create the workload
 	resp, err := config.edgeCompute.Workloads.CreateWorkload(&workloads.CreateWorkloadParams{
-		Context: context.Background(),
+		Context: ctx,
 		StackID: config.StackID,
 		Body: &workload_models.V1CreateWorkloadRequest{
 			Workload: convertComputeWorkload(data),
 		},
 	}, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create compute workload: %v", NewStackPathError(err))
+		return diag.FromErr(fmt.Errorf("failed to create compute workload: %v", NewStackPathError(err)))
 	}
 
 	// Set the ID based on the workload created in the API
 	data.SetId(resp.Payload.Workload.ID)
 
-	return resourceComputeWorkloadRead(data, meta)
+	return resourceComputeWorkloadRead(ctx, data, meta)
 }
 
-func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) error {
+func resourceComputeWorkloadUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	_, err := config.edgeCompute.Workloads.UpdateWorkload(&workloads.UpdateWorkloadParams{
-		Context:    context.Background(),
+		Context:    ctx,
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 		Body: &workload_models.V1UpdateWorkloadRequest{
@@ -404,18 +405,18 @@ func resourceComputeWorkloadUpdate(data *schema.ResourceData, meta interface{}) 
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
 		data.SetId("")
-		return nil
+		return diag.Diagnostics{}
 	} else if err != nil {
-		return fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err))
+		return diag.FromErr(fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err)))
 	}
-	return resourceComputeWorkloadRead(data, meta)
+	return resourceComputeWorkloadRead(ctx, data, meta)
 }
 
-func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) error {
+func resourceComputeWorkloadRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 
 	resp, err := config.edgeCompute.Workloads.GetWorkload(&workloads.GetWorkloadParams{
-		Context:    context.Background(),
+		Context:    ctx,
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
@@ -423,19 +424,19 @@ func resourceComputeWorkloadRead(data *schema.ResourceData, meta interface{}) er
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
 		data.SetId("")
-		return nil
+		return diag.Diagnostics{}
 	} else if err != nil {
-		return fmt.Errorf("failed to read compute workload: %v", NewStackPathError(err))
+		return diag.FromErr(fmt.Errorf("failed to read compute workload: %v", NewStackPathError(err)))
 	}
 
 	if err := flattenComputeWorkload(data, resp.Payload.Workload); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return resourceComputeWorkloadReadInstances(data, meta)
+	return resourceComputeWorkloadReadInstances(ctx, data, meta)
 }
 
-func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interface{}) error {
+func resourceComputeWorkloadReadInstances(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 
 	pageSize := "50"
@@ -446,7 +447,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		params := &instances.GetWorkloadInstancesParams{
 			StackID:          config.StackID,
 			WorkloadID:       data.Id(),
-			Context:          context.Background(),
+			Context:          ctx,
 			PageRequestFirst: &pageSize,
 		}
 		if endCursor != "" {
@@ -454,7 +455,7 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 		}
 		resp, err := config.edgeCompute.Instances.GetWorkloadInstances(params, nil)
 		if err != nil {
-			return fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err))
+			return diag.FromErr(fmt.Errorf("failed to read compute workload instances: %v", NewStackPathError(err)))
 		}
 		for _, result := range resp.Payload.Results {
 			terraformInstances = append(terraformInstances, flattenComputeWorkloadInstance(result))
@@ -467,17 +468,17 @@ func resourceComputeWorkloadReadInstances(data *schema.ResourceData, meta interf
 	}
 
 	if err := data.Set("instances", terraformInstances); err != nil {
-		return fmt.Errorf("error setting instances: %v", err)
+		return diag.FromErr(fmt.Errorf("error setting instances: %v", err))
 	}
 
-	return nil
+	return diag.Diagnostics{}
 }
 
-func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) error {
+func resourceComputeWorkloadDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 
 	_, err := config.edgeCompute.Workloads.DeleteWorkload(&workloads.DeleteWorkloadParams{
-		Context:    context.Background(),
+		Context:    ctx,
 		StackID:    config.StackID,
 		WorkloadID: data.Id(),
 	}, nil)
@@ -485,14 +486,14 @@ func resourceComputeWorkloadDelete(data *schema.ResourceData, meta interface{}) 
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
 		data.SetId("")
-		return nil
+		return diag.Diagnostics{}
 	} else if err != nil {
-		return fmt.Errorf("failed to delete compute workload: %v", NewStackPathError(err))
+		return diag.FromErr(fmt.Errorf("failed to delete compute workload: %v", NewStackPathError(err)))
 	}
-	return nil
+	return diag.Diagnostics{}
 }
 
-func resourceComputeWorkloadImportState(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+func resourceComputeWorkloadImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	// We expect that to import a resource, the user will pass in
 	// the full UUID of the workload they're attempting to import.
 	return []*schema.ResourceData{d}, nil
