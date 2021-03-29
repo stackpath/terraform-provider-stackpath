@@ -2,8 +2,9 @@
 # behavior.
 before:
   hooks:
-    # this is just an example and not a requirement for provider building/publishing
+    - go mod download
     - go mod tidy
+    - go mod vendor
 builds:
 - env:
     # goreleaser does not work with CGO, it could also complicate
