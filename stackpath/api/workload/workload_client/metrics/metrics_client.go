@@ -23,9 +23,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetMetricsOK, error)
+	GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -33,13 +36,12 @@ type ClientService interface {
 /*
   GetMetrics retrieves usage metrics for all workloads in a stack a specific workload or a specific instance in a workload
 */
-func (a *Client) GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetMetricsOK, error) {
+func (a *Client) GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetMetricsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetMetrics",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/metrics",
@@ -51,7 +53,12 @@ func (a *Client) GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

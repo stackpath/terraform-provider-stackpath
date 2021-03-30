@@ -16,69 +16,85 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetWorkloadInstanceParams creates a new GetWorkloadInstanceParams object
-// with the default values initialized.
+// NewGetWorkloadInstanceParams creates a new GetWorkloadInstanceParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetWorkloadInstanceParams() *GetWorkloadInstanceParams {
-	var ()
 	return &GetWorkloadInstanceParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetWorkloadInstanceParamsWithTimeout creates a new GetWorkloadInstanceParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetWorkloadInstanceParamsWithTimeout(timeout time.Duration) *GetWorkloadInstanceParams {
-	var ()
 	return &GetWorkloadInstanceParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetWorkloadInstanceParamsWithContext creates a new GetWorkloadInstanceParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetWorkloadInstanceParamsWithContext(ctx context.Context) *GetWorkloadInstanceParams {
-	var ()
 	return &GetWorkloadInstanceParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetWorkloadInstanceParamsWithHTTPClient creates a new GetWorkloadInstanceParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetWorkloadInstanceParamsWithHTTPClient(client *http.Client) *GetWorkloadInstanceParams {
-	var ()
 	return &GetWorkloadInstanceParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetWorkloadInstanceParams contains all the parameters to send to the API endpoint
-for the get workload instance operation typically these are written to a http.Request
+/* GetWorkloadInstanceParams contains all the parameters to send to the API endpoint
+   for the get workload instance operation.
+
+   Typically these are written to a http.Request.
 */
 type GetWorkloadInstanceParams struct {
 
-	/*InstanceName
-	  The name of the instance to retrieve
+	/* InstanceName.
 
+	   The name of the instance to retrieve
 	*/
 	InstanceName string
-	/*StackID
-	  The ID of the stack containing the workload whose instance to retrieve
 
+	/* StackID.
+
+	   The ID of the stack containing the workload whose instance to retrieve
 	*/
 	StackID string
-	/*WorkloadID
-	  The ID of the workload whose instance to retrieve
 
+	/* WorkloadID.
+
+	   The ID of the workload whose instance to retrieve
 	*/
 	WorkloadID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get workload instance params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetWorkloadInstanceParams) WithDefaults() *GetWorkloadInstanceParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get workload instance params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetWorkloadInstanceParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get workload instance params

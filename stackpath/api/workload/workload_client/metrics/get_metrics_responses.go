@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
 // GetMetricsReader is a Reader for the GetMetrics structure.
@@ -58,7 +58,7 @@ func NewGetMetricsOK() *GetMetricsOK {
 	return &GetMetricsOK{}
 }
 
-/*GetMetricsOK handles this case with default header values.
+/* GetMetricsOK describes a response with status code 200, with default header values.
 
 GetMetricsOK get metrics o k
 */
@@ -69,7 +69,6 @@ type GetMetricsOK struct {
 func (o *GetMetricsOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetMetricsOK) GetPayload() *workload_models.PrometheusMetrics {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetMetricsUnauthorized() *GetMetricsUnauthorized {
 	return &GetMetricsUnauthorized{}
 }
 
-/*GetMetricsUnauthorized handles this case with default header values.
+/* GetMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetMetricsUnauthorized struct {
 func (o *GetMetricsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetMetricsUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetMetricsInternalServerError() *GetMetricsInternalServerError {
 	return &GetMetricsInternalServerError{}
 }
 
-/*GetMetricsInternalServerError handles this case with default header values.
+/* GetMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetMetricsInternalServerError struct {
 func (o *GetMetricsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetMetricsInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetMetricsDefault(code int) *GetMetricsDefault {
 	}
 }
 
-/*GetMetricsDefault handles this case with default header values.
+/* GetMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetMetricsDefault) Code() int {
 func (o *GetMetricsDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] GetMetrics default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetMetricsDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

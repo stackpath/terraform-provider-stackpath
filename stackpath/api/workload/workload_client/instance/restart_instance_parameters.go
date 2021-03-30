@@ -16,60 +16,76 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewRestartInstanceParams creates a new RestartInstanceParams object
-// with the default values initialized.
+// NewRestartInstanceParams creates a new RestartInstanceParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRestartInstanceParams() *RestartInstanceParams {
-	var ()
 	return &RestartInstanceParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRestartInstanceParamsWithTimeout creates a new RestartInstanceParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRestartInstanceParamsWithTimeout(timeout time.Duration) *RestartInstanceParams {
-	var ()
 	return &RestartInstanceParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRestartInstanceParamsWithContext creates a new RestartInstanceParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRestartInstanceParamsWithContext(ctx context.Context) *RestartInstanceParams {
-	var ()
 	return &RestartInstanceParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRestartInstanceParamsWithHTTPClient creates a new RestartInstanceParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRestartInstanceParamsWithHTTPClient(client *http.Client) *RestartInstanceParams {
-	var ()
 	return &RestartInstanceParams{
 		HTTPClient: client,
 	}
 }
 
-/*RestartInstanceParams contains all the parameters to send to the API endpoint
-for the restart instance operation typically these are written to a http.Request
+/* RestartInstanceParams contains all the parameters to send to the API endpoint
+   for the restart instance operation.
+
+   Typically these are written to a http.Request.
 */
 type RestartInstanceParams struct {
 
-	/*InstanceName*/
+	// InstanceName.
 	InstanceName string
-	/*StackID*/
+
+	// StackID.
 	StackID string
-	/*WorkloadID*/
+
+	// WorkloadID.
 	WorkloadID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the restart instance params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RestartInstanceParams) WithDefaults() *RestartInstanceParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the restart instance params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RestartInstanceParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the restart instance params

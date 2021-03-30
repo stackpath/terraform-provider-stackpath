@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
 // UpdateWorkloadReader is a Reader for the UpdateWorkload structure.
@@ -58,7 +58,7 @@ func NewUpdateWorkloadOK() *UpdateWorkloadOK {
 	return &UpdateWorkloadOK{}
 }
 
-/*UpdateWorkloadOK handles this case with default header values.
+/* UpdateWorkloadOK describes a response with status code 200, with default header values.
 
 UpdateWorkloadOK update workload o k
 */
@@ -69,7 +69,6 @@ type UpdateWorkloadOK struct {
 func (o *UpdateWorkloadOK) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] updateWorkloadOK  %+v", 200, o.Payload)
 }
-
 func (o *UpdateWorkloadOK) GetPayload() *workload_models.V1UpdateWorkloadResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewUpdateWorkloadUnauthorized() *UpdateWorkloadUnauthorized {
 	return &UpdateWorkloadUnauthorized{}
 }
 
-/*UpdateWorkloadUnauthorized handles this case with default header values.
+/* UpdateWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type UpdateWorkloadUnauthorized struct {
 func (o *UpdateWorkloadUnauthorized) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] updateWorkloadUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *UpdateWorkloadUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewUpdateWorkloadInternalServerError() *UpdateWorkloadInternalServerError {
 	return &UpdateWorkloadInternalServerError{}
 }
 
-/*UpdateWorkloadInternalServerError handles this case with default header values.
+/* UpdateWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type UpdateWorkloadInternalServerError struct {
 func (o *UpdateWorkloadInternalServerError) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] updateWorkloadInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *UpdateWorkloadInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewUpdateWorkloadDefault(code int) *UpdateWorkloadDefault {
 	}
 }
 
-/*UpdateWorkloadDefault handles this case with default header values.
+/* UpdateWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *UpdateWorkloadDefault) Code() int {
 func (o *UpdateWorkloadDefault) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] UpdateWorkload default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *UpdateWorkloadDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

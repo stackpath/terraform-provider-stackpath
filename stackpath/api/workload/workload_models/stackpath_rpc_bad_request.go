@@ -7,6 +7,7 @@ package workload_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"strconv"
 
@@ -130,6 +131,38 @@ func (m *StackpathRPCBadRequest) validateFieldViolations(formats strfmt.Registry
 
 		if m.FieldViolations[i] != nil {
 			if err := m.FieldViolations[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("fieldViolations" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc bad request based on the context it is used
+func (m *StackpathRPCBadRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateFieldViolations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StackpathRPCBadRequest) contextValidateFieldViolations(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.FieldViolations); i++ {
+
+		if m.FieldViolations[i] != nil {
+			if err := m.FieldViolations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("fieldViolations" + "." + strconv.Itoa(i))
 				}

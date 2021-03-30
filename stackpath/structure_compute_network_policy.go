@@ -2,7 +2,7 @@ package stackpath
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
 func convertComputeNetworkPolicy(data *schema.ResourceData) *ipam_models.V1NetworkPolicy {
@@ -26,10 +26,11 @@ func convertComputeNetworkPolicy(data *schema.ResourceData) *ipam_models.V1Netwo
 	}
 }
 
-func convertComputeNetworkPolicyTypes(t []interface{}) []ipam_models.NetworkPolicySpecPolicyType {
-	types := make([]ipam_models.NetworkPolicySpecPolicyType, len(t))
+func convertComputeNetworkPolicyTypes(t []interface{}) []*ipam_models.NetworkPolicySpecPolicyType {
+	types := make([]*ipam_models.NetworkPolicySpecPolicyType, len(t))
 	for i, v := range t {
-		types[i] = ipam_models.NetworkPolicySpecPolicyType(v.(string))
+		newType := ipam_models.NetworkPolicySpecPolicyType(v.(string))
+		types[i] = &newType
 	}
 	return types
 }
@@ -38,8 +39,9 @@ func convertComputeNetworkPolicyIngress(prefix string, data *schema.ResourceData
 	ingress := make([]*ipam_models.V1Ingress, data.Get(prefix+".#").(int))
 	for i, v := range data.Get(prefix).([]interface{}) {
 		ingressData := v.(map[string]interface{})
+		action := ipam_models.V1Action(ingressData["action"].(string))
 		ingress[i] = &ipam_models.V1Ingress{
-			Action:      ipam_models.V1Action(ingressData["action"].(string)),
+			Action:      &action,
 			Description: ingressData["description"].(string),
 			Protocols:   convertComputeNetworkPolicyProtocols(ingressData["protocol"].([]interface{})),
 			From:        convertComputeNetworkPolicyHostRule(ingressData["from"].([]interface{})),
@@ -52,8 +54,9 @@ func convertComputeNetworkPolicyEgress(prefix string, data *schema.ResourceData)
 	egress := make([]*ipam_models.V1Egress, data.Get(prefix+".#").(int))
 	for i, v := range data.Get(prefix).([]interface{}) {
 		egressData := v.(map[string]interface{})
+		action := ipam_models.V1Action(egressData["action"].(string))
 		egress[i] = &ipam_models.V1Egress{
-			Action:      ipam_models.V1Action(egressData["action"].(string)),
+			Action:      &action,
 			Description: egressData["description"].(string),
 			Protocols:   convertComputeNetworkPolicyProtocols(egressData["protocol"].([]interface{})),
 			To:          convertComputeNetworkPolicyHostRule(egressData["to"].([]interface{})),
@@ -179,8 +182,12 @@ func convertComputeNetworkPolicyProtocolTCPUDP(data []interface{}) *ipam_models.
 func flattenComputeNetworkPolicyIngress(data []*ipam_models.V1Ingress) []interface{} {
 	d := make([]interface{}, len(data))
 	for i, ingress := range data {
+		var action string
+		if ingress.Action != nil {
+			action = string(*ingress.Action)
+		}
 		d[i] = map[string]interface{}{
-			"action":      string(ingress.Action),
+			"action":      action,
 			"description": ingress.Description,
 			"protocol":    flattenComputeNetworkPolicyProtocols(ingress.Protocols),
 			"from":        flattenComputeNetworkPolicyHostRule(ingress.From),
@@ -192,8 +199,12 @@ func flattenComputeNetworkPolicyIngress(data []*ipam_models.V1Ingress) []interfa
 func flattenComputeNetworkPolicyEgress(data []*ipam_models.V1Egress) []interface{} {
 	d := make([]interface{}, len(data))
 	for i, egress := range data {
+		var action string
+		if egress.Action != nil {
+			action = string(*egress.Action)
+		}
 		d[i] = map[string]interface{}{
-			"action":      string(egress.Action),
+			"action":      action,
 			"description": egress.Description,
 			"protocol":    flattenComputeNetworkPolicyProtocols(egress.Protocols),
 			"to":          flattenComputeNetworkPolicyHostRule(egress.To),
@@ -288,10 +299,23 @@ func flattenComputeNetworkPolicyIPBlock(data []*ipam_models.V1IPBlock) []interfa
 	return flattened
 }
 
-func flattenComputeNetworkPolicyTypes(types []ipam_models.NetworkPolicySpecPolicyType) []interface{} {
-	t := make([]interface{}, len(types))
-	for i, v := range types {
-		t[i] = string(v)
+func flattenComputeNetworkPolicyTypes(types []*ipam_models.NetworkPolicySpecPolicyType) []interface{} {
+	length := 0
+	for _, v := range types {
+		if v != nil {
+			length++
+		}
+	}
+
+	i := 0
+	t := make([]interface{}, length)
+	for _, v := range types {
+		if v == nil {
+			continue
+		}
+
+		t[i] = string(*v)
+		i++
 	}
 	return t
 }

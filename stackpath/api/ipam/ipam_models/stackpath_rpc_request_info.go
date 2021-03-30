@@ -7,6 +7,7 @@ package ipam_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -116,6 +117,16 @@ func (m StackpathRPCRequestInfo) MarshalJSON() ([]byte, error) {
 
 // Validate validates this stackpath rpc request info
 func (m *StackpathRPCRequestInfo) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc request info based on the context it is used
+func (m *StackpathRPCRequestInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if len(res) > 0 {

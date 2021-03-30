@@ -8,8 +8,8 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
 func TestAccComputeNetworkPolicy(t *testing.T) {
@@ -18,7 +18,7 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 	networkPolicy := &ipam_models.V1NetworkPolicy{}
 
 	resource.Test(t, resource.TestCase{
-		Providers: testAccProviders,
+		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
 			testAccPreCheck(t)
 		},

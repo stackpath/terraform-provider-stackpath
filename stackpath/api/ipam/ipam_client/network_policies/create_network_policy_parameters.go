@@ -15,64 +15,79 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
-// NewCreateNetworkPolicyParams creates a new CreateNetworkPolicyParams object
-// with the default values initialized.
+// NewCreateNetworkPolicyParams creates a new CreateNetworkPolicyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCreateNetworkPolicyParams() *CreateNetworkPolicyParams {
-	var ()
 	return &CreateNetworkPolicyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCreateNetworkPolicyParamsWithTimeout creates a new CreateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCreateNetworkPolicyParamsWithTimeout(timeout time.Duration) *CreateNetworkPolicyParams {
-	var ()
 	return &CreateNetworkPolicyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCreateNetworkPolicyParamsWithContext creates a new CreateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCreateNetworkPolicyParamsWithContext(ctx context.Context) *CreateNetworkPolicyParams {
-	var ()
 	return &CreateNetworkPolicyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCreateNetworkPolicyParamsWithHTTPClient creates a new CreateNetworkPolicyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCreateNetworkPolicyParamsWithHTTPClient(client *http.Client) *CreateNetworkPolicyParams {
-	var ()
 	return &CreateNetworkPolicyParams{
 		HTTPClient: client,
 	}
 }
 
-/*CreateNetworkPolicyParams contains all the parameters to send to the API endpoint
-for the create network policy operation typically these are written to a http.Request
+/* CreateNetworkPolicyParams contains all the parameters to send to the API endpoint
+   for the create network policy operation.
+
+   Typically these are written to a http.Request.
 */
 type CreateNetworkPolicyParams struct {
 
-	/*Body*/
+	// Body.
 	Body *ipam_models.V1CreateNetworkPolicyRequest
-	/*StackID
-	  The ID of the stack that a network policy belongs to
 
+	/* StackID.
+
+	   The ID of the stack that a network policy belongs to
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the create network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateNetworkPolicyParams) WithDefaults() *CreateNetworkPolicyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the create network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateNetworkPolicyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the create network policy params
@@ -137,7 +152,6 @@ func (o *CreateNetworkPolicyParams) WriteToRequest(r runtime.ClientRequest, reg 
 		return err
 	}
 	var res []error
-
 	if o.Body != nil {
 		if err := r.SetBodyParam(o.Body); err != nil {
 			return err

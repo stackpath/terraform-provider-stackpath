@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -82,5 +83,10 @@ func (m Workloadv1InstanceInstancePhase) Validate(formats strfmt.Registry) error
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// ContextValidate validates this workloadv1 instance instance phase based on context it is used
+func (m Workloadv1InstanceInstancePhase) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

@@ -6,6 +6,7 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -37,7 +38,7 @@ type V1NetworkPolicySpec struct {
 	// A list of policy types
 	//
 	// Policy types are used to specify what rules will be defined. If a policy type is given but not defined it will default. If it is not provided then no action will be used.
-	PolicyTypes []NetworkPolicySpecPolicyType `json:"policyTypes"`
+	PolicyTypes []*NetworkPolicySpecPolicyType `json:"policyTypes"`
 
 	// A priority for all rules in the network policy. 1-65000
 	Priority int32 `json:"priority,omitempty"`
@@ -74,7 +75,6 @@ func (m *V1NetworkPolicySpec) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1NetworkPolicySpec) validateEgress(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Egress) { // not required
 		return nil
 	}
@@ -99,7 +99,6 @@ func (m *V1NetworkPolicySpec) validateEgress(formats strfmt.Registry) error {
 }
 
 func (m *V1NetworkPolicySpec) validateIngress(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Ingress) { // not required
 		return nil
 	}
@@ -124,7 +123,6 @@ func (m *V1NetworkPolicySpec) validateIngress(formats strfmt.Registry) error {
 }
 
 func (m *V1NetworkPolicySpec) validateInstanceSelectors(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.InstanceSelectors) { // not required
 		return nil
 	}
@@ -149,7 +147,6 @@ func (m *V1NetworkPolicySpec) validateInstanceSelectors(formats strfmt.Registry)
 }
 
 func (m *V1NetworkPolicySpec) validateNetworkSelectors(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.NetworkSelectors) { // not required
 		return nil
 	}
@@ -174,18 +171,142 @@ func (m *V1NetworkPolicySpec) validateNetworkSelectors(formats strfmt.Registry) 
 }
 
 func (m *V1NetworkPolicySpec) validatePolicyTypes(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.PolicyTypes) { // not required
 		return nil
 	}
 
 	for i := 0; i < len(m.PolicyTypes); i++ {
+		if swag.IsZero(m.PolicyTypes[i]) { // not required
+			continue
+		}
 
-		if err := m.PolicyTypes[i].Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("policyTypes" + "." + strconv.Itoa(i))
+		if m.PolicyTypes[i] != nil {
+			if err := m.PolicyTypes[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("policyTypes" + "." + strconv.Itoa(i))
+				}
+				return err
 			}
-			return err
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 network policy spec based on the context it is used
+func (m *V1NetworkPolicySpec) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateEgress(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIngress(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateInstanceSelectors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNetworkSelectors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePolicyTypes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1NetworkPolicySpec) contextValidateEgress(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Egress); i++ {
+
+		if m.Egress[i] != nil {
+			if err := m.Egress[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("egress" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1NetworkPolicySpec) contextValidateIngress(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Ingress); i++ {
+
+		if m.Ingress[i] != nil {
+			if err := m.Ingress[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ingress" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1NetworkPolicySpec) contextValidateInstanceSelectors(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.InstanceSelectors); i++ {
+
+		if m.InstanceSelectors[i] != nil {
+			if err := m.InstanceSelectors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("instanceSelectors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1NetworkPolicySpec) contextValidateNetworkSelectors(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.NetworkSelectors); i++ {
+
+		if m.NetworkSelectors[i] != nil {
+			if err := m.NetworkSelectors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("networkSelectors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1NetworkPolicySpec) contextValidatePolicyTypes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.PolicyTypes); i++ {
+
+		if m.PolicyTypes[i] != nil {
+			if err := m.PolicyTypes[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("policyTypes" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}

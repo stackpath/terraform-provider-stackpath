@@ -11,6 +11,11 @@ import (
 var clientID, clientSecret, stackID string
 var testAccProviders map[string]*schema.Provider
 var testAccProvider *schema.Provider
+var testAccProviderFactories = map[string]func() (*schema.Provider, error){
+	"stackpath": func() (*schema.Provider, error) {
+		return Provider(), nil
+	},
+}
 
 func init() {
 	clientID = os.Getenv("STACKPATH_CLIENT_ID")
@@ -19,6 +24,11 @@ func init() {
 	testAccProvider = Provider()
 	testAccProviders = map[string]*schema.Provider{
 		"stackpath": testAccProvider,
+	}
+	testAccProviderFactories = map[string]func() (*schema.Provider, error){
+		"stackpath": func() (*schema.Provider, error) {
+			return Provider(), nil
+		},
 	}
 }
 

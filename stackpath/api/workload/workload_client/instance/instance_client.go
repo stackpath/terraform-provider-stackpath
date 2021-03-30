@@ -23,11 +23,14 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstanceOK, error)
+	GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error)
 
-	RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter) (*RestartInstanceNoContent, error)
+	RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -35,13 +38,12 @@ type ClientService interface {
 /*
   GetWorkloadInstance gets a workload instance
 */
-func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadInstanceOK, error) {
+func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetWorkloadInstanceParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetWorkloadInstance",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}",
@@ -53,7 +55,12 @@ func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -71,13 +78,12 @@ func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo
 
   The action is performed asynchronously and a successful response does not mean the instance has restarted yet.
 */
-func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter) (*RestartInstanceNoContent, error) {
+func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRestartInstanceParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "RestartInstance",
 		Method:             "POST",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart",
@@ -89,7 +95,12 @@ func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

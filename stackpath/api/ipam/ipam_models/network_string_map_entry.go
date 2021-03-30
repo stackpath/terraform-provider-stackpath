@@ -6,6 +6,8 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 )
 
@@ -16,5 +18,10 @@ type NetworkStringMapEntry map[string]string
 
 // Validate validates this network string map entry
 func (m NetworkStringMapEntry) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this network string map entry based on context it is used
+func (m NetworkStringMapEntry) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

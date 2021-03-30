@@ -7,6 +7,7 @@ package storage_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"strconv"
 
@@ -130,6 +131,38 @@ func (m *StackpathRPCQuotaFailure) validateViolations(formats strfmt.Registry) e
 
 		if m.Violations[i] != nil {
 			if err := m.Violations[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("violations" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc quota failure based on the context it is used
+func (m *StackpathRPCQuotaFailure) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateViolations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StackpathRPCQuotaFailure) contextValidateViolations(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Violations); i++ {
+
+		if m.Violations[i] != nil {
+			if err := m.Violations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("violations" + "." + strconv.Itoa(i))
 				}

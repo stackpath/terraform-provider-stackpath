@@ -6,6 +6,8 @@ package ipam_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -17,7 +19,7 @@ import (
 type V1Egress struct {
 
 	// action
-	Action V1Action `json:"action,omitempty"`
+	Action *V1Action `json:"action,omitempty"`
 
 	// Detailed summary of what the egress rule does
 	Description string `json:"description,omitempty"`
@@ -52,23 +54,23 @@ func (m *V1Egress) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1Egress) validateAction(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Action) { // not required
 		return nil
 	}
 
-	if err := m.Action.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("action")
+	if m.Action != nil {
+		if err := m.Action.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("action")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1Egress) validateProtocols(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Protocols) { // not required
 		return nil
 	}
@@ -86,13 +88,76 @@ func (m *V1Egress) validateProtocols(formats strfmt.Registry) error {
 }
 
 func (m *V1Egress) validateTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.To) { // not required
 		return nil
 	}
 
 	if m.To != nil {
 		if err := m.To.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("to")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 egress based on the context it is used
+func (m *V1Egress) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAction(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateProtocols(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1Egress) contextValidateAction(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Action != nil {
+		if err := m.Action.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("action")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Egress) contextValidateProtocols(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Protocols != nil {
+		if err := m.Protocols.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("protocols")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *V1Egress) contextValidateTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.To != nil {
+		if err := m.To.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("to")
 			}

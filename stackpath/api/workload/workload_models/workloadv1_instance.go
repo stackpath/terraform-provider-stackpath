@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -60,7 +61,7 @@ type Workloadv1Instance struct {
 	NetworkInterfaces []*Workloadv1NetworkInterfaceStatus `json:"networkInterfaces"`
 
 	// phase
-	Phase Workloadv1InstanceInstancePhase `json:"phase,omitempty"`
+	Phase *Workloadv1InstanceInstancePhase `json:"phase,omitempty"`
 
 	// A short reason that explains why an instance is in a phase
 	Reason string `json:"reason,omitempty"`
@@ -152,7 +153,6 @@ func (m *Workloadv1Instance) Validate(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateContainerStatuses(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ContainerStatuses) { // not required
 		return nil
 	}
@@ -177,23 +177,23 @@ func (m *Workloadv1Instance) validateContainerStatuses(formats strfmt.Registry) 
 }
 
 func (m *Workloadv1Instance) validateContainers(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Containers) { // not required
 		return nil
 	}
 
-	if err := m.Containers.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("containers")
+	if m.Containers != nil {
+		if err := m.Containers.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("containers")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *Workloadv1Instance) validateCreatedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.CreatedAt) { // not required
 		return nil
 	}
@@ -206,7 +206,6 @@ func (m *Workloadv1Instance) validateCreatedAt(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateDeletedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.DeletedAt) { // not required
 		return nil
 	}
@@ -219,7 +218,6 @@ func (m *Workloadv1Instance) validateDeletedAt(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateLocation(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Location) { // not required
 		return nil
 	}
@@ -237,7 +235,6 @@ func (m *Workloadv1Instance) validateLocation(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateMetadata(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Metadata) { // not required
 		return nil
 	}
@@ -255,7 +252,6 @@ func (m *Workloadv1Instance) validateMetadata(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateNetworkInterfaces(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.NetworkInterfaces) { // not required
 		return nil
 	}
@@ -280,23 +276,23 @@ func (m *Workloadv1Instance) validateNetworkInterfaces(formats strfmt.Registry) 
 }
 
 func (m *Workloadv1Instance) validatePhase(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Phase) { // not required
 		return nil
 	}
 
-	if err := m.Phase.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("phase")
+	if m.Phase != nil {
+		if err := m.Phase.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("phase")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *Workloadv1Instance) validateResources(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Resources) { // not required
 		return nil
 	}
@@ -314,7 +310,6 @@ func (m *Workloadv1Instance) validateResources(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateScheduledAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ScheduledAt) { // not required
 		return nil
 	}
@@ -327,7 +322,6 @@ func (m *Workloadv1Instance) validateScheduledAt(formats strfmt.Registry) error 
 }
 
 func (m *Workloadv1Instance) validateStartedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.StartedAt) { // not required
 		return nil
 	}
@@ -340,7 +334,6 @@ func (m *Workloadv1Instance) validateStartedAt(formats strfmt.Registry) error {
 }
 
 func (m *Workloadv1Instance) validateVirtualMachineStatuses(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.VirtualMachineStatuses) { // not required
 		return nil
 	}
@@ -365,12 +358,193 @@ func (m *Workloadv1Instance) validateVirtualMachineStatuses(formats strfmt.Regis
 }
 
 func (m *Workloadv1Instance) validateVirtualMachines(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.VirtualMachines) { // not required
 		return nil
 	}
 
-	if err := m.VirtualMachines.Validate(formats); err != nil {
+	if m.VirtualMachines != nil {
+		if err := m.VirtualMachines.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("virtualMachines")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this workloadv1 instance based on the context it is used
+func (m *Workloadv1Instance) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateContainerStatuses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateContainers(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateMetadata(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNetworkInterfaces(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePhase(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVirtualMachineStatuses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVirtualMachines(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateContainerStatuses(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.ContainerStatuses); i++ {
+
+		if m.ContainerStatuses[i] != nil {
+			if err := m.ContainerStatuses[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("containerStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateContainers(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Containers.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("containers")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Location != nil {
+		if err := m.Location.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("location")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Metadata != nil {
+		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("metadata")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateNetworkInterfaces(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.NetworkInterfaces); i++ {
+
+		if m.NetworkInterfaces[i] != nil {
+			if err := m.NetworkInterfaces[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("networkInterfaces" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Phase != nil {
+		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("phase")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Resources != nil {
+		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateVirtualMachineStatuses(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.VirtualMachineStatuses); i++ {
+
+		if m.VirtualMachineStatuses[i] != nil {
+			if err := m.VirtualMachineStatuses[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("virtualMachineStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateVirtualMachines(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.VirtualMachines.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("virtualMachines")
 		}

@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -24,6 +26,11 @@ type ContainerStatusWaiting struct {
 
 // Validate validates this container status waiting
 func (m *ContainerStatusWaiting) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this container status waiting based on context it is used
+func (m *ContainerStatusWaiting) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

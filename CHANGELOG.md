@@ -1,3 +1,12 @@
+## 1.4.0 (???)
+
+ENHANCEMENTS:
+
+ - The provider now builds on M1-based Apple devices. This bumps the required golang version to build the provider to v1.16.
+ - Add support for [operation timeouts](https://www.terraform.io/docs/language/resources/syntax.html#operation-timeouts) and Terraform's global timeout configuration.
+ - Perform many new code quality checks on git push and pull request.
+ - Update many internal dependencies. 
+
 ## 1.3.3 (September 30, 2020)
 
 BUG FIXES:

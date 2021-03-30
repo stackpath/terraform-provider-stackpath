@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
 // GetCredentialsReader is a Reader for the GetCredentials structure.
@@ -58,7 +58,7 @@ func NewGetCredentialsOK() *GetCredentialsOK {
 	return &GetCredentialsOK{}
 }
 
-/*GetCredentialsOK handles this case with default header values.
+/* GetCredentialsOK describes a response with status code 200, with default header values.
 
 GetCredentialsOK get credentials o k
 */
@@ -69,7 +69,6 @@ type GetCredentialsOK struct {
 func (o *GetCredentialsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetCredentialsOK) GetPayload() *storage_models.StorageGetCredentialsResponse {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetCredentialsUnauthorized() *GetCredentialsUnauthorized {
 	return &GetCredentialsUnauthorized{}
 }
 
-/*GetCredentialsUnauthorized handles this case with default header values.
+/* GetCredentialsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetCredentialsUnauthorized struct {
 func (o *GetCredentialsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetCredentialsUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetCredentialsInternalServerError() *GetCredentialsInternalServerError {
 	return &GetCredentialsInternalServerError{}
 }
 
-/*GetCredentialsInternalServerError handles this case with default header values.
+/* GetCredentialsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetCredentialsInternalServerError struct {
 func (o *GetCredentialsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] getCredentialsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetCredentialsInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetCredentialsDefault(code int) *GetCredentialsDefault {
 	}
 }
 
-/*GetCredentialsDefault handles this case with default header values.
+/* GetCredentialsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetCredentialsDefault) Code() int {
 func (o *GetCredentialsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/users/{user_id}/credentials][%d] GetCredentials default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetCredentialsDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

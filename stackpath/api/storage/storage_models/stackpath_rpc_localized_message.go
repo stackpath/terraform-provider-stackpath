@@ -7,6 +7,7 @@ package storage_models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -116,6 +117,16 @@ func (m StackpathRPCLocalizedMessage) MarshalJSON() ([]byte, error) {
 
 // Validate validates this stackpath rpc localized message
 func (m *StackpathRPCLocalizedMessage) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+// ContextValidate validate this stackpath rpc localized message based on the context it is used
+func (m *StackpathRPCLocalizedMessage) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if len(res) > 0 {

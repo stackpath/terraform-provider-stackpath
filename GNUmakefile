@@ -58,24 +58,6 @@ fmtcheck:
 	fi;
 	@echo
 
-errcheck:
-	@if [ ! -f ~/go/bin/errcheck ] ; then \
-		echo "==> Installing errcheck..."; \
-		go get -u github.com/kisielk/errcheck; \
-	fi
-
-	@echo "==> Running errcheck..."
-	err_files=$$(~/go/bin/errcheck -ignoretests -ignore 'github.com/hashicorp/terraform/helper/schema:Set' -ignore 'bytes:.*' -ignore 'io:Close|Write' $$(go list ./...| grep -v /vendor/))
-	@if [[ -n "$(err_files)" ]]; then \
-  		echo; \
-		echo "Unchecked errors found in the following places:"; \
-		echo "$(err_files)"; \
-		echo "Please handle returned errors. You can check directly with \`make errcheck\`"; \
-		echo; \
-		exit 1; \
-	fi
-	@echo
-
 test-compile:
 	@echo "==> Compiling test binary..."
 	@if [ "$(TEST)" = "./..." ]; then \

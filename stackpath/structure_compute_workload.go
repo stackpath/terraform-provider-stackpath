@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
 	"log"
 	"strings"

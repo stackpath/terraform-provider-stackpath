@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGenerateCredentialsParams creates a new GenerateCredentialsParams object
-// with the default values initialized.
+// NewGenerateCredentialsParams creates a new GenerateCredentialsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGenerateCredentialsParams() *GenerateCredentialsParams {
-	var ()
 	return &GenerateCredentialsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGenerateCredentialsParamsWithTimeout creates a new GenerateCredentialsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGenerateCredentialsParamsWithTimeout(timeout time.Duration) *GenerateCredentialsParams {
-	var ()
 	return &GenerateCredentialsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGenerateCredentialsParamsWithContext creates a new GenerateCredentialsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGenerateCredentialsParamsWithContext(ctx context.Context) *GenerateCredentialsParams {
-	var ()
 	return &GenerateCredentialsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGenerateCredentialsParamsWithHTTPClient creates a new GenerateCredentialsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGenerateCredentialsParamsWithHTTPClient(client *http.Client) *GenerateCredentialsParams {
-	var ()
 	return &GenerateCredentialsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GenerateCredentialsParams contains all the parameters to send to the API endpoint
-for the generate credentials operation typically these are written to a http.Request
+/* GenerateCredentialsParams contains all the parameters to send to the API endpoint
+   for the generate credentials operation.
+
+   Typically these are written to a http.Request.
 */
 type GenerateCredentialsParams struct {
 
-	/*StackID
-	  The stack's ID for which the user belongs to
+	/* StackID.
 
+	   The stack's ID for which the user belongs to
 	*/
 	StackID string
-	/*UserID
-	  The user's ID for which the credentials will be generated
 
+	/* UserID.
+
+	   The user's ID for which the credentials will be generated
 	*/
 	UserID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the generate credentials params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GenerateCredentialsParams) WithDefaults() *GenerateCredentialsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the generate credentials params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GenerateCredentialsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the generate credentials params

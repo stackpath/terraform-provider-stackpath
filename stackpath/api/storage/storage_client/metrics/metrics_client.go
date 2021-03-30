@@ -23,11 +23,14 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetBucketMetrics(params *GetBucketMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketMetricsOK, error)
+	GetBucketMetrics(params *GetBucketMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketMetricsOK, error)
 
-	GetStackMetrics(params *GetStackMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetStackMetricsOK, error)
+	GetStackMetrics(params *GetStackMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetStackMetricsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -38,13 +41,12 @@ type ClientService interface {
   When the start & end dates are not provided, the metrics for the last day will be returned.
 The date range used must be at least a day apart, and only beginning times are allowed (e.g. 2019-01-01T00:00:00)
 */
-func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketMetricsOK, error) {
+func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketMetricsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBucketMetricsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetBucketMetrics",
 		Method:             "GET",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets/{bucket_id}/metrics",
@@ -56,7 +58,12 @@ func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +82,12 @@ func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runti
   When the start & end dates are not provided, the metrics for the last day will be returned.
 The date range used must be at least a day apart, and only beginning times are allowed (e.g. 2019-01-01T00:00:00)
 */
-func (a *Client) GetStackMetrics(params *GetStackMetricsParams, authInfo runtime.ClientAuthInfoWriter) (*GetStackMetricsOK, error) {
+func (a *Client) GetStackMetrics(params *GetStackMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetStackMetricsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetStackMetricsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetStackMetrics",
 		Method:             "GET",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/metrics",
@@ -93,7 +99,12 @@ func (a *Client) GetStackMetrics(params *GetStackMetricsParams, authInfo runtime
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

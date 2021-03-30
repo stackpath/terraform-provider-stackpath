@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
 // RestartInstanceReader is a Reader for the RestartInstance structure.
@@ -58,7 +58,7 @@ func NewRestartInstanceNoContent() *RestartInstanceNoContent {
 	return &RestartInstanceNoContent{}
 }
 
-/*RestartInstanceNoContent handles this case with default header values.
+/* RestartInstanceNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -79,7 +79,7 @@ func NewRestartInstanceUnauthorized() *RestartInstanceUnauthorized {
 	return &RestartInstanceUnauthorized{}
 }
 
-/*RestartInstanceUnauthorized handles this case with default header values.
+/* RestartInstanceUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -90,7 +90,6 @@ type RestartInstanceUnauthorized struct {
 func (o *RestartInstanceUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *RestartInstanceUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -112,7 +111,7 @@ func NewRestartInstanceInternalServerError() *RestartInstanceInternalServerError
 	return &RestartInstanceInternalServerError{}
 }
 
-/*RestartInstanceInternalServerError handles this case with default header values.
+/* RestartInstanceInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -123,7 +122,6 @@ type RestartInstanceInternalServerError struct {
 func (o *RestartInstanceInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *RestartInstanceInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -147,7 +145,7 @@ func NewRestartInstanceDefault(code int) *RestartInstanceDefault {
 	}
 }
 
-/*RestartInstanceDefault handles this case with default header values.
+/* RestartInstanceDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -165,7 +163,6 @@ func (o *RestartInstanceDefault) Code() int {
 func (o *RestartInstanceDefault) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] RestartInstance default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *RestartInstanceDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

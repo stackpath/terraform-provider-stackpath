@@ -23,17 +23,20 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateBucket(params *CreateBucketParams, authInfo runtime.ClientAuthInfoWriter) (*CreateBucketOK, error)
+	CreateBucket(params *CreateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateBucketOK, error)
 
-	DeleteBucket(params *DeleteBucketParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteBucketNoContent, error)
+	DeleteBucket(params *DeleteBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBucketNoContent, error)
 
-	GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketOK, error)
+	GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketOK, error)
 
-	GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketsOK, error)
+	GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketsOK, error)
 
-	UpdateBucket(params *UpdateBucketParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBucketOK, error)
+	UpdateBucket(params *UpdateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBucketOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -41,13 +44,12 @@ type ClientService interface {
 /*
   CreateBucket creates a bucket under a stack
 */
-func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.ClientAuthInfoWriter) (*CreateBucketOK, error) {
+func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateBucketOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateBucketParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "CreateBucket",
 		Method:             "POST",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets",
@@ -59,7 +61,12 @@ func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.Clien
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +82,12 @@ func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.Clien
 /*
   DeleteBucket deletes a given bucket
 */
-func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteBucketNoContent, error) {
+func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBucketNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteBucketParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "DeleteBucket",
 		Method:             "DELETE",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets/{bucket_id}",
@@ -93,7 +99,12 @@ func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.Clien
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +120,12 @@ func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.Clien
 /*
   GetBucket retrieves a bucket in the storage provider for a given stack
 */
-func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketOK, error) {
+func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBucketParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetBucket",
 		Method:             "GET",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets/{bucket_id}",
@@ -127,7 +137,12 @@ func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthI
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -143,13 +158,12 @@ func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthI
 /*
   GetBuckets retrieves all buckets in the storage provider for a given stack
 */
-func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBucketsOK, error) {
+func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBucketsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetBuckets",
 		Method:             "GET",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets",
@@ -161,7 +175,12 @@ func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -177,13 +196,12 @@ func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAut
 /*
   UpdateBucket updates the name of a bucket
 */
-func (a *Client) UpdateBucket(params *UpdateBucketParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBucketOK, error) {
+func (a *Client) UpdateBucket(params *UpdateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBucketOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateBucketParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "UpdateBucket",
 		Method:             "PUT",
 		PathPattern:        "/storage/v1/stacks/{stack_id}/buckets/{bucket_id}",
@@ -195,7 +213,12 @@ func (a *Client) UpdateBucket(params *UpdateBucketParams, authInfo runtime.Clien
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

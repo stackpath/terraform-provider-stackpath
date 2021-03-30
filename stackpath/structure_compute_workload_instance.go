@@ -1,7 +1,7 @@
 package stackpath
 
 import (
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
 func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance) map[string]interface{} {
@@ -68,9 +68,14 @@ func flattenComputeWorkloadContainerStatus(status *workload_models.V1ContainerSt
 		}
 	}
 
+	var phase string
+	if status.Phase != nil {
+		phase = string(*status.Phase)
+	}
+
 	return map[string]interface{}{
 		"name":          status.Name,
-		"phase":         string(status.Phase),
+		"phase":         phase,
 		"started_at":    status.StartedAt.String(),
 		"finished_at":   status.FinishedAt.String(),
 		"ready":         status.Ready,

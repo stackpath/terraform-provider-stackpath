@@ -10,7 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
 )
 
 // Default edge compute networking HTTP client.

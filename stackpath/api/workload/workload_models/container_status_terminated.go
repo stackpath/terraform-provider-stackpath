@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -54,7 +56,6 @@ func (m *ContainerStatusTerminated) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ContainerStatusTerminated) validateFinishedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.FinishedAt) { // not required
 		return nil
 	}
@@ -67,7 +68,6 @@ func (m *ContainerStatusTerminated) validateFinishedAt(formats strfmt.Registry) 
 }
 
 func (m *ContainerStatusTerminated) validateStartedAt(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.StartedAt) { // not required
 		return nil
 	}
@@ -76,6 +76,11 @@ func (m *ContainerStatusTerminated) validateStartedAt(formats strfmt.Registry) e
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this container status terminated based on context it is used
+func (m *ContainerStatusTerminated) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

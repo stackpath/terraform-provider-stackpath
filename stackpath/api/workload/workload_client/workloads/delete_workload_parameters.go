@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDeleteWorkloadParams creates a new DeleteWorkloadParams object
-// with the default values initialized.
+// NewDeleteWorkloadParams creates a new DeleteWorkloadParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDeleteWorkloadParams() *DeleteWorkloadParams {
-	var ()
 	return &DeleteWorkloadParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDeleteWorkloadParamsWithTimeout creates a new DeleteWorkloadParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDeleteWorkloadParamsWithTimeout(timeout time.Duration) *DeleteWorkloadParams {
-	var ()
 	return &DeleteWorkloadParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDeleteWorkloadParamsWithContext creates a new DeleteWorkloadParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDeleteWorkloadParamsWithContext(ctx context.Context) *DeleteWorkloadParams {
-	var ()
 	return &DeleteWorkloadParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDeleteWorkloadParamsWithHTTPClient creates a new DeleteWorkloadParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDeleteWorkloadParamsWithHTTPClient(client *http.Client) *DeleteWorkloadParams {
-	var ()
 	return &DeleteWorkloadParams{
 		HTTPClient: client,
 	}
 }
 
-/*DeleteWorkloadParams contains all the parameters to send to the API endpoint
-for the delete workload operation typically these are written to a http.Request
+/* DeleteWorkloadParams contains all the parameters to send to the API endpoint
+   for the delete workload operation.
+
+   Typically these are written to a http.Request.
 */
 type DeleteWorkloadParams struct {
 
-	/*StackID
-	  The ID of the stack containing the workload to delete
+	/* StackID.
 
+	   The ID of the stack containing the workload to delete
 	*/
 	StackID string
-	/*WorkloadID
-	  The ID of the workload to delete
 
+	/* WorkloadID.
+
+	   The ID of the workload to delete
 	*/
 	WorkloadID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the delete workload params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteWorkloadParams) WithDefaults() *DeleteWorkloadParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the delete workload params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteWorkloadParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the delete workload params

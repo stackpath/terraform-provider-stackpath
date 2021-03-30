@@ -23,19 +23,22 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*CreateWorkloadOK, error)
+	CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateWorkloadOK, error)
 
-	DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteWorkloadNoContent, error)
+	DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteWorkloadNoContent, error)
 
-	GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter) (*GetLocationsOK, error)
+	GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocationsOK, error)
 
-	GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadOK, error)
+	GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadOK, error)
 
-	GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadsOK, error)
+	GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadsOK, error)
 
-	UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateWorkloadOK, error)
+	UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateWorkloadOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -43,13 +46,12 @@ type ClientService interface {
 /*
   CreateWorkload creates a new workload
 */
-func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*CreateWorkloadOK, error) {
+func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateWorkloadOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateWorkloadParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "CreateWorkload",
 		Method:             "POST",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads",
@@ -61,7 +63,12 @@ func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -77,13 +84,12 @@ func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.C
 /*
   DeleteWorkload deletes a workload
 */
-func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteWorkloadNoContent, error) {
+func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteWorkloadNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteWorkloadParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "DeleteWorkload",
 		Method:             "DELETE",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}",
@@ -95,7 +101,12 @@ func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +122,12 @@ func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.C
 /*
   GetLocations retrieves the locations a workload may be created in
 */
-func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter) (*GetLocationsOK, error) {
+func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocationsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetLocationsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetLocations",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/locations",
@@ -129,7 +139,12 @@ func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.Clien
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -145,13 +160,12 @@ func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.Clien
 /*
   GetWorkload retrieves an individual workload
 */
-func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadOK, error) {
+func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetWorkloadParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetWorkload",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}",
@@ -163,7 +177,12 @@ func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientA
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -179,13 +198,12 @@ func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientA
 /*
   GetWorkloads retrieves a stack s workloads
 */
-func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter) (*GetWorkloadsOK, error) {
+func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetWorkloadsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "GetWorkloads",
 		Method:             "GET",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads",
@@ -197,7 +215,12 @@ func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.Clien
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -213,13 +236,12 @@ func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.Clien
 /*
   UpdateWorkload updates a workload
 */
-func (a *Client) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateWorkloadOK, error) {
+func (a *Client) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateWorkloadOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateWorkloadParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "UpdateWorkload",
 		Method:             "PATCH",
 		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}",
@@ -231,7 +253,12 @@ func (a *Client) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

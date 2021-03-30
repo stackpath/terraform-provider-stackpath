@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
 // DeleteNetworkPolicyReader is a Reader for the DeleteNetworkPolicy structure.
@@ -58,7 +58,7 @@ func NewDeleteNetworkPolicyNoContent() *DeleteNetworkPolicyNoContent {
 	return &DeleteNetworkPolicyNoContent{}
 }
 
-/*DeleteNetworkPolicyNoContent handles this case with default header values.
+/* DeleteNetworkPolicyNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -79,7 +79,7 @@ func NewDeleteNetworkPolicyUnauthorized() *DeleteNetworkPolicyUnauthorized {
 	return &DeleteNetworkPolicyUnauthorized{}
 }
 
-/*DeleteNetworkPolicyUnauthorized handles this case with default header values.
+/* DeleteNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -90,7 +90,6 @@ type DeleteNetworkPolicyUnauthorized struct {
 func (o *DeleteNetworkPolicyUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] deleteNetworkPolicyUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *DeleteNetworkPolicyUnauthorized) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -112,7 +111,7 @@ func NewDeleteNetworkPolicyInternalServerError() *DeleteNetworkPolicyInternalSer
 	return &DeleteNetworkPolicyInternalServerError{}
 }
 
-/*DeleteNetworkPolicyInternalServerError handles this case with default header values.
+/* DeleteNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -123,7 +122,6 @@ type DeleteNetworkPolicyInternalServerError struct {
 func (o *DeleteNetworkPolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] deleteNetworkPolicyInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *DeleteNetworkPolicyInternalServerError) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }
@@ -147,7 +145,7 @@ func NewDeleteNetworkPolicyDefault(code int) *DeleteNetworkPolicyDefault {
 	}
 }
 
-/*DeleteNetworkPolicyDefault handles this case with default header values.
+/* DeleteNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -165,7 +163,6 @@ func (o *DeleteNetworkPolicyDefault) Code() int {
 func (o *DeleteNetworkPolicyDefault) Error() string {
 	return fmt.Sprintf("[DELETE /ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}][%d] DeleteNetworkPolicy default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *DeleteNetworkPolicyDefault) GetPayload() *ipam_models.APIStatus {
 	return o.Payload
 }

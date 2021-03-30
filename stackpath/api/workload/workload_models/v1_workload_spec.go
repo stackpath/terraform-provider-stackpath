@@ -6,6 +6,7 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -67,23 +68,23 @@ func (m *V1WorkloadSpec) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1WorkloadSpec) validateContainers(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Containers) { // not required
 		return nil
 	}
 
-	if err := m.Containers.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("containers")
+	if m.Containers != nil {
+		if err := m.Containers.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("containers")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1WorkloadSpec) validateImagePullCredentials(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ImagePullCredentials) { // not required
 		return nil
 	}
@@ -99,7 +100,6 @@ func (m *V1WorkloadSpec) validateImagePullCredentials(formats strfmt.Registry) e
 }
 
 func (m *V1WorkloadSpec) validateNetworkInterfaces(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.NetworkInterfaces) { // not required
 		return nil
 	}
@@ -124,23 +124,23 @@ func (m *V1WorkloadSpec) validateNetworkInterfaces(formats strfmt.Registry) erro
 }
 
 func (m *V1WorkloadSpec) validateVirtualMachines(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.VirtualMachines) { // not required
 		return nil
 	}
 
-	if err := m.VirtualMachines.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("virtualMachines")
+	if m.VirtualMachines != nil {
+		if err := m.VirtualMachines.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("virtualMachines")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
 }
 
 func (m *V1WorkloadSpec) validateVolumeClaimTemplates(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.VolumeClaimTemplates) { // not required
 		return nil
 	}
@@ -152,6 +152,108 @@ func (m *V1WorkloadSpec) validateVolumeClaimTemplates(formats strfmt.Registry) e
 
 		if m.VolumeClaimTemplates[i] != nil {
 			if err := m.VolumeClaimTemplates[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("volumeClaimTemplates" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 workload spec based on the context it is used
+func (m *V1WorkloadSpec) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateContainers(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateImagePullCredentials(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNetworkInterfaces(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVirtualMachines(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVolumeClaimTemplates(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1WorkloadSpec) contextValidateContainers(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Containers.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("containers")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1WorkloadSpec) contextValidateImagePullCredentials(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.ImagePullCredentials.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("imagePullCredentials")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1WorkloadSpec) contextValidateNetworkInterfaces(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.NetworkInterfaces); i++ {
+
+		if m.NetworkInterfaces[i] != nil {
+			if err := m.NetworkInterfaces[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("networkInterfaces" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1WorkloadSpec) contextValidateVirtualMachines(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.VirtualMachines.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("virtualMachines")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *V1WorkloadSpec) contextValidateVolumeClaimTemplates(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.VolumeClaimTemplates); i++ {
+
+		if m.VolumeClaimTemplates[i] != nil {
+			if err := m.VolumeClaimTemplates[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeClaimTemplates" + "." + strconv.Itoa(i))
 				}

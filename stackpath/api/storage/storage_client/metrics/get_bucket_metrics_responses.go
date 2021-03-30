@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
 )
 
 // GetBucketMetricsReader is a Reader for the GetBucketMetrics structure.
@@ -58,7 +58,7 @@ func NewGetBucketMetricsOK() *GetBucketMetricsOK {
 	return &GetBucketMetricsOK{}
 }
 
-/*GetBucketMetricsOK handles this case with default header values.
+/* GetBucketMetricsOK describes a response with status code 200, with default header values.
 
 GetBucketMetricsOK get bucket metrics o k
 */
@@ -69,7 +69,6 @@ type GetBucketMetricsOK struct {
 func (o *GetBucketMetricsOK) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets/{bucket_id}/metrics][%d] getBucketMetricsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetBucketMetricsOK) GetPayload() *storage_models.PrometheusMetrics {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetBucketMetricsUnauthorized() *GetBucketMetricsUnauthorized {
 	return &GetBucketMetricsUnauthorized{}
 }
 
-/*GetBucketMetricsUnauthorized handles this case with default header values.
+/* GetBucketMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetBucketMetricsUnauthorized struct {
 func (o *GetBucketMetricsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets/{bucket_id}/metrics][%d] getBucketMetricsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetBucketMetricsUnauthorized) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetBucketMetricsInternalServerError() *GetBucketMetricsInternalServerErr
 	return &GetBucketMetricsInternalServerError{}
 }
 
-/*GetBucketMetricsInternalServerError handles this case with default header values.
+/* GetBucketMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetBucketMetricsInternalServerError struct {
 func (o *GetBucketMetricsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets/{bucket_id}/metrics][%d] getBucketMetricsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetBucketMetricsInternalServerError) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetBucketMetricsDefault(code int) *GetBucketMetricsDefault {
 	}
 }
 
-/*GetBucketMetricsDefault handles this case with default header values.
+/* GetBucketMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetBucketMetricsDefault) Code() int {
 func (o *GetBucketMetricsDefault) Error() string {
 	return fmt.Sprintf("[GET /storage/v1/stacks/{stack_id}/buckets/{bucket_id}/metrics][%d] GetBucketMetrics default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetBucketMetricsDefault) GetPayload() *storage_models.StackpathapiStatus {
 	return o.Payload
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
 
 // GetLogsReader is a Reader for the GetLogs structure.
@@ -58,7 +58,7 @@ func NewGetLogsOK() *GetLogsOK {
 	return &GetLogsOK{}
 }
 
-/*GetLogsOK handles this case with default header values.
+/* GetLogsOK describes a response with status code 200, with default header values.
 
 (streaming responses)
 */
@@ -69,7 +69,6 @@ type GetLogsOK struct {
 func (o *GetLogsOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/logs][%d] getLogsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetLogsOK) GetPayload() *workload_models.V1LogChunk {
 	return o.Payload
 }
@@ -91,7 +90,7 @@ func NewGetLogsUnauthorized() *GetLogsUnauthorized {
 	return &GetLogsUnauthorized{}
 }
 
-/*GetLogsUnauthorized handles this case with default header values.
+/* GetLogsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -102,7 +101,6 @@ type GetLogsUnauthorized struct {
 func (o *GetLogsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/logs][%d] getLogsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetLogsUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -124,7 +122,7 @@ func NewGetLogsInternalServerError() *GetLogsInternalServerError {
 	return &GetLogsInternalServerError{}
 }
 
-/*GetLogsInternalServerError handles this case with default header values.
+/* GetLogsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -135,7 +133,6 @@ type GetLogsInternalServerError struct {
 func (o *GetLogsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/logs][%d] getLogsInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetLogsInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -159,7 +156,7 @@ func NewGetLogsDefault(code int) *GetLogsDefault {
 	}
 }
 
-/*GetLogsDefault handles this case with default header values.
+/* GetLogsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
@@ -177,7 +174,6 @@ func (o *GetLogsDefault) Code() int {
 func (o *GetLogsDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/logs][%d] GetLogs default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *GetLogsDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

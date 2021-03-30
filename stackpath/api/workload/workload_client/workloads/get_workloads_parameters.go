@@ -16,79 +16,97 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetWorkloadsParams creates a new GetWorkloadsParams object
-// with the default values initialized.
+// NewGetWorkloadsParams creates a new GetWorkloadsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetWorkloadsParams() *GetWorkloadsParams {
-	var ()
 	return &GetWorkloadsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetWorkloadsParamsWithTimeout creates a new GetWorkloadsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetWorkloadsParamsWithTimeout(timeout time.Duration) *GetWorkloadsParams {
-	var ()
 	return &GetWorkloadsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetWorkloadsParamsWithContext creates a new GetWorkloadsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetWorkloadsParamsWithContext(ctx context.Context) *GetWorkloadsParams {
-	var ()
 	return &GetWorkloadsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetWorkloadsParamsWithHTTPClient creates a new GetWorkloadsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetWorkloadsParamsWithHTTPClient(client *http.Client) *GetWorkloadsParams {
-	var ()
 	return &GetWorkloadsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetWorkloadsParams contains all the parameters to send to the API endpoint
-for the get workloads operation typically these are written to a http.Request
+/* GetWorkloadsParams contains all the parameters to send to the API endpoint
+   for the get workloads operation.
+
+   Typically these are written to a http.Request.
 */
 type GetWorkloadsParams struct {
 
-	/*PageRequestAfter
-	  The cursor value after which data will be returned.
+	/* PageRequestAfter.
 
+	   The cursor value after which data will be returned.
 	*/
 	PageRequestAfter *string
-	/*PageRequestFilter
-	  SQL-style constraint filters.
 
+	/* PageRequestFilter.
+
+	   SQL-style constraint filters.
 	*/
 	PageRequestFilter *string
-	/*PageRequestFirst
-	  The number of items desired.
 
+	/* PageRequestFirst.
+
+	   The number of items desired.
 	*/
 	PageRequestFirst *string
-	/*PageRequestSortBy
-	  Sort the response by the given field.
 
+	/* PageRequestSortBy.
+
+	   Sort the response by the given field.
 	*/
 	PageRequestSortBy *string
-	/*StackID
-	  The ID of the stack to retrieve workloads from
 
+	/* StackID.
+
+	   The ID of the stack to retrieve workloads from
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get workloads params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetWorkloadsParams) WithDefaults() *GetWorkloadsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get workloads params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetWorkloadsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get workloads params
@@ -191,64 +209,68 @@ func (o *GetWorkloadsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 
 		// query param page_request.after
 		var qrPageRequestAfter string
+
 		if o.PageRequestAfter != nil {
 			qrPageRequestAfter = *o.PageRequestAfter
 		}
 		qPageRequestAfter := qrPageRequestAfter
 		if qPageRequestAfter != "" {
+
 			if err := r.SetQueryParam("page_request.after", qPageRequestAfter); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestFilter != nil {
 
 		// query param page_request.filter
 		var qrPageRequestFilter string
+
 		if o.PageRequestFilter != nil {
 			qrPageRequestFilter = *o.PageRequestFilter
 		}
 		qPageRequestFilter := qrPageRequestFilter
 		if qPageRequestFilter != "" {
+
 			if err := r.SetQueryParam("page_request.filter", qPageRequestFilter); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestFirst != nil {
 
 		// query param page_request.first
 		var qrPageRequestFirst string
+
 		if o.PageRequestFirst != nil {
 			qrPageRequestFirst = *o.PageRequestFirst
 		}
 		qPageRequestFirst := qrPageRequestFirst
 		if qPageRequestFirst != "" {
+
 			if err := r.SetQueryParam("page_request.first", qPageRequestFirst); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PageRequestSortBy != nil {
 
 		// query param page_request.sort_by
 		var qrPageRequestSortBy string
+
 		if o.PageRequestSortBy != nil {
 			qrPageRequestSortBy = *o.PageRequestSortBy
 		}
 		qPageRequestSortBy := qrPageRequestSortBy
 		if qPageRequestSortBy != "" {
+
 			if err := r.SetQueryParam("page_request.sort_by", qPageRequestSortBy); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stack_id

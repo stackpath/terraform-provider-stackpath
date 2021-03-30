@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDeleteNetworkPolicyParams creates a new DeleteNetworkPolicyParams object
-// with the default values initialized.
+// NewDeleteNetworkPolicyParams creates a new DeleteNetworkPolicyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDeleteNetworkPolicyParams() *DeleteNetworkPolicyParams {
-	var ()
 	return &DeleteNetworkPolicyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDeleteNetworkPolicyParamsWithTimeout creates a new DeleteNetworkPolicyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDeleteNetworkPolicyParamsWithTimeout(timeout time.Duration) *DeleteNetworkPolicyParams {
-	var ()
 	return &DeleteNetworkPolicyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDeleteNetworkPolicyParamsWithContext creates a new DeleteNetworkPolicyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDeleteNetworkPolicyParamsWithContext(ctx context.Context) *DeleteNetworkPolicyParams {
-	var ()
 	return &DeleteNetworkPolicyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDeleteNetworkPolicyParamsWithHTTPClient creates a new DeleteNetworkPolicyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDeleteNetworkPolicyParamsWithHTTPClient(client *http.Client) *DeleteNetworkPolicyParams {
-	var ()
 	return &DeleteNetworkPolicyParams{
 		HTTPClient: client,
 	}
 }
 
-/*DeleteNetworkPolicyParams contains all the parameters to send to the API endpoint
-for the delete network policy operation typically these are written to a http.Request
+/* DeleteNetworkPolicyParams contains all the parameters to send to the API endpoint
+   for the delete network policy operation.
+
+   Typically these are written to a http.Request.
 */
 type DeleteNetworkPolicyParams struct {
 
-	/*NetworkPolicyID
-	  The ID of the network policy to delete
+	/* NetworkPolicyID.
 
+	   The ID of the network policy to delete
 	*/
 	NetworkPolicyID string
-	/*StackID
-	  The ID of the stack containing the network policy to delete
 
+	/* StackID.
+
+	   The ID of the stack containing the network policy to delete
 	*/
 	StackID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the delete network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteNetworkPolicyParams) WithDefaults() *DeleteNetworkPolicyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the delete network policy params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteNetworkPolicyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the delete network policy params

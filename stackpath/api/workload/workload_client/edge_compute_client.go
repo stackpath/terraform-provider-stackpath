@@ -10,11 +10,11 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance_logs"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/metrics"
-	"github.com/terraform-providers/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance_logs"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/metrics"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
 )
 
 // Default edge compute HTTP client.

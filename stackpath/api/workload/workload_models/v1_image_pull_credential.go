@@ -6,6 +6,8 @@ package workload_models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -35,13 +37,40 @@ func (m *V1ImagePullCredential) Validate(formats strfmt.Registry) error {
 }
 
 func (m *V1ImagePullCredential) validateDockerRegistry(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.DockerRegistry) { // not required
 		return nil
 	}
 
 	if m.DockerRegistry != nil {
 		if err := m.DockerRegistry.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("dockerRegistry")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 image pull credential based on the context it is used
+func (m *V1ImagePullCredential) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateDockerRegistry(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ImagePullCredential) contextValidateDockerRegistry(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.DockerRegistry != nil {
+		if err := m.DockerRegistry.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("dockerRegistry")
 			}
