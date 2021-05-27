@@ -85,7 +85,7 @@ type GetNetworkPoliciesParams struct {
 
 	/* StackID.
 
-	   The ID of the stack to retrieve network policies from
+	   A stack ID or slug
 	*/
 	StackID string
 

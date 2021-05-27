@@ -66,13 +66,13 @@ type UpdateNetworkPolicyParams struct {
 
 	/* NetworkPolicyID.
 
-	   A network policy's unique identifier
+	   An EdgeCompute network policy ID
 	*/
 	NetworkPolicyID string
 
 	/* StackID.
 
-	   The ID of the stack that a network policy belongs to
+	   A stack ID or slug
 	*/
 	StackID string
 

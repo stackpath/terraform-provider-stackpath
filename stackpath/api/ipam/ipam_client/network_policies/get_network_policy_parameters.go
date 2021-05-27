@@ -61,13 +61,13 @@ type GetNetworkPolicyParams struct {
 
 	/* NetworkPolicyID.
 
-	   The ID the network policy to retrieve
+	   An EdgeCompute network policy ID
 	*/
 	NetworkPolicyID string
 
 	/* StackID.
 
-	   The ID of the stack containing the network policy to retrieve
+	   A stack ID or slug
 	*/
 	StackID string
 

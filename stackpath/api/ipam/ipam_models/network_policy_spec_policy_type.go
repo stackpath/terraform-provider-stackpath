@@ -19,6 +19,11 @@ import (
 // swagger:model NetworkPolicySpecPolicyType
 type NetworkPolicySpecPolicyType string
 
+func NewNetworkPolicySpecPolicyType(value NetworkPolicySpecPolicyType) *NetworkPolicySpecPolicyType {
+	v := value
+	return &v
+}
+
 const (
 
 	// NetworkPolicySpecPolicyTypePOLICYTYPENOTSPECIFIED captures enum value "POLICY_TYPE_NOT_SPECIFIED"

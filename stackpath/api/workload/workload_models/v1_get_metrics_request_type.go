@@ -22,6 +22,11 @@ import (
 // swagger:model v1GetMetricsRequestType
 type V1GetMetricsRequestType string
 
+func NewV1GetMetricsRequestType(value V1GetMetricsRequestType) *V1GetMetricsRequestType {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1GetMetricsRequestTypeBANDWIDTH captures enum value "BANDWIDTH"

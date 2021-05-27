@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client/virtual_private_cloud"
 )
 
 // Default edge compute networking HTTP client.
@@ -56,6 +57,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *EdgeComput
 	cli := new(EdgeComputeNetworking)
 	cli.Transport = transport
 	cli.NetworkPolicies = network_policies.New(transport, formats)
+	cli.VirtualPrivateCloud = virtual_private_cloud.New(transport, formats)
 	return cli
 }
 
@@ -102,6 +104,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type EdgeComputeNetworking struct {
 	NetworkPolicies network_policies.ClientService
 
+	VirtualPrivateCloud virtual_private_cloud.ClientService
+
 	Transport runtime.ClientTransport
 }
 
@@ -109,4 +113,5 @@ type EdgeComputeNetworking struct {
 func (c *EdgeComputeNetworking) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.NetworkPolicies.SetTransport(transport)
+	c.VirtualPrivateCloud.SetTransport(transport)
 }

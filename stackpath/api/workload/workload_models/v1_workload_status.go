@@ -24,6 +24,11 @@ import (
 // swagger:model v1WorkloadStatus
 type V1WorkloadStatus string
 
+func NewV1WorkloadStatus(value V1WorkloadStatus) *V1WorkloadStatus {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1WorkloadStatusACTIVE captures enum value "ACTIVE"

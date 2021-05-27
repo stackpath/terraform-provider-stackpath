@@ -21,7 +21,7 @@
   "paths": {
     "/ipam/v1/stacks/{stack_id}/network_policies": {
       "post": {
-        "summary": "Create a new network policy",
+        "summary": "Create a policy",
         "operationId": "CreateNetworkPolicy",
         "responses": {
           "200": {
@@ -52,7 +52,7 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack that a network policy belongs to",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
@@ -71,7 +71,10 @@
         ]
       },
       "get": {
-        "summary": "Get a list of network policies by stack id",
+        "tags": [
+          "Network Policies"
+        ],
+        "summary": "Get all policies",
         "operationId": "GetNetworkPolicies",
         "responses": {
           "200": {
@@ -102,7 +105,7 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack to retrieve network policies from",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
@@ -135,15 +138,12 @@
             "required": false,
             "type": "string"
           }
-        ],
-        "tags": [
-          "Network Policies"
         ]
       }
     },
     "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}": {
       "put": {
-        "summary": "Update a network policy",
+        "summary": "Update a policy",
         "operationId": "UpdateNetworkPolicy",
         "responses": {
           "200": {
@@ -174,14 +174,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack that a network policy belongs to",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "network_policy_id",
-            "description": "A network policy's unique identifier",
+            "description": "An EdgeCompute network policy ID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -200,7 +200,10 @@
         ]
       },
       "get": {
-        "summary": "Get a network policy",
+        "summary": "Get a policy",
+        "tags": [
+          "Network Policies"
+        ],
         "operationId": "GetNetworkPolicy",
         "responses": {
           "200": {
@@ -231,25 +234,25 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the network policy to retrieve",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "network_policy_id",
-            "description": "The ID the network policy to retrieve",
+            "description": "An EdgeCompute network policy ID",
             "in": "path",
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "Network Policies"
         ]
       },
       "delete": {
-        "summary": "Delete a network policy",
+        "summary": "Delete a policy",
+        "tags": [
+          "Network Policies"
+        ],
         "operationId": "DeleteNetworkPolicy",
         "responses": {
           "204": {
@@ -277,22 +280,612 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the network policy to delete",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "network_policy_id",
-            "description": "The ID of the network policy to delete",
+            "description": "An EdgeCompute network policy ID",
             "in": "path",
             "required": true,
             "type": "string"
           }
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/networks": {
+      "get": {
+        "summary": "Get all VPC networks",
+        "operationId": "GetNetworks",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetNetworksResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
         ],
         "tags": [
-          "Network Policies"
+          "Virtual Private Cloud"
         ]
+      },
+      "post": {
+        "summary": "Create a VPC network",
+        "operationId": "CreateNetwork",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkCreateNetworkResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkCreateNetworkRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/networks/{network_id}": {
+      "get": {
+        "summary": "Get a VPC network",
+        "operationId": "GetNetwork",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetNetworkResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a VPC network",
+        "operationId": "DeleteNetwork",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      },
+      "patch": {
+        "summary": "Update a VPC network",
+        "operationId": "UpdateNetwork",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkUpdateNetworkResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkUpdateNetworkRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "Only a network's name may be updated"
+      }
+    },
+    "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/routes": {
+      "post": {
+        "operationId": "CreateRoute",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkCreateRouteResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "description": "A VPC network ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkCreateRouteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
+        "summary": "Create a network route"
+      },
+      "get": {
+        "operationId": "GetRoutes",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetRoutesResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
+        "summary": "Get all network routes"
+      }
+    },
+    "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/routes/{route_id}": {
+      "put": {
+        "operationId": "UpdateRoute",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkUpdateRouteResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "description": "A VPC network ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "route_id",
+            "description": "A VPC route ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkUpdateRouteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
+        "summary": "Update a network route"
+      },
+      "get": {
+        "operationId": "GetRoute",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetRouteResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          },
+          {
+            "name": "route_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC route ID"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
+        "summary": "Get a network route"
+      },
+      "delete": {
+        "operationId": "DeleteRoute",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC network ID or slug"
+          },
+          {
+            "name": "route_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A VPC route ID"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ],
+        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
+        "summary": "Delete a network route"
       }
     }
   },
@@ -305,6 +898,29 @@
         "EGRESS"
       ],
       "default": "POLICY_TYPE_NOT_SPECIFIED"
+    },
+    "RouteGatewaySelector": {
+      "type": "object",
+      "properties": {
+        "interfaceSelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkMatchExpression"
+          },
+          "description": "List of match expressions that must all match a single interface"
+        }
+      }
+    },
+    "RouteStatusState": {
+      "type": "string",
+      "enum": [
+        "ROUTE_STATUS_UNSPECIFIED",
+        "RUNNING",
+        "NO_GATEWAY",
+        "DELETING"
+      ],
+      "default": "ROUTE_STATUS_UNSPECIFIED",
+      "description": "- ROUTE_STATUS_UNSPECIFIED: Route in this region is in an undefined state\n - RUNNING: Route has 1 or more assigned gateways and is correctly configured in this region\n - NO_GATEWAY: Route does not have any assigned gateways but is configured in this region\n - DELETING: Route is being deleted from the region"
     },
     "apiStatus": {
       "type": "object",
@@ -336,6 +952,123 @@
       ],
       "discriminator": "@type"
     },
+    "networkCreateNetworkRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The network's human-readable name"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The network's machine-readable name"
+        },
+        "rootSubnet": {
+          "type": "string",
+          "description": "The network's primary subnet, in CIDR notation format"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        }
+      },
+      "title": ""
+    },
+    "networkCreateNetworkResponse": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/networkNetwork"
+        }
+      },
+      "description": "A response from a request to create a network"
+    },
+    "networkCreateRouteRequest": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "title": ""
+    },
+    "networkCreateRouteResponse": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "description": "A response from a request to create a route on a network"
+    },
+    "networkGetNetworkResponse": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/networkNetwork"
+        }
+      },
+      "description": "The requested VPC network"
+    },
+    "networkGetNetworksResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkNetwork"
+          }
+        }
+      },
+      "description": "The requested VPC networks"
+    },
+    "networkGetRouteResponse": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "description": "A response to retrieve an individual route on a network"
+    },
+    "networkGetRoutesResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkRoute"
+          }
+        }
+      },
+      "description": "A response to retrieve any routes on a given network"
+    },
+    "networkMatchExpression": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The name of the selector to perform a match against\n\nProvide the key `workload.platform.stackpath.net/workload-slug` to select EdgeCompute workloads by their slug. All network interfaces in the workload are used as the route's gateway."
+        },
+        "operator": {
+          "type": "string",
+          "description": "The operation to perform to match a selector\n\nValid values are \"in\" with support for more possible in the future"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The values to match in the selector"
+        }
+      },
+      "description": "An expression to match selectors against a set of values"
+    },
     "networkMetadata": {
       "type": "object",
       "properties": {
@@ -364,7 +1097,7 @@
           "format": "date-time",
           "readOnly": true,
           "x-nullable": true,
-          "description": "The date that a network policy was requested for deletion"
+          "description": "The date that an entity was requested for deletion"
         },
         "version": {
           "type": "string",
@@ -373,12 +1106,161 @@
       },
       "description": "Metadata associated with an entity"
     },
+    "networkNetwork": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A network's unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "A network's human-readable name"
+        },
+        "slug": {
+          "type": "string",
+          "description": "A network's machine-readable name"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        },
+        "rootSubnet": {
+          "type": "string",
+          "description": "A subnet identifier and network mask in CIDR notation format\n\nA network's root subnet is its primary subnet."
+        },
+        "virtualNetworkIdentifier": {
+          "type": "integer",
+          "format": "int32",
+          "description": "A network's VLAN identifier"
+        },
+        "stackId": {
+          "type": "string",
+          "description": "The ID of the stack that a network belongs to"
+        }
+      },
+      "description": "A network defined within a Virtual Private Cloud"
+    },
+    "networkRoute": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "A route's unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "A route's human-readable name"
+        },
+        "slug": {
+          "type": "string",
+          "description": "A route's machine-readable name"
+        },
+        "stackId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The ID of the stack that a route belongs to"
+        },
+        "networkId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The ID or slug of the VPC network that a route belongs to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkRouteStatus"
+          },
+          "readOnly": true,
+          "description": "The status of a route in different regions"
+        },
+        "destinationPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A route's destination network prefix, in CIDR format"
+        },
+        "gatewaySelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RouteGatewaySelector"
+          },
+          "description": "Selectors that determine which EdgeCompute workload network interfaces should be be used as the route's gateway\n\nSelectors are applied to the route in order, with the highest priority assigned to the first gateway."
+        }
+      }
+    },
+    "networkRouteStatus": {
+      "type": "object",
+      "properties": {
+        "region": {
+          "type": "string",
+          "description": "The region in which a route's status resides\n\nRegions take the form `<pop name>-<cluster name>`, where `pop` is a StackPath EdgeCompute POP and `cluster` is a networking cluster within that POP.",
+          "readOnly": true
+        },
+        "state": {
+          "$ref": "#/definitions/RouteStatusState",
+          "readOnly": true
+        },
+        "gatewayIps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "description": "A list of route gateway IPs in the region"
+        }
+      }
+    },
     "networkStringMapEntry": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
       },
       "description": "A string to string key/value pair"
+    },
+    "networkUpdateNetworkRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The network's new name"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        }
+      },
+      "title": ""
+    },
+    "networkUpdateNetworkResponse": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/networkNetwork"
+        }
+      },
+      "description": "A response from a request to update a network"
+    },
+    "networkUpdateRouteRequest": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "title": ""
+    },
+    "networkUpdateRouteResponse": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "description": "A response from an update to a route on a network"
     },
     "paginationPageInfo": {
       "type": "object",
@@ -407,28 +1289,6 @@
         }
       },
       "description": "Information about a paginated response\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
-    },
-    "paginationPageRequest": {
-      "type": "object",
-      "properties": {
-        "first": {
-          "type": "string",
-          "description": "The number of items desired"
-        },
-        "after": {
-          "type": "string",
-          "description": "The cursor value after which data will be returned"
-        },
-        "filter": {
-          "type": "string",
-          "description": "SQL-style constraint filters"
-        },
-        "sortBy": {
-          "type": "string",
-          "description": "Sort the response by the given field"
-        }
-      },
-      "description": "Pagination request information\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
     },
     "stackpath.rpc.BadRequest": {
       "allOf": [
@@ -709,14 +1569,14 @@
         "instanceSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1MatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "description": "List of instance selectors"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1MatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "description": "List of network selectors"
         }
@@ -759,27 +1619,6 @@
       },
       "description": "Defines an IP block"
     },
-    "v1MatchExpression": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string",
-          "description": "The name of the selector to perform a match against"
-        },
-        "operator": {
-          "type": "string",
-          "description": "The operation to perform to match a selector\n\nValid values are \"in\" with support for more possible in the future"
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "The values to match in the selector"
-        }
-      },
-      "description": "An expression to match selectors against a set of values"
-    },
     "v1NetworkPolicy": {
       "type": "object",
       "properties": {
@@ -820,14 +1659,14 @@
         "instanceSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1MatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "description": "A selector to match workload instances"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1MatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "description": "A selector to match networks"
         },
@@ -841,7 +1680,7 @@
         "priority": {
           "type": "integer",
           "format": "int32",
-          "description": "A priority for all rules in the network policy. 1-65000"
+          "description": "A policy's priority among other network policies. 1 - 65000\n\nNetwork policies apply to all compute workloads on the stack. Lower values have a higher priority, and priorities must be unique across the stack. Use the special value 65534 to apply the same priority to different workload instances in the same stack, identified by their selectors."
         },
         "ingress": {
           "type": "array",

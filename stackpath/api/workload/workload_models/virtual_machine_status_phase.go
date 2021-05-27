@@ -19,6 +19,11 @@ import (
 // swagger:model VirtualMachineStatusPhase
 type VirtualMachineStatusPhase string
 
+func NewVirtualMachineStatusPhase(value VirtualMachineStatusPhase) *VirtualMachineStatusPhase {
+	v := value
+	return &v
+}
+
 const (
 
 	// VirtualMachineStatusPhaseUNKNOWN captures enum value "UNKNOWN"

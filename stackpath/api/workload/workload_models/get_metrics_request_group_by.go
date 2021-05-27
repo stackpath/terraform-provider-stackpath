@@ -19,6 +19,11 @@ import (
 // swagger:model GetMetricsRequestGroupBy
 type GetMetricsRequestGroupBy string
 
+func NewGetMetricsRequestGroupBy(value GetMetricsRequestGroupBy) *GetMetricsRequestGroupBy {
+	v := value
+	return &v
+}
+
 const (
 
 	// GetMetricsRequestGroupByNONE captures enum value "NONE"

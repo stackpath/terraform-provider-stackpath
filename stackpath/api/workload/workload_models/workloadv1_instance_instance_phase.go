@@ -27,6 +27,11 @@ import (
 // swagger:model workloadv1InstanceInstancePhase
 type Workloadv1InstanceInstancePhase string
 
+func NewWorkloadv1InstanceInstancePhase(value Workloadv1InstanceInstancePhase) *Workloadv1InstanceInstancePhase {
+	v := value
+	return &v
+}
+
 const (
 
 	// Workloadv1InstanceInstancePhaseINSTANCEPHASEUNSPECIFIED captures enum value "INSTANCE_PHASE_UNSPECIFIED"
