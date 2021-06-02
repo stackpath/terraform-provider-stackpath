@@ -39,11 +39,11 @@ func convertToStringArray(data []interface{}) []string {
 	return s
 }
 
-func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchExpression) []*ipam_models.V1MatchExpression {
-	converted := make([]*ipam_models.V1MatchExpression, len(selectors))
+func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchExpression) []*ipam_models.NetworkMatchExpression {
+	converted := make([]*ipam_models.NetworkMatchExpression, len(selectors))
 
 	for i, selector := range selectors {
-		converted[i] = &ipam_models.V1MatchExpression{
+		converted[i] = &ipam_models.NetworkMatchExpression{
 			Key:      selector.Key,
 			Operator: selector.Operator,
 			Values:   selector.Values,
@@ -53,7 +53,7 @@ func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchEx
 	return converted
 }
 
-func convertIPAMToWorkloadMatchExpression(selectors []*ipam_models.V1MatchExpression) []*workload_models.V1MatchExpression {
+func convertIPAMToWorkloadMatchExpression(selectors []*ipam_models.NetworkMatchExpression) []*workload_models.V1MatchExpression {
 	converted := make([]*workload_models.V1MatchExpression, len(selectors))
 
 	for i, selector := range selectors {
