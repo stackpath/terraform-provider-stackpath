@@ -76,6 +76,37 @@ func TestAccComputeNetwork(t *testing.T) {
 					}),
 				),
 			},
+			{
+				Config: `
+				resource "stackpath_compute_network" "foo" {
+				  name = "test-tf-network-1"
+				  slug = "test-tf-network-1"
+				  root_subnet = "10.0.0.0/8"
+				  labels = {
+					  "new-label" = "value1"
+				  }
+				  annotations = {
+					  "new-annotation" = "value1"
+				  }
+				}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeCheckNetworkExists("stackpath_compute_network.foo", network),
+					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
+						Name:       "test-tf-network-1",
+						Slug:       "test-tf-network-1",
+						RootSubnet: "10.0.0.0/8",
+						Metadata: &ipam_models.NetworkMetadata{
+							Version: "2",
+							Labels: map[string]string{
+								"new-label": "value1",
+							},
+							Annotations: map[string]string{
+								"new-annotation": "value1",
+							},
+						},
+					}),
+				),
+			},
 		},
 	})
 }

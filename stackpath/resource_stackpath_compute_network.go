@@ -90,7 +90,7 @@ func resourceComputeNetworkRead(ctx context.Context, data *schema.ResourceData, 
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
 		data.SetId("")
-		return nil
+		return diag.Diagnostics{}
 	} else if err != nil {
 		return diag.FromErr(fmt.Errorf("failed to read network: %v", NewStackPathError(err)))
 	}
