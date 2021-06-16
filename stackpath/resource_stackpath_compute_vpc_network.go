@@ -12,14 +12,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceComputeNetwork() *schema.Resource {
+func resourceComputeVPCNetwork() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceComputeNetworkCreate,
-		ReadContext:   resourceComputeNetworkRead,
-		UpdateContext: resourceComputeNetworkUpdate,
-		DeleteContext: resourceComputeNetworkDelete,
+		CreateContext: resourceComputeVPCNetworkCreate,
+		ReadContext:   resourceComputeVPCNetworkRead,
+		UpdateContext: resourceComputeVPCNetworkUpdate,
+		DeleteContext: resourceComputeVPCNetworkDelete,
 		Importer: &schema.ResourceImporter{
-			StateContext: resourceComputeNetworkImportState,
+			StateContext: resourceComputeVPCNetworkImportState,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -57,7 +57,7 @@ func resourceComputeNetwork() *schema.Resource {
 	}
 }
 
-func resourceComputeNetworkCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceComputeVPCNetworkCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	computeNetwork := convertComputeNetwork(data)
 	resp, err := config.edgeComputeNetworking.VirtualPrivateCloud.CreateNetwork(&virtual_private_cloud.CreateNetworkParams{
@@ -75,10 +75,10 @@ func resourceComputeNetworkCreate(ctx context.Context, data *schema.ResourceData
 	}
 
 	data.SetId(resp.Payload.Network.ID)
-	return resourceComputeNetworkRead(ctx, data, meta)
+	return resourceComputeVPCNetworkRead(ctx, data, meta)
 }
 
-func resourceComputeNetworkRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceComputeVPCNetworkRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 
 	resp, err := config.edgeComputeNetworking.VirtualPrivateCloud.GetNetwork(&virtual_private_cloud.GetNetworkParams{
@@ -123,7 +123,7 @@ func resourceComputeNetworkRead(ctx context.Context, data *schema.ResourceData, 
 	return diag.Diagnostics{}
 }
 
-func resourceComputeNetworkUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceComputeVPCNetworkUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	network := convertComputeNetwork(data)
 	network.ID = data.Id()
@@ -146,10 +146,10 @@ func resourceComputeNetworkUpdate(ctx context.Context, data *schema.ResourceData
 		return diag.FromErr(fmt.Errorf("failed to update network: %v", NewStackPathError(err)))
 	}
 
-	return resourceComputeNetworkRead(ctx, data, meta)
+	return resourceComputeVPCNetworkRead(ctx, data, meta)
 }
 
-func resourceComputeNetworkDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceComputeVPCNetworkDelete(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	_, err := config.edgeComputeNetworking.VirtualPrivateCloud.DeleteNetwork(&virtual_private_cloud.DeleteNetworkParams{
 		Context:   ctx,
@@ -164,7 +164,7 @@ func resourceComputeNetworkDelete(ctx context.Context, data *schema.ResourceData
 	return diag.Diagnostics{}
 }
 
-func resourceComputeNetworkImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+func resourceComputeVPCNetworkImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	// We expect that to import a resource, the user will pass in the
 	// full UUID of the network they're attempting to import.
 	return []*schema.ResourceData{d}, nil

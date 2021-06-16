@@ -14,7 +14,7 @@ import (
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 )
 
-func TestAccComputeNetwork(t *testing.T) {
+func TestAccComputeVPCNetwork(t *testing.T) {
 	t.Parallel()
 
 	network := &ipam_models.NetworkNetwork{}
@@ -28,13 +28,13 @@ func TestAccComputeNetwork(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-				resource "stackpath_compute_network" "foo" {
+				resource "stackpath_compute_vpc_network" "foo" {
 				  name = "test-tf-network-1"
 				  slug = "test-tf-network-1"
 				  root_subnet = "10.0.0.0/8"
 				}`,
 				Check: resource.ComposeTestCheckFunc(
-					testAccComputeCheckNetworkExists("stackpath_compute_network.foo", network),
+					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
 						Name:       "test-tf-network-1",
 						Slug:       "test-tf-network-1",
@@ -47,7 +47,7 @@ func TestAccComputeNetwork(t *testing.T) {
 			},
 			{
 				Config: `
-				resource "stackpath_compute_network" "foo" {
+				resource "stackpath_compute_vpc_network" "foo" {
 				  name = "test-tf-network-1"
 				  slug = "test-tf-network-1"
 				  root_subnet = "10.0.0.0/8"
@@ -59,7 +59,7 @@ func TestAccComputeNetwork(t *testing.T) {
 				  }
 				}`,
 				Check: resource.ComposeTestCheckFunc(
-					testAccComputeCheckNetworkExists("stackpath_compute_network.foo", network),
+					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
 						Name:       "test-tf-network-1",
 						Slug:       "test-tf-network-1",
@@ -78,7 +78,7 @@ func TestAccComputeNetwork(t *testing.T) {
 			},
 			{
 				Config: `
-				resource "stackpath_compute_network" "foo" {
+				resource "stackpath_compute_vpc_network" "foo" {
 				  name = "test-tf-network-1"
 				  slug = "test-tf-network-1"
 				  root_subnet = "10.0.0.0/8"
@@ -90,7 +90,7 @@ func TestAccComputeNetwork(t *testing.T) {
 				  }
 				}`,
 				Check: resource.ComposeTestCheckFunc(
-					testAccComputeCheckNetworkExists("stackpath_compute_network.foo", network),
+					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
 						Name:       "test-tf-network-1",
 						Slug:       "test-tf-network-1",
@@ -182,7 +182,7 @@ func testAccComputeNetworkCheckDestroy() resource.TestCheckFunc {
 		config := testAccProvider.Meta().(*Config)
 
 		for _, rs := range s.RootModule().Resources {
-			if rs.Type != "stackpath_compute_network" {
+			if rs.Type != "stackpath_compute_vpc_network" {
 				continue
 			}
 
