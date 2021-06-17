@@ -35,6 +35,10 @@ func resourceComputeVPCNetwork() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"virtual_network_identifier": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"version": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -105,6 +109,10 @@ func resourceComputeVPCNetworkRead(ctx context.Context, data *schema.ResourceDat
 
 	if err := data.Set("root_subnet", resp.Payload.Network.RootSubnet); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting root_subnet: %v", err))
+	}
+
+	if err := data.Set("virtual_network_identifier", resp.Payload.Network.VirtualNetworkIdentifier); err != nil {
+		return diag.FromErr(fmt.Errorf("error setting virtual_network_identifier: %v", err))
 	}
 
 	if resp.Payload.Network.Metadata != nil {

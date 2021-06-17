@@ -36,9 +36,10 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:       "test-tf-network-1",
-						Slug:       "test-tf-network-1",
-						RootSubnet: "10.0.0.0/8",
+						Name:                     "test-tf-network-1",
+						Slug:                     "test-tf-network-1",
+						RootSubnet:               "10.0.0.0/8",
+						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "1",
 						},
@@ -61,9 +62,10 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:       "test-tf-network-1",
-						Slug:       "test-tf-network-1",
-						RootSubnet: "10.0.0.0/8",
+						Name:                     "test-tf-network-1",
+						Slug:                     "test-tf-network-1",
+						RootSubnet:               "10.0.0.0/8",
+						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "2",
 							Labels: map[string]string{
@@ -92,9 +94,10 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:       "test-tf-network-1",
-						Slug:       "test-tf-network-1",
-						RootSubnet: "10.0.0.0/8",
+						Name:                     "test-tf-network-1",
+						Slug:                     "test-tf-network-1",
+						RootSubnet:               "10.0.0.0/8",
+						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "2",
 							Labels: map[string]string{
@@ -154,6 +157,9 @@ func testAccCheckNetworkMatch(got, want *ipam_models.NetworkNetwork) resource.Te
 		}
 		if want.RootSubnet != got.RootSubnet {
 			return fmt.Errorf("mismatch network.RootSubnet. got=%s want=%s", got.RootSubnet, want.RootSubnet)
+		}
+		if (want.VirtualNetworkIdentifier > 0) != (got.VirtualNetworkIdentifier > 0) {
+			return fmt.Errorf("mismatch network.VirtualNetworkIdentifier. got=%d want=%d", got.VirtualNetworkIdentifier, want.VirtualNetworkIdentifier)
 		}
 
 		if want.Metadata == nil && got.Metadata != nil {
