@@ -13,7 +13,7 @@ var testAccProviders map[string]*schema.Provider
 var testAccProvider *schema.Provider
 var testAccProviderFactories = map[string]func() (*schema.Provider, error){
 	"stackpath": func() (*schema.Provider, error) {
-		return testAccProvider, nil
+		return Provider(), nil
 	},
 }
 
@@ -27,7 +27,7 @@ func init() {
 	}
 	testAccProviderFactories = map[string]func() (*schema.Provider, error){
 		"stackpath": func() (*schema.Provider, error) {
-			return testAccProvider, nil
+			return Provider(), nil
 		},
 	}
 }

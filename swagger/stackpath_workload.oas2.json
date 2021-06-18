@@ -1764,6 +1764,10 @@
         "network": {
           "type": "string",
           "description": "A network interface's name"
+        },
+        "enableOneToOneNat": {
+          "type": "boolean",
+          "description": "Enable one to one NAT"
         }
       },
       "description": "Network interfaces that will be created on instances in the workload"

@@ -35,17 +35,18 @@ func TestComputeWorkloadContainers(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix),
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			{
-				Config: testComputeWorkloadConfigContainerAddPorts(nameSuffix),
+				Config: testComputeWorkloadConfigContainerAddPorts(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -53,10 +54,11 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443, true),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "some value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			{
-				Config: testComputeWorkloadConfigContainerRemoveEnvVar(nameSuffix),
+				Config: testComputeWorkloadConfigContainerRemoveEnvVar(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -64,10 +66,11 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			{
-				Config: testComputeWorkloadConfigContainerAddProbes(nameSuffix),
+				Config: testComputeWorkloadConfigContainerAddProbes(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -75,24 +78,128 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			{
 				ExpectNonEmptyPlan: true,
-				Config:             testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix),
+				Config:             testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			{
 				ExpectNonEmptyPlan: true,
-				Config:             testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix),
+				Config:             testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckTargetAutoScaling(workload, "us", "cpu", 2, 4, 50),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
+			//   Need to ensure consistent ordering of containers when reading in state.
+			//
+			// {
+			// 	Config: testComputeWorkloadConfigContainerAddContainer(),
+			// 	Check: resource.ComposeTestCheckFunc(
+			// 		testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+			// 		testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+			// 		testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
+			// 	),
+			// },
+		},
+	})
+}
+
+func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "nat-" + strconv.Itoa(int(time.Now().Unix()))
+	oneToOneNAT := true
+
+	// By design, the StackPath API does not return image pull secrets to the
+	// user when retrieving a workload. Expect to see an empty secret in the
+	// result and suppress the diff error.
+	//emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			{
+				Config: testComputeWorkloadConfigContainerAddPorts(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443, true),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "some value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			{
+				Config: testComputeWorkloadConfigContainerRemoveEnvVar(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
+					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			{
+				Config: testComputeWorkloadConfigContainerAddProbes(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
+					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerImagePullCredentials(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigAutoScalingConfiguration(nameSuffix, &oneToOneNAT),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckTargetAutoScaling(workload, "us", "cpu", 2, 4, 50),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true),
 				),
 			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
@@ -124,7 +231,7 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerAddVolumeMounts(nameSuffix),
+				Config: testComputeWorkloadConfigContainerAddVolumeMounts(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo-volume", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -150,7 +257,7 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix),
+				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
 					testAccComputeWorkloadCheckVirtualMachineImage(workload, "app", "stackpath-edge/centos-7:v201905012051"),
@@ -184,6 +291,26 @@ func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 			}
 		}
 
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckInterface(workload *workload_models.V1Workload, interfaceIndex int, networkName string, enableOneToOneNAT bool) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		interfaces := workload.Spec.NetworkInterfaces
+		if interfaceIndex < 0 {
+			return fmt.Errorf("invalid interface index to check: %d", interfaceIndex)
+		}
+		if interfaceIndex >= len(interfaces) {
+			return fmt.Errorf("could not find the interface index %d/%d", interfaceIndex, len(interfaces))
+		}
+		inter := interfaces[interfaceIndex]
+		if inter.Network != networkName {
+			return fmt.Errorf("invalid network on interface %d. got=%s want=%s", interfaceIndex, inter.Network, networkName)
+		}
+		if inter.EnableOneToOneNat != enableOneToOneNAT {
+			return fmt.Errorf("invalid enableOneToOneNat on interface %d. got=%v want=%v", interfaceIndex, inter.EnableOneToOneNat, enableOneToOneNAT)
+		}
 		return nil
 	}
 }
@@ -414,14 +541,29 @@ func testAccComputeWorkloadCheckTargetAutoScaling(workload *workload_models.V1Wo
 	}
 }
 
-func testComputeWorkloadConfigContainerBasic(suffix string) string {
+func getInterface(network string, enableNAT *bool) string {
+	var config string
+	if enableNAT == nil {
+		config = fmt.Sprintf(`
+    network_interface {
+      network = "%s"
+    }`, network)
+	} else {
+		config = fmt.Sprintf(`
+    network_interface {
+      network = "%s"
+      enable_one_to_one_nat = %v
+    }`, network, *enableNAT)
+	}
+	return config
+}
+
+func testComputeWorkloadConfigContainerBasic(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -454,17 +596,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerAddPorts(suffix string) string {
+func testComputeWorkloadConfigContainerAddPorts(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -504,17 +644,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerRemoveEnvVar(suffix string) string {
+func testComputeWorkloadConfigContainerRemoveEnvVar(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -543,17 +681,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerAddProbes(suffix string) string {
+func testComputeWorkloadConfigContainerAddProbes(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -606,17 +742,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerImagePullCredentials(suffix string) string {
+func testComputeWorkloadConfigContainerImagePullCredentials(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   image_pull_credentials {
     docker_registry {
@@ -649,17 +783,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerAddContainer(suffix string) string {
+func testComputeWorkloadConfigContainerAddContainer(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -694,17 +826,15 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigVirtualMachineBasic(suffix string) string {
+func testComputeWorkloadConfigVirtualMachineBasic(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "bar" {
   name = "My Terraform Compute VM Workload - %s"
   slug = "terraform-vm-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   virtual_machine {
     name  = "app"
@@ -738,18 +868,15 @@ EOT
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigContainerAddVolumeMounts(suffix string) string {
+func testComputeWorkloadConfigContainerAddVolumeMounts(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo-volume" {
   name = "My Compute Workload Volume - %s"
   slug = "my-compute-workload-volume-%s"
-
-  network_interface {
-    network = "default"
-  }
+  %s
 
   container {
     name  = "app"
@@ -787,17 +914,15 @@ resource "stackpath_compute_workload" "foo-volume" {
       }
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
 
-func testComputeWorkloadConfigAutoScalingConfiguration(suffix string) string {
+func testComputeWorkloadConfigAutoScalingConfiguration(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
   slug = "my-compute-workload-%s"
-  network_interface {
-    network = "default"
-  }
+  %s
 
   image_pull_credentials {
     docker_registry {
@@ -842,5 +967,5 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix)
+}`, suffix, suffix, getInterface("default", enableNAT))
 }
