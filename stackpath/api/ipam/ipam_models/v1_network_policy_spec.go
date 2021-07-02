@@ -30,17 +30,19 @@ type V1NetworkPolicySpec struct {
 	Ingress []*V1Ingress `json:"ingress"`
 
 	// A selector to match workload instances
-	InstanceSelectors []*V1MatchExpression `json:"instanceSelectors"`
+	InstanceSelectors []*NetworkMatchExpression `json:"instanceSelectors"`
 
 	// A selector to match networks
-	NetworkSelectors []*V1MatchExpression `json:"networkSelectors"`
+	NetworkSelectors []*NetworkMatchExpression `json:"networkSelectors"`
 
 	// A list of policy types
 	//
 	// Policy types are used to specify what rules will be defined. If a policy type is given but not defined it will default. If it is not provided then no action will be used.
 	PolicyTypes []*NetworkPolicySpecPolicyType `json:"policyTypes"`
 
-	// A priority for all rules in the network policy. 1-65000
+	// A policy's priority among other network policies. 1 - 65000
+	//
+	// Network policies apply to all compute workloads on the stack. Lower values have a higher priority, and priorities must be unique across the stack. Use the special value 65534 to apply the same priority to different workload instances in the same stack, identified by their selectors.
 	Priority int32 `json:"priority,omitempty"`
 }
 

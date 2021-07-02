@@ -24,6 +24,11 @@ import (
 // swagger:model VolumeClaimVolumeClaimPhase
 type VolumeClaimVolumeClaimPhase string
 
+func NewVolumeClaimVolumeClaimPhase(value VolumeClaimVolumeClaimPhase) *VolumeClaimVolumeClaimPhase {
+	v := value
+	return &v
+}
+
 const (
 
 	// VolumeClaimVolumeClaimPhaseVOLUMECLAIMPHASEUNSPECIFIED captures enum value "VOLUME_CLAIM_PHASE_UNSPECIFIED"

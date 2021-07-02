@@ -27,7 +27,7 @@ type NetworkMetadata struct {
 	// Format: date-time
 	CreatedAt *strfmt.DateTime `json:"createdAt,omitempty"`
 
-	// The date that a network policy was requested for deletion
+	// The date that an entity was requested for deletion
 	// Read Only: true
 	// Format: date-time
 	DeleteRequestedAt *strfmt.DateTime `json:"deleteRequestedAt,omitempty"`

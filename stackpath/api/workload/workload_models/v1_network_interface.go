@@ -17,6 +17,9 @@ import (
 // swagger:model v1NetworkInterface
 type V1NetworkInterface struct {
 
+	// Enable one to one NAT
+	EnableOneToOneNat bool `json:"enableOneToOneNat,omitempty"`
+
 	// A network interface's name
 	Network string `json:"network,omitempty"`
 }

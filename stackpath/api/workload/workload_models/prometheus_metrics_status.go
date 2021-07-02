@@ -19,6 +19,11 @@ import (
 // swagger:model prometheusMetricsStatus
 type PrometheusMetricsStatus string
 
+func NewPrometheusMetricsStatus(value PrometheusMetricsStatus) *PrometheusMetricsStatus {
+	v := value
+	return &v
+}
+
 const (
 
 	// PrometheusMetricsStatusSUCCESS captures enum value "SUCCESS"

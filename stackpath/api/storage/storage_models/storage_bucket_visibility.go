@@ -20,6 +20,11 @@ import (
 // swagger:model storageBucketVisibility
 type StorageBucketVisibility string
 
+func NewStorageBucketVisibility(value StorageBucketVisibility) *StorageBucketVisibility {
+	v := value
+	return &v
+}
+
 const (
 
 	// StorageBucketVisibilityPRIVATE captures enum value "PRIVATE"

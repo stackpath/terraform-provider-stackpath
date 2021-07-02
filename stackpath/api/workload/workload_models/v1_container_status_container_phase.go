@@ -25,6 +25,11 @@ import (
 // swagger:model v1ContainerStatusContainerPhase
 type V1ContainerStatusContainerPhase string
 
+func NewV1ContainerStatusContainerPhase(value V1ContainerStatusContainerPhase) *V1ContainerStatusContainerPhase {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1ContainerStatusContainerPhaseCONTAINERPHASEUNSPECIFIED captures enum value "CONTAINER_PHASE_UNSPECIFIED"

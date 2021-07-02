@@ -21,6 +21,11 @@ import (
 // swagger:model v1GetMetricsRequestTrafficRegion
 type V1GetMetricsRequestTrafficRegion string
 
+func NewV1GetMetricsRequestTrafficRegion(value V1GetMetricsRequestTrafficRegion) *V1GetMetricsRequestTrafficRegion {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1GetMetricsRequestTrafficRegionALL captures enum value "ALL"

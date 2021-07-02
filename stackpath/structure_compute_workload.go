@@ -125,8 +125,15 @@ func convertComputeWorkloadTargetScaleSettings(data []interface{}) *workload_mod
 func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*workload_models.V1NetworkInterface {
 	interfaces := make([]*workload_models.V1NetworkInterface, len(data))
 	for i, n := range data {
+		interfaceMap := n.(map[string]interface{})
 		interfaces[i] = &workload_models.V1NetworkInterface{
-			Network: n.(map[string]interface{})["network"].(string),
+			Network:           interfaceMap["network"].(string),
+			EnableOneToOneNat: (i == 0),
+		}
+		if rawValue, ok := interfaceMap["enable_one_to_one_nat"]; ok {
+			if enableOneToOneNAT, ok := rawValue.(bool); ok {
+				interfaces[i].EnableOneToOneNat = enableOneToOneNAT
+			}
 		}
 	}
 	return interfaces
@@ -546,7 +553,8 @@ func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*workload_model
 	flattened := make([]interface{}, len(networkInterfaces))
 	for i, n := range networkInterfaces {
 		flattened[i] = map[string]interface{}{
-			"network": n.Network,
+			"network":               n.Network,
+			"enable_one_to_one_nat": n.EnableOneToOneNat,
 		}
 	}
 	return flattened

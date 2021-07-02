@@ -66,7 +66,7 @@ type CreateNetworkPolicyParams struct {
 
 	/* StackID.
 
-	   The ID of the stack that a network policy belongs to
+	   A stack ID or slug
 	*/
 	StackID string
 

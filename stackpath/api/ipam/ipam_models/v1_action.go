@@ -19,6 +19,11 @@ import (
 // swagger:model v1Action
 type V1Action string
 
+func NewV1Action(value V1Action) *V1Action {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1ActionUNDEFINED captures enum value "UNDEFINED"

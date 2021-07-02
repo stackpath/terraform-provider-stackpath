@@ -27,6 +27,11 @@ import (
 // swagger:model v1GetMetricsRequestGranularity
 type V1GetMetricsRequestGranularity string
 
+func NewV1GetMetricsRequestGranularity(value V1GetMetricsRequestGranularity) *V1GetMetricsRequestGranularity {
+	v := value
+	return &v
+}
+
 const (
 
 	// V1GetMetricsRequestGranularityDEFAULT captures enum value "DEFAULT"

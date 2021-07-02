@@ -86,6 +86,11 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
+						"enable_one_to_one_nat": {
+							Type:     schema.TypeBool,
+							Optional: true,
+							Default:  true,
+						},
 					},
 				},
 			},

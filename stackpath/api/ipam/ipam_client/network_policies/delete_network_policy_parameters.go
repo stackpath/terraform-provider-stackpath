@@ -61,13 +61,13 @@ type DeleteNetworkPolicyParams struct {
 
 	/* NetworkPolicyID.
 
-	   The ID of the network policy to delete
+	   An EdgeCompute network policy ID
 	*/
 	NetworkPolicyID string
 
 	/* StackID.
 
-	   The ID of the stack containing the network policy to delete
+	   A stack ID or slug
 	*/
 	StackID string
 
