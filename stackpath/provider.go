@@ -45,6 +45,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"stackpath_compute_workload":       resourceComputeWorkload(),
 			"stackpath_compute_vpc_network":    resourceComputeVPCNetwork(),
+			"stackpath_compute_vpc_route":      resourceComputeVPCRoute(),
 			"stackpath_compute_network_policy": resourceComputeNetworkPolicy(),
 			"stackpath_object_storage_bucket":  resourceObjectStorageBucket(),
 		},
