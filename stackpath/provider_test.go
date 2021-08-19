@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var clientID, clientSecret, stackID, baseURL string
+var clientID, clientSecret, stackID string
 var testAccProviders map[string]*schema.Provider
 var testAccProvider *schema.Provider
 var testAccProviderFactories = map[string]func() (*schema.Provider, error){
@@ -21,7 +21,6 @@ func init() {
 	clientID = os.Getenv("STACKPATH_CLIENT_ID")
 	clientSecret = os.Getenv("STACKPATH_CLIENT_SECRET")
 	stackID = os.Getenv("STACKPATH_STACK_ID")
-	baseURL = os.Getenv("STACKPATH_BASE_URL")
 	testAccProvider = Provider()
 	testAccProviders = map[string]*schema.Provider{
 		"stackpath": testAccProvider,
@@ -46,10 +45,6 @@ func testAccPreCheck(t *testing.T) {
 
 	if stackID == "" {
 		missingVars = append(missingVars, "STACKPATH_STACK_ID")
-	}
-
-	if baseURL == "" {
-		missingVars = append(missingVars, "STACKPATH_BASE_URL")
 	}
 
 	if len(missingVars) > 0 {

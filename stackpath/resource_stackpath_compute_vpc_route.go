@@ -115,7 +115,7 @@ func resourceComputeVPCRouteCreate(ctx context.Context, data *schema.ResourceDat
 		},
 	}, nil)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to create route: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to create route: %w", NewStackPathError(err)))
 	}
 
 	data.SetId(formatRouteID(resp.Payload.Route.NetworkID, resp.Payload.Route.ID))
@@ -131,7 +131,7 @@ func resourceComputeVPCRouteRead(ctx context.Context, data *schema.ResourceData,
 	var err error
 	id := data.Id()
 	if params.NetworkID, params.RouteID, err = parseRouteID(id); err != nil {
-		return diag.FromErr(fmt.Errorf("failed to parse route ID (%s): %w", id, err))
+		return diag.FromErr(fmt.Errorf("failed to parse route ID (%s): %w", id, NewStackPathError(err)))
 	}
 
 	resp, err := config.edgeComputeNetworking.VirtualPrivateCloud.GetRoute(&params, nil)
@@ -139,37 +139,37 @@ func resourceComputeVPCRouteRead(ctx context.Context, data *schema.ResourceData,
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
 		data.SetId("")
-		return diag.FromErr(fmt.Errorf("failed to get route (%s)%s/%s: %w", data.Id(), params.NetworkID, params.RouteID, err))
+		return diag.FromErr(fmt.Errorf("failed to get route (%s)%s/%s: %w", data.Id(), params.NetworkID, params.RouteID, NewStackPathError(err)))
 	} else if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to read route: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to read route: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("name", resp.Payload.Route.Name); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting name: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting name: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("slug", resp.Payload.Route.Slug); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting slug: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting slug: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("destination_prefixes", flattenStringArray(resp.Payload.Route.DestinationPrefixes)); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting destination_prefixes: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting destination_prefixes: %w", NewStackPathError(err)))
 	}
 	if err := data.Set("gateway_selectors", flattenGatewaySelectors(resp.Payload.Route.GatewaySelectors)); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting gateway_selectors: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting gateway_selectors: %w", NewStackPathError(err)))
 	}
 
 	if resp.Payload.Route.Metadata != nil {
 		if err := data.Set("labels", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.Route.Metadata.Labels))); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting labels: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting labels: %w", NewStackPathError(err)))
 		}
 
 		if err := data.Set("annotations", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.Route.Metadata.Annotations))); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting annotations: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting annotations: %w", NewStackPathError(err)))
 		}
 
 		if err := data.Set("version", resp.Payload.Route.Metadata.Version); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting version: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting version: %w", NewStackPathError(err)))
 		}
 	}
 	return diag.Diagnostics{}
@@ -181,10 +181,8 @@ func resourceComputeVPCRouteUpdate(ctx context.Context, data *schema.ResourceDat
 	var err error
 	id := data.Id()
 	if route.NetworkID, route.ID, err = parseRouteID(id); err != nil {
-		return diag.FromErr(fmt.Errorf("failed to parse route ID (%s): %w", id, err))
+		return diag.FromErr(fmt.Errorf("failed to parse route ID (%s): %w", id, NewStackPathError(err)))
 	}
-
-	fmt.Println("Updating route", route.Metadata.Annotations)
 
 	_, err = config.edgeComputeNetworking.VirtualPrivateCloud.UpdateRoute(&virtual_private_cloud.UpdateRouteParams{
 		Context:   ctx,
@@ -201,7 +199,7 @@ func resourceComputeVPCRouteUpdate(ctx context.Context, data *schema.ResourceDat
 		data.SetId("")
 		return diag.Diagnostics{}
 	} else if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to update route: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to update route: %w", NewStackPathError(err)))
 	}
 
 	return resourceComputeVPCRouteRead(ctx, data, meta)
@@ -220,7 +218,7 @@ func resourceComputeVPCRouteDelete(ctx context.Context, data *schema.ResourceDat
 	}
 	_, err = config.edgeComputeNetworking.VirtualPrivateCloud.DeleteRoute(&params, nil)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to delete route: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to delete route: %w", NewStackPathError(err)))
 	}
 
 	data.SetId("")
