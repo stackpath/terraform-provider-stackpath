@@ -21,8 +21,7 @@ Run the following command to build the provider:
 $ make build
 ```
 
-### Installing the built provider
-
+### Installing the built provider for Terraform < 0.13
 Run the following command to install the built provider:
 
 ```sh
@@ -30,6 +29,30 @@ $ make install
 ```
 
 Once the plugin has been installed, run `terraform init` to have terraform discover the StackPath plugin.
+
+### Installing the built provider for Terraform >= 0.13
+Make sure that your terraform config is setup to mirror local providers:
+Something like this should be in your `~/.terraformrc`
+```
+provider_installation {
+  filesystem_mirror {
+    path    = "/Users/USERNAME/terraform-providers/"
+    include = ["local/providers/*"]
+  }
+  direct {
+    exclude = ["local/providers/*"]
+  }
+}
+```
+
+Run the following command to install the built provider:
+
+```sh
+$ make install-13
+```
+
+Once the plugin has been installed, run `terraform init` to have terraform discover the StackPath plugin.
+
 
 ### Testing the provider
 

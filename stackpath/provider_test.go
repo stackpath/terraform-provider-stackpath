@@ -27,7 +27,7 @@ func init() {
 	}
 	testAccProviderFactories = map[string]func() (*schema.Provider, error){
 		"stackpath": func() (*schema.Provider, error) {
-			return Provider(), nil
+			return testAccProvider, nil
 		},
 	}
 }

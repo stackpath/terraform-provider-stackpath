@@ -176,7 +176,7 @@ func testAccCheckNetworkMatch(got, want *ipam_models.NetworkNetwork) resource.Te
 				return fmt.Errorf("mismatch network.Metadata.Labels. got=%#v want=%#v", got.Metadata.Labels, want.Metadata.Labels)
 			}
 			if !reflect.DeepEqual(want.Metadata.Annotations, got.Metadata.Annotations) {
-				return fmt.Errorf("mismatch network.Metadata.Annotations. got=%#v want=%#v", got.Metadata.Labels, want.Metadata.Labels)
+				return fmt.Errorf("mismatch network.Metadata.Annotations. got=%#v want=%#v", got.Metadata.Annotations, want.Metadata.Annotations)
 			}
 		}
 		return nil

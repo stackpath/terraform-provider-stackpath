@@ -75,7 +75,7 @@ func resourceComputeVPCNetworkCreate(ctx context.Context, data *schema.ResourceD
 		},
 	}, nil)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to create network: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to create network: %w", NewStackPathError(err)))
 	}
 
 	data.SetId(resp.Payload.Network.ID)
@@ -96,36 +96,36 @@ func resourceComputeVPCNetworkRead(ctx context.Context, data *schema.ResourceDat
 		data.SetId("")
 		return diag.Diagnostics{}
 	} else if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to read network: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to read network: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("name", resp.Payload.Network.Name); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting name: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting name: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("slug", resp.Payload.Network.Slug); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting slug: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting slug: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("root_subnet", resp.Payload.Network.RootSubnet); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting root_subnet: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting root_subnet: %w", NewStackPathError(err)))
 	}
 
 	if err := data.Set("virtual_network_identifier", resp.Payload.Network.VirtualNetworkIdentifier); err != nil {
-		return diag.FromErr(fmt.Errorf("error setting virtual_network_identifier: %v", err))
+		return diag.FromErr(fmt.Errorf("error setting virtual_network_identifier: %w", NewStackPathError(err)))
 	}
 
 	if resp.Payload.Network.Metadata != nil {
 		if err := data.Set("labels", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.Network.Metadata.Labels))); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting labels: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting labels: %w", NewStackPathError(err)))
 		}
 
 		if err := data.Set("annotations", flattenStringMap(convertIPAMToWorkloadStringMapEntry(resp.Payload.Network.Metadata.Annotations))); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting annotations: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting annotations: %w", NewStackPathError(err)))
 		}
 
 		if err := data.Set("version", resp.Payload.Network.Metadata.Version); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting version: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting version: %w", NewStackPathError(err)))
 		}
 	}
 	return diag.Diagnostics{}
@@ -151,7 +151,7 @@ func resourceComputeVPCNetworkUpdate(ctx context.Context, data *schema.ResourceD
 		data.SetId("")
 		return diag.Diagnostics{}
 	} else if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to update network: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to update network: %w", NewStackPathError(err)))
 	}
 
 	return resourceComputeVPCNetworkRead(ctx, data, meta)
@@ -165,7 +165,7 @@ func resourceComputeVPCNetworkDelete(ctx context.Context, data *schema.ResourceD
 		NetworkID: data.Id(),
 	}, nil)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("failed to delete network: %v", NewStackPathError(err)))
+		return diag.FromErr(fmt.Errorf("failed to delete network: %w", NewStackPathError(err)))
 	}
 
 	data.SetId("")

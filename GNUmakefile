@@ -17,6 +17,13 @@ install: build
 	mv ${BINARY} ~/.terraform.d/plugins/${OS_ARCH}
 	@echo
 
+install-13: build # https://debruyn.dev/2020/setting-up-your-machine-for-local-terraform-provider-development/
+	@echo "==> Installing ${BINARY}..."
+	mkdir -p ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}
+	-rm ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}/${BINARY}
+	mv ${BINARY} ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}
+	@echo
+
 test:
 	@echo "==> Running tests..."
 	go test -i $(TEST) || exit 1
