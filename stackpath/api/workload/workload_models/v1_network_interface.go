@@ -7,7 +7,9 @@ package workload_models
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -20,17 +22,86 @@ type V1NetworkInterface struct {
 	// Enable one to one NAT
 	EnableOneToOneNat bool `json:"enableOneToOneNat,omitempty"`
 
+	// IPFamilies of IPs which will be assigned to network interface
+	IPFamilies []*V1IPFamily `json:"ipFamilies"`
+
+	// A IPv6 network subnet's name
+	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
+
 	// A network interface's name
 	Network string `json:"network,omitempty"`
+
+	// A IPv4 network subnet's name
+	Subnet string `json:"subnet,omitempty"`
 }
 
 // Validate validates this v1 network interface
 func (m *V1NetworkInterface) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateIPFamilies(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 network interface based on context it is used
+func (m *V1NetworkInterface) validateIPFamilies(formats strfmt.Registry) error {
+	if swag.IsZero(m.IPFamilies) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+		if swag.IsZero(m.IPFamilies[i]) { // not required
+			continue
+		}
+
+		if m.IPFamilies[i] != nil {
+			if err := m.IPFamilies[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 network interface based on the context it is used
 func (m *V1NetworkInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateIPFamilies(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1NetworkInterface) contextValidateIPFamilies(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+
+		if m.IPFamilies[i] != nil {
+			if err := m.IPFamilies[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

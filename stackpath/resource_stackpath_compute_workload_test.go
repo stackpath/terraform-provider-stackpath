@@ -547,12 +547,14 @@ func getInterface(network string, enableNAT *bool) string {
 		config = fmt.Sprintf(`
     network_interface {
       network = "%s"
+	  ip_families = ["IPv4"]
     }`, network)
 	} else {
 		config = fmt.Sprintf(`
     network_interface {
       network = "%s"
       enable_one_to_one_nat = %v
+	  ip_families = ["IPv4"]
     }`, network, *enableNAT)
 	}
 	return config

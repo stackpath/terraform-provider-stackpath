@@ -1621,6 +1621,15 @@
       },
       "description": "Execute an HTTP GET request against an endpoint running on an instance"
     },
+    "v1IPFamily": {
+      "type": "string",
+      "enum": [
+        "IP_FAMILY_UNSPECIFIED",
+        "IPv4",
+        "IPv6"
+      ],
+      "default": "IP_FAMILY_UNSPECIFIED"
+    },
     "v1ImagePullCredential": {
       "type": "object",
       "properties": {
@@ -1764,6 +1773,21 @@
         "network": {
           "type": "string",
           "description": "A network interface's name"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1IPFamily"
+          },
+          "description": "IPFamilies of IPs which will be assigned to network interface"
+        },
+        "subnet": {
+          "type": "string",
+          "description": "A IPv4 network subnet's name"
+        },
+        "ipv6Subnet": {
+          "type": "string",
+          "description": "A IPv6 network subnet's name"
         },
         "enableOneToOneNat": {
           "type": "boolean",

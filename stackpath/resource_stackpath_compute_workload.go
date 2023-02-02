@@ -91,6 +91,22 @@ func resourceComputeWorkload() *schema.Resource {
 							Optional: true,
 							Default:  true,
 						},
+						"ip_families": {
+							Type:     schema.TypeList,
+							MaxItems: 2,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"subnet": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"ipv6_subnet": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
 					},
 				},
 			},
