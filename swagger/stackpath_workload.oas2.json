@@ -1979,7 +1979,7 @@
         },
         "slug": {
           "type": "string",
-          "description": "A volume claim's programmatic name\n\nVolume claim slugs are used to programatically label a claim"
+          "description": "A volume claim's programmatic name\n\nVolume claim slugs are used to programmatically label a claim"
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata"
@@ -2104,7 +2104,7 @@
         },
         "name": {
           "type": "string",
-          "description": "An instance's name\n\nInstance names are generated from their corresponsing workload's slug, followed by a unique hash"
+          "description": "An instance's name\n\nInstance names are generated from their corresponding workload's slug, followed by a unique hash"
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata"
