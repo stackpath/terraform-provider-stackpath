@@ -25,13 +25,13 @@ type V1NetworkInterface struct {
 	// IPFamilies of IPs which will be assigned to network interface
 	IPFamilies []*V1IPFamily `json:"ipFamilies"`
 
-	// A IPv6 network subnet's name
+	// A network IPv6 subnet's name
 	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// A network interface's name
 	Network string `json:"network,omitempty"`
 
-	// A IPv4 network subnet's name
+	// A network IPv4 subnet's name
 	Subnet string `json:"subnet,omitempty"`
 }
 

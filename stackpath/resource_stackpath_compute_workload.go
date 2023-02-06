@@ -95,6 +95,10 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeList,
 							MaxItems: 2,
 							Optional: true,
+							// when ip_families is not provided, api created network with [IPv4]
+							// terraform plugin sdk does not support a way to configure Default for TypeList
+							// hence to avoid update in-place errors treating resource as computed
+							Computed: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},

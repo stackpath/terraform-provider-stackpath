@@ -1783,11 +1783,11 @@
         },
         "subnet": {
           "type": "string",
-          "description": "A IPv4 network subnet's name"
+          "description": "A network IPv4 subnet's name"
         },
         "ipv6Subnet": {
           "type": "string",
-          "description": "A IPv6 network subnet's name"
+          "description": "A network IPv6 subnet's name"
         },
         "enableOneToOneNat": {
           "type": "boolean",

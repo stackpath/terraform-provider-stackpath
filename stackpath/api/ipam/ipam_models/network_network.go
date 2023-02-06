@@ -21,6 +21,12 @@ type NetworkNetwork struct {
 	// A network's unique identifier
 	ID string `json:"id,omitempty"`
 
+	// ip families
+	IPFamilies []string `json:"ipFamilies"`
+
+	// ipv6 subnet
+	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
+
 	// metadata
 	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 

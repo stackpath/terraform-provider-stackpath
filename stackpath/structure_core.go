@@ -124,6 +124,14 @@ func flattenComputeMatchExpressions(selectors []*workload_models.V1MatchExpressi
 	return flattened
 }
 
+func flattenIPFamilies(ipFamilies []*workload_models.V1IPFamily) []interface{} {
+	ipFamiliesStrList := make([]string, len(ipFamilies))
+	for i, ipFamily := range ipFamilies {
+		ipFamiliesStrList[i] = string(*ipFamily)
+	}
+	return flattenStringArray(ipFamiliesStrList)
+}
+
 func flattenStringMap(stringMap workload_models.V1StringMapEntry) map[string]interface{} {
 	m := make(map[string]interface{}, len(stringMap))
 	for k, v := range stringMap {

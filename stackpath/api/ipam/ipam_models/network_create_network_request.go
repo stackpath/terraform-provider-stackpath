@@ -7,6 +7,7 @@ package ipam_models
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -17,6 +18,12 @@ import (
 //
 // swagger:model networkCreateNetworkRequest
 type NetworkCreateNetworkRequest struct {
+
+	// IPFamilies of IPs which will be assigned to network interface
+	IPFamilies []*V1IPFamily `json:"ipFamilies"`
+
+	// ipv6 subnet
+	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
 	Metadata *NetworkMetadata `json:"metadata,omitempty"`
@@ -35,6 +42,10 @@ type NetworkCreateNetworkRequest struct {
 func (m *NetworkCreateNetworkRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateIPFamilies(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateMetadata(formats); err != nil {
 		res = append(res, err)
 	}
@@ -42,6 +53,30 @@ func (m *NetworkCreateNetworkRequest) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *NetworkCreateNetworkRequest) validateIPFamilies(formats strfmt.Registry) error {
+	if swag.IsZero(m.IPFamilies) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+		if swag.IsZero(m.IPFamilies[i]) { // not required
+			continue
+		}
+
+		if m.IPFamilies[i] != nil {
+			if err := m.IPFamilies[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -66,6 +101,10 @@ func (m *NetworkCreateNetworkRequest) validateMetadata(formats strfmt.Registry) 
 func (m *NetworkCreateNetworkRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateIPFamilies(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateMetadata(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -73,6 +112,24 @@ func (m *NetworkCreateNetworkRequest) ContextValidate(ctx context.Context, forma
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *NetworkCreateNetworkRequest) contextValidateIPFamilies(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+
+		if m.IPFamilies[i] != nil {
+			if err := m.IPFamilies[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

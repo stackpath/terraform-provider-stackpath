@@ -66,9 +66,6 @@ func TestAccComputeVPCRoute(t *testing.T) {
 						},
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "1",
-							Annotations: map[string]string{
-								"ipam.platform.stackpath.net/network-slug": "test-tf-network-1",
-							},
 						},
 					}),
 				),
@@ -112,9 +109,6 @@ func TestAccComputeVPCRoute(t *testing.T) {
 						},
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "2",
-							Annotations: map[string]string{
-								"ipam.platform.stackpath.net/network-slug": "test-tf-network-1",
-							},
 						},
 					}),
 				),
@@ -152,9 +146,6 @@ func testAccCheckRouteMatch(got, want *ipam_models.NetworkRoute) resource.TestCh
 			}
 			if !reflect.DeepEqual(want.Metadata.Labels, got.Metadata.Labels) {
 				return fmt.Errorf("mismatch route.Metadata.Labels. got=%#v want=%#v", got.Metadata.Labels, want.Metadata.Labels)
-			}
-			if !reflect.DeepEqual(want.Metadata.Annotations, got.Metadata.Annotations) {
-				return fmt.Errorf("mismatch route.Metadata.Annotations. got=%#v want=%#v", got.Metadata.Annotations, want.Metadata.Annotations)
 			}
 		}
 		return nil

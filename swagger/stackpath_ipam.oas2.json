@@ -952,6 +952,15 @@
       ],
       "discriminator": "@type"
     },
+    "v1IPFamily": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "IPv4",
+        "IPv6"
+      ],
+      "default": "UNSPECIFIED"
+    },
     "networkCreateNetworkRequest": {
       "type": "object",
       "properties": {
@@ -969,6 +978,16 @@
         },
         "metadata": {
           "$ref": "#/definitions/networkMetadata"
+        },
+        "ipv6Subnet": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1IPFamily"
+          },
+          "description": "IPFamilies of IPs which will be assigned to network interface"
         }
       },
       "title": ""
@@ -1136,6 +1155,15 @@
         "stackId": {
           "type": "string",
           "description": "The ID of the stack that a network belongs to"
+        },
+        "ipv6Subnet": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "description": "A network defined within a Virtual Private Cloud"

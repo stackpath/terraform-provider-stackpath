@@ -29,16 +29,17 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 			{
 				Config: `
 				resource "stackpath_compute_vpc_network" "foo" {
-				  name = "test-tf-network-1"
-				  slug = "test-tf-network-1"
+				  name = "test-tf-network-2"
+				  slug = "test-tf-network-2"
 				  root_subnet = "10.0.0.0/8"
 				}`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:                     "test-tf-network-1",
-						Slug:                     "test-tf-network-1",
+						Name:                     "test-tf-network-2",
+						Slug:                     "test-tf-network-2",
 						RootSubnet:               "10.0.0.0/8",
+						IPFamilies:               []string{"IPv4"},
 						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "1",
@@ -49,8 +50,8 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 			{
 				Config: `
 				resource "stackpath_compute_vpc_network" "foo" {
-				  name = "test-tf-network-1"
-				  slug = "test-tf-network-1"
+				  name = "test-tf-network-2"
+				  slug = "test-tf-network-2"
 				  root_subnet = "10.0.0.0/8"
 				  labels = {
 					  "new-label" = "value1"
@@ -62,9 +63,10 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:                     "test-tf-network-1",
-						Slug:                     "test-tf-network-1",
+						Name:                     "test-tf-network-2",
+						Slug:                     "test-tf-network-2",
 						RootSubnet:               "10.0.0.0/8",
+						IPFamilies:               []string{"IPv4"},
 						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "2",
@@ -81,8 +83,8 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 			{
 				Config: `
 				resource "stackpath_compute_vpc_network" "foo" {
-				  name = "test-tf-network-1"
-				  slug = "test-tf-network-1"
+				  name = "test-tf-network-2"
+				  slug = "test-tf-network-2"
 				  root_subnet = "10.0.0.0/8"
 				  labels = {
 					  "new-label" = "value1"
@@ -94,9 +96,10 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
 					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
-						Name:                     "test-tf-network-1",
-						Slug:                     "test-tf-network-1",
+						Name:                     "test-tf-network-2",
+						Slug:                     "test-tf-network-2",
 						RootSubnet:               "10.0.0.0/8",
+						IPFamilies:               []string{"IPv4"},
 						VirtualNetworkIdentifier: 9001,
 						Metadata: &ipam_models.NetworkMetadata{
 							Version: "2",
@@ -106,6 +109,46 @@ func TestAccComputeVPCNetwork(t *testing.T) {
 							Annotations: map[string]string{
 								"new-annotation": "value1",
 							},
+						},
+					}),
+				),
+			},
+		},
+	})
+}
+
+func TestAccComputeDualStackVPCNetwork(t *testing.T) {
+	t.Parallel()
+
+	network := &ipam_models.NetworkNetwork{}
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeNetworkCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "stackpath_compute_vpc_network" "foo" {
+				  name = "tf-vpc-dual-stack"
+				  slug = "tf-vpc-dual-stack"
+				  root_subnet = "10.0.0.0/8"
+				  ip_families = ["IPv4", "IPv6"]
+				  ipv6_subnet = "fc00::/116"
+				}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeCheckNetworkExists("stackpath_compute_vpc_network.foo", network),
+					testAccCheckNetworkMatch(network, &ipam_models.NetworkNetwork{
+						Name:                     "tf-vpc-dual-stack",
+						Slug:                     "tf-vpc-dual-stack",
+						RootSubnet:               "10.0.0.0/8",
+						IPFamilies:               []string{"IPv4", "IPv6"},
+						IPV6Subnet:               "fc00::/116",
+						VirtualNetworkIdentifier: 9001,
+						Metadata: &ipam_models.NetworkMetadata{
+							Version: "1",
 						},
 					}),
 				),
@@ -177,6 +220,12 @@ func testAccCheckNetworkMatch(got, want *ipam_models.NetworkNetwork) resource.Te
 			}
 			if !reflect.DeepEqual(want.Metadata.Annotations, got.Metadata.Annotations) {
 				return fmt.Errorf("mismatch network.Metadata.Annotations. got=%#v want=%#v", got.Metadata.Annotations, want.Metadata.Annotations)
+			}
+		}
+
+		if len(want.IPFamilies) > 0 {
+			if !reflect.DeepEqual(want.IPFamilies, got.IPFamilies) {
+				return fmt.Errorf("mismatch network.IPFamilies. got=%#v want=%#v", got.IPFamilies, want.IPFamilies)
 			}
 		}
 		return nil
