@@ -54,7 +54,7 @@ type Workloadv1Instance struct {
 
 	// An instance's name
 	//
-	// Instance names are generated from their corresponsing workload's slug, followed by a unique hash
+	// Instance names are generated from their corresponding workload's slug, followed by a unique hash
 	Name string `json:"name,omitempty"`
 
 	// An instance's network interfaces
