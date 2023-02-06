@@ -1624,11 +1624,10 @@
     "v1IPFamily": {
       "type": "string",
       "enum": [
-        "IP_FAMILY_UNSPECIFIED",
         "IPv4",
         "IPv6"
       ],
-      "default": "IP_FAMILY_UNSPECIFIED"
+      "default": "IPv4"
     },
     "v1ImagePullCredential": {
       "type": "object",
