@@ -282,6 +282,33 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
+	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil, IPv4IPFamilies),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
+					testAccComputeWorkloadCheckVirtualMachineImage(workload, "app", "stackpath-edge/centos-7:v201905012051"),
+					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+				),
+			},
+		},
+	})
+}
+
+func TestComputeWorkloadVirtualMachinesIPv6(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
 	nameSuffix := strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{

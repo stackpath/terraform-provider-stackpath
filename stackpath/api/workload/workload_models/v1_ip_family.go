@@ -26,9 +26,6 @@ func NewV1IPFamily(value V1IPFamily) *V1IPFamily {
 
 const (
 
-	// V1IPFamilyIPFAMILYUNSPECIFIED captures enum value "IP_FAMILY_UNSPECIFIED"
-	V1IPFamilyIPFAMILYUNSPECIFIED V1IPFamily = "IP_FAMILY_UNSPECIFIED"
-
 	// V1IPFamilyIPV4 captures enum value "IPv4"
 	V1IPFamilyIPV4 V1IPFamily = "IPv4"
 
@@ -41,7 +38,7 @@ var v1IpFamilyEnum []interface{}
 
 func init() {
 	var res []V1IPFamily
-	if err := json.Unmarshal([]byte(`["IP_FAMILY_UNSPECIFIED","IPv4","IPv6"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["IPv4","IPv6"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
