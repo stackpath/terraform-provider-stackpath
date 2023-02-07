@@ -29,6 +29,14 @@ func resourceComputeWorkloadInstance() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"external_ipv6_address": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"ipv6_address": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"network_interface": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -50,6 +58,21 @@ func resourceComputeWorkloadInstance() *schema.Resource {
 							},
 						},
 						"gateway": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"ipv6_address": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"ipv6_address_aliases": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"ipv6_gateway": {
 							Type:     schema.TypeString,
 							Required: true,
 						},

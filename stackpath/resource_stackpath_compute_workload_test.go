@@ -41,7 +41,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil, IPv4IPFamilies),
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -142,7 +142,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT, IPv4IPFamilies),
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
@@ -249,6 +249,35 @@ func TestComputeWorkloadContainersAdditionalVolume(t *testing.T) {
 	})
 }
 
+func TestComputeWorkloadContainersIPv4Only(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "ipv4-" + strconv.Itoa(int(time.Now().Unix()))
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				// if ipFamilies is not provided in resource config then expect IPv4 workload by default
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil, IPv4IPFamilies),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+				),
+			},
+		},
+	})
+}
+
 func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 	t.Parallel()
 
@@ -279,33 +308,6 @@ func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 }
 
 func TestComputeWorkloadVirtualMachines(t *testing.T) {
-	t.Parallel()
-
-	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
-
-	resource.Test(t, resource.TestCase{
-		ProviderFactories: testAccProviderFactories,
-		PreCheck: func() {
-			testAccPreCheck(t)
-		},
-		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
-		Steps: []resource.TestStep{
-			{
-				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil, IPv4IPFamilies),
-				Check: resource.ComposeTestCheckFunc(
-					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
-					testAccComputeWorkloadCheckVirtualMachineImage(workload, "app", "stackpath-edge/centos-7:v201905012051"),
-					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
-					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
-				),
-			},
-		},
-	})
-}
-
-func TestComputeWorkloadVirtualMachinesIPv6(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
@@ -656,20 +658,26 @@ func printSlice(a []string) string {
 
 func getInterface(network string, enableNAT *bool, ipFamilies []string) string {
 	var config string
-	if enableNAT == nil {
-		config = fmt.Sprintf(`
-    network_interface {
-      network = "%s"
-	  ip_families = %s
-    }`, network, printSlice(ipFamilies))
-	} else {
-		config = fmt.Sprintf(`
-    network_interface {
-      network = "%s"
+	generatedConfig := ""
+
+	if enableNAT != nil {
+		generatedConfig = generatedConfig + fmt.Sprintf(`
       enable_one_to_one_nat = %v
-	  ip_families = %s
-    }`, network, *enableNAT, printSlice(ipFamilies))
+     `, *enableNAT)
 	}
+
+	if ipFamilies != nil {
+		generatedConfig = generatedConfig + fmt.Sprintf(`
+      ip_families = %s
+     `, printSlice(ipFamilies))
+	}
+
+	config = fmt.Sprintf(`
+    network_interface {
+      network = "%s"
+%s
+    }`, network, generatedConfig)
+
 	return config
 }
 

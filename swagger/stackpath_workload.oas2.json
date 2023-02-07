@@ -2140,11 +2140,19 @@
         },
         "ipAddress": {
           "type": "string",
-          "description": "An instance's IP address"
+          "description": "An instance's IPv4 address"
         },
         "externalIpAddress": {
           "type": "string",
-          "description": "An instance's publicly accessible IP address"
+          "description": "An instance's publicly accessible IPv4 address"
+        },
+        "ipv6Address": {
+          "type": "string",
+          "description": "An instance's IPv6 address"
+        },
+        "externalIpv6Address": {
+          "type": "string",
+          "description": "An instance's publicly accessible IPv6 address"
         },
         "createdAt": {
           "type": "string",
@@ -2290,18 +2298,33 @@
         },
         "ipAddress": {
           "type": "string",
-          "description": "A network interface's primary IP address"
+          "description": "A network interface's primary IPv4 address"
         },
         "ipAddressAliases": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Additional IP addresses bound to a network interface"
+          "description": "Additional IPv4 addresses bound to a network interface"
         },
         "gateway": {
           "type": "string",
-          "description": "A network interface's gateway address"
+          "description": "A network interface's IPv4 gateway address"
+        },
+        "ipv6Address": {
+          "type": "string",
+          "description": "A network interface's primary IPv6 address"
+        },
+        "ipv6AddressAliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional IPv6 addresses bound to a network interface"
+        },
+        "ipv6Gateway": {
+          "type": "string",
+          "description": "A network interface's IPv6 gateway address"
         }
       },
       "description": "Network interfaces that are attached to an instance in a workload"

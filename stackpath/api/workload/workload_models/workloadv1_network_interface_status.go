@@ -17,14 +17,23 @@ import (
 // swagger:model workloadv1NetworkInterfaceStatus
 type Workloadv1NetworkInterfaceStatus struct {
 
-	// A network interface's gateway address
+	// A network interface's IPv4 gateway address
 	Gateway string `json:"gateway,omitempty"`
 
-	// A network interface's primary IP address
+	// A network interface's primary IPv4 address
 	IPAddress string `json:"ipAddress,omitempty"`
 
-	// Additional IP addresses bound to a network interface
+	// Additional IPv4 addresses bound to a network interface
 	IPAddressAliases []string `json:"ipAddressAliases"`
+
+	// A network interface's primary IPv6 address
+	IPV6Address string `json:"ipv6Address,omitempty"`
+
+	// Additional IPv6 addresses bound to a network interface
+	IPV6AddressAliases []string `json:"ipv6AddressAliases"`
+
+	// A network interface's IPv6 gateway address
+	IPV6Gateway string `json:"ipv6Gateway,omitempty"`
 
 	// A network interface's name
 	Network string `json:"network,omitempty"`
