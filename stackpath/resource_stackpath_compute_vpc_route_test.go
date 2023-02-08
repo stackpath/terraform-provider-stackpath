@@ -117,6 +117,68 @@ func TestAccComputeVPCRoute(t *testing.T) {
 	})
 }
 
+func TestAccComputeVPCRouteIPv6(t *testing.T) {
+	t.Parallel()
+
+	route := &ipam_models.NetworkRoute{}
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeRouteCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "stackpath_compute_vpc_network" "net" {
+					name = "Dual stack Test network"
+					slug = "tf-vpc-dual-stack-1"
+					root_subnet = "10.0.0.0/8"
+					ip_families = ["IPv4", "IPv6"]
+					ipv6_subnet = "fc00::/116"
+				}
+				// Create new route from slug and name
+				resource "stackpath_compute_vpc_route" "foo" {
+					name = "test-tf-route-1-ipv6"
+					slug = "test-tf-route-1-ipv6"
+					network_id = stackpath_compute_vpc_network.net.slug
+					destination_prefixes = ["fc01::/116"]
+					gateway_selectors {
+						interface_selectors {
+							key = "workload.platform.stackpath.net/workload-slug"
+							operator = "in"
+							values = ["test"]
+						}
+					}
+				}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeCheckRouteExists("stackpath_compute_vpc_route.foo", route),
+					testAccCheckRouteMatch(route, &ipam_models.NetworkRoute{
+						Name:                "test-tf-route-1-ipv6",
+						Slug:                "test-tf-route-1-ipv6",
+						DestinationPrefixes: []string{"fc01::/116"},
+						GatewaySelectors: []*ipam_models.RouteGatewaySelector{
+							{
+								InterfaceSelectors: []*ipam_models.NetworkMatchExpression{
+									{
+										Key:      "workload.platform.stackpath.net/workload-slug",
+										Operator: "in",
+										Values:   []string{"test"},
+									},
+								},
+							},
+						},
+						Metadata: &ipam_models.NetworkMetadata{
+							Version: "1",
+						},
+					}),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckRouteMatch(got, want *ipam_models.NetworkRoute) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if want == nil && got != nil {
