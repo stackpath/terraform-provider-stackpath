@@ -767,7 +767,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerRemoveEnvVar(suffix string, enableNAT *bool) string {
@@ -804,7 +804,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerAddProbes(suffix string, enableNAT *bool) string {
@@ -865,7 +865,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerImagePullCredentials(suffix string, enableNAT *bool) string {
@@ -906,7 +906,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerAddContainer(suffix string, enableNAT *bool) string {
@@ -949,7 +949,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigVirtualMachineBasic(suffix string, enableNAT *bool, ipFamilies []string) string {
@@ -1037,7 +1037,7 @@ resource "stackpath_compute_workload" "foo-volume" {
       }
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigAutoScalingConfiguration(suffix string, enableNAT *bool) string {
@@ -1090,5 +1090,5 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, IPv4IPFamilies))
+}`, suffix, suffix, getInterface("default", enableNAT, nil))
 }
