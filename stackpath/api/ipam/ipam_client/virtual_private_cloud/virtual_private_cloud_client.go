@@ -30,13 +30,21 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	CreateNetwork(params *CreateNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkOK, error)
 
+	CreateNetworkSubnet(params *CreateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkSubnetOK, error)
+
 	CreateRoute(params *CreateRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateRouteOK, error)
 
 	DeleteNetwork(params *DeleteNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkNoContent, error)
 
+	DeleteNetworkSubnet(params *DeleteNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkSubnetNoContent, error)
+
 	DeleteRoute(params *DeleteRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteRouteNoContent, error)
 
 	GetNetwork(params *GetNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkOK, error)
+
+	GetNetworkSubnet(params *GetNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetOK, error)
+
+	GetNetworkSubnets(params *GetNetworkSubnetsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetsOK, error)
 
 	GetNetworks(params *GetNetworksParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworksOK, error)
 
@@ -45,6 +53,8 @@ type ClientService interface {
 	GetRoutes(params *GetRoutesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetRoutesOK, error)
 
 	UpdateNetwork(params *UpdateNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkOK, error)
+
+	UpdateNetworkSubnet(params *UpdateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkSubnetOK, error)
 
 	UpdateRoute(params *UpdateRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateRouteOK, error)
 
@@ -86,6 +96,44 @@ func (a *Client) CreateNetwork(params *CreateNetworkParams, authInfo runtime.Cli
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*CreateNetworkDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+  CreateNetworkSubnet create network subnet API
+*/
+func (a *Client) CreateNetworkSubnet(params *CreateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkSubnetOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateNetworkSubnetParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "CreateNetworkSubnet",
+		Method:             "POST",
+		PathPattern:        "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &CreateNetworkSubnetReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CreateNetworkSubnetOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*CreateNetworkSubnetDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
@@ -173,6 +221,44 @@ func (a *Client) DeleteNetwork(params *DeleteNetworkParams, authInfo runtime.Cli
 }
 
 /*
+  DeleteNetworkSubnet delete network subnet API
+*/
+func (a *Client) DeleteNetworkSubnet(params *DeleteNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkSubnetNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteNetworkSubnetParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "DeleteNetworkSubnet",
+		Method:             "DELETE",
+		PathPattern:        "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets/{subnet_id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &DeleteNetworkSubnetReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DeleteNetworkSubnetNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*DeleteNetworkSubnetDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
   DeleteRoute deletes a network route
 
   [block:callout]
@@ -252,6 +338,82 @@ func (a *Client) GetNetwork(params *GetNetworkParams, authInfo runtime.ClientAut
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*GetNetworkDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+  GetNetworkSubnet get network subnet API
+*/
+func (a *Client) GetNetworkSubnet(params *GetNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetNetworkSubnetParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetNetworkSubnet",
+		Method:             "GET",
+		PathPattern:        "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets/{subnet_id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetNetworkSubnetReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetNetworkSubnetOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*GetNetworkSubnetDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+  GetNetworkSubnets get network subnets API
+*/
+func (a *Client) GetNetworkSubnets(params *GetNetworkSubnetsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetNetworkSubnetsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetNetworkSubnets",
+		Method:             "GET",
+		PathPattern:        "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetNetworkSubnetsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetNetworkSubnetsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*GetNetworkSubnetsDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
@@ -420,6 +582,44 @@ func (a *Client) UpdateNetwork(params *UpdateNetworkParams, authInfo runtime.Cli
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*UpdateNetworkDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+  UpdateNetworkSubnet update network subnet API
+*/
+func (a *Client) UpdateNetworkSubnet(params *UpdateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkSubnetOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdateNetworkSubnetParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "UpdateNetworkSubnet",
+		Method:             "PUT",
+		PathPattern:        "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets/{subnet_id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &UpdateNetworkSubnetReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpdateNetworkSubnetOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*UpdateNetworkSubnetDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
