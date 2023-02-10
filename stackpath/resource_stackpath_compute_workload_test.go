@@ -41,14 +41,14 @@ func TestComputeWorkloadContainers(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil, nil),
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -60,7 +60,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443, true),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "some value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -72,7 +72,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -84,7 +84,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -94,7 +94,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -104,7 +104,7 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckTargetAutoScaling(workload, "us", "cpu", 2, 4, 50),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
@@ -142,14 +142,14 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT, nil),
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -161,7 +161,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "https", "TCP", 443, true),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "some value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -173,7 +173,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -185,7 +185,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -195,7 +195,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			{
@@ -205,7 +205,7 @@ func TestComputeWorkloadContainersWithOneToOneNATEnabled(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckTargetAutoScaling(workload, "us", "cpu", 2, 4, 50),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
@@ -263,15 +263,14 @@ func TestComputeWorkloadContainersIPv4Only(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				// if ipFamilies is not provided in resource config then expect IPv4 workload by default
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil, IPv4IPFamilies),
+				Config: testComputeWorkloadConfigContainerForIPFamilies(nameSuffix, "default", "", "", IPv4IPFamilies),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 		},
@@ -283,7 +282,6 @@ func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 
 	workload := &workload_models.V1Workload{}
 	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
-	oneToOneNAT := true
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -293,14 +291,42 @@ func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, &oneToOneNAT, DualStackIPFamilies),
+				Config: testComputeWorkloadConfigContainerForIPFamilies(nameSuffix, "default", "", "", DualStackIPFamilies),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, DualStackIPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", DualStackIPFamilies),
+				),
+			},
+		},
+	})
+}
+
+func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigContainerForIPFamilies(nameSuffix, "tf-test-dual-vpc", "subnet-ipv4", "subnet-ipv6", DualStackIPFamilies),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "tf-test-dual-vpc", true, "subnet-ipv4", "subnet-ipv6", DualStackIPFamilies),
 				),
 			},
 		},
@@ -321,13 +347,13 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil, IPv4IPFamilies),
+				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
 					testAccComputeWorkloadCheckVirtualMachineImage(workload, "app", "stackpath-edge/centos-7:v201905012051"),
 					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, IPv4IPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
 		},
@@ -348,13 +374,13 @@ func TestComputeWorkloadVirtualMachinesIPv6DualStack(t *testing.T) {
 		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testComputeWorkloadConfigVirtualMachineBasic(nameSuffix, nil, DualStackIPFamilies),
+				Config: testComputeWorkloadConfigVirtualMachineForIPFamilies(nameSuffix, "", "", DualStackIPFamilies),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.bar", workload),
 					testAccComputeWorkloadCheckVirtualMachineImage(workload, "app", "stackpath-edge/centos-7:v201905012051"),
 					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
-					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, DualStackIPFamilies),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", DualStackIPFamilies),
 				),
 			},
 		},
@@ -392,6 +418,8 @@ func testAccComputeWorkloadCheckInterface(
 	interfaceIndex int,
 	networkName string,
 	enableOneToOneNAT bool,
+	ipv4Subnet string,
+	ipv6Subnet string,
 	ipFamilies []string,
 ) resource.TestCheckFunc {
 	return func(_ *terraform.State) error {
@@ -408,6 +436,12 @@ func testAccComputeWorkloadCheckInterface(
 		}
 		if inter.EnableOneToOneNat != enableOneToOneNAT {
 			return fmt.Errorf("invalid enableOneToOneNat on interface %d. got=%v want=%v", interfaceIndex, inter.EnableOneToOneNat, enableOneToOneNAT)
+		}
+		if inter.Subnet != ipv4Subnet {
+			return fmt.Errorf("invalid subnet on interface %d. got=%v want=%v", interfaceIndex, inter.Subnet, ipv4Subnet)
+		}
+		if inter.IPV6Subnet != ipv6Subnet {
+			return fmt.Errorf("invalid ipv6Subnet on interface %d. got=%v want=%v", interfaceIndex, inter.IPV6Subnet, ipv6Subnet)
 		}
 		if len(inter.IPFamilies) > 0 {
 			ipFamiliesStrList := make([]string, len(inter.IPFamilies))
@@ -656,7 +690,7 @@ func printSlice(a []string) string {
 	return fmt.Sprintf("[%s]", strings.Join(q, ", "))
 }
 
-func getInterface(network string, enableNAT *bool, ipFamilies []string) string {
+func getInterface(network, ipv4Subnet, ipv6Subnet string, enableNAT *bool, ipFamilies []string) string {
 	var config string
 	generatedConfig := ""
 
@@ -672,6 +706,18 @@ func getInterface(network string, enableNAT *bool, ipFamilies []string) string {
      `, printSlice(ipFamilies))
 	}
 
+	if ipv4Subnet != "" {
+		generatedConfig = generatedConfig + fmt.Sprintf(`
+      subnet = "%s"
+     `, ipv4Subnet)
+	}
+
+	if ipv6Subnet != "" {
+		generatedConfig = generatedConfig + fmt.Sprintf(`
+      ipv6_subnet = "%s"
+     `, ipv6Subnet)
+	}
+
 	config = fmt.Sprintf(`
     network_interface {
       network = "%s"
@@ -681,7 +727,7 @@ func getInterface(network string, enableNAT *bool, ipFamilies []string) string {
 	return config
 }
 
-func testComputeWorkloadConfigContainerBasic(suffix string, enableNAT *bool, ipFamilies []string) string {
+func testComputeWorkloadConfigContainerBasic(suffix string, enableNAT *bool) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "foo" {
   name = "My Compute Workload - %s"
@@ -719,7 +765,109 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, ipFamilies))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerForIPFamilies(suffix, network, ipv4Subnet, ipv6Subnet string, ipFamilies []string) string {
+	vpcConfig := ""
+
+	if ipv4Subnet != "" || ipv6Subnet != "" {
+		vpcConfig = fmt.Sprintf(`
+resource "stackpath_compute_vpc_network" "net" {
+	name = "%[1]s"
+	slug = "%[1]s"
+	root_subnet = "10.0.0.0/9"
+	ip_families = ["IPv4", "IPv6"]
+	ipv6_subnet = "fc00::/64"
+}`, network)
+	}
+
+	if ipv4Subnet != "" {
+		vpcConfig = vpcConfig + fmt.Sprintf(`
+resource "stackpath_compute_vpc_network_subnet" "ipv4subnet" {
+	name = "%[1]s"
+	slug = "%[1]s"
+	network_id = stackpath_compute_vpc_network.net.slug
+	prefix = "11.0.0.0/9"
+}`, ipv4Subnet)
+	}
+
+	if ipv6Subnet != "" {
+		vpcConfig = vpcConfig + fmt.Sprintf(`
+resource "stackpath_compute_vpc_network_subnet" "ipv6subnet" {
+	name = "%[1]s"
+	slug = "%[1]s"
+	network_id = stackpath_compute_vpc_network.net.slug
+	prefix = "fc01::/116"
+`, ipv6Subnet)
+		// add depends_on tag to mimic sequence of ipv6subnet resource
+		// creation after creation of ipvsubnet in case both ipv4subnet and ipv4subnet
+		// subnets are being created
+		// This is required due to bug on createnetworksubnet api where it gives ""
+		// when we try to create multiple subnets in same vpc at same time.
+		// This is happening as it tries to update network policy based on subnet prefix
+		// of newly created subnet and somehow it end up with version conflicts on etcd for
+		// network policy
+		if ipv4Subnet != "" {
+			vpcConfig = vpcConfig + fmt.Sprintf(`
+	depends_on = [stackpath_compute_vpc_network_subnet.ipv4subnet]
+}`)
+		} else {
+			vpcConfig = vpcConfig + fmt.Sprintf(`
+}`)
+		}
+	}
+
+	config := fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+`, suffix, suffix, getInterface(network, ipv4Subnet, ipv6Subnet, nil, ipFamilies))
+
+	if vpcConfig != "" {
+		config = vpcConfig + config
+		config = config + fmt.Sprintf(`
+depends_on = [stackpath_compute_vpc_network_subnet.ipv6subnet]
+}`)
+	} else {
+		config = config + fmt.Sprintf(`
+}`)
+	}
+
+	return config
 }
 
 func testComputeWorkloadConfigContainerAddPorts(suffix string, enableNAT *bool) string {
@@ -767,7 +915,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerRemoveEnvVar(suffix string, enableNAT *bool) string {
@@ -804,7 +952,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerAddProbes(suffix string, enableNAT *bool) string {
@@ -865,7 +1013,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerImagePullCredentials(suffix string, enableNAT *bool) string {
@@ -906,7 +1054,7 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerAddContainer(suffix string, enableNAT *bool) string {
@@ -949,10 +1097,10 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
-func testComputeWorkloadConfigVirtualMachineBasic(suffix string, enableNAT *bool, ipFamilies []string) string {
+func testComputeWorkloadConfigVirtualMachineForIPFamilies(suffix, ipv4Subnet, ipv6Subnet string, ipFamilies []string) string {
 	return fmt.Sprintf(`
 resource "stackpath_compute_workload" "bar" {
   name = "My Terraform Compute VM Workload - %s"
@@ -991,7 +1139,49 @@ EOT
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, ipFamilies))
+}`, suffix, suffix, getInterface("default", ipv4Subnet, ipv6Subnet, nil, ipFamilies))
+}
+
+func testComputeWorkloadConfigVirtualMachineBasic(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "bar" {
+  name = "My Terraform Compute VM Workload - %s"
+  slug = "terraform-vm-workload-%s"
+  %s
+
+  virtual_machine {
+    name  = "app"
+    image = "stackpath-edge/centos-7:v201905012051"
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    user_data = <<EOT
+package_update: true
+packages:
+- nginx
+EOT
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigContainerAddVolumeMounts(suffix string, enableNAT *bool) string {
@@ -1037,7 +1227,7 @@ resource "stackpath_compute_workload" "foo-volume" {
       }
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
 func testComputeWorkloadConfigAutoScalingConfiguration(suffix string, enableNAT *bool) string {
@@ -1090,5 +1280,5 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
-}`, suffix, suffix, getInterface("default", enableNAT, nil))
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
