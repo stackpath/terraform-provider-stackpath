@@ -44,23 +44,13 @@ func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance
 }
 
 func flattenComputeWorkloadNetworkInterfaceStatus(interfaceStatus *workload_models.Workloadv1NetworkInterfaceStatus) map[string]interface{} {
-	var ipAddressAliases []interface{}
-	if len(interfaceStatus.IPAddressAliases) > 0 {
-		ipAddressAliases = flattenStringArray(interfaceStatus.IPAddressAliases)
-	}
-
-	var ipv6AddressAliases []interface{}
-	if len(interfaceStatus.IPV6AddressAliases) > 0 {
-		ipv6AddressAliases = flattenStringArray(interfaceStatus.IPV6AddressAliases)
-	}
-
 	return map[string]interface{}{
-		"name":                 interfaceStatus.Network,
+		"network":              interfaceStatus.Network,
 		"ip_address":           interfaceStatus.IPAddress,
-		"ip_address_aliases":   ipAddressAliases,
+		"ip_address_aliases":   flattenStringArray(interfaceStatus.IPAddressAliases),
 		"gateway":              interfaceStatus.Gateway,
 		"ipv6_address":         interfaceStatus.IPV6Address,
-		"ipv6_address_aliases": ipv6AddressAliases,
+		"ipv6_address_aliases": flattenStringArray(interfaceStatus.IPV6AddressAliases),
 		"ipv6_gateway":         interfaceStatus.IPV6Gateway,
 	}
 }

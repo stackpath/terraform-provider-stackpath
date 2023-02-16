@@ -43,7 +43,7 @@ resource "stackpath_compute_vpc_network_subnet" "net-subnet" {
 
 ## Import
 
-StackPath compute VPC network's subnet can be imported by network-uuid/subnet-uuid formatted string. e.g.
+StackPath compute VPC network's subnet can be imported by network-id/subnet-id formatted string. both network-id and subnet-id are UUID v4 formatted id e.g.
 
 ```
 $ terraform import stackpath_compute_vpc_network.terraform 5daaaf31-682f-4287-8861-6ddb407b1bcf/9701c023-00f4-4f8b-b042-a272425fea7d

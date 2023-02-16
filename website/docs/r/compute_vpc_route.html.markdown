@@ -50,8 +50,8 @@ Gateway selector support interface selector to select interface as routing gatew
 
 ## Import
 
-StackPath compute vpc route can be imported by their UUID v4 formatted id. e.g.
+StackPath compute VPC network's route can be imported by network-id/route-id formatted string. both network-id and route-id are UUID v4 formatted id e.g.
 
 ```
-$ terraform import stackpath_compute_vpc_route.terraform bdb77768-2938-4ad8-a736-be5290add801
+$ terraform import stackpath_compute_vpc_route.terraform bdb77768-2938-4ad8-a736-be5290add801/bdb77768-2938-4ad8-a736-be5290add802
 ```
