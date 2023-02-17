@@ -57,6 +57,22 @@ func resourceComputeVPCNetwork() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"ip_families": {
+				Type:     schema.TypeList,
+				MaxItems: 2,
+				Optional: true,
+				// when ip_families is not provided, api creates network with [IPv4]
+				// terraform plugin sdk does not support a way to configure Default for TypeList
+				// hence to avoid update in-place errors treating resource as computed
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"ipv6_subnet": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -64,6 +80,14 @@ func resourceComputeVPCNetwork() *schema.Resource {
 func resourceComputeVPCNetworkCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	computeNetwork := convertComputeNetwork(data)
+
+	// convert []string ipFamilies to []*ipam_models.V1IPFamily
+	var ipFamiliesRequest []*ipam_models.V1IPFamily
+	for _, ipFamily := range computeNetwork.IPFamilies {
+		ipFamily := ipam_models.V1IPFamily(ipFamily)
+		ipFamiliesRequest = append(ipFamiliesRequest, &ipFamily)
+	}
+
 	resp, err := config.edgeComputeNetworking.VirtualPrivateCloud.CreateNetwork(&virtual_private_cloud.CreateNetworkParams{
 		Context: ctx,
 		StackID: config.StackID,
@@ -72,6 +96,8 @@ func resourceComputeVPCNetworkCreate(ctx context.Context, data *schema.ResourceD
 			Slug:       computeNetwork.Slug,
 			RootSubnet: computeNetwork.RootSubnet,
 			Metadata:   computeNetwork.Metadata,
+			IPV6Subnet: computeNetwork.IPV6Subnet,
+			IPFamilies: ipFamiliesRequest,
 		},
 	}, nil)
 	if err != nil {
@@ -128,6 +154,15 @@ func resourceComputeVPCNetworkRead(ctx context.Context, data *schema.ResourceDat
 			return diag.FromErr(fmt.Errorf("error setting version: %w", NewStackPathError(err)))
 		}
 	}
+
+	if err := data.Set("ipv6_subnet", resp.Payload.Network.IPV6Subnet); err != nil {
+		return diag.FromErr(fmt.Errorf("error setting ipv6_subnet: %w", NewStackPathError(err)))
+	}
+
+	if err := data.Set("ip_families", flattenStringArray(resp.Payload.Network.IPFamilies)); err != nil {
+		return diag.FromErr(fmt.Errorf("error setting annotations: %w", NewStackPathError(err)))
+	}
+
 	return diag.Diagnostics{}
 }
 

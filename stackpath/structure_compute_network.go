@@ -18,5 +18,22 @@ func convertComputeNetwork(data *schema.ResourceData) *ipam_models.NetworkNetwor
 	if data.Get("version") != nil {
 		network.Metadata.Version = data.Get("version").(string)
 	}
+
+	if rawValue := data.Get("ip_families"); rawValue != nil {
+		if ipFamilies, ok := rawValue.([]interface{}); ok {
+			convertedIPFamilies := make([]string, len(ipFamilies))
+			for i, ipFamilyRawValue := range ipFamilies {
+				if ipFamily, ok := ipFamilyRawValue.(string); ok {
+					convertedIPFamilies[i] = ipFamily
+				}
+			}
+			network.IPFamilies = convertedIPFamilies
+		}
+	}
+
+	if data.Get("ipv6_subnet") != nil {
+		network.IPV6Subnet = data.Get("ipv6_subnet").(string)
+	}
+
 	return &network
 }

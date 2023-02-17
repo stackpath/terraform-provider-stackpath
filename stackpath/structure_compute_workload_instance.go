@@ -23,15 +23,35 @@ func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance
 		containerStatuses = append(containerStatuses, flattenComputeWorkloadContainerStatus(status))
 	}
 
+	networkInterfaces := make([]interface{}, 0, len(instance.NetworkInterfaces))
+	for _, networkInterface := range instance.NetworkInterfaces {
+		networkInterfaces = append(networkInterfaces, flattenComputeWorkloadNetworkInterfaceStatus(networkInterface))
+	}
+
 	return map[string]interface{}{
-		"name":                instance.Name,
-		"ip_address":          instance.IPAddress,
-		"external_ip_address": instance.ExternalIPAddress,
-		"reason":              instance.Reason,
-		"message":             instance.Message,
-		"phase":               instance.Phase,
-		"container":           containers,
-		"virtual_machine":     virtualMachines,
+		"name":                  instance.Name,
+		"ip_address":            instance.IPAddress,
+		"external_ip_address":   instance.ExternalIPAddress,
+		"ipv6_address":          instance.IPV6Address,
+		"external_ipv6_address": instance.ExternalIPV6Address,
+		"reason":                instance.Reason,
+		"message":               instance.Message,
+		"phase":                 instance.Phase,
+		"container":             containers,
+		"virtual_machine":       virtualMachines,
+		"network_interface":     networkInterfaces,
+	}
+}
+
+func flattenComputeWorkloadNetworkInterfaceStatus(interfaceStatus *workload_models.Workloadv1NetworkInterfaceStatus) map[string]interface{} {
+	return map[string]interface{}{
+		"network":              interfaceStatus.Network,
+		"ip_address":           interfaceStatus.IPAddress,
+		"ip_address_aliases":   flattenStringArray(interfaceStatus.IPAddressAliases),
+		"gateway":              interfaceStatus.Gateway,
+		"ipv6_address":         interfaceStatus.IPV6Address,
+		"ipv6_address_aliases": flattenStringArray(interfaceStatus.IPV6AddressAliases),
+		"ipv6_gateway":         interfaceStatus.IPV6Gateway,
 	}
 }
 

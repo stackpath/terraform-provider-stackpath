@@ -887,6 +887,295 @@
         "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Delete a network route"
       }
+    },
+    "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets": {
+      "get": {
+        "operationId": "GetNetworkSubnets",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetNetworkSubnetsResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      },
+      "post": {
+        "operationId": "CreateNetworkSubnet",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkCreateNetworkSubnetResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkCreateNetworkSubnetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      }
+    },
+    "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets/{subnet_id}": {
+      "put": {
+        "operationId": "UpdateNetworkSubnet",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkUpdateNetworkSubnetResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subnet_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/networkUpdateNetworkSubnetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      },
+      "get": {
+        "operationId": "GetNetworkSubnet",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/networkGetNetworkSubnetResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subnet_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteNetworkSubnet",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subnet_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Private Cloud"
+        ]
+      }
     }
   },
   "definitions": {
@@ -952,6 +1241,15 @@
       ],
       "discriminator": "@type"
     },
+    "v1IPFamily": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "IPv4",
+        "IPv6"
+      ],
+      "default": "UNSPECIFIED"
+    },
     "networkCreateNetworkRequest": {
       "type": "object",
       "properties": {
@@ -969,6 +1267,16 @@
         },
         "metadata": {
           "$ref": "#/definitions/networkMetadata"
+        },
+        "ipv6Subnet": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1IPFamily"
+          },
+          "description": "IPFamilies of IPs which will be assigned to network interface"
         }
       },
       "title": ""
@@ -981,6 +1289,22 @@
         }
       },
       "description": "A response from a request to create a network"
+    },
+    "networkCreateNetworkSubnetRequest": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      }
+    },
+    "networkCreateNetworkSubnetResponse": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      }
     },
     "networkCreateRouteRequest": {
       "type": "object",
@@ -1008,6 +1332,28 @@
         }
       },
       "description": "The requested VPC network"
+    },
+    "networkGetNetworkSubnetResponse": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      }
+    },
+    "networkGetNetworkSubnetsResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkNetworkSubnet"
+          }
+        }
+      }
     },
     "networkGetNetworksResponse": {
       "type": "object",
@@ -1136,9 +1482,44 @@
         "stackId": {
           "type": "string",
           "description": "The ID of the stack that a network belongs to"
+        },
+        "ipv6Subnet": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "description": "A network defined within a Virtual Private Cloud"
+    },
+    "networkNetworkSubnet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "stackId": {
+          "type": "string"
+        },
+        "networkId": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        }
+      }
     },
     "networkRoute": {
       "type": "object",
@@ -1243,6 +1624,22 @@
         }
       },
       "description": "A response from a request to update a network"
+    },
+    "networkUpdateNetworkSubnetRequest": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      }
+    },
+    "networkUpdateNetworkSubnetResponse": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      }
     },
     "networkUpdateRouteRequest": {
       "type": "object",

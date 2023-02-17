@@ -34,14 +34,20 @@ type Workloadv1Instance struct {
 	// Format: date-time
 	DeletedAt strfmt.DateTime `json:"deletedAt,omitempty"`
 
-	// An instance's publicly accessible IP address
+	// An instance's publicly accessible IPv4 address
 	ExternalIPAddress string `json:"externalIpAddress,omitempty"`
+
+	// An instance's publicly accessible IPv6 address
+	ExternalIPV6Address string `json:"externalIpv6Address,omitempty"`
 
 	// An instance's unique identifier
 	ID string `json:"id,omitempty"`
 
-	// An instance's IP address
+	// An instance's IPv4 address
 	IPAddress string `json:"ipAddress,omitempty"`
+
+	// An instance's IPv6 address
+	IPV6Address string `json:"ipv6Address,omitempty"`
 
 	// location
 	Location *Workloadv1Location `json:"location,omitempty"`

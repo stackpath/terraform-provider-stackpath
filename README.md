@@ -21,6 +21,20 @@ Run the following command to build the provider:
 $ make build
 ```
 
+### Generating the StackPath API client code
+
+We need to install swagger cli tool to generate StackPath API client code
+(See: https://goswagger.io/install.html)
+Note: Current client code is generated using go-swagger version v0.27.0, so it is
+recommended that we use same version to avoid client code differences being introduced
+due to latest version of swagger unless we decide to bump up client code versioning.
+
+Once swagger cli is installed, Run the following command to generate client code:
+
+```sh
+$ make generate
+```
+
 ### Installing the built provider for Terraform < 0.13
 
 Run the following command to install the built provider:

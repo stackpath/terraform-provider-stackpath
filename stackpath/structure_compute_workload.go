@@ -135,6 +135,28 @@ func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*workload_mod
 				interfaces[i].EnableOneToOneNat = enableOneToOneNAT
 			}
 		}
+		if rawValue, ok := interfaceMap["ip_families"]; ok {
+			if ipFamilies, ok := rawValue.([]interface{}); ok {
+				convertedIPFamilies := make([]*workload_models.V1IPFamily, len(ipFamilies))
+				for i, ipFamilyRawValue := range ipFamilies {
+					if ipFamily, ok := ipFamilyRawValue.(string); ok {
+						ipFamily := workload_models.V1IPFamily(ipFamily)
+						convertedIPFamilies[i] = &ipFamily
+					}
+				}
+				interfaces[i].IPFamilies = convertedIPFamilies
+			}
+		}
+		if rawValue, ok := interfaceMap["subnet"]; ok {
+			if subnet, ok := rawValue.(string); ok {
+				interfaces[i].Subnet = subnet
+			}
+		}
+		if rawValue, ok := interfaceMap["ipv6_subnet"]; ok {
+			if ipv6Subnet, ok := rawValue.(string); ok {
+				interfaces[i].IPV6Subnet = ipv6Subnet
+			}
+		}
 	}
 	return interfaces
 }
@@ -555,6 +577,9 @@ func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*workload_model
 		flattened[i] = map[string]interface{}{
 			"network":               n.Network,
 			"enable_one_to_one_nat": n.EnableOneToOneNat,
+			"ip_families":           flattenIPFamilies(n.IPFamilies),
+			"subnet":                n.Subnet,
+			"ipv6_subnet":           n.IPV6Subnet,
 		}
 	}
 	return flattened

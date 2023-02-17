@@ -13,43 +13,35 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkNetwork A network defined within a Virtual Private Cloud
+// NetworkNetworkSubnet network network subnet
 //
-// swagger:model networkNetwork
-type NetworkNetwork struct {
+// swagger:model networkNetworkSubnet
+type NetworkNetworkSubnet struct {
 
-	// A network's unique identifier
+	// id
 	ID string `json:"id,omitempty"`
-
-	// ip families
-	IPFamilies []string `json:"ipFamilies"`
-
-	// ipv6 subnet
-	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
 	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
-	// A network's human-readable name
+	// name
 	Name string `json:"name,omitempty"`
 
-	// A subnet identifier and network mask in CIDR notation format
-	//
-	// A network's root subnet is its primary subnet.
-	RootSubnet string `json:"rootSubnet,omitempty"`
+	// network Id
+	NetworkID string `json:"networkId,omitempty"`
 
-	// A network's machine-readable name
+	// prefix
+	Prefix string `json:"prefix,omitempty"`
+
+	// slug
 	Slug string `json:"slug,omitempty"`
 
-	// The ID of the stack that a network belongs to
+	// stack Id
 	StackID string `json:"stackId,omitempty"`
-
-	// A network's VLAN identifier
-	VirtualNetworkIdentifier int32 `json:"virtualNetworkIdentifier,omitempty"`
 }
 
-// Validate validates this network network
-func (m *NetworkNetwork) Validate(formats strfmt.Registry) error {
+// Validate validates this network network subnet
+func (m *NetworkNetworkSubnet) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateMetadata(formats); err != nil {
@@ -62,7 +54,7 @@ func (m *NetworkNetwork) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkNetwork) validateMetadata(formats strfmt.Registry) error {
+func (m *NetworkNetworkSubnet) validateMetadata(formats strfmt.Registry) error {
 	if swag.IsZero(m.Metadata) { // not required
 		return nil
 	}
@@ -79,8 +71,8 @@ func (m *NetworkNetwork) validateMetadata(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this network network based on the context it is used
-func (m *NetworkNetwork) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this network network subnet based on the context it is used
+func (m *NetworkNetworkSubnet) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateMetadata(ctx, formats); err != nil {
@@ -93,7 +85,7 @@ func (m *NetworkNetwork) ContextValidate(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *NetworkNetwork) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetworkNetworkSubnet) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Metadata != nil {
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
@@ -108,7 +100,7 @@ func (m *NetworkNetwork) contextValidateMetadata(ctx context.Context, formats st
 }
 
 // MarshalBinary interface implementation
-func (m *NetworkNetwork) MarshalBinary() ([]byte, error) {
+func (m *NetworkNetworkSubnet) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -116,8 +108,8 @@ func (m *NetworkNetwork) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetworkNetwork) UnmarshalBinary(b []byte) error {
-	var res NetworkNetwork
+func (m *NetworkNetworkSubnet) UnmarshalBinary(b []byte) error {
+	var res NetworkNetworkSubnet
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

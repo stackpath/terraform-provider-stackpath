@@ -2,6 +2,7 @@ package stackpath
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -17,6 +18,8 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 
 	networkPolicy := &ipam_models.V1NetworkPolicy{}
 
+	cidrList := []string{"0.0.0.0/0"}
+
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
 		PreCheck: func() {
@@ -25,9 +28,37 @@ func TestAccComputeNetworkPolicy(t *testing.T) {
 		CheckDestroy: testAccComputeNetworkPolicyCheckDestroy(),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccComputeNetworkPolicyConfigBasic(),
+				Config: testAccComputeNetworkPolicyConfigBasic(cidrList),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeCheckNetworkPolicyExists("stackpath_compute_network_policy.foo", networkPolicy),
+					testAccComputeCheckNetworkPolicyIpBlocks("ingress", cidrList, networkPolicy),
+					testAccComputeCheckNetworkPolicyIpBlocks("egress", cidrList, networkPolicy),
+				),
+			},
+		},
+	})
+}
+
+func TestAccComputeNetworkPolicyDualStack(t *testing.T) {
+	t.Parallel()
+
+	networkPolicy := &ipam_models.V1NetworkPolicy{}
+
+	cidrList := []string{"0.0.0.0/0", "::/0"}
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeNetworkPolicyCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccComputeNetworkPolicyConfigBasic(cidrList),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeCheckNetworkPolicyExists("stackpath_compute_network_policy.foo", networkPolicy),
+					testAccComputeCheckNetworkPolicyIpBlocks("ingress", cidrList, networkPolicy),
+					testAccComputeCheckNetworkPolicyIpBlocks("egress", cidrList, networkPolicy),
 				),
 			},
 		},
@@ -61,6 +92,43 @@ func testAccComputeCheckNetworkPolicyExists(name string, policy *ipam_models.V1N
 	}
 }
 
+func testAccComputeCheckNetworkPolicyIpBlocks(
+	policyType string,
+	expectedCIDRs []string,
+	policy *ipam_models.V1NetworkPolicy,
+) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		var want []*ipam_models.V1IPBlock
+		for _, cidr := range expectedCIDRs {
+			want = append(want, &ipam_models.V1IPBlock{
+				Cidr: cidr,
+			})
+		}
+
+		var got []*ipam_models.V1IPBlock
+		if policyType == "ingress" {
+			got = policy.Spec.Ingress[0].From.IPBlock
+		} else if policyType == "egress" {
+			got = policy.Spec.Egress[0].To.IPBlock
+		}
+
+		if got == nil {
+			return errors.New("got nil host rule ip blocks")
+		}
+
+		if len(got) != len(want) {
+			return fmt.Errorf("mismatch in length of ipblocks list, got length=%d want length=%v", len(got), len(want))
+		}
+
+		for i, _ := range want {
+			if got[i].Cidr != want[i].Cidr {
+				return fmt.Errorf("mismatch host rule ip block. got=%v want=%v", got[i], want[i])
+			}
+		}
+		return nil
+	}
+}
+
 func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config := testAccProvider.Meta().(*Config)
@@ -87,7 +155,16 @@ func testAccComputeNetworkPolicyCheckDestroy() resource.TestCheckFunc {
 	}
 }
 
-func testAccComputeNetworkPolicyConfigBasic() string {
+func testAccComputeNetworkPolicyConfigBasic(cidrList []string) string {
+	ipBlocks := ""
+	for _, cidr := range cidrList {
+		ipBlocks = ipBlocks + fmt.Sprintf(`
+		ip_block {
+			cidr = "%s"
+		}
+		`, cidr)
+	}
+
 	return fmt.Sprintf(`
 resource "stackpath_compute_network_policy" "foo" {
   name = "test-terraform-workload-allow-port-80"
@@ -107,7 +184,7 @@ resource "stackpath_compute_network_policy" "foo" {
 
   ingress {
     # Configure the network policy to allow traffic from
-    # the source CIDR range of 0.0.0.0/0 (all traffic) to
+    # the source CIDR range of 0.0.0.0/0 or ::/0 (all traffic) to
     # hit port 80.
     description = "Allow all port 80 traffic"
     action      = "ALLOW"
@@ -118,9 +195,7 @@ resource "stackpath_compute_network_policy" "foo" {
       }
     }
     from {
-      ip_block {
-        cidr = "0.0.0.0/0"
-      }
+      %[1]s
     }
   }
 
@@ -128,10 +203,8 @@ resource "stackpath_compute_network_policy" "foo" {
     description = "Allow all outbound traffic"
     action      = "ALLOW"
     to {
-      ip_block {
-        cidr = "0.0.0.0/0"
-      }
+      %[1]s
     }
   }
-}`)
+}`, ipBlocks)
 }
