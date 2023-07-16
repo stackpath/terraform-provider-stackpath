@@ -3,6 +3,11 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=stackpath
 BINARY=terraform-provider-${PKG_NAME}
 OS_ARCH=darwin_amd64
+SWAGGER = docker run --rm -it --user $$(id -u):$$(id -g) -e GOPATH=$$(go env GOPATH):/go -v $$HOME:$$HOME -w $$PWD quay.io/goswagger/swagger
+OPEN_API = docker run --rm -it --user $$(id -u):$$(id -g)  \
+    -v $$PWD:/local \
+    -w /local \
+    openapitools/openapi-generator-cli
 
 default: build
 
@@ -78,27 +83,29 @@ test-compile:
 	@echo
 
 generate:
-	@which swagger ; if [ $$? -ne 0 ] ; then \
-		echo "Please install go-swagger to generate StackPath API client code"; \
-		echo "See: https://goswagger.io/install.html"; \
-		echo; \
-		exit 1; \
-	fi
+	@echo "==> Generating code from StackPath API OpenAPI specs..."
+	$(OPEN_API) generate \
+		-g go \
+		-i openapi/stackpath_dns.oas3.json \
+		-o stackpath/api/dns \
+		--package-name dns
+		--model-package=dns_models \
+		--api-package=dns_client
 
 	@echo "==> Generating code from StackPath API swagger specs..."
-	swagger generate client \
+	$(SWAGGER) generate client \
 	  --spec=swagger/stackpath_workload.oas2.json \
 	  --target=stackpath/api/workload \
 	  --model-package=workload_models \
 	  --client-package=workload_client
 
-	swagger generate client \
+	$(SWAGGER) generate client \
 	  --spec=swagger/stackpath_ipam.oas2.json \
 	  --target=stackpath/api/ipam \
 	  --model-package=ipam_models \
 	  --client-package=ipam_client
 
-	swagger generate client \
+	$(SWAGGER) generate client \
 	  --spec=swagger/stackpath_storage.oas2.json \
 	  --target=stackpath/api/storage \
 	  --model-package=storage_models \

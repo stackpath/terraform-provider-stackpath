@@ -1,0 +1,2306 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: StackPath Support
+    url: https://support.stackpath.com/
+  title: DNS
+  version: 1.0.0
+externalDocs:
+  description: The StackPath API Reference
+  url: https://stackpath.dev/reference
+servers:
+- url: https://gateway.stackpath.com
+security:
+- oauth2: []
+paths:
+  /dns/v1/discovery/{domain}/provider_details:
+    get:
+      description: Scan a domain for DNS provider information
+      operationId: GetDiscoveryProviderDetails
+      parameters:
+      - description: A hostname to scan for provider information
+        explode: false
+        in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetDiscoveryProviderDetailsResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get provider details
+      tags:
+      - Scanning
+  /dns/v1/discovery/{domain}/records:
+    post:
+      description: "Scan a domain for resource records. This call returns the records\
+        \ that StackPath is able to scan at the time of execution. It performs a best\
+        \ effort, but cannot guarantee all resource records were found."
+      operationId: ScanDomainForRecords
+      parameters:
+      - description: A hostname to scan for resource records
+        explode: false
+        in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanDomainForRecordsRequestProviderConfig'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneScanDomainForRecordsResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get resource records
+      tags:
+      - Scanning
+  /dns/v1/stacks/{stack_id}/metrics:
+    get:
+      operationId: GetMetrics
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: An optional zone ID to retrieve metrics for
+        explode: true
+        in: query
+        name: zone_id
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: An optional StackPath POP code to retrieve metrics from
+        explode: true
+        in: query
+        name: pop
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A lower bound date to search metrics for.
+        explode: true
+        in: query
+        name: start_date
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - description: An upper bound date to search metrics for.
+        explode: true
+        in: query
+        name: end_date
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          default: ZONE_QUERY_COUNT
+          enum:
+          - ZONE_QUERY_COUNT
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: granularity
+        required: false
+        schema:
+          default: DEFAULT
+          enum:
+          - DEFAULT
+          - PT5M
+          - PT1H
+          - P1D
+          type: string
+        style: form
+      - description: "The dimensions to aggregate metrics by. When empty or unset,\
+          \ defaults to all dimensions. If non-empty, this must always at least include\
+          \ the stack dimension."
+        explode: false
+        in: query
+        name: dimensions
+        required: false
+        schema:
+          items:
+            enum:
+            - STACK
+            - DOMAIN
+            - POP
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/prometheusMetrics'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get metrics
+      tags:
+      - Metrics
+  /dns/v1/stacks/{stack_id}/zones:
+    get:
+      operationId: GetZones
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The number of items desired.
+        explode: true
+        in: query
+        name: page_request.first
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The cursor value after which data will be returned.
+        explode: true
+        in: query
+        name: page_request.after
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: SQL-style constraint filters.
+        explode: true
+        in: query
+        name: page_request.filter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Sort the response by the given field.
+        explode: true
+        in: query
+        name: page_request.sort_by
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetZonesResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get all zones
+      tags:
+      - Zones
+    post:
+      operationId: CreateZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zoneCreateZoneMessage'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneCreateZoneResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Create a zone
+      tags:
+      - Zones
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}:
+    delete:
+      operationId: DeleteZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Delete a zone
+      tags:
+      - Zones
+    get:
+      operationId: GetZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetZoneResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get a zone
+      tags:
+      - Zones
+    put:
+      operationId: UpdateZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zoneUpdateZoneMessage'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneUpdateZoneResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Update a zone
+      tags:
+      - Zones
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/bulk/records:
+    post:
+      description: Existing resource records are updated while new records are created
+      operationId: BulkCreateOrUpdateZoneRecords
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zoneBulkCreateOrUpdateZoneRecordsRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneBulkCreateOrUpdateZoneRecordsResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Create or update multiple records
+      tags:
+      - Resource Records
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/bulk/records/delete:
+    post:
+      operationId: BulkDeleteZoneRecords
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zoneBulkDeleteZoneRecordsMessage'
+        required: true
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Delete multiple records
+      tags:
+      - Resource Records
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/disable:
+    post:
+      operationId: DisableZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Disable a zone
+      tags:
+      - Zones
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/discover_nameservers:
+    get:
+      operationId: GetNameserversForZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetNameserversForZoneResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get a zone's nameservers
+      tags:
+      - Zones
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/enable:
+    post:
+      operationId: EnableZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Enable a zone
+      tags:
+      - Zones
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/parse:
+    post:
+      description: |-
+        Parse a BIND zone file into StackPath DNS resource records.
+
+        This returns a list of records, but does not import them into the zone. SOA and NS records in the zone file are ignored.
+      operationId: ParseRecordsFromZoneFile
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zoneParseRecordsFromZoneFileRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneParseRecordsFromZoneFileResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Parse a zone file
+      tags:
+      - Resource Records
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/records:
+    get:
+      operationId: GetZoneRecords
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The number of items desired.
+        explode: true
+        in: query
+        name: page_request.first
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The cursor value after which data will be returned.
+        explode: true
+        in: query
+        name: page_request.after
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: SQL-style constraint filters.
+        explode: true
+        in: query
+        name: page_request.filter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Sort the response by the given field.
+        explode: true
+        in: query
+        name: page_request.sort_by
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetZoneRecordsResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get all records
+      tags:
+      - Resource Records
+    post:
+      operationId: CreateZoneRecord
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        $ref: '#/components/requestBodies/zoneUpdateZoneRecordMessage'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneCreateZoneRecordResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Create a record
+      tags:
+      - Resource Records
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/records/{zone_record_id}:
+    delete:
+      operationId: DeleteZoneRecord
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS resource record ID
+        explode: false
+        in: path
+        name: zone_record_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Delete a record
+      tags:
+      - Resource Records
+    get:
+      operationId: GetZoneRecord
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS resource record ID
+        explode: false
+        in: path
+        name: zone_record_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneGetZoneRecordResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Get a record
+      tags:
+      - Resource Records
+    patch:
+      operationId: PatchZoneRecord
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS resource record ID
+        explode: false
+        in: path
+        name: zone_record_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/zonePatchZoneRecordMessage'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneUpdateZoneRecordResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Replace a record
+      tags:
+      - Resource Records
+    put:
+      operationId: UpdateZoneRecord
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS resource record ID
+        explode: false
+        in: path
+        name: zone_record_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        $ref: '#/components/requestBodies/zoneUpdateZoneRecordMessage'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/zoneUpdateZoneRecordResponse'
+          description: ""
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Update a record
+      tags:
+      - Resource Records
+  /dns/v1/stacks/{stack_id}/zones/{zone_id}/repush:
+    post:
+      description: Push a zone to StackPath's DNS infrastructure
+      operationId: PushFullZone
+      parameters:
+      - description: A stack ID or slug
+        explode: false
+        in: path
+        name: stack_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: A DNS zone ID
+        explode: false
+        in: path
+        name: zone_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Returned when an unauthorized request is attempted.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Internal server error.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stackpathapiStatus'
+          description: Default error structure.
+      summary: Publish a zone
+      tags:
+      - Zones
+components:
+  requestBodies:
+    zoneUpdateZoneRecordMessage:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/zoneUpdateZoneRecordMessage'
+      required: true
+  schemas:
+    DataMatrix:
+      description: A set of time series containing a range of data points over time
+        for each time series
+      example:
+        results:
+        - metric:
+            key: metric
+          values:
+          - unixTime: unixTime
+            value: value
+          - unixTime: unixTime
+            value: value
+        - metric:
+            key: metric
+          values:
+          - unixTime: unixTime
+            value: value
+          - unixTime: unixTime
+            value: value
+      properties:
+        results:
+          description: A data point's value
+          items:
+            $ref: '#/components/schemas/DataMatrixResult'
+          type: array
+      type: object
+    DataMatrixResult:
+      description: Time series containing a range of data points over time for each
+        time series
+      example:
+        metric:
+          key: metric
+        values:
+        - unixTime: unixTime
+          value: value
+        - unixTime: unixTime
+          value: value
+      properties:
+        metric:
+          additionalProperties:
+            type: string
+          description: The data points' labels
+          type: object
+        values:
+          description: Time series data point values
+          items:
+            $ref: '#/components/schemas/DataValue'
+          type: array
+      type: object
+    DataValue:
+      description: An individual metric data point
+      example:
+        unixTime: unixTime
+        value: value
+      properties:
+        unixTime:
+          description: The time that a data point was recorded
+          type: string
+        value:
+          description: A data point's value
+          type: string
+      type: object
+    DataVector:
+      description: "A set of time series containing a single sample for each time\
+        \ series, all sharing the same timestamp"
+      example:
+        results:
+        - metric:
+            key: metric
+          value:
+            unixTime: unixTime
+            value: value
+        - metric:
+            key: metric
+          value:
+            unixTime: unixTime
+            value: value
+      properties:
+        results:
+          description: A data point's value
+          items:
+            $ref: '#/components/schemas/DataVectorResult'
+          type: array
+      type: object
+    DataVectorResult:
+      description: "Time series containing a single sample for each time series, all\
+        \ sharing the same timestamp"
+      example:
+        metric:
+          key: metric
+        value:
+          unixTime: unixTime
+          value: value
+      properties:
+        metric:
+          additionalProperties:
+            type: string
+          description: The data points' labels
+          type: object
+        value:
+          $ref: '#/components/schemas/DataValue'
+      type: object
+    MetricsData:
+      description: The data points in a metrics collection
+      example:
+        vector:
+          results:
+          - metric:
+              key: metric
+            value:
+              unixTime: unixTime
+              value: value
+          - metric:
+              key: metric
+            value:
+              unixTime: unixTime
+              value: value
+        matrix:
+          results:
+          - metric:
+              key: metric
+            values:
+            - unixTime: unixTime
+              value: value
+            - unixTime: unixTime
+              value: value
+          - metric:
+              key: metric
+            values:
+            - unixTime: unixTime
+              value: value
+            - unixTime: unixTime
+              value: value
+      properties:
+        matrix:
+          $ref: '#/components/schemas/DataMatrix'
+        vector:
+          $ref: '#/components/schemas/DataVector'
+      type: object
+    ScanDomainForRecordsRequestProviderConfig:
+      description: Provider-specific configuration needed to scan a domain
+      example:
+        apiKey: apiKey
+        authenticationUser: authenticationUser
+        dnsProvider: null
+      properties:
+        dnsProvider:
+          $ref: '#/components/schemas/zoneDnsProvider'
+        authenticationUser:
+          description: The username required to authenticate with the DNS provider
+          type: string
+        apiKey:
+          description: The API key or password required to authenticate with the DNS
+            provider
+          type: string
+      type: object
+    apiStatusDetail:
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+      type: object
+    paginationPageInfo:
+      description: |-
+        Information about a paginated response
+
+        This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.
+      example:
+        hasNextPage: true
+        hasPreviousPage: true
+        endCursor: endCursor
+        totalCount: totalCount
+        startCursor: startCursor
+      properties:
+        totalCount:
+          description: The total number of items in the dataset
+          type: string
+        hasPreviousPage:
+          description: Whether or not a previous page of data exists
+          format: boolean
+          type: boolean
+        hasNextPage:
+          description: Whether or not another page of data is available
+          format: boolean
+          type: boolean
+        startCursor:
+          description: The cursor for the first item in the set of data returned
+          type: string
+        endCursor:
+          description: The cursor for the last item in the set of data returned
+          type: string
+      type: object
+    prometheusMetrics:
+      description: A collection of metrics
+      example:
+        data:
+          vector:
+            results:
+            - metric:
+                key: metric
+              value:
+                unixTime: unixTime
+                value: value
+            - metric:
+                key: metric
+              value:
+                unixTime: unixTime
+                value: value
+          matrix:
+            results:
+            - metric:
+                key: metric
+              values:
+              - unixTime: unixTime
+                value: value
+              - unixTime: unixTime
+                value: value
+            - metric:
+                key: metric
+              values:
+              - unixTime: unixTime
+                value: value
+              - unixTime: unixTime
+                value: value
+        errorType: errorType
+        warnings:
+        - warnings
+        - warnings
+        error: error
+        status: null
+      properties:
+        status:
+          $ref: '#/components/schemas/prometheusMetricsStatus'
+        data:
+          $ref: '#/components/schemas/MetricsData'
+        errorType:
+          description: The type of error encountered when querying for metrics
+          type: string
+        error:
+          description: The error encountered when querying for metrics
+          type: string
+        warnings:
+          description: Warnings encountered when querying for metrics
+          items:
+            type: string
+          type: array
+      type: object
+    prometheusMetricsStatus:
+      default: SUCCESS
+      description: A metrics query's resulting status
+      enum:
+      - SUCCESS
+      - ERROR
+      type: string
+    stackpath.rpc.BadRequest:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          fieldViolations:
+            items:
+              $ref: '#/components/schemas/stackpath.rpc.BadRequest.FieldViolation'
+            type: array
+        type: object
+    stackpath.rpc.BadRequest.FieldViolation:
+      properties:
+        field:
+          type: string
+        description:
+          type: string
+      type: object
+    stackpath.rpc.Help:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          links:
+            items:
+              $ref: '#/components/schemas/stackpath.rpc.Help.Link'
+            type: array
+        type: object
+    stackpath.rpc.Help.Link:
+      properties:
+        description:
+          type: string
+        url:
+          type: string
+      type: object
+    stackpath.rpc.LocalizedMessage:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          locale:
+            type: string
+          message:
+            type: string
+        type: object
+    stackpath.rpc.PreconditionFailure:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          violations:
+            items:
+              $ref: '#/components/schemas/stackpath.rpc.PreconditionFailure.Violation'
+            type: array
+        type: object
+    stackpath.rpc.PreconditionFailure.Violation:
+      properties:
+        type:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+      type: object
+    stackpath.rpc.QuotaFailure:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          violations:
+            items:
+              $ref: '#/components/schemas/stackpath.rpc.QuotaFailure.Violation'
+            type: array
+        type: object
+    stackpath.rpc.QuotaFailure.Violation:
+      properties:
+        subject:
+          type: string
+        description:
+          type: string
+      type: object
+    stackpath.rpc.RequestInfo:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          requestId:
+            type: string
+          servingData:
+            type: string
+        type: object
+    stackpath.rpc.ResourceInfo:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          resourceType:
+            type: string
+          resourceName:
+            type: string
+          owner:
+            type: string
+          description:
+            type: string
+        type: object
+    stackpath.rpc.RetryInfo:
+      allOf:
+      - $ref: '#/components/schemas/apiStatusDetail'
+      - properties:
+          retryDelay:
+            type: string
+        type: object
+    stackpathapiStatus:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+        details:
+          items:
+            $ref: '#/components/schemas/apiStatusDetail'
+          type: array
+      type: object
+    zoneBulkCreateOrUpdateZoneRecordMessage:
+      description: The fields needed to create or update a DNS zone resource record
+      properties:
+        name:
+          description: A zone record's name
+          type: string
+        type:
+          $ref: '#/components/schemas/zoneRecordType'
+        ttl:
+          description: |-
+            A zone record's time to live
+
+            A record's TTL is the number of seconds that the record should be cached by DNS resolvers. Use lower TTL values if you expect zone records to change often. Use higher TTL values for records that won't change to prevent extra DNS lookups by clients.
+          format: int32
+          type: integer
+        data:
+          description: |-
+            A zone record's value
+
+            MX record data follows the format `<priority> <value>`, without `<>`s.
+          type: string
+        weight:
+          description: |-
+            A zone record's priority
+
+            A resource record is replicated in StackPath's DNS infrastructure the number of times of the record's weight, giving it a more likely response to queries if a zone has records with the same name and type.
+          format: int32
+          type: integer
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a DNS zone record
+
+            Zone record labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+        id:
+          description: |-
+            The ID of the resource record to update
+
+            Do not provide an ID to create a new resource record
+          type: string
+      type: object
+    zoneBulkCreateOrUpdateZoneRecordsRequest:
+      properties:
+        records:
+          description: The records to create or update in the DNS zone
+          items:
+            $ref: '#/components/schemas/zoneBulkCreateOrUpdateZoneRecordMessage'
+          type: array
+      title: ""
+      type: object
+    zoneBulkCreateOrUpdateZoneRecordsResponse:
+      description: A response from a request to create or update multiple DNS zone
+        resource records
+      example:
+        zoneRecordIds:
+        - zoneRecordIds
+        - zoneRecordIds
+      properties:
+        zoneRecordIds:
+          description: The IDs of the newly created and updated resource records
+          items:
+            type: string
+          type: array
+      type: object
+    zoneBulkDeleteZoneRecordsMessage:
+      description: The fields needed to delete multiple DNS zone resource records
+      properties:
+        zoneRecordIds:
+          description: The IDs of the resource records to delete
+          items:
+            type: string
+          type: array
+      type: object
+    zoneCreateZoneMessage:
+      properties:
+        domain:
+          description: The zone's domain name
+          type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a DNS zone
+
+            Zone labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+        useApexDomain:
+          description: |-
+            Whether or not to create a zone for the apex domain only
+
+            If this is true and a domain with subdomains is provided, it will be stripped and only the root domain will be used for the zone. If this is false an error will be returned if it's not already an apex domain.
+          format: boolean
+          type: boolean
+      title: ""
+      type: object
+    zoneCreateZoneRecordResponse:
+      description: A response from a request to create a new DNS zone resource record
+      example:
+        record:
+          data: data
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          zoneId: zoneId
+          weight: 6
+          id: id
+          type: type
+          class: class
+          ttl: 0
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+      properties:
+        record:
+          $ref: '#/components/schemas/zoneZoneRecord'
+      type: object
+    zoneCreateZoneResponse:
+      description: A response from a request to create a new DNS zone
+      example:
+        zone:
+          accountId: accountId
+          nameservers:
+          - nameservers
+          - nameservers
+          created: 2000-01-23T04:56:07.000+00:00
+          stackId: stackId
+          domain: domain
+          verified: 2000-01-23T04:56:07.000+00:00
+          disabled: true
+          id: id
+          version: version
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+          status: null
+      properties:
+        zone:
+          $ref: '#/components/schemas/zoneZone'
+      type: object
+    zoneDnsProvider:
+      default: GENERAL
+      description: |-
+        The types of DNS providers that StackPath can detect
+
+        DNS provider types can trigger different logic when StackPath scans a domain
+      enum:
+      - GENERAL
+      - CLOUDFLARE
+      type: string
+    zoneGetDiscoveryProviderDetailsResponse:
+      description: A response from a request to scan a domain name for information
+        about its provider
+      example:
+        nameservers:
+        - nameservers
+        - nameservers
+        dnsProvider: null
+        requiresAuthentication: true
+      properties:
+        dnsProvider:
+          $ref: '#/components/schemas/zoneDnsProvider'
+        requiresAuthentication:
+          description: Whether or not the provider requires authentication to scan
+            or modify the domain
+          format: boolean
+          type: boolean
+        nameservers:
+          description: The domain's authoritative nameservers
+          items:
+            type: string
+          type: array
+      type: object
+    zoneGetNameserversForZoneResponse:
+      description: A response from a request to retrieve information about a DNS zone's
+        authoritative nameservers
+      example:
+        configured: true
+        requiredNameservers:
+        - requiredNameservers
+        - requiredNameservers
+        currentNameservers:
+        - currentNameservers
+        - currentNameservers
+      properties:
+        configured:
+          description: Whether or not all required name servers are configured in
+            the zone
+          format: boolean
+          type: boolean
+        currentNameservers:
+          description: The zone's currently configured nameservers
+          items:
+            type: string
+          type: array
+        requiredNameservers:
+          description: The nameservers required in the zone's configuration
+          items:
+            type: string
+          type: array
+      type: object
+    zoneGetZoneRecordResponse:
+      description: A response from a request to retrieve a DNS zone resource record
+      example:
+        record:
+          data: data
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          zoneId: zoneId
+          weight: 6
+          id: id
+          type: type
+          class: class
+          ttl: 0
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+      properties:
+        record:
+          $ref: '#/components/schemas/zoneZoneRecord'
+      type: object
+    zoneGetZoneRecordsResponse:
+      description: A response from a request to retrieve a DNS zone's resource records
+      example:
+        records:
+        - data: data
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          zoneId: zoneId
+          weight: 6
+          id: id
+          type: type
+          class: class
+          ttl: 0
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+        - data: data
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          zoneId: zoneId
+          weight: 6
+          id: id
+          type: type
+          class: class
+          ttl: 0
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+        pageInfo:
+          hasNextPage: true
+          hasPreviousPage: true
+          endCursor: endCursor
+          totalCount: totalCount
+          startCursor: startCursor
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/paginationPageInfo'
+        records:
+          description: The requested resource records
+          items:
+            $ref: '#/components/schemas/zoneZoneRecord'
+          type: array
+      type: object
+    zoneGetZoneResponse:
+      description: A response from a request to retrieve a DNS zone
+      example:
+        zone:
+          accountId: accountId
+          nameservers:
+          - nameservers
+          - nameservers
+          created: 2000-01-23T04:56:07.000+00:00
+          stackId: stackId
+          domain: domain
+          verified: 2000-01-23T04:56:07.000+00:00
+          disabled: true
+          id: id
+          version: version
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+          status: null
+      properties:
+        zone:
+          $ref: '#/components/schemas/zoneZone'
+      type: object
+    zoneGetZonesResponse:
+      description: A response from a request to retrieve all DNS zones in a stack
+      example:
+        pageInfo:
+          hasNextPage: true
+          hasPreviousPage: true
+          endCursor: endCursor
+          totalCount: totalCount
+          startCursor: startCursor
+        zones:
+        - accountId: accountId
+          nameservers:
+          - nameservers
+          - nameservers
+          created: 2000-01-23T04:56:07.000+00:00
+          stackId: stackId
+          domain: domain
+          verified: 2000-01-23T04:56:07.000+00:00
+          disabled: true
+          id: id
+          version: version
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+          status: null
+        - accountId: accountId
+          nameservers:
+          - nameservers
+          - nameservers
+          created: 2000-01-23T04:56:07.000+00:00
+          stackId: stackId
+          domain: domain
+          verified: 2000-01-23T04:56:07.000+00:00
+          disabled: true
+          id: id
+          version: version
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+          status: null
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/paginationPageInfo'
+        zones:
+          description: The requested DNS zones
+          items:
+            $ref: '#/components/schemas/zoneZone'
+          type: array
+      type: object
+    zoneImportZoneRecord:
+      description: "A DNS zone resource record, as imported from a 3rd party provider"
+      example:
+        data: data
+        name: name
+        weight: 6
+        type: null
+        ttl: 0
+      properties:
+        name:
+          description: A zone record's name
+          type: string
+        type:
+          $ref: '#/components/schemas/zoneRecordType'
+        ttl:
+          description: |-
+            A zone record's time to live
+
+            A record's TTL is the number of seconds that the record should be cached by DNS resolvers. Use lower TTL values if you expect zone records to change often. Use higher TTL values for records that won't change to prevent extra DNS lookups by clients.
+          format: int32
+          type: integer
+        data:
+          description: |-
+            A zone record's value
+
+            MX record data follows the format `<priority> <value>`, without `<>`s.
+          type: string
+        weight:
+          description: |-
+            A zone record's priority
+
+            A resource record is replicated in StackPath's DNS infrastructure the number of times of the record's weight, giving it a more likely response to queries if a zone has records with the same name and type.
+          format: int32
+          type: integer
+      type: object
+    zoneParseRecordsFromZoneFileRequest:
+      properties:
+        zoneFile:
+          description: Base64 encoded BIND zone file contents
+          format: byte
+          type: string
+      title: ""
+      type: object
+    zoneParseRecordsFromZoneFileResponse:
+      description: A response from a request to parse records from a zone file
+      example:
+        records:
+        - data: data
+          name: name
+          weight: 6
+          type: null
+          ttl: 0
+        - data: data
+          name: name
+          weight: 6
+          type: null
+          ttl: 0
+      properties:
+        records:
+          description: The resource records StackPath was able to import from a zone
+            file
+          items:
+            $ref: '#/components/schemas/zoneImportZoneRecord'
+          type: array
+      type: object
+    zonePatchZoneRecordMessage:
+      properties:
+        name:
+          description: A zone record's name
+          type: string
+        type:
+          $ref: '#/components/schemas/zoneRecordType'
+        ttl:
+          description: |-
+            A zone record's time to live
+
+            A record's TTL is the number of seconds that the record should be cached by DNS resolvers. Use lower TTL values if you expect zone records to change often. Use higher TTL values for records that won't change to prevent extra DNS lookups by clients.
+          format: int32
+          type: integer
+        data:
+          description: |-
+            A zone record's value
+
+            MX record data follows the format `<priority> <value>`, without `<>`s.
+          type: string
+        weight:
+          description: |-
+            A zone record's priority
+
+            A resource record is replicated in StackPath's DNS infrastructure the number of times of the record's weight, giving it a more likely response to queries if a zone has records with the same name and type.
+          format: int32
+          type: integer
+      title: ""
+      type: object
+    zoneRecordType:
+      default: EMPTY
+      description: |-
+        The resource record types supported by StackPath
+
+        - EMPTY: The resource record has no type
+         - A: The resource record translates a host to an IPv4 address
+         - AAAA: The resource record translates a host to an IPv6 address
+         - CNAME: The resource record aliases one name to another
+         - TXT: The resource record contains a descriptive string. Many applications use TXT records for configuration
+         - MX: The resource record defines a mail exchanger for the given host
+         - SRV: The resource record defines a service on the domain
+         - NS: The resource record describes a nameserver that serves its domain's zone and records
+         - CAA: The resource record describes a certification authority authorization that adds validation to which certificate authorities can issue certificates for a domain
+      enum:
+      - EMPTY
+      - A
+      - AAAA
+      - CNAME
+      - TXT
+      - MX
+      - SRV
+      - NS
+      - CAA
+      type: string
+    zoneScanDomainForRecordsResponse:
+      description: A response from a request to scan a domain for its resource records
+      example:
+        records:
+        - data: data
+          name: name
+          weight: 6
+          type: null
+          ttl: 0
+        - data: data
+          name: name
+          weight: 6
+          type: null
+          ttl: 0
+      properties:
+        records:
+          description: The resource records StackPath was able to scan from the domain
+          items:
+            $ref: '#/components/schemas/zoneImportZoneRecord'
+          type: array
+      type: object
+    zoneUpdateZoneMessage:
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a DNS zone
+
+            Zone labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+      title: ""
+      type: object
+    zoneUpdateZoneRecordMessage:
+      properties:
+        name:
+          description: A zone record's name
+          type: string
+        type:
+          $ref: '#/components/schemas/zoneRecordType'
+        ttl:
+          description: |-
+            A zone record's time to live
+
+            A record's TTL is the number of seconds that the record should be cached by DNS resolvers. Use lower TTL values if you expect zone records to change often. Use higher TTL values for records that won't change to prevent extra DNS lookups by clients.
+          format: int32
+          type: integer
+        data:
+          description: |-
+            A zone record's value
+
+            MX record data follows the format `<priority> <value>`, without `<>`s.
+          type: string
+        weight:
+          description: |-
+            A zone record's priority
+
+            A resource record is replicated in StackPath's DNS infrastructure the number of times of the record's weight, giving it a more likely response to queries if a zone has records with the same name and type.
+          format: int32
+          type: integer
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a DNS zone record
+
+            Zone record labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+      title: ""
+      type: object
+    zoneUpdateZoneRecordResponse:
+      description: A response from a request to replace a DNS zone resource record
+      example:
+        record:
+          data: data
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          zoneId: zoneId
+          weight: 6
+          id: id
+          type: type
+          class: class
+          ttl: 0
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+      properties:
+        record:
+          $ref: '#/components/schemas/zoneZoneRecord'
+      type: object
+    zoneUpdateZoneResponse:
+      description: A response from a request to replace a DNS zone
+      example:
+        zone:
+          accountId: accountId
+          nameservers:
+          - nameservers
+          - nameservers
+          created: 2000-01-23T04:56:07.000+00:00
+          stackId: stackId
+          domain: domain
+          verified: 2000-01-23T04:56:07.000+00:00
+          disabled: true
+          id: id
+          version: version
+          updated: 2000-01-23T04:56:07.000+00:00
+          labels:
+            key: labels
+          status: null
+      properties:
+        zone:
+          $ref: '#/components/schemas/zoneZone'
+      type: object
+    zoneZone:
+      description: |-
+        A DNS zone
+
+        A zone represents an individual domain in StackPath's DNS infrastructure.
+      example:
+        accountId: accountId
+        nameservers:
+        - nameservers
+        - nameservers
+        created: 2000-01-23T04:56:07.000+00:00
+        stackId: stackId
+        domain: domain
+        verified: 2000-01-23T04:56:07.000+00:00
+        disabled: true
+        id: id
+        version: version
+        updated: 2000-01-23T04:56:07.000+00:00
+        labels:
+          key: labels
+        status: null
+      properties:
+        stackId:
+          description: The ID of the stack that a zone belongs to
+          type: string
+        accountId:
+          description: The ID of the StackPath account that owns a zone
+          type: string
+        id:
+          description: A zone's unique ID
+          type: string
+        domain:
+          description: A zone's name
+          type: string
+        version:
+          description: |-
+            A zone's version number
+
+            Version numbers are incremented automatically when a zone is updated
+          type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a zone
+
+            Zone labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+        created:
+          description: The date a zone was created
+          format: date-time
+          type: string
+        updated:
+          description: The date a zone was last updated
+          format: date-time
+          type: string
+        nameservers:
+          description: |-
+            The hostnames of the StackPath resolvers that host a zone
+
+            Every zone has multiple name servers assigned by StackPath upon creation for redundancy purposes.
+          items:
+            type: string
+          type: array
+        verified:
+          description: The date a zone's nameservers were last audited by StackPath
+          format: date-time
+          type: string
+        status:
+          $ref: '#/components/schemas/zoneZoneStatus'
+        disabled:
+          description: Whether or not a zone has been disabled by the user
+          format: boolean
+          type: boolean
+      type: object
+    zoneZoneRecord:
+      description: |-
+        A DNS zone's resource record
+
+        A zone record describes an individual piece of DNS functionality in a DNS zone.
+      example:
+        data: data
+        created: 2000-01-23T04:56:07.000+00:00
+        name: name
+        zoneId: zoneId
+        weight: 6
+        id: id
+        type: type
+        class: class
+        ttl: 0
+        updated: 2000-01-23T04:56:07.000+00:00
+        labels:
+          key: labels
+      properties:
+        id:
+          description: A zone record's unique ID
+          type: string
+        zoneId:
+          description: The ID of the zone that a zone record belongs to
+          type: string
+        name:
+          description: |-
+            A zone record's name
+
+            Use the value "@" to denote current root domain name.
+          type: string
+        type:
+          description: |-
+            A zone record's type
+
+            Zone record types describe the zone record's behavior. For instance, a zone record's type can say that the record is a name to IP address value, a name alias, or which mail exchanger is responsible for the domain. See https://support.stackpath.com/hc/en-us/articles/360001085563-What-DNS-record-types-does-StackPath-support for more information.
+          type: string
+        class:
+          description: |-
+            A zone record's class code
+
+            This is typically "IN" for Internet related resource records.
+          type: string
+        ttl:
+          description: |-
+            A zone record's time to live
+
+            A record's TTL is the number of seconds that the record should be cached by DNS resolvers. Use lower TTL values if you expect zone records to change often. Use higher TTL values for records that won't change to prevent extra DNS lookups by clients.
+          format: int32
+          type: integer
+        data:
+          description: |-
+            A zone record's value
+
+            MX record data follows the format `<priority> <value>`, without `<>`s.
+          type: string
+        weight:
+          description: |-
+            A zone record's priority
+
+            A resource record is replicated in StackPath's DNS infrastructure the number of times of the record's weight, giving it a more likely response to queries if a zone has records with the same name and type.
+          format: int32
+          type: integer
+        labels:
+          additionalProperties:
+            type: string
+          description: |-
+            A key/value pair of user-defined labels for a zone record
+
+            Zone record labels are not processed by StackPath and are solely used for users to organize their DNS zones.
+          type: object
+        created:
+          description: The date a zone record was created
+          format: date-time
+          type: string
+        updated:
+          description: The date a zone record was last updated
+          format: date-time
+          type: string
+      type: object
+    zoneZoneStatus:
+      default: ACTIVE
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - BILLING_SUSPENDED
+      - INACTIVE
+      type: string
+  securitySchemes:
+    oauth2:
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: https://gateway.stackpath.com/identity/v1/oauth2/token
+      type: oauth2
+x-explorer-enabled: true
+x-proxy-enabled: true
+x-samples-enabled: true
+x-samples-languages:
+- curl
+- node
+- ruby
+- javascript
+- python

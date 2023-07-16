@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-homedir"
+	"github.com/scott-quinlan/terraform-provider-stackpath/stackpath/api/dns"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client"
@@ -55,6 +56,7 @@ type Config struct {
 	edgeCompute           *workload_client.EdgeCompute
 	edgeComputeNetworking *ipam_client.EdgeComputeNetworking
 	objectStorage         *storage_client.ObjectStorage
+	dns                   *dns.APIClient
 }
 
 // LoadAndValidate will load the configuration and validate the configuration
@@ -112,6 +114,7 @@ func (c *Config) LoadAndValidate(ctx context.Context, terraformVersion string) e
 	c.edgeCompute = workload_client.New(runtime, nil)
 	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
 	c.objectStorage = storage_client.New(runtime, nil)
+	c.dns = dns.NewAPIClient(dns.NewConfiguration())
 
 	return nil
 }
