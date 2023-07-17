@@ -2,7 +2,8 @@ TEST?=$$(go list ./... |grep -v 'vendor')
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=stackpath
 BINARY=terraform-provider-${PKG_NAME}
-OS_ARCH=darwin_amd64
+ARCH=amd64
+OS=linux
 SWAGGER = docker run --rm -it --user $$(id -u):$$(id -g) -e GOPATH=$$(go env GOPATH):/go -v $$HOME:$$HOME -w $$PWD quay.io/goswagger/swagger
 OPEN_API = docker run --rm -it --user $$(id -u):$$(id -g)  \
     -v $$PWD:/local \
@@ -13,20 +14,20 @@ default: build
 
 build:
 	@echo "==> Building ${BINARY}..."
-	go build -o ${BINARY}
+	GOARCH=${ARCH} GOOS=${OS} go build -o ${BINARY}
 	@echo
 
 install: build
 	@echo "==> Installing ${BINARY}..."
-	mkdir -p ~/.terraform.d/plugins/${OS_ARCH}
-	mv ${BINARY} ~/.terraform.d/plugins/${OS_ARCH}
+	mkdir -p ~/.terraform.d/plugins/${OS}_${ARCH}
+	mv ${BINARY} ~/.terraform.d/plugins/${OS}_${ARCH}
 	@echo
 
 install-13: build # https://debruyn.dev/2020/setting-up-your-machine-for-local-terraform-provider-development/
 	@echo "==> Installing ${BINARY}..."
-	mkdir -p ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}
-	-rm ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}/${BINARY}
-	mv ${BINARY} ~/terraform-providers/local/providers/stackpath/1.0.0/${OS_ARCH}
+	mkdir -p ~/terraform-providers/local/providers/stackpath/1.0.0/${OS}_${ARCH}
+	-rm ~/terraform-providers/local/providers/stackpath/1.0.0/${OS}_${ARCH}/${BINARY}
+	mv ${BINARY} ~/terraform-providers/local/providers/stackpath/1.0.0/${OS}_${ARCH}
 	@echo
 
 test:

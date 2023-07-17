@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/scott-quinlan/terraform-provider-stackpath/stackpath/api/dns"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/dns"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client"
@@ -111,10 +111,14 @@ func (c *Config) LoadAndValidate(ctx context.Context, terraformVersion string) e
 	runtime := httptransport.NewWithClient(c.BaseURL, "/", []string{"https"}, c.client)
 	runtime.Transport = NewUserAgentTransport(runtime.Transport, terraformVersion)
 
+	// Create a new configuration for the DNS API client, using the same oauth2 client
+	cfg := dns.NewConfiguration()
+	cfg.HTTPClient = c.client
+
 	c.edgeCompute = workload_client.New(runtime, nil)
 	c.edgeComputeNetworking = ipam_client.New(runtime, nil)
 	c.objectStorage = storage_client.New(runtime, nil)
-	c.dns = dns.NewAPIClient(dns.NewConfiguration())
+	c.dns = dns.NewAPIClient(cfg)
 
 	return nil
 }

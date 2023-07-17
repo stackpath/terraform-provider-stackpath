@@ -31,22 +31,25 @@ func resourceDNSRecord() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"class": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
+			//"class": {
+			//	Type:     schema.TypeString,
+			//	Optional: true,
+			//},
 			"ttl": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
 			"data": {
-				Type: schema.TypeString,
+				Type:     schema.TypeString,
+				Required: true,
 			},
-			"weight": {
-				Type: schema.TypeInt,
-			},
+			//"weight": {
+			//	Type:     schema.TypeInt,
+			//	Optional: true,
+			//},
 			"labels": {
-				Type: schema.TypeMap,
+				Type:     schema.TypeMap,
+				Optional: true,
 			},
 			"created": {
 				Type:     schema.TypeString,
@@ -86,14 +89,19 @@ func zoneRecTypePtr(s string) *dns.ZoneRecordType {
 
 func resourceDNSRecordCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
+
 	// Create in API
 	msg := dns.ZoneUpdateZoneRecordMessage{
 		Name:   strPtr(data.Get("name").(string)),
 		Type:   zoneRecTypePtr(data.Get("type").(string)),
-		Ttl:    int32Ptr(data.Get("ttl").(int32)),
+		Ttl:    int32Ptr(int32(data.Get("ttl").(int))),
 		Data:   strPtr(data.Get("data").(string)),
-		Weight: int32Ptr(data.Get("weight").(int32)),
 		Labels: mapStringPtr(data.Get("labels").(map[string]interface{})),
+	}
+
+	// Optional fields
+	if data.Get("weight") != nil {
+		msg.Weight = int32Ptr(int32(data.Get("weight").(int)))
 	}
 
 	resp, _, err := config.dns.ResourceRecordsAPI.CreateZoneRecord(
@@ -131,10 +139,6 @@ func resourceDNSRecordRead(ctx context.Context, data *schema.ResourceData, meta 
 		return diag.FromErr(fmt.Errorf("failed to set record type: %v", err))
 	}
 
-	if err := data.Set("class", record.Class); err != nil {
-		return diag.FromErr(fmt.Errorf("failed to set record class: %v", err))
-	}
-
 	if err := data.Set("ttl", record.Ttl); err != nil {
 		return diag.FromErr(fmt.Errorf("failed to set record ttl: %v", err))
 	}
@@ -143,19 +147,28 @@ func resourceDNSRecordRead(ctx context.Context, data *schema.ResourceData, meta 
 		return diag.FromErr(fmt.Errorf("failed to set record data: %v", err))
 	}
 
-	if err := data.Set("weight", record.Weight); err != nil {
-		return diag.FromErr(fmt.Errorf("failed to set record weight: %v", err))
-	}
-
 	if err := data.Set("labels", record.Labels); err != nil {
 		return diag.FromErr(fmt.Errorf("failed to set record labels: %v", err))
 	}
 
-	if err := data.Set("created", record.Created); err != nil {
+	// Optional fields
+	//if record.Class != nil {
+	//	if err := data.Set("class", record.Class); err != nil {
+	//		return diag.FromErr(fmt.Errorf("failed to set record class: %v", err))
+	//	}
+	//}
+	//
+	//if record.Weight != nil {
+	//	if err := data.Set("weight", record.Weight); err != nil {
+	//		return diag.FromErr(fmt.Errorf("failed to set record weight: %v", err))
+	//	}
+	//}
+
+	if err := data.Set("created", record.Created.String()); err != nil {
 		return diag.FromErr(fmt.Errorf("failed to set record created: %v", err))
 	}
 
-	if err := data.Set("updated", record.Updated); err != nil {
+	if err := data.Set("updated", record.Updated.String()); err != nil {
 		return diag.FromErr(fmt.Errorf("failed to set record updated: %v", err))
 	}
 
@@ -168,10 +181,14 @@ func resourceDNSRecordUpdate(ctx context.Context, data *schema.ResourceData, met
 	msg := dns.ZoneUpdateZoneRecordMessage{
 		Name:   strPtr(data.Get("name").(string)),
 		Type:   zoneRecTypePtr(data.Get("type").(string)),
-		Ttl:    int32Ptr(data.Get("ttl").(int32)),
+		Ttl:    int32Ptr(int32(data.Get("ttl").(int))),
 		Data:   strPtr(data.Get("data").(string)),
-		Weight: int32Ptr(data.Get("weight").(int32)),
 		Labels: mapStringPtr(data.Get("labels").(map[string]interface{})),
+	}
+
+	// Optional fields
+	if data.Get("weight") != nil {
+		msg.Weight = int32Ptr(int32(data.Get("weight").(int)))
 	}
 
 	_, _, err := config.dns.ResourceRecordsAPI.UpdateZoneRecord(

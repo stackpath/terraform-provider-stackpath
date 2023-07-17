@@ -1,4 +1,4 @@
-module github.com/scott-quinlan/terraform-provider-stackpath
+module github.com/stackpath/terraform-provider-stackpath
 
 require (
 	github.com/go-openapi/errors v0.20.0
@@ -9,6 +9,7 @@ require (
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.0
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/stackpath/terraform-provider-stackpath/stackpath/api/dns v0.0.0-00010101000000-000000000000
 	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558
 )
 
@@ -75,3 +76,5 @@ require (
 )
 
 go 1.19
+
+replace github.com/stackpath/terraform-provider-stackpath/stackpath/api/dns => ./stackpath/api/dns
