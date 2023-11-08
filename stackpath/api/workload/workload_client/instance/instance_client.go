@@ -28,30 +28,28 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error)
-
-	RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error)
+	GetWorkloadInstanceInitialPassword(params *GetWorkloadInstanceInitialPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceInitialPasswordOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  GetWorkloadInstance gets a workload instance
+GetWorkloadInstanceInitialPassword gets an instance s initial password
 */
-func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error) {
+func (a *Client) GetWorkloadInstanceInitialPassword(params *GetWorkloadInstanceInitialPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceInitialPasswordOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetWorkloadInstanceParams()
+		params = NewGetWorkloadInstanceInitialPasswordParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetWorkloadInstance",
+		ID:                 "GetWorkloadInstanceInitialPassword",
 		Method:             "GET",
-		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}",
+		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/passwords/initial",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetWorkloadInstanceReader{formats: a.formats},
+		Reader:             &GetWorkloadInstanceInitialPasswordReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -64,52 +62,12 @@ func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetWorkloadInstanceOK)
+	success, ok := result.(*GetWorkloadInstanceInitialPasswordOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	unexpectedSuccess := result.(*GetWorkloadInstanceDefault)
-	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
-}
-
-/*
-  RestartInstance restarts an instance
-
-  The action is performed asynchronously and a successful response does not mean the instance has restarted yet.
-*/
-func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewRestartInstanceParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "RestartInstance",
-		Method:             "POST",
-		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &RestartInstanceReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*RestartInstanceNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	unexpectedSuccess := result.(*RestartInstanceDefault)
+	unexpectedSuccess := result.(*GetWorkloadInstanceInitialPasswordDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

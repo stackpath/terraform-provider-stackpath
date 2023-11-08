@@ -10,10 +10,12 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/infrastructure"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance_logs"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/metrics"
+	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/virtual_machine_images"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
 )
 
@@ -59,10 +61,12 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *EdgeComput
 
 	cli := new(EdgeCompute)
 	cli.Transport = transport
+	cli.Infrastructure = infrastructure.New(transport, formats)
 	cli.Instance = instance.New(transport, formats)
 	cli.InstanceLogs = instance_logs.New(transport, formats)
 	cli.Instances = instances.New(transport, formats)
 	cli.Metrics = metrics.New(transport, formats)
+	cli.VirtualMachineImages = virtual_machine_images.New(transport, formats)
 	cli.Workloads = workloads.New(transport, formats)
 	return cli
 }
@@ -108,6 +112,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // EdgeCompute is a client for edge compute
 type EdgeCompute struct {
+	Infrastructure infrastructure.ClientService
+
 	Instance instance.ClientService
 
 	InstanceLogs instance_logs.ClientService
@@ -115,6 +121,8 @@ type EdgeCompute struct {
 	Instances instances.ClientService
 
 	Metrics metrics.ClientService
+
+	VirtualMachineImages virtual_machine_images.ClientService
 
 	Workloads workloads.ClientService
 
@@ -124,9 +132,11 @@ type EdgeCompute struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *EdgeCompute) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+	c.Infrastructure.SetTransport(transport)
 	c.Instance.SetTransport(transport)
 	c.InstanceLogs.SetTransport(transport)
 	c.Instances.SetTransport(transport)
 	c.Metrics.SetTransport(transport)
+	c.VirtualMachineImages.SetTransport(transport)
 	c.Workloads.SetTransport(transport)
 }

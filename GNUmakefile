@@ -3,6 +3,7 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=stackpath
 BINARY=terraform-provider-${PKG_NAME}
 OS_ARCH=darwin_amd64
+SED := sed
 
 default: build
 
@@ -105,15 +106,20 @@ generate:
 	  --client-package=storage_client
 
 	@echo "==> Patching generated code..."
-	sed -i '' -e 's/^type V1ProtocolAh interface{}$$/type V1ProtocolAh struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_ah.go
-	sed -i '' -e 's/^type V1ProtocolEsp interface{}$$/type V1ProtocolEsp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_esp.go
-	sed -i '' -e 's/^type V1ProtocolGre interface{}$$/type V1ProtocolGre struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_gre.go
-	sed -i '' -e 's/^type V1ProtocolIcmp interface{}$$/type V1ProtocolIcmp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_icmp.go
+	${SED} -i -e 's/^type V1ProtocolAh interface{}$$/type V1ProtocolAh struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_ah.go
+	${SED} -i -e 's/^type V1ProtocolEsp interface{}$$/type V1ProtocolEsp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_esp.go
+	${SED} -i -e 's/^type V1ProtocolGre interface{}$$/type V1ProtocolGre struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_gre.go
+	${SED} -i -e 's/^type V1ProtocolIcmp interface{}$$/type V1ProtocolIcmp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_icmp.go
 
-	sed -i '' -e 's/^	Ah V1ProtocolAh `json:"ah,omitempty"`$$/	Ah *V1ProtocolAh `json:"ah,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
-	sed -i '' -e 's/^	Esp V1ProtocolEsp `json:"esp,omitempty"`$$/	Esp *V1ProtocolEsp `json:"esp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
-	sed -i '' -e 's/^	Gre V1ProtocolGre `json:"gre,omitempty"`$$/	Gre *V1ProtocolGre `json:"gre,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
-	sed -i '' -e 's/^	Icmp V1ProtocolIcmp `json:"icmp,omitempty"`$$/	Icmp *V1ProtocolIcmp `json:"icmp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Ah V1ProtocolAh `json:"ah,omitempty"`$$/	Ah *V1ProtocolAh `json:"ah,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Esp V1ProtocolEsp `json:"esp,omitempty"`$$/	Esp *V1ProtocolEsp `json:"esp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Gre V1ProtocolGre `json:"gre,omitempty"`$$/	Gre *V1ProtocolGre `json:"gre,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Icmp V1ProtocolIcmp `json:"icmp,omitempty"`$$/	Icmp *V1ProtocolIcmp `json:"icmp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+
+	${SED} -i -e 's/ce.ValidateName.\+$$/ce/' ./stackpath/api/ipam/ipam_models/*.go
+	${SED} -i -e 's/ce.ValidateName.\+$$/ce/' ./stackpath/api/workload/workload_models/*.go
+	${SED} -i -e 's/ce.ValidateName.\+$$/ce/' ./stackpath/api/storage/storage_models/*.go
+
 	@echo
 
 .PHONY: build install test testacc vet fmt fmtcheck errcheck test-compile

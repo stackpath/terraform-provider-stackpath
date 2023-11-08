@@ -138,6 +138,8 @@ func (m *StackpathapiStatus) validateDetails(formats strfmt.Registry) error {
 		if err := m.detailsField[i].Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("details" + "." + strconv.Itoa(i))
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -165,9 +167,15 @@ func (m *StackpathapiStatus) contextValidateDetails(ctx context.Context, formats
 
 	for i := 0; i < len(m.Details()); i++ {
 
+		if swag.IsZero(m.detailsField[i]) { // not required
+			return nil
+		}
+
 		if err := m.detailsField[i].ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("details" + "." + strconv.Itoa(i))
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

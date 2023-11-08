@@ -13,9 +13,13 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// V1ResourceRequirements Resource requirements for an object
+// V1ResourceRequirements Resource requirements are key/value pairs.
 //
-// Resource requirements are key/value pairs.
+// Resource requirements for an object. The values supported by workloads are:
+// - cpu
+// - memory
+// - nvidia-a2: limited to specific markets
+// - ephemeral-storage: deprecated and has no effect
 //
 // swagger:model v1ResourceRequirements
 type V1ResourceRequirements struct {
@@ -54,6 +58,8 @@ func (m *V1ResourceRequirements) validateLimits(formats strfmt.Registry) error {
 		if err := m.Limits.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("limits")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -71,6 +77,8 @@ func (m *V1ResourceRequirements) validateRequests(formats strfmt.Registry) error
 		if err := m.Requests.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("requests")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -99,9 +107,15 @@ func (m *V1ResourceRequirements) ContextValidate(ctx context.Context, formats st
 
 func (m *V1ResourceRequirements) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.Limits) { // not required
+		return nil
+	}
+
 	if err := m.Limits.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("limits")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce
 		}
 		return err
 	}
@@ -111,9 +125,15 @@ func (m *V1ResourceRequirements) contextValidateLimits(ctx context.Context, form
 
 func (m *V1ResourceRequirements) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.Requests) { // not required
+		return nil
+	}
+
 	if err := m.Requests.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("requests")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce
 		}
 		return err
 	}

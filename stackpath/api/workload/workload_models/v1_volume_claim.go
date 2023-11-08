@@ -16,7 +16,7 @@ import (
 
 // V1VolumeClaim A claim for a volume
 //
-// Volumes may be attached to workload instance containers or virtual machines
+// # Volumes may be attached to workload instance containers or virtual machines
 //
 // swagger:model v1VolumeClaim
 type V1VolumeClaim struct {
@@ -37,7 +37,7 @@ type V1VolumeClaim struct {
 
 	// A volume claim's programmatic name
 	//
-	// Volume claim slugs are used to programmatically label a claim
+	// Volume claim slugs are used to programatically label a claim
 	Slug string `json:"slug,omitempty"`
 
 	// spec
@@ -79,6 +79,8 @@ func (m *V1VolumeClaim) validateMetadata(formats strfmt.Registry) error {
 		if err := m.Metadata.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -96,6 +98,8 @@ func (m *V1VolumeClaim) validatePhase(formats strfmt.Registry) error {
 		if err := m.Phase.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -113,6 +117,8 @@ func (m *V1VolumeClaim) validateSpec(formats strfmt.Registry) error {
 		if err := m.Spec.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("spec")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -163,9 +169,16 @@ func (m *V1VolumeClaim) contextValidateID(ctx context.Context, formats strfmt.Re
 func (m *V1VolumeClaim) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Metadata != nil {
+
+		if swag.IsZero(m.Metadata) { // not required
+			return nil
+		}
+
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -177,9 +190,16 @@ func (m *V1VolumeClaim) contextValidateMetadata(ctx context.Context, formats str
 func (m *V1VolumeClaim) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Phase != nil {
+
+		if swag.IsZero(m.Phase) { // not required
+			return nil
+		}
+
 		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -191,9 +211,16 @@ func (m *V1VolumeClaim) contextValidatePhase(ctx context.Context, formats strfmt
 func (m *V1VolumeClaim) contextValidateSpec(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Spec != nil {
+
+		if swag.IsZero(m.Spec) { // not required
+			return nil
+		}
+
 		if err := m.Spec.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("spec")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

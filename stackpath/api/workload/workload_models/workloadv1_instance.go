@@ -43,6 +43,12 @@ type Workloadv1Instance struct {
 	// An instance's unique identifier
 	ID string `json:"id,omitempty"`
 
+	// Status of the init_containers running within the workload instance
+	InitContainerStatuses []*V1ContainerStatus `json:"initContainerStatuses"`
+
+	// init containers
+	InitContainers V1ContainerSpecMapEntry `json:"initContainers,omitempty"`
+
 	// An instance's IPv4 address
 	IPAddress string `json:"ipAddress,omitempty"`
 
@@ -60,7 +66,7 @@ type Workloadv1Instance struct {
 
 	// An instance's name
 	//
-	// Instance names are generated from their corresponding workload's slug, followed by a unique hash
+	// Instance names are generated from their corresponsing workload's slug, followed by a unique hash
 	Name string `json:"name,omitempty"`
 
 	// An instance's network interfaces
@@ -74,6 +80,9 @@ type Workloadv1Instance struct {
 
 	// resources
 	Resources *V1ResourceRequirements `json:"resources,omitempty"`
+
+	// runtime
+	Runtime *V1WorkloadInstanceRuntimeSettings `json:"runtime,omitempty"`
 
 	// The date an instance was scheduled
 	// Format: date-time
@@ -116,6 +125,14 @@ func (m *Workloadv1Instance) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateInitContainerStatuses(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateInitContainers(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateLocation(formats); err != nil {
 		res = append(res, err)
 	}
@@ -133,6 +150,10 @@ func (m *Workloadv1Instance) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateResources(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -172,6 +193,8 @@ func (m *Workloadv1Instance) validateContainerStatuses(formats strfmt.Registry) 
 			if err := m.ContainerStatuses[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("containerStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -191,6 +214,8 @@ func (m *Workloadv1Instance) validateContainers(formats strfmt.Registry) error {
 		if err := m.Containers.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("containers")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -223,6 +248,51 @@ func (m *Workloadv1Instance) validateDeletedAt(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Workloadv1Instance) validateInitContainerStatuses(formats strfmt.Registry) error {
+	if swag.IsZero(m.InitContainerStatuses) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.InitContainerStatuses); i++ {
+		if swag.IsZero(m.InitContainerStatuses[i]) { // not required
+			continue
+		}
+
+		if m.InitContainerStatuses[i] != nil {
+			if err := m.InitContainerStatuses[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("initContainerStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) validateInitContainers(formats strfmt.Registry) error {
+	if swag.IsZero(m.InitContainers) { // not required
+		return nil
+	}
+
+	if m.InitContainers != nil {
+		if err := m.InitContainers.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("initContainers")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Workloadv1Instance) validateLocation(formats strfmt.Registry) error {
 	if swag.IsZero(m.Location) { // not required
 		return nil
@@ -232,6 +302,8 @@ func (m *Workloadv1Instance) validateLocation(formats strfmt.Registry) error {
 		if err := m.Location.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("location")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -249,6 +321,8 @@ func (m *Workloadv1Instance) validateMetadata(formats strfmt.Registry) error {
 		if err := m.Metadata.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -271,6 +345,8 @@ func (m *Workloadv1Instance) validateNetworkInterfaces(formats strfmt.Registry) 
 			if err := m.NetworkInterfaces[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("networkInterfaces" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -290,6 +366,8 @@ func (m *Workloadv1Instance) validatePhase(formats strfmt.Registry) error {
 		if err := m.Phase.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -307,6 +385,27 @@ func (m *Workloadv1Instance) validateResources(formats strfmt.Registry) error {
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) validateRuntime(formats strfmt.Registry) error {
+	if swag.IsZero(m.Runtime) { // not required
+		return nil
+	}
+
+	if m.Runtime != nil {
+		if err := m.Runtime.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -353,6 +452,8 @@ func (m *Workloadv1Instance) validateVirtualMachineStatuses(formats strfmt.Regis
 			if err := m.VirtualMachineStatuses[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("virtualMachineStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -372,6 +473,8 @@ func (m *Workloadv1Instance) validateVirtualMachines(formats strfmt.Registry) er
 		if err := m.VirtualMachines.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("virtualMachines")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -389,6 +492,14 @@ func (m *Workloadv1Instance) ContextValidate(ctx context.Context, formats strfmt
 	}
 
 	if err := m.contextValidateContainers(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateInitContainerStatuses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateInitContainers(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -412,6 +523,10 @@ func (m *Workloadv1Instance) ContextValidate(ctx context.Context, formats strfmt
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateRuntime(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateVirtualMachineStatuses(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -431,9 +546,16 @@ func (m *Workloadv1Instance) contextValidateContainerStatuses(ctx context.Contex
 	for i := 0; i < len(m.ContainerStatuses); i++ {
 
 		if m.ContainerStatuses[i] != nil {
+
+			if swag.IsZero(m.ContainerStatuses[i]) { // not required
+				return nil
+			}
+
 			if err := m.ContainerStatuses[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("containerStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -446,9 +568,58 @@ func (m *Workloadv1Instance) contextValidateContainerStatuses(ctx context.Contex
 
 func (m *Workloadv1Instance) contextValidateContainers(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.Containers) { // not required
+		return nil
+	}
+
 	if err := m.Containers.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("containers")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateInitContainerStatuses(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.InitContainerStatuses); i++ {
+
+		if m.InitContainerStatuses[i] != nil {
+
+			if swag.IsZero(m.InitContainerStatuses[i]) { // not required
+				return nil
+			}
+
+			if err := m.InitContainerStatuses[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("initContainerStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateInitContainers(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.InitContainers) { // not required
+		return nil
+	}
+
+	if err := m.InitContainers.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("initContainers")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce
 		}
 		return err
 	}
@@ -459,9 +630,16 @@ func (m *Workloadv1Instance) contextValidateContainers(ctx context.Context, form
 func (m *Workloadv1Instance) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Location != nil {
+
+		if swag.IsZero(m.Location) { // not required
+			return nil
+		}
+
 		if err := m.Location.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("location")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -473,9 +651,16 @@ func (m *Workloadv1Instance) contextValidateLocation(ctx context.Context, format
 func (m *Workloadv1Instance) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Metadata != nil {
+
+		if swag.IsZero(m.Metadata) { // not required
+			return nil
+		}
+
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -489,9 +674,16 @@ func (m *Workloadv1Instance) contextValidateNetworkInterfaces(ctx context.Contex
 	for i := 0; i < len(m.NetworkInterfaces); i++ {
 
 		if m.NetworkInterfaces[i] != nil {
+
+			if swag.IsZero(m.NetworkInterfaces[i]) { // not required
+				return nil
+			}
+
 			if err := m.NetworkInterfaces[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("networkInterfaces" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -505,9 +697,16 @@ func (m *Workloadv1Instance) contextValidateNetworkInterfaces(ctx context.Contex
 func (m *Workloadv1Instance) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Phase != nil {
+
+		if swag.IsZero(m.Phase) { // not required
+			return nil
+		}
+
 		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -519,9 +718,37 @@ func (m *Workloadv1Instance) contextValidatePhase(ctx context.Context, formats s
 func (m *Workloadv1Instance) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Workloadv1Instance) contextValidateRuntime(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Runtime != nil {
+
+		if swag.IsZero(m.Runtime) { // not required
+			return nil
+		}
+
+		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -535,9 +762,16 @@ func (m *Workloadv1Instance) contextValidateVirtualMachineStatuses(ctx context.C
 	for i := 0; i < len(m.VirtualMachineStatuses); i++ {
 
 		if m.VirtualMachineStatuses[i] != nil {
+
+			if swag.IsZero(m.VirtualMachineStatuses[i]) { // not required
+				return nil
+			}
+
 			if err := m.VirtualMachineStatuses[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("virtualMachineStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -550,9 +784,15 @@ func (m *Workloadv1Instance) contextValidateVirtualMachineStatuses(ctx context.C
 
 func (m *Workloadv1Instance) contextValidateVirtualMachines(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.VirtualMachines) { // not required
+		return nil
+	}
+
 	if err := m.VirtualMachines.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("virtualMachines")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce
 		}
 		return err
 	}

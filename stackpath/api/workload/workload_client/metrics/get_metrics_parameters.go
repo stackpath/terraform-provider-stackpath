@@ -53,10 +53,12 @@ func NewGetMetricsParamsWithHTTPClient(client *http.Client) *GetMetricsParams {
 	}
 }
 
-/* GetMetricsParams contains all the parameters to send to the API endpoint
-   for the get metrics operation.
+/*
+GetMetricsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get metrics operation.
+
+	Typically these are written to a http.Request.
 */
 type GetMetricsParams struct {
 
@@ -86,7 +88,7 @@ type GetMetricsParams struct {
 
 	/* InstanceName.
 
-	   The name of instance name within a workload to filter metrics for.
+	   An EdgeCompute workload instance name
 	*/
 	InstanceName *string
 
@@ -103,7 +105,7 @@ type GetMetricsParams struct {
 
 	/* StackID.
 
-	   The ID of the stack containing the workloads and instances to retrieve metrics for
+	   A stack ID or slug
 	*/
 	StackID string
 
@@ -122,7 +124,7 @@ type GetMetricsParams struct {
 
 	/* WorkloadID.
 
-	   The ID of a workload to filter metrics for.
+	   An EdgeCompute workload ID
 	*/
 	WorkloadID *string
 

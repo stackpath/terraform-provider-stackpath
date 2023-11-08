@@ -20,6 +20,11 @@ type V1VolumeClaimSpec struct {
 
 	// resources
 	Resources *V1ResourceRequirements `json:"resources,omitempty"`
+
+	// Storage class for a volume claim
+	//
+	// This defaults to the 'stackpath-edge/san' value if none is provided.
+	StorageClass string `json:"storageClass,omitempty"`
 }
 
 // Validate validates this v1 volume claim spec
@@ -45,6 +50,8 @@ func (m *V1VolumeClaimSpec) validateResources(formats strfmt.Registry) error {
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -70,9 +77,16 @@ func (m *V1VolumeClaimSpec) ContextValidate(ctx context.Context, formats strfmt.
 func (m *V1VolumeClaimSpec) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

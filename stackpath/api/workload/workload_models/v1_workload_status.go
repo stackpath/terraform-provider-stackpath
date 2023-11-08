@@ -17,16 +17,20 @@ import (
 // V1WorkloadStatus Which status a workload is currently in
 //
 // - ACTIVE: The workload is active
-//  - SUSPENDED: The workload is suspended
-//  - BILLING_SUSPENDED: The workload is suspended due to non-payment
-//  - INACTIVE: The workload is inactive or has been deleted
+//   - SUSPENDED: The workload is suspended
+//   - BILLING_SUSPENDED: The workload is suspended due to non-payment
+//   - INACTIVE: The workload is inactive or has been deleted
 //
 // swagger:model v1WorkloadStatus
 type V1WorkloadStatus string
 
 func NewV1WorkloadStatus(value V1WorkloadStatus) *V1WorkloadStatus {
-	v := value
-	return &v
+	return &value
+}
+
+// Pointer returns a pointer to a freshly-allocated V1WorkloadStatus.
+func (m V1WorkloadStatus) Pointer() *V1WorkloadStatus {
+	return &m
 }
 
 const (

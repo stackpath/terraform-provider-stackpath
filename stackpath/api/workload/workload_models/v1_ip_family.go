@@ -14,17 +14,28 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// V1IPFamily v1 IP family
+// V1IPFamily supported IP families
+//
+// - IP_FAMILY_UNSPECIFIED: Unknown IP family
+//   - IPv4: IPv4 IP family.
+//   - IPv6: IPv6 IP family. Currently, IPv6 IP family must be used with IPv4.
 //
 // swagger:model v1IPFamily
 type V1IPFamily string
 
 func NewV1IPFamily(value V1IPFamily) *V1IPFamily {
-	v := value
-	return &v
+	return &value
+}
+
+// Pointer returns a pointer to a freshly-allocated V1IPFamily.
+func (m V1IPFamily) Pointer() *V1IPFamily {
+	return &m
 }
 
 const (
+
+	// V1IPFamilyIPFAMILYUNSPECIFIED captures enum value "IP_FAMILY_UNSPECIFIED"
+	V1IPFamilyIPFAMILYUNSPECIFIED V1IPFamily = "IP_FAMILY_UNSPECIFIED"
 
 	// V1IPFamilyIPV4 captures enum value "IPv4"
 	V1IPFamilyIPV4 V1IPFamily = "IPv4"
@@ -38,7 +49,7 @@ var v1IpFamilyEnum []interface{}
 
 func init() {
 	var res []V1IPFamily
-	if err := json.Unmarshal([]byte(`["IPv4","IPv6"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["IP_FAMILY_UNSPECIFIED","IPv4","IPv6"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

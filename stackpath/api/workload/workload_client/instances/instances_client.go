@@ -28,13 +28,55 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error)
+
 	GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstancesOK, error)
+
+	RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  GetWorkloadInstances retrieves a workload s instances
+GetWorkloadInstance gets a workload instance
+*/
+func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetWorkloadInstanceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetWorkloadInstance",
+		Method:             "GET",
+		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetWorkloadInstanceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetWorkloadInstanceOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*GetWorkloadInstanceDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+GetWorkloadInstances gets all workload instances
 */
 func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstancesOK, error) {
 	// TODO: Validate the params before sending
@@ -68,6 +110,46 @@ func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authIn
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*GetWorkloadInstancesDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+RestartInstance restarts a workload instance
+
+The action is performed asynchronously and a successful response does not mean the instance has restarted yet.
+*/
+func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartInstanceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "RestartInstance",
+		Method:             "POST",
+		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &RestartInstanceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartInstanceNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*RestartInstanceDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

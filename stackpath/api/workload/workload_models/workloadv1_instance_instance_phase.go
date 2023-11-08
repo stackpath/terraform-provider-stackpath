@@ -17,19 +17,24 @@ import (
 // Workloadv1InstanceInstancePhase An instance's startup state
 //
 // - INSTANCE_PHASE_UNSPECIFIED: StackPath is unable to determine the instance's startup state
-//  - STARTING: The instance is still initializing
-//  - RUNNING: The instance is running
-//  - FAILED: The instance failed to start
-//  - COMPLETED: The instance finished running
-//  - SCHEDULING: The instance is being scheduled
-//  - STOPPED: The instance is stopped
+//   - STARTING: The instance is still initializing
+//   - RUNNING: The instance is running
+//   - FAILED: The instance failed to start
+//   - COMPLETED: The instance finished running
+//   - SCHEDULING: The instance is being scheduled
+//   - STOPPED: The instance is stopped
+//   - DELETING: The instance is being deleted
 //
 // swagger:model workloadv1InstanceInstancePhase
 type Workloadv1InstanceInstancePhase string
 
 func NewWorkloadv1InstanceInstancePhase(value Workloadv1InstanceInstancePhase) *Workloadv1InstanceInstancePhase {
-	v := value
-	return &v
+	return &value
+}
+
+// Pointer returns a pointer to a freshly-allocated Workloadv1InstanceInstancePhase.
+func (m Workloadv1InstanceInstancePhase) Pointer() *Workloadv1InstanceInstancePhase {
+	return &m
 }
 
 const (
@@ -54,6 +59,9 @@ const (
 
 	// Workloadv1InstanceInstancePhaseSTOPPED captures enum value "STOPPED"
 	Workloadv1InstanceInstancePhaseSTOPPED Workloadv1InstanceInstancePhase = "STOPPED"
+
+	// Workloadv1InstanceInstancePhaseDELETING captures enum value "DELETING"
+	Workloadv1InstanceInstancePhaseDELETING Workloadv1InstanceInstancePhase = "DELETING"
 )
 
 // for schema
@@ -61,7 +69,7 @@ var workloadv1InstanceInstancePhaseEnum []interface{}
 
 func init() {
 	var res []Workloadv1InstanceInstancePhase
-	if err := json.Unmarshal([]byte(`["INSTANCE_PHASE_UNSPECIFIED","STARTING","RUNNING","FAILED","COMPLETED","SCHEDULING","STOPPED"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["INSTANCE_PHASE_UNSPECIFIED","STARTING","RUNNING","FAILED","COMPLETED","SCHEDULING","STOPPED","DELETING"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

@@ -52,6 +52,8 @@ func (m *MetricsData) validateMatrix(formats strfmt.Registry) error {
 		if err := m.Matrix.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("matrix")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -69,6 +71,8 @@ func (m *MetricsData) validateVector(formats strfmt.Registry) error {
 		if err := m.Vector.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("vector")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -98,9 +102,16 @@ func (m *MetricsData) ContextValidate(ctx context.Context, formats strfmt.Regist
 func (m *MetricsData) contextValidateMatrix(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Matrix != nil {
+
+		if swag.IsZero(m.Matrix) { // not required
+			return nil
+		}
+
 		if err := m.Matrix.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("matrix")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -112,9 +123,16 @@ func (m *MetricsData) contextValidateMatrix(ctx context.Context, formats strfmt.
 func (m *MetricsData) contextValidateVector(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Vector != nil {
+
+		if swag.IsZero(m.Vector) { // not required
+			return nil
+		}
+
 		if err := m.Vector.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("vector")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

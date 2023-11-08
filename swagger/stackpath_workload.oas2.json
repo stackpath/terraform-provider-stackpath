@@ -21,7 +21,7 @@
   "paths": {
     "/workload/v1/locations": {
       "get": {
-        "summary": "Retrieve the locations a workload may be created in",
+        "summary": "Get compute locations",
         "operationId": "GetLocations",
         "responses": {
           "200": {
@@ -80,13 +80,539 @@
           }
         ],
         "tags": [
-          "Workloads"
+          "Infrastructure"
+        ],
+        "description": "Retrieve information about the StackPath edge network that can host a compute workload"
+      }
+    },
+    "/workload/v1/stacks/{stack_id}/images": {
+      "get": {
+        "summary": "Get all images",
+        "description": "Only non-deprecated images are returned by default",
+        "operationId": "GetImages",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetImagesResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "deprecated",
+            "description": "If present and true, include deprecated images in the result.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      }
+    },
+    "/workload/v1/stacks/{stack_id}/images/{image_family}": {
+      "get": {
+        "summary": "Get a family's images",
+        "description": "Only non-deprecated images are returned by default. This will not error but instead return an empty list if the family is not found.",
+        "operationId": "GetImagesForFamily",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetImagesForFamilyResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "deprecated",
+            "description": "If present and true, include deprecated images in the result.",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a family's images",
+        "description": "",
+        "operationId": "DeleteImagesForFamily",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      }
+    },
+    "/workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}": {
+      "post": {
+        "summary": "Create an image",
+        "operationId": "CreateImage",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1CreateImageResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "The image's family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_tag",
+            "description": "The image's tag",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateImageRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      },
+      "patch": {
+        "summary": "Update an image",
+        "description": "Only metadata and description can be updated. The metadata, if set, replaces the entire existing metadata set. The tag cannot be \"default\".",
+        "operationId": "UpdateImage",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateImageResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image's family!",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_tag",
+            "description": "An image's tag!",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateImageRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      },
+      "get": {
+        "summary": "Get an image",
+        "description": "",
+        "operationId": "GetImage",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetImageResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_tag",
+            "description": "An image tag",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": "default"
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      },
+      "delete": {
+        "summary": "Delete an image",
+        "operationId": "DeleteImage",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image's family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_tag",
+            "description": "An image's tag",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
+        ]
+      }
+    },
+    "/workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation": {
+      "put": {
+        "summary": "Update deprecation settings",
+        "description": "This replaces an image's deprecation settings, so it can also undeprecate an image.",
+        "operationId": "UpdateImageDeprecation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateImageDeprecationResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_family",
+            "description": "An image family",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image_tag",
+            "description": "An image tag",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ImageDeprecation"
+            }
+          }
+        ],
+        "tags": [
+          "Virtual Machine Images"
         ]
       }
     },
     "/workload/v1/stacks/{stack_id}/metrics": {
       "get": {
-        "summary": "Retrieve usage metrics for all workloads in a stack, a specific workload, or a specific instance in a workload",
+        "summary": "Get metrics",
         "operationId": "GetMetrics",
         "responses": {
           "200": {
@@ -117,14 +643,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workloads and instances to retrieve metrics for",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID of a workload to filter metrics for.",
+            "description": "An EdgeCompute workload ID",
             "in": "query",
             "required": false,
             "type": "string"
@@ -172,7 +698,7 @@
           },
           {
             "name": "instance_name",
-            "description": "The name of instance name within a workload to filter metrics for.",
+            "description": "An EdgeCompute workload instance name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -200,7 +726,9 @@
               "SOUTH_AMERICA",
               "MARKETPLACE",
               "INTERNAL",
-              "INTERNET"
+              "INTERNET",
+              "AFRICA",
+              "MIDDLE_EAST"
             ],
             "default": "ALL"
           },
@@ -228,12 +756,13 @@
         ],
         "tags": [
           "Metrics"
-        ]
+        ],
+        "description": "Retrieve usage metrics for all workloads in a stack, a specific workload, or a specific instance in a workload"
       }
     },
     "/workload/v1/stacks/{stack_id}/workloads": {
       "get": {
-        "summary": "Retrieve a stack's workloads",
+        "summary": "Get all workloads",
         "operationId": "GetWorkloads",
         "responses": {
           "200": {
@@ -264,7 +793,7 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack to retrieve workloads from",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
@@ -303,7 +832,7 @@
         ]
       },
       "post": {
-        "summary": "Create a new workload",
+        "summary": "Create a workload",
         "operationId": "CreateWorkload",
         "responses": {
           "200": {
@@ -334,7 +863,7 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack to create the workload in",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
@@ -354,8 +883,65 @@
       }
     },
     "/workload/v1/stacks/{stack_id}/workloads/{workload_id}": {
+      "put": {
+        "summary": "Replace a workload",
+        "operationId": "PutWorkload",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1PutWorkloadResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "description": "A stack ID or slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "workload_id",
+            "description": "An EdgeCompute workload ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PutWorkloadRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Workloads"
+        ]
+      },
       "get": {
-        "summary": "Retrieve an individual workload",
+        "summary": "Get a workload",
         "operationId": "GetWorkload",
         "responses": {
           "200": {
@@ -386,14 +972,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload to retrieve",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID the workload to retrieve",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -432,14 +1018,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload to delete",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID of the workload to delete",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -481,14 +1067,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload to update",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID of the workload to update",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -509,7 +1095,7 @@
     },
     "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances": {
       "get": {
-        "summary": "Retrieve a workload's instances",
+        "summary": "Get all workload instances",
         "operationId": "GetWorkloadInstances",
         "responses": {
           "200": {
@@ -540,14 +1126,14 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload whose instances to retrieve",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID the workload whose instances to retrieve",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
@@ -619,35 +1205,35 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload whose instance to retrieve",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID of the workload whose instance to retrieve",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "instance_name",
-            "description": "The name of the instance to retrieve",
+            "description": "An EdgeCompute workload instance name",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "Instance"
+          "Instances"
         ]
       }
     },
     "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/logs": {
       "get": {
-        "summary": "Retrieve a stream of an instance's logs",
-        "description": "Retrieve a stream of logs generated by a workload instance's containers. Logs are generated by the container themselves and are not modified by StackPath. Log contents vary by the application running in the container, though many containerized applications are configured to log to STDOUT and STDERR.",
+        "summary": "Get log stream",
+        "description": "Retrieve a stream of logs generated by a workload instance's containers. Logs are generated by the containers and are not modified by StackPath. Log contents vary by the application running in the container, though many containerized applications are configured to log to STDOUT and STDERR.",
         "operationId": "GetLogs",
         "responses": {
           "200": {
@@ -678,28 +1264,28 @@
         "parameters": [
           {
             "name": "stack_id",
-            "description": "The ID of the stack containing the workload whose instances to retrieve",
+            "description": "A stack ID or slug",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "workload_id",
-            "description": "The ID the workload whose instances to retrieve",
+            "description": "An EdgeCompute workload ID",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "instance_name",
-            "description": "The name of the instance to obtain logs for",
+            "description": "An EdgeCompute workload instance name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "container_name",
-            "description": "The name of the container to obtain logs for. This defaults to first container in instance.",
+            "description": "The name of the container to obtain logs for. This defaults to first container in the instance.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -763,9 +1349,67 @@
         ]
       }
     },
+    "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/passwords/initial": {
+      "get": {
+        "summary": "Get an instance's initial password",
+        "operationId": "GetWorkloadInstanceInitialPassword",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetWorkloadInstanceInitialPasswordResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/stackpathapiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A stack ID or slug"
+          },
+          {
+            "name": "workload_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "An EdgeCompute workload ID"
+          },
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "An EdgeCompute workload instance name"
+          }
+        ],
+        "tags": [
+          "Instance"
+        ]
+      }
+    },
     "/workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart": {
       "post": {
-        "summary": "Restart an instance",
+        "summary": "Restart a workload instance",
         "description": "The action is performed asynchronously and a successful response does not mean the instance has restarted yet.",
         "operationId": "RestartInstance",
         "responses": {
@@ -796,23 +1440,26 @@
             "name": "stack_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "A stack ID or slug"
           },
           {
             "name": "workload_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "An EdgeCompute workload ID"
           },
           {
             "name": "instance_name",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "An EdgeCompute workload instance name"
           }
         ],
         "tags": [
-          "Instance"
+          "Instances"
         ]
       }
     }
@@ -948,15 +1595,6 @@
       },
       "description": "Time series containing a single sample for each time series, all sharing the same timestamp"
     },
-    "GetMetricsRequestGroupBy": {
-      "type": "string",
-      "enum": [
-        "NONE",
-        "INSTANCE_NAME"
-      ],
-      "default": "NONE",
-      "description": "The available fields to group instance metrics by"
-    },
     "MetricsData": {
       "type": "object",
       "properties": {
@@ -1032,28 +1670,6 @@
         }
       },
       "description": "Information about a paginated response\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
-    },
-    "paginationPageRequest": {
-      "type": "object",
-      "properties": {
-        "first": {
-          "type": "string",
-          "description": "The number of items desired"
-        },
-        "after": {
-          "type": "string",
-          "description": "The cursor value after which data will be returned"
-        },
-        "filter": {
-          "type": "string",
-          "description": "SQL-style constraint filters"
-        },
-        "sortBy": {
-          "type": "string",
-          "description": "Sort the response by the given field"
-        }
-      },
-      "description": "Pagination request information\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
     },
     "prometheusMetrics": {
       "type": "object",
@@ -1303,6 +1919,95 @@
         }
       }
     },
+    "v1ContainerCapabilities": {
+      "type": "object",
+      "properties": {
+        "add": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of supported capabilities to add in container"
+        },
+        "drop": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of supported capabilities to drop from container"
+        }
+      },
+      "description": "The specification for capabilities to add/drop when running containersSupported capabilities are [cap_chown, cap_dac_override, cap_dac_read_search, cap_fowner, cap_fsetid, cap_kill, cap_setgid, cap_setuid, cap_setpcap, cap_linux_immutable,cap_net_bind_service, cap_net_broadcast, cap_net_admin, cap_net_raw, cap_ipc_lock, cap_ipc_owner,cap_sys_chroot, cap_sys_ptrace, cap_sys_pacct, cap_sys_nice, cap_mknod, cap_lease, cap_setfcap]"
+    },
+    "v1ContainerImagePullPolicy": {
+      "type": "string",
+      "enum": [
+        "CONTAINER_IMAGE_PULL_POLICY_UNSPECIFIED",
+        "ALWAYS",
+        "IF_NOT_PRESENT"
+      ],
+      "default": "CONTAINER_IMAGE_PULL_POLICY_UNSPECIFIED",
+      "description": "The image pull policy for the container image. The value should be one of ALWAYS or IF_NOT_PRESENT"
+    },
+    "v1ContainerLifecycle": {
+      "type": "object",
+      "properties": {
+        "postStart": {
+          "$ref": "#/definitions/v1ContainerLifecycleHandler"
+        },
+        "preStop": {
+          "$ref": "#/definitions/v1ContainerLifecycleHandler"
+        }
+      },
+      "description": "Defines actions that the management system should take in response to container lifecycle events"
+    },
+    "v1ContainerLifecycleHandler": {
+      "type": "object",
+      "properties": {
+        "httpGet": {
+          "$ref": "#/definitions/v1HTTPGetAction"
+        },
+        "tcpSocket": {
+          "$ref": "#/definitions/v1TCPSocketAction"
+        },
+        "exec": {
+          "$ref": "#/definitions/v1ExecAction"
+        }
+      },
+      "description": "Defines a specific lifecycle management action that should be taken"
+    },
+    "v1ContainerSecurityContext": {
+      "type": "object",
+      "properties": {
+        "runAsUser": {
+          "type": "string",
+          "description": "The user UID to run the entry point of the container process"
+        },
+        "runAsGroup": {
+          "type": "string",
+          "description": "The user GID to run the entry point of the container process"
+        },
+        "runAsNonRoot": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Indicates that the container must run as a non-root user"
+        },
+        "readOnlyRootFilesystem": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Indicates whether this container has a read-only root filesystem"
+        },
+        "allowPrivilegeEscalation": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Controls whether a process can gain more privileges than its parent process"
+        },
+        "capabilities": {
+          "$ref": "#/definitions/v1ContainerCapabilities"
+        }
+      },
+      "description": "Security configuration that will be applied to a container"
+    },
     "v1ContainerSpec": {
       "type": "object",
       "properties": {
@@ -1317,6 +2022,17 @@
           },
           "description": "The commands that start a container"
         },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Arguments to the container entry point"
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Container's working directory"
+        },
         "env": {
           "$ref": "#/definitions/v1EnvironmentVariableMapEntry"
         },
@@ -1329,6 +2045,9 @@
         "readinessProbe": {
           "$ref": "#/definitions/v1Probe"
         },
+        "startupProbe": {
+          "$ref": "#/definitions/v1Probe"
+        },
         "resources": {
           "$ref": "#/definitions/v1ResourceRequirements"
         },
@@ -1338,6 +2057,22 @@
             "$ref": "#/definitions/v1InstanceVolumeMount"
           },
           "description": "Volumes to mount in the container"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/v1ContainerLifecycle"
+        },
+        "terminationMessagePath": {
+          "type": "string",
+          "description": "Mounted file path at which the container's termination message will be written"
+        },
+        "terminationMessagePolicy": {
+          "$ref": "#/definitions/v1ContainerTerminationMessagePolicy"
+        },
+        "imagePullPolicy": {
+          "$ref": "#/definitions/v1ContainerImagePullPolicy"
+        },
+        "securityContext": {
+          "$ref": "#/definitions/v1ContainerSecurityContext"
         }
       },
       "description": "The specification for the desired state of a container in a workload"
@@ -1407,6 +2142,37 @@
       "default": "CONTAINER_PHASE_UNSPECIFIED",
       "description": "Which phase of runtime a container is currently in\n\n- CONTAINER_PHASE_UNSPECIFIED: The container has not reported a state back or StackPath is unable to determine the container's state\n - STARTING: The container is starting up\n - RUNNING: The container is running\n - FAILED: The container has terminated due to a failure\n - STOPPED: The container was terminated by the user"
     },
+    "v1ContainerTerminationMessagePolicy": {
+      "type": "string",
+      "enum": [
+        "CONTAINER_TERMINATION_MESSAGE_POLICY_UNSPECIFIED",
+        "FILE",
+        "FALLBACK_TO_LOGS_ON_ERROR"
+      ],
+      "default": "CONTAINER_TERMINATION_MESSAGE_POLICY_UNSPECIFIED",
+      "description": "The policy indicating how the termination message should be populated"
+    },
+    "v1CreateImageRequest": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        },
+        "instanceVolumeSource": {
+          "$ref": "#/definitions/v1ImageSourceInstanceVolume"
+        }
+      },
+      "title": ""
+    },
+    "v1CreateImageResponse": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        }
+      },
+      "description": "A response from a request to create an image"
+    },
     "v1CreateWorkloadRequest": {
       "type": "object",
       "properties": {
@@ -1424,6 +2190,47 @@
         }
       },
       "description": "A response from a request to add a workload to a stack"
+    },
+    "v1DNSConfig": {
+      "type": "object",
+      "properties": {
+        "nameservers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of DNS name server IP addresses"
+        },
+        "searches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of DNS search domains for hostname lookup"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1DNSConfigOption"
+          },
+          "description": "A list of DNS resolver options"
+        }
+      },
+      "description": "Specification to control DNS settings for workload instanceIt is used to control resolver config such as DNS nameservers, search domains and resolver options for workload instance"
+    },
+    "v1DNSConfigOption": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "DNS config name"
+        },
+        "value": {
+          "type": "string",
+          "description": "DNS config value"
+        }
+      },
+      "description": "Specification for DNS resolver options, More information about DNS resolveroptions are available here - https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html"
     },
     "v1DeploymentSpec": {
       "type": "object",
@@ -1483,6 +2290,9 @@
         "secretValue": {
           "type": "string",
           "description": "A sensitive environment variable that should not be exposed"
+        },
+        "valueFrom": {
+          "$ref": "#/definitions/v1EnvironmentVariableSource"
         }
       },
       "description": "The location to obtain a value for an environment variable"
@@ -1493,6 +2303,69 @@
         "$ref": "#/definitions/v1EnvironmentVariable"
       },
       "description": "A string to environment variable key/value pair"
+    },
+    "v1EnvironmentVariableSource": {
+      "type": "object",
+      "properties": {
+        "instanceFieldRef": {
+          "$ref": "#/definitions/v1InstanceFieldRef"
+        }
+      },
+      "description": "An environment variable derived from an external source"
+    },
+    "v1ExecAction": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Command to run in container through container exec"
+        }
+      },
+      "description": "Execute an command inside container through container exec for probes/lifecycle actions"
+    },
+    "v1GetImageResponse": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        }
+      },
+      "description": "A response from a request to retrieve an individual image"
+    },
+    "v1GetImagesForFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Image"
+          },
+          "description": "The requested images"
+        }
+      },
+      "description": "A response from a request to retrieve images by a family"
+    },
+    "v1GetImagesResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Image"
+          },
+          "description": "The requested images"
+        }
+      },
+      "description": "A response from a request to retrieve images for a stack"
     },
     "v1GetLocationsResponse": {
       "type": "object",
@@ -1510,44 +2383,14 @@
       },
       "description": "A response from a request to retrieve the locations a workload may be created at"
     },
-    "v1GetMetricsRequestGranularity": {
-      "type": "string",
-      "enum": [
-        "DEFAULT",
-        "PT5M",
-        "PT1H",
-        "P1D",
-        "PT1M"
-      ],
-      "default": "DEFAULT",
-      "description": "The time granularity of retrieved metrics\n\nThis field does not apply when retrieving INSTANCE type metrics\n\n - DEFAULT: The current default is PT5M\n - PT5M: Metrics every five minutes\n - PT1H: Metrics every hour\n - P1D: Metrics every day\n - PT1M: Metrics every one minute"
-    },
-    "v1GetMetricsRequestTrafficRegion": {
-      "type": "string",
-      "enum": [
-        "ALL",
-        "LOCAL_NODE",
-        "LOCAL_POP",
-        "NORTH_AMERICA",
-        "EUROPE",
-        "ASIA",
-        "OCEANIA",
-        "SOUTH_AMERICA",
-        "MARKETPLACE",
-        "INTERNAL",
-        "INTERNET"
-      ],
-      "default": "ALL",
-      "description": "A geographic or network region to filter traffic metrics for\n\nThis field does not apply when retrieving INSTANCE type metrics"
-    },
-    "v1GetMetricsRequestType": {
-      "type": "string",
-      "enum": [
-        "BANDWIDTH",
-        "INSTANCE"
-      ],
-      "default": "BANDWIDTH",
-      "description": "The types of metrics that can be retrieved\n\n- BANDWIDTH: Bandwidth ingress and egress metrics\n - INSTANCE: Instance CPU, memory, and filesystem metrics"
+    "v1GetWorkloadInstanceInitialPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        }
+      },
+      "description": "A response from a request to retrieve a workload's instance's initial password"
     },
     "v1GetWorkloadInstanceResponse": {
       "type": "object",
@@ -1621,13 +2464,189 @@
       },
       "description": "Execute an HTTP GET request against an endpoint running on an instance"
     },
+    "v1HostAlias": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "An IP address to be injected in container workload instance's host file"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of hostnames to be injected in container workload instance's host file"
+        }
+      },
+      "description": "The hosts and IPs that will be injected into the container workload instance's hosts file"
+    },
     "v1IPFamily": {
       "type": "string",
       "enum": [
+        "IP_FAMILY_UNSPECIFIED",
         "IPv4",
         "IPv6"
       ],
-      "default": "IPv4"
+      "default": "IP_FAMILY_UNSPECIFIED",
+      "description": "supported IP families\n\n- IP_FAMILY_UNSPECIFIED: Unknown IP family\n - IPv4: IPv4 IP family.\n - IPv6: IPv6 IP family. Currently, IPv6 IP family must be used with IPv4."
+    },
+    "v1Image": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The ID of the stack that an image belongs to"
+        },
+        "id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "An image's unique identifier"
+        },
+        "family": {
+          "type": "string",
+          "description": "An image's family\n\nFamilies are logical groupings of images"
+        },
+        "tag": {
+          "type": "string",
+          "description": "The image's tag\n\nImage tags are akin to versions"
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1ImageMetadata"
+        },
+        "description": {
+          "type": "string",
+          "description": "An image's description\n\nThis is optional and may not be more than 1,000 characters"
+        },
+        "status": {
+          "$ref": "#/definitions/v1ImageStatus",
+          "readOnly": true,
+          "description": "An image's capture status"
+        },
+        "imageSize": {
+          "type": "string",
+          "description": "An image's archive size in bytes\n\nThis is only available on ready images",
+          "readOnly": true
+        },
+        "volumeSize": {
+          "type": "string",
+          "description": "An image's volume size in bytes\n\nThis is only available on ready images",
+          "readOnly": true
+        },
+        "deprecation": {
+          "$ref": "#/definitions/v1ImageDeprecation"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ImageCondition"
+          },
+          "readOnly": true,
+          "description": "Details about an image's status"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "licenses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "A virtual machine image"
+    },
+    "v1ImageCondition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of the condition"
+        },
+        "status": {
+          "$ref": "#/definitions/v1ImageConditionStatus"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time the condition was checked"
+        },
+        "transitionedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time the condition transitioned status"
+        },
+        "reason": {
+          "type": "string",
+          "description": "A stable identifier for the reason the condition is in its current state"
+        },
+        "message": {
+          "type": "string",
+          "description": "A human readable message with details regarding the condition"
+        }
+      },
+      "description": "Further information about an image's status"
+    },
+    "v1ImageConditionStatus": {
+      "type": "string",
+      "enum": [
+        "IMAGE_CONDITION_STATUS_UNKNOWN",
+        "TRUE",
+        "FALSE"
+      ],
+      "default": "IMAGE_CONDITION_STATUS_UNKNOWN",
+      "description": "Which status an image is currently in\n\n- IMAGE_CONDITION_STATUS_UNKNOWN: The condition status is unknown\n - TRUE: The condition is true\n - FALSE: The condition is false"
+    },
+    "v1ImageDeprecation": {
+      "type": "object",
+      "properties": {
+        "deprecationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when an image is considered deprecated\n\nDeprecated images may be used in new virtual machine based workloads, but are no longer considered for the \"default\" tag, nor are they returned in image lists by default."
+        },
+        "obsoletionDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when an image is considered obsolete\n\nObsolete images may not be used in new virtual machine based workloads. If an obsoletion date is present then the deprecation date must also be present with a same or earlier date."
+        },
+        "deletionDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date when an image is deleted\n\nDeletion dates cannot be before an image's deprecation or obsoletion dates."
+        }
+      },
+      "description": "An image's deprecation settings"
+    },
+    "v1ImageMetadata": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/definitions/v1StringMapEntry"
+        },
+        "labels": {
+          "$ref": "#/definitions/v1StringMapEntry"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date that a workload image was created\n\nThe date an image was created",
+          "readOnly": true,
+          "x-nullable": true
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date that a workload image was last updated\n\nThe date an image was last updated",
+          "readOnly": true,
+          "x-nullable": true
+        }
+      },
+      "description": "An image's metadata"
     },
     "v1ImagePullCredential": {
       "type": "object",
@@ -1637,6 +2656,51 @@
         }
       },
       "description": "The credentials that should be used to pull the container image"
+    },
+    "v1ImageSourceInstanceVolume": {
+      "type": "object",
+      "properties": {
+        "workloadId": {
+          "type": "string",
+          "description": "The ID or slug of the workload containing the instance to reference"
+        },
+        "instanceName": {
+          "type": "string",
+          "description": "An instance's name to reference a volume on"
+        },
+        "volumeClaimSlug": {
+          "type": "string",
+          "description": "A reference to the volume to create an image from or unset for the root volume"
+        }
+      },
+      "description": "A reference to the volume of an instance to capture an image from"
+    },
+    "v1ImageStatus": {
+      "type": "string",
+      "enum": [
+        "IMAGE_STATUS_UNKNOWN",
+        "PENDING",
+        "PROCESSING",
+        "READY",
+        "FAILED"
+      ],
+      "default": "IMAGE_STATUS_UNKNOWN",
+      "description": "Which capture status an image is currently in\n\n- IMAGE_STATUS_UNKNOWN: The image status is unknown\n - PENDING: The image is pending creation\n - PROCESSING: The image is processing\n - READY: The image is ready\n - FAILED: The image failed to be created"
+    },
+    "v1InstanceFieldRef": {
+      "type": "object",
+      "properties": {
+        "fieldPath": {
+          "type": "string",
+          "description": "An instance field's path\n\nA [JSON path expression](https://jsonpath.com/) to an instance field. For example:\n\n * `.name`\n * `.location.cityCode`\n * `.ipAddress`\n * `.containers[0].image`\n * `.networkInterfaces[?(@.network==\\\"default\\\")].gateway`\n\nDots inside of map keys need to be escaped: `.metadata.labels['workload\\\\.platform\\\\.stackpath\\\\.net/workload-slug']`. Recursive descent, union operators, and range/end operators are not allowed.\n"
+        },
+        "optional": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Whether the field value is not required to start an instance\n\nIf a field is optional then there is no guarantee it will be provided to the environment before the container starts."
+        }
+      },
+      "description": "A reference to a workload instance field"
     },
     "v1InstancePort": {
       "type": "object",
@@ -1771,26 +2835,27 @@
       "properties": {
         "network": {
           "type": "string",
-          "description": "A network interface's name"
+          "description": "A network interface's slug"
         },
         "ipFamilies": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1IPFamily"
           },
-          "description": "IPFamilies of IPs which will be assigned to network interface"
+          "description": "A list of IP families to use for interface ip assignments\n\nThis is an optional property and supports ['IPv4'] or ['IPv4', 'IPv6'] list"
         },
         "subnet": {
           "type": "string",
-          "description": "A network IPv4 subnet's name"
+          "description": "An IPv4 subnet interface's slug. This is an optional property used to attach a specific network interface to a IPv4 subnet."
         },
         "ipv6Subnet": {
           "type": "string",
-          "description": "A network IPv6 subnet's name"
+          "description": "An IPv6 subnet interface's slug. This is an optional property used to attach a specific network interface to a ipv6 subnet."
         },
         "enableOneToOneNat": {
           "type": "boolean",
-          "description": "Enable one to one NAT"
+          "format": "boolean",
+          "description": "Whether to provide [one-to-one NAT](https://en.wikipedia.org/wiki/Network_address_translation#Basic_NAT) for this network interface\n\nThis is an optional property used to enable or disable the NAT'ing the network interface. NAT is enabled by default on the first/primary interface and disabled on secondary/multi interfaces.\n\nMark this property `false` to disable NAT on the first interface. Mark this property `true` to enable NAT on secondary interfaces.\n\nThe `ExcludeNAT` workload annotation supercedes this property."
         }
       },
       "description": "Network interfaces that will be created on instances in the workload"
@@ -1803,6 +2868,9 @@
         },
         "tcpSocket": {
           "$ref": "#/definitions/v1TCPSocketAction"
+        },
+        "exec": {
+          "$ref": "#/definitions/v1ExecAction"
         },
         "initialDelaySeconds": {
           "type": "integer",
@@ -1832,6 +2900,24 @@
       },
       "description": "A health check probe against a workload instance to determine if it is alive or ready to receive traffic"
     },
+    "v1PutWorkloadRequest": {
+      "type": "object",
+      "properties": {
+        "workload": {
+          "$ref": "#/definitions/v1Workload"
+        }
+      },
+      "title": ""
+    },
+    "v1PutWorkloadResponse": {
+      "type": "object",
+      "properties": {
+        "workload": {
+          "$ref": "#/definitions/v1Workload"
+        }
+      },
+      "description": "A response from a request to replace an existing workload"
+    },
     "v1ResourceRequirements": {
       "type": "object",
       "properties": {
@@ -1842,7 +2928,7 @@
           "$ref": "#/definitions/v1StringMapEntry"
         }
       },
-      "description": "Resource requirements for an object\n\nResource requirements are key/value pairs."
+      "description": "Resource requirements are key/value pairs.\n\nResource requirements for an object. The values supported by workloads are:\n- cpu\n- memory\n- nvidia-a2: limited to specific markets\n- ephemeral-storage: deprecated and has no effect"
     },
     "v1ScaleSettings": {
       "type": "object",
@@ -1862,6 +2948,20 @@
         "type": "string"
       },
       "description": "A string to string key/value pair"
+    },
+    "v1Sysctl": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Sysctl property name"
+        },
+        "value": {
+          "type": "string",
+          "description": "Sysctl property value"
+        }
+      },
+      "description": "Kernel sysctl parameter to optimize the performance of a container"
     },
     "v1TCPSocketAction": {
       "type": "object",
@@ -1903,6 +3003,33 @@
       },
       "description": "The specification for a target"
     },
+    "v1UpdateImageDeprecationResponse": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        }
+      },
+      "description": "A response from a request to update image deprecation settings"
+    },
+    "v1UpdateImageRequest": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        }
+      },
+      "title": ""
+    },
+    "v1UpdateImageResponse": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/v1Image"
+        }
+      },
+      "description": "A response from a request to update an image"
+    },
     "v1UpdateWorkloadRequest": {
       "type": "object",
       "properties": {
@@ -1926,7 +3053,7 @@
       "properties": {
         "image": {
           "type": "string",
-          "description": "The location of a Docker image to run as a virtual machine"
+          "description": "The image to use for the virtual machine\n\nThis is in the format of <stack-slug>/<image-family>[:<image-tag>]. If the image tag portion is omitted, 'default' is assumed which is the most recently created, ready, and non-deprecated image of that slug. A set of common images is present on the 'stackpath-edge' stack."
         },
         "userData": {
           "type": "string",
@@ -2002,7 +3129,7 @@
         },
         "slug": {
           "type": "string",
-          "description": "A volume claim's programmatic name\n\nVolume claim slugs are used to programmatically label a claim"
+          "description": "A volume claim's programmatic name\n\nVolume claim slugs are used to programatically label a claim"
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata"
@@ -2022,6 +3149,10 @@
       "properties": {
         "resources": {
           "$ref": "#/definitions/v1ResourceRequirements"
+        },
+        "storageClass": {
+          "type": "string",
+          "description": "Storage class for a volume claim\n\nThis defaults to the 'stackpath-edge/san' value if none is provided."
         }
       },
       "description": "The specification for a volume claim"
@@ -2063,6 +3194,95 @@
       },
       "description": "A computing workload\n\nWorkloads define a computing application to deploy to StackPath's edge network."
     },
+    "v1WorkloadInstanceContainerRuntimeSettings": {
+      "type": "object",
+      "properties": {
+        "terminationGracePeriodSeconds": {
+          "type": "string",
+          "description": "The duration in seconds the workload instance needs to terminate gracefully. The value should belong to [0-300] seconds range"
+        },
+        "shareProcessNamespace": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Whether to run all containers of workload instance in a single process namespace"
+        },
+        "securityContext": {
+          "$ref": "#/definitions/v1WorkloadInstanceSecurityContext"
+        },
+        "hostAliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1HostAlias"
+          },
+          "description": "The list of hosts and IPs that will be injected into the workload instance's hosts file"
+        },
+        "dnsConfig": {
+          "$ref": "#/definitions/v1DNSConfig"
+        }
+      },
+      "description": "The specification for container settings which are applicable to all workload instance containers"
+    },
+    "v1WorkloadInstanceRuntimeSettings": {
+      "type": "object",
+      "properties": {
+        "containers": {
+          "$ref": "#/definitions/v1WorkloadInstanceContainerRuntimeSettings"
+        },
+        "virtualMachines": {
+          "$ref": "#/definitions/v1WorkloadInstanceVMRuntimeSettings"
+        }
+      },
+      "description": "The specification for workload instance level settings"
+    },
+    "v1WorkloadInstanceSecurityContext": {
+      "type": "object",
+      "properties": {
+        "runAsUser": {
+          "type": "string",
+          "description": "The user UID to run the entry point of the container process"
+        },
+        "runAsGroup": {
+          "type": "string",
+          "description": "The user GID to run the entry point of the container process"
+        },
+        "runAsNonRoot": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Indicates that the container must run as a non-root user"
+        },
+        "supplementalGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The additional list of user groups applied to the first process run in each container running in the workload instance"
+        },
+        "sysctls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Sysctl"
+          },
+          "description": "The list of kernel sysctl parameters to optimize the performance of a containersupported sysctls are [kernel.msgmax, kernel.msgmnb, kernel.pid_max, kernel.shmall, kernel.shmmax, kernel.shm_rmid_forced, net.core.netdev_budget, net.core.netdev_budget_usecs, net.core.netdev_max_backlog, net.core.optmem_max, net.core.rmem_default, net.core.rmem_max, net.core.somaxconn, net.core.wmem_default, net.core.wmem_max, net.ipv4.conf.$interface.accept_local, net.ipv4.conf.$interface.arp_announce, net.ipv4.conf.$interface.arp_ignore, net.ipv4.conf.$interface.rp_filter, net.ipv4.conf.all.accept_local, net.ipv4.conf.all.arp_announce, net.ipv4.conf.all.arp_ignore, net.ipv4.conf.all.force_igmp_version, net.ipv4.conf.all.rp_filter, net.ipv4.conf.default.accept_local, net.ipv4.conf.default.accept_source_route, net.ipv4.conf.default.rp_filter, net.ipv4.conf.lo.accept_local, net.ipv4.conf.lo.arp_announce, net.ipv4.conf.lo.arp_filter, net.ipv4.conf.lo.arp_ignore, net.ipv4.conf.lo.rp_filter, net.ipv4.ip_forward, net.ipv4.ip_local_port_range, net.ipv4.ip_local_reserved_ports, net.ipv4.ip_unprivileged_port_start, net.ipv4.ping_group_range, net.ipv4.tcp_base_mss, net.ipv4.tcp_congestion_control, net.ipv4.tcp_early_retrans, net.ipv4.tcp_ecn, net.ipv4.tcp_enable_last_ack_timer, net.ipv4.tcp_fin_timeout, net.ipv4.tcp_frto_response, net.ipv4.tcp_last_ack_timeout, net.ipv4.tcp_max_orphans, net.ipv4.tcp_max_syn_backlog, net.ipv4.tcp_mem, net.ipv4.tcp_mtu_probing, net.ipv4.tcp_no_metrics_save, net.ipv4.tcp_orphan_retries, net.ipv4.tcp_retries2, net.ipv4.tcp_rmem, net.ipv4.tcp_rto_max, net.ipv4.tcp_slow_start_after_idle, net.ipv4.tcp_syncookies, net.ipv4.tcp_timestamps, net.ipv4.tcp_tw_recycle, net.ipv4.tcp_tw_reuse, net.ipv4.tcp_wmem, net.ipv4.vs.debug_level, net.ipv6.conf.$interface.autoconf, net.ipv6.conf.all.accept_ra, net.ipv6.conf.all.autoconf, net.ipv6.conf.all.disable_ipv6, net.ipv6.conf.default.autoconf, net.ipv6.conf.lo.accept_dad, net.ipv6.conf.lo.autoconf, net.ipv6.conf.lo.dad_transmits, net.ipv6.route.max_size, vm.dirty_background_ratio, vm.dirty_ratio, vm.max_map_count, vm.min_free_kbytes, vm.panic_on_oom, vm.swappiness]"
+        }
+      },
+      "description": "Security configuration that will be applied to all containers in the workload instance"
+    },
+    "v1WorkloadInstanceVMRuntimeSettings": {
+      "type": "object",
+      "properties": {
+        "hostAliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1HostAlias"
+          },
+          "description": "The list of hosts and IPs that will be injected into the workload instance's hosts file"
+        },
+        "dnsConfig": {
+          "$ref": "#/definitions/v1DNSConfig"
+        }
+      },
+      "description": "The specification for VM settings which are applicable to VM workload instance"
+    },
     "v1WorkloadSpec": {
       "type": "object",
       "properties": {
@@ -2072,6 +3292,9 @@
             "$ref": "#/definitions/v1NetworkInterface"
           },
           "description": "Network interfaces to bind to the workload's instances"
+        },
+        "initContainers": {
+          "$ref": "#/definitions/v1ContainerSpecMapEntry"
         },
         "containers": {
           "$ref": "#/definitions/v1ContainerSpecMapEntry"
@@ -2088,6 +3311,9 @@
         },
         "imagePullCredentials": {
           "$ref": "#/definitions/v1WrappedImagePullCredentials"
+        },
+        "runtime": {
+          "$ref": "#/definitions/v1WorkloadInstanceRuntimeSettings"
         }
       },
       "description": "The specification for the desired state of a workload"
@@ -2105,10 +3331,11 @@
     },
     "v1WrappedImagePullCredentials": {
       "type": "array",
+      "title": "",
       "items": {
         "$ref": "#/definitions/v1ImagePullCredential"
       },
-      "description": "The credentials that should be used to pull the container image\n\nThe credentials that should be used to pull the container image"
+      "description": "The credentials needed to pull a container image"
     },
     "workloadv1Instance": {
       "type": "object",
@@ -2127,7 +3354,7 @@
         },
         "name": {
           "type": "string",
-          "description": "An instance's name\n\nInstance names are generated from their corresponding workload's slug, followed by a unique hash"
+          "description": "An instance's name\n\nInstance names are generated from their corresponsing workload's slug, followed by a unique hash"
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata"
@@ -2189,6 +3416,16 @@
           },
           "description": "Status of the containers running within the workload instance"
         },
+        "initContainers": {
+          "$ref": "#/definitions/v1ContainerSpecMapEntry"
+        },
+        "initContainerStatuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ContainerStatus"
+          },
+          "description": "Status of the init_containers running within the workload instance"
+        },
         "virtualMachines": {
           "$ref": "#/definitions/v1VirtualMachineSpecMapEntry"
         },
@@ -2198,6 +3435,9 @@
             "$ref": "#/definitions/v1VirtualMachineStatus"
           },
           "description": "The status of the virtual machines running within the workload instance"
+        },
+        "runtime": {
+          "$ref": "#/definitions/v1WorkloadInstanceRuntimeSettings"
         },
         "reason": {
           "type": "string",
@@ -2224,10 +3464,11 @@
         "FAILED",
         "COMPLETED",
         "SCHEDULING",
-        "STOPPED"
+        "STOPPED",
+        "DELETING"
       ],
       "default": "INSTANCE_PHASE_UNSPECIFIED",
-      "description": "An instance's startup state\n\n- INSTANCE_PHASE_UNSPECIFIED: StackPath is unable to determine the instance's startup state\n - STARTING: The instance is still initializing\n - RUNNING: The instance is running\n - FAILED: The instance failed to start\n - COMPLETED: The instance finished running\n - SCHEDULING: The instance is being scheduled\n - STOPPED: The instance is stopped"
+      "description": "An instance's startup state\n\n- INSTANCE_PHASE_UNSPECIFIED: StackPath is unable to determine the instance's startup state\n - STARTING: The instance is still initializing\n - RUNNING: The instance is running\n - FAILED: The instance failed to start\n - COMPLETED: The instance finished running\n - SCHEDULING: The instance is being scheduled\n - STOPPED: The instance is stopped\n - DELETING: The instance is being deleted"
     },
     "workloadv1Location": {
       "type": "object",
@@ -2285,6 +3526,10 @@
           "type": "number",
           "format": "double",
           "description": "A location's geographic longitude"
+        },
+        "status": {
+          "type": "string",
+          "description": "A location's status, either active or decommissioned"
         }
       },
       "description": "Geographic location information"
