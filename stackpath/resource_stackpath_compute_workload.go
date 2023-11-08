@@ -396,6 +396,66 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 	}
 }
 
+func resourceComputeWorkloadSecurityContextSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_privilege_escalation": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"read_only_root_filesystem": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"run_as_group": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"run_as_user": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"run_as_non_root": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"capabilities": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"add": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+							"drop": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func resourceComputeWorkloadCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	// Create the workload

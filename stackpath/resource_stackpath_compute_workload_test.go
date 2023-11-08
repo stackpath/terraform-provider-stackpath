@@ -107,6 +107,15 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerSecurityContextCapabilities(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{"NET_ADMIN"}, []string{"NET_BROADCAST"}),
+					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
+				),
+			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
@@ -524,7 +533,7 @@ func testAccComputeWorkloadCheckVirtualMachineImage(workload *workload_models.V1
 
 func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(*terraform.State) error {
-		if len(workload.Spec.ImagePullCredentials) != 0 {
+		if workload.Spec.ImagePullCredentials != nil {
 			return fmt.Errorf("unexpected image pull credentials set on the workload")
 		}
 		return nil
@@ -533,7 +542,7 @@ func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models
 
 func testAccComputeWorkloadCheckImagePullCredentials(workload *workload_models.V1Workload, server, username, email string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
-		if len(workload.Spec.ImagePullCredentials) == 0 {
+		if workload.Spec.ImagePullCredentials == nil {
 			return fmt.Errorf("no image pull credentials set on the workload")
 		} else if creds := workload.Spec.ImagePullCredentials[0]; creds.DockerRegistry.Server != server {
 			return fmt.Errorf("image pull server '%s' does not match expected value '%s'", creds.DockerRegistry.Server, server)
@@ -631,7 +640,7 @@ func testAccComputeWorkloadCheckContainerImage(workload *workload_models.V1Workl
 	}
 }
 
-func testAccComputeWorkloadCheckExists(name string, workload *workload_models.V1Workload) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckExists(name string, spec *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -652,7 +661,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *workload_models.V1
 			return fmt.Errorf("could not retrieve workload: %v", err)
 		}
 
-		*workload = *found.Payload.Workload
+		*spec = *found.Payload.Workload
 
 		return nil
 	}
@@ -678,6 +687,56 @@ func testAccComputeWorkloadCheckTargetAutoScaling(workload *workload_models.V1Wo
 				return fmt.Errorf("expected average utilization to be %d, got %d", averageUtilization, m.AverageUtilization)
 			}
 		}
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckCapabilities(workload *workload_models.V1Workload, containerName string, add []string, drop []string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		container, found := workload.Spec.Containers[containerName]
+		if !found {
+			return fmt.Errorf("container not found: %s", containerName)
+		} else if container.SecurityContext == nil {
+			return fmt.Errorf("container '%s' does not contain a security context", containerName)
+		} else if container.SecurityContext.Capabilities == nil {
+			return fmt.Errorf("container '%s' does not have capability requests: %+v", containerName, container.SecurityContext)
+		}
+		if !reflect.DeepEqual(container.SecurityContext.Capabilities.Add, add) {
+			return fmt.Errorf("container '%s' ADD caps not the same (%v)!=(%v)",
+				containerName, container.SecurityContext.Capabilities.Add, add)
+		} else if !reflect.DeepEqual(container.SecurityContext.Capabilities.Drop, drop) {
+			return fmt.Errorf("container '%s' DROP caps not the same (%v)!=(%v)",
+				containerName, container.SecurityContext.Capabilities.Drop, drop)
+		}
+
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckSecurityContext(workload *workload_models.V1Workload, containerName string,
+	allowPrivEscalation, readOnly, nonRoot bool, uid, gid string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		container, found := workload.Spec.Containers[containerName]
+		if !found {
+			return fmt.Errorf("container not found: %s", containerName)
+		} else if container.SecurityContext == nil {
+			return fmt.Errorf("container '%s' does not contain a security context", containerName)
+
+		} else if container.SecurityContext.AllowPrivilegeEscalation != allowPrivEscalation {
+			return fmt.Errorf("container '%s' does not have correct allowPrivilegeEscalation", containerName)
+		} else if container.SecurityContext.ReadOnlyRootFilesystem != readOnly {
+			return fmt.Errorf("container '%s' does not have correct rootOnlyFilesystem", containerName)
+
+		} else if container.SecurityContext.RunAsNonRoot != nonRoot {
+			return fmt.Errorf("container '%s' does not have correct runAsNonRoot", containerName)
+		} else if container.SecurityContext.RunAsUser != uid {
+			return fmt.Errorf("container '%s' does not have correct runAsUser: %s", containerName, container.SecurityContext.RunAsUser)
+		} else if container.SecurityContext.RunAsGroup != gid {
+			return fmt.Errorf("container '%s' does not have correct runAsGroup: %s", containerName, container.SecurityContext.RunAsGroup)
+		}
+
 		return nil
 	}
 }
@@ -1260,6 +1319,7 @@ resource "stackpath_compute_workload" "foo" {
       port     = 80
       protocol = "TCP"
     }
+
   }
 
   target {
@@ -1272,6 +1332,63 @@ resource "stackpath_compute_workload" "foo" {
         average_utilization = 50
       }
     }
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerSecurityContextCapabilities(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+	security_context {
+
+		allow_privilege_escalation = true
+		run_as_non_root = true
+		run_as_user = "101"
+
+		capabilities {
+			add = [
+				"NET_ADMIN",
+			]
+
+			drop = [
+				"NET_BROADCAST",
+			]
+		}
+	}
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
     selector {
       key      = "cityCode"
       operator = "in"

@@ -198,14 +198,15 @@ func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) 
 
 func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) workload_models.V1ContainerSpec {
 	return workload_models.V1ContainerSpec{
-		Image:          data.Get(prefix).(map[string]interface{})["image"].(string),
-		Command:        convertToStringArray(data.Get(prefix + ".command").([]interface{})),
-		Ports:          convertComputeWorkloadPorts(prefix+".port", data),
-		Env:            convertComputeWorkloadEnvironmentVariables(prefix+".env", data),
-		LivenessProbe:  convertComputeWorkloadProbe(prefix+".liveness_probe", data),
-		ReadinessProbe: convertComputeWorkloadProbe(prefix+".readiness_probe", data),
-		Resources:      convertComputeWorkloadResourceRequirements(prefix+".resources", data),
-		VolumeMounts:   convertComputeWorkloadVolumeMounts(prefix+".volume_mount", data),
+		Image:           data.Get(prefix).(map[string]interface{})["image"].(string),
+		Command:         convertToStringArray(data.Get(prefix + ".command").([]interface{})),
+		Ports:           convertComputeWorkloadPorts(prefix+".port", data),
+		Env:             convertComputeWorkloadEnvironmentVariables(prefix+".env", data),
+		LivenessProbe:   convertComputeWorkloadProbe(prefix+".liveness_probe", data),
+		ReadinessProbe:  convertComputeWorkloadProbe(prefix+".readiness_probe", data),
+		Resources:       convertComputeWorkloadResourceRequirements(prefix+".resources", data),
+		VolumeMounts:    convertComputeWorkloadVolumeMounts(prefix+".volume_mount", data),
+		SecurityContext: convertComputeWorkloadSecurityContext(prefix+".security_context", data),
 	}
 }
 
@@ -333,6 +334,55 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 		}
 	}
 	return envVars
+}
+
+func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceData) *workload_models.V1ContainerSecurityContext {
+
+	// They aren't specifying a security context at all
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
+
+	prefix = prefix + ".0"
+	sc := &workload_models.V1ContainerSecurityContext{
+		AllowPrivilegeEscalation: data.Get(prefix + ".allow_privilege_escalation").(bool),
+		RunAsGroup:               data.Get(prefix + ".run_as_group").(string),
+		RunAsNonRoot:             data.Get(prefix + ".run_as_non_root").(bool),
+		RunAsUser:                data.Get(prefix + ".run_as_user").(string),
+		ReadOnlyRootFilesystem:   data.Get(prefix + ".read_only_root_filesystem").(bool),
+		Capabilities:             convertComputeWorkloadSecurityContextCapabilities(prefix+".capabilities", data),
+	}
+
+	return sc
+}
+
+func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *schema.ResourceData) *workload_models.V1ContainerCapabilities {
+
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil // no caps
+	}
+	prefix = prefix + ".0"
+
+	capData := data.Get(prefix).(map[string]interface{})
+
+	capabilities := &workload_models.V1ContainerCapabilities{}
+
+	adds, ok := capData["add"]
+	if ok {
+		capabilities.Add = convertToStringArray(adds.([]interface{}))
+	} else {
+		capabilities.Add = []string{}
+	}
+
+	drops, ok := capData["drop"]
+	if ok {
+		capabilities.Drop = convertToStringArray(drops.([]interface{}))
+	} else {
+		capabilities.Drop = []string{}
+	}
+
+	return capabilities
+
 }
 
 func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models.V1Workload) error {
@@ -614,15 +664,16 @@ func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, 
 // with updates to existing resources and accurate diffs are desired.
 func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.ResourceData, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
-		"name":            name,
-		"image":           container.Image,
-		"command":         flattenStringArray(container.Command),
-		"port":            flattenComputeWorkloadPortsOrdered(prefix+".port", data, container.Ports),
-		"env":             flattenComputeWorkloadEnvVarsOrdered(prefix+".env", data, container.Env),
-		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
-		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
-		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
-		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"name":             name,
+		"image":            container.Image,
+		"command":          flattenStringArray(container.Command),
+		"port":             flattenComputeWorkloadPortsOrdered(prefix+".port", data, container.Ports),
+		"env":              flattenComputeWorkloadEnvVarsOrdered(prefix+".env", data, container.Env),
+		"readiness_probe":  flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":   flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
 	}
 }
 
@@ -631,15 +682,16 @@ func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.Re
 // is important, flattenComputeWorkloadContainerOrdered should be used.
 func flattenComputeWorkloadContainer(name string, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
-		"name":            name,
-		"image":           container.Image,
-		"command":         flattenStringArray(container.Command),
-		"port":            flattenComputeWorkloadPorts(container.Ports),
-		"env":             flattenComputeWorkloadEnvVars(container.Env),
-		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
-		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
-		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
-		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"name":             name,
+		"image":            container.Image,
+		"command":          flattenStringArray(container.Command),
+		"port":             flattenComputeWorkloadPorts(container.Ports),
+		"env":              flattenComputeWorkloadEnvVars(container.Env),
+		"readiness_probe":  flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":   flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
 	}
 }
 
@@ -741,6 +793,39 @@ func flattenComputeWorkloadEnvVars(envVars workload_models.V1EnvironmentVariable
 		})
 	}
 	return e
+}
+
+// Convert the model to "array" of maps, order of capabilities not maintained.
+func flattenComputeWorkloadSecurityContext(securityContext *workload_models.V1ContainerSecurityContext) []interface{} {
+	if securityContext == nil {
+		return nil
+	}
+	ret := []interface{}{map[string]interface{}{
+		"allow_privilege_escalation": securityContext.AllowPrivilegeEscalation,
+		"read_only_root_filesystem":  securityContext.ReadOnlyRootFilesystem,
+		"run_as_group":               securityContext.RunAsGroup,
+		"run_as_user":                securityContext.RunAsUser,
+		"run_as_non_root":            securityContext.RunAsNonRoot,
+		"capabilities":               flattenComputeWorkloadSecurityContextCapabilities(securityContext.Capabilities),
+	}}
+
+	return ret
+
+}
+
+func flattenComputeWorkloadSecurityContextCapabilities(capabilities *workload_models.V1ContainerCapabilities) []interface{} {
+	if capabilities == nil {
+		return nil
+	}
+
+	// for now we don't care about the order of the capabilities, we'll do so if it turns out to matter
+	caps := map[string][]interface{}{
+		"add":  flattenStringArray(capabilities.Add),
+		"drop": flattenStringArray(capabilities.Drop),
+	}
+
+	return []interface{}{caps}
+
 }
 
 // flattenComputeWorkloadPortsOrdered flattens the port definitions for a workload while
