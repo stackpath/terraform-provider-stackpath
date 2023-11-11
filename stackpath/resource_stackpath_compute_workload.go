@@ -241,6 +241,29 @@ func resourceComputeWorkload() *schema.Resource {
 					},
 				},
 			},
+			"container_runtime_environment": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				MaxItems:      1,
+				ConflictsWith: []string{"virtual_machine_runtime_environment"},
+				Elem:          resourceComputeContainerRuntimeEnvironment(),
+			},
+			"virtual_machine_runtime_environment": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				MaxItems:      1,
+				ConflictsWith: []string{"container_runtime_environment"},
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"dns": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem:     resourceComputeRuntimeEnvironmentDns(),
+						},
+					},
+				},
+			},
 			"instances": {
 				Type:     schema.TypeList,
 				Computed: true,
@@ -435,19 +458,132 @@ func resourceComputeWorkloadSecurityContextSchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"add": {
-								Type:     schema.TypeList,
+								Type:     schema.TypeSet,
 								Optional: true,
 								Elem: &schema.Schema{
 									Type: schema.TypeString,
 								},
 							},
 							"drop": {
-								Type:     schema.TypeList,
+								Type:     schema.TypeSet,
 								Optional: true,
 								Elem: &schema.Schema{
 									Type: schema.TypeString,
 								},
 							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func resourceComputeContainerRuntimeEnvironment() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"termination_grace_period_seconds": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"share_process_namespace": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"security_context": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"run_as_group": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "",
+						},
+						"run_as_user": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "",
+						},
+						"run_as_non_root": {
+							Type:     schema.TypeBool,
+							Optional: true,
+							Default:  false,
+						},
+						"supplemental_groups": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"sysctl": {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"dns": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Required: true,
+				Elem:     resourceComputeRuntimeEnvironmentDns(),
+			},
+		},
+	}
+}
+
+func resourceComputeRuntimeEnvironmentDns() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"host_aliases": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"address": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"hostnames": {
+							Type:     schema.TypeSet,
+							Required: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"resolver_config": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+
+					Schema: map[string]*schema.Schema{
+						"nameservers": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"search": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"options": {
+							Type:     schema.TypeMap,
+							Optional: true,
 						},
 					},
 				},

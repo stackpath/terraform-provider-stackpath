@@ -3,6 +3,7 @@ package stackpath
 import (
 	"encoding/base64"
 	"fmt"
+	"strconv"
 
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
@@ -27,6 +28,7 @@ func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Worklo
 			NetworkInterfaces:    convertComputeWorkloadNetworkInterfaces(data.Get("network_interface").([]interface{})),
 			ImagePullCredentials: convertComputeWorkloadImagePullCredentials("image_pull_credentials", data),
 			VolumeClaimTemplates: convertComputeWorkloadVolumeClaims("volume_claim", data),
+			Runtime:              convertComputeWorkloadRuntime("container_runtime_environment", "virtual_machine_runtime_environment", data),
 		},
 		Targets: convertComputeWorkloadTargets(data.Get("target").([]interface{})),
 	}
@@ -356,6 +358,125 @@ func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceD
 	return sc
 }
 
+func convertComputeWorkloadRuntime(cPrefix string, vmPrefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceRuntimeSettings {
+
+	var containerRuntime *workload_models.V1WorkloadInstanceContainerRuntimeSettings
+	if data.HasChange(cPrefix) {
+		containerRuntime = convertComputeWorkloadRuntimeContainer(cPrefix, data)
+	}
+
+	return &workload_models.V1WorkloadInstanceRuntimeSettings{
+		Containers: containerRuntime,
+	}
+
+}
+
+func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceContainerRuntimeSettings {
+
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
+
+	model := &workload_models.V1WorkloadInstanceContainerRuntimeSettings{}
+
+	if share, ok := data.GetOk("share_process_namespace"); ok {
+		model.ShareProcessNamespace = share.(bool)
+	}
+
+	if term, ok := data.GetOk("termination_grace_period_seconds"); ok {
+		model.TerminationGracePeriodSeconds = strconv.Itoa(term.(int))
+	} else {
+		model.TerminationGracePeriodSeconds = ""
+	}
+
+	if prefix != "" {
+		prefix = prefix + ".0."
+	}
+
+	if data.HasChange(prefix+"security_context") || data.Get(prefix+"security_context.#").(int) > 0 {
+		secModel := &workload_models.V1WorkloadInstanceSecurityContext{}
+		secContextData := data.Get(prefix + "security_context.0").(map[string]interface{})
+
+		sysctlM := []*workload_models.V1Sysctl{}
+		if sysctl, ok := secContextData["sysctl"]; ok {
+			for key, val := range sysctl.(map[string]interface{}) {
+				sysctlM = append(sysctlM, &workload_models.V1Sysctl{
+					Name:  key,
+					Value: val.(string),
+				})
+			}
+		}
+		secModel.Sysctls = sysctlM
+
+		if rg, ok := secContextData["run_as_group"]; ok {
+			secModel.RunAsGroup = rg.(string)
+		}
+		if ru, ok := secContextData["run_as_user"]; ok {
+			secModel.RunAsUser = ru.(string)
+		}
+		if ru, ok := secContextData["run_as_non_root"]; ok {
+			secModel.RunAsNonRoot = ru.(bool)
+		}
+		if sup, ok := secContextData["supplemental_groups"]; ok {
+			secModel.SupplementalGroups = convertToStringArray(sup.([]interface{}))
+		}
+
+		model.SecurityContext = secModel
+	}
+
+	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
+
+		if had, ok := data.GetOk(prefix + "dns.0.host_aliases"); ok {
+			hostAliasData := had.([]interface{})
+			hostAliasModel := make([]*workload_models.V1HostAlias, 0, len(hostAliasData))
+
+			for _, aliasData := range hostAliasData {
+				address := aliasData.(map[string]interface{})["address"]
+				aliases := aliasData.(map[string]interface{})["hostnames"]
+				hostAliasModel = append(hostAliasModel, &workload_models.V1HostAlias{
+					IP:        address.(string),
+					Hostnames: convertToStringArray(aliases.(*schema.Set).List()),
+				})
+
+			}
+
+			model.HostAliases = hostAliasModel
+		}
+
+		if dd, ok := data.GetOk(prefix + "dns.0.resolver_config"); ok {
+			configData := dd.([]interface{})
+
+			if len(configData) > 0 {
+				config := configData[0].(map[string]interface{})
+
+				dnsModel := &workload_models.V1DNSConfig{}
+				dnsModel.Nameservers = convertToStringArray(config["nameservers"].([]interface{}))
+				dnsModel.Searches = convertToStringArray(config["search"].([]interface{}))
+
+				if options, ok := config["options"]; ok {
+					switch t := options.(type) {
+					case map[string]interface{}:
+						dnsModel.Options = make([]*workload_models.V1DNSConfigOption, 0, len(t))
+
+						for opt, value := range t {
+							dnsModel.Options = append(dnsModel.Options, &workload_models.V1DNSConfigOption{
+								Name:  opt,
+								Value: value.(string),
+							})
+						}
+					}
+
+				}
+
+				model.DNSConfig = dnsModel
+			}
+
+		}
+	}
+
+	return model
+}
+
 func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *schema.ResourceData) *workload_models.V1ContainerCapabilities {
 
 	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
@@ -369,14 +490,14 @@ func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *sche
 
 	adds, ok := capData["add"]
 	if ok {
-		capabilities.Add = convertToStringArray(adds.([]interface{}))
+		capabilities.Add = convertSetToStringArray(adds.(*schema.Set))
 	} else {
 		capabilities.Add = []string{}
 	}
 
 	drops, ok := capData["drop"]
 	if ok {
-		capabilities.Drop = convertToStringArray(drops.([]interface{}))
+		capabilities.Drop = convertSetToStringArray(drops.(*schema.Set))
 	} else {
 		capabilities.Drop = []string{}
 	}
@@ -424,6 +545,12 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models
 
 	if err := data.Set("target", flattenComputeWorkloadTargets("target", data, workload.Targets)); err != nil {
 		return fmt.Errorf("error setting target: %v", err)
+	}
+
+	if workload.Spec.Runtime != nil {
+		if err := data.Set("container_runtime_environment", flattenComputeWorkloadRuntimeContainer("container_runtime_environment", data, workload.Spec.Runtime.Containers)); err != nil {
+			return fmt.Errorf("error setting container_runtime_environment: %v", err)
+		}
 	}
 
 	return nil
@@ -826,6 +953,44 @@ func flattenComputeWorkloadSecurityContextCapabilities(capabilities *workload_mo
 
 	return []interface{}{caps}
 
+}
+
+func flattenComputeWorkloadRuntimeContainer(prefix string, data *schema.ResourceData, container *workload_models.V1WorkloadInstanceContainerRuntimeSettings) []interface{} {
+
+	if container == nil {
+		return nil
+	}
+
+	containerData := map[string]interface{}{
+		"share_process_namespace": container.ShareProcessNamespace,
+	}
+
+	if term, err := strconv.Atoi(container.TerminationGracePeriodSeconds); err == nil {
+		containerData["termination_grace_period_seconds"] = term
+	}
+
+	if container.SecurityContext != nil {
+		secData := map[string]interface{}{
+			"run_as_group":        container.SecurityContext.RunAsGroup,
+			"run_as_user":         container.SecurityContext.RunAsUser,
+			"run_as_non_root":     container.SecurityContext.RunAsNonRoot,
+			"supplemental_groups": flattenStringArray(container.SecurityContext.SupplementalGroups),
+		}
+
+		if container.SecurityContext.Sysctls != nil {
+			sysctl := map[string]interface{}{}
+
+			for _, s := range container.SecurityContext.Sysctls {
+				sysctl[s.Name] = s.Value
+			}
+			secData["sysctl"] = sysctl
+		}
+
+		containerData["security_context"] = []map[string]interface{}{secData}
+
+	}
+
+	return []interface{}{containerData}
 }
 
 // flattenComputeWorkloadPortsOrdered flattens the port definitions for a workload while

@@ -1,7 +1,7 @@
 package stackpath
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-testing/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
@@ -37,6 +37,10 @@ func convertToStringArray(data []interface{}) []string {
 		s[i] = c.(string)
 	}
 	return s
+}
+
+func convertSetToStringArray(data *schema.Set) []string {
+	return convertToStringArray(data.List())
 }
 
 func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchExpression) []*ipam_models.NetworkMatchExpression {
