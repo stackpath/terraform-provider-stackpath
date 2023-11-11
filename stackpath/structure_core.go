@@ -1,7 +1,7 @@
 package stackpath
 
 import (
-	"github.com/hashicorp/terraform-plugin-testing/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 )
