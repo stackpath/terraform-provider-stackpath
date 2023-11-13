@@ -334,7 +334,7 @@ func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
 }
 
 func TestComputeContainersEnhancedContainerControls(t *testing.T) {
-	//	t.Parallel()
+	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
 	nameSuffix := "ecc-" + strconv.Itoa(int(time.Now().Unix()))
@@ -410,6 +410,36 @@ func TestComputeContainersEnhancedContainerControls(t *testing.T) {
 						map[string]string{
 							"timeout": "10",
 						},
+					),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerRuntimeClearSettings(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
+					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
+						"60",           // termination,
+						true,           // share namespace
+						"999",          // run_as_user
+						"991",          // run_as_group
+						true,           // run_as_non_root
+						[]string{"43"}, // make sure it actually changed
+					),
+					testAccComputeWorkloadCheckRuntimeSysctl(workload, map[string]string{
+						"net.core.rmem_max":     "10065408",
+						"net.core.rmem_default": "1006540",
+					}),
+					// clearing host settings
+					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
+						nil),
+					// cleared options
+					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain1.com"},
+						nil,
 					),
 				),
 			},
@@ -1744,6 +1774,78 @@ resource "stackpath_compute_workload" "foo" {
 			options = {
 				timeout = "10"
 			}
+		}
+	}
+
+
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerRuntimeClearSettings(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+
+  container_runtime_environment {
+	termination_grace_period_seconds = 60
+	share_process_namespace = true
+	security_context {
+		run_as_user = "999"
+		run_as_group = "991"
+		run_as_non_root = true
+
+		supplemental_groups = [ 
+			"43", 
+		]
+
+		sysctl = {
+			"net.core.rmem_max" = "10065408"
+			"net.core.rmem_default" = "1006540"
+		}
+	}
+
+
+
+	dns {
+
+		resolver_config {
+			nameservers = [ "8.8.8.8" ]
+			search = [ "domain2.com" ]
 		}
 	}
 

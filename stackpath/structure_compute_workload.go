@@ -429,7 +429,7 @@ func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.Resource
 
 	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
 
-		if had, ok := data.GetOk(prefix + "dns.0.host_aliases"); ok {
+		if had := data.Get(prefix + "dns.0.host_aliases"); had != nil {
 			hostAliasData := had.([]interface{})
 			hostAliasModel := make([]*workload_models.V1HostAlias, 0, len(hostAliasData))
 
@@ -444,15 +444,18 @@ func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.Resource
 			}
 
 			model.HostAliases = hostAliasModel
+		} else {
+			// This allows is to clear as necessary
+			model.HostAliases = []*workload_models.V1HostAlias{}
 		}
 
+		dnsModel := &workload_models.V1DNSConfig{}
 		if dd, ok := data.GetOk(prefix + "dns.0.resolver_config"); ok {
 			configData := dd.([]interface{})
 
 			if len(configData) > 0 {
 				config := configData[0].(map[string]interface{})
 
-				dnsModel := &workload_models.V1DNSConfig{}
 				dnsModel.Nameservers = convertToStringArray(config["nameservers"].([]interface{}))
 				dnsModel.Searches = convertToStringArray(config["search"].([]interface{}))
 
@@ -471,9 +474,9 @@ func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.Resource
 
 				}
 
-				model.DNSConfig = dnsModel
 			}
 
+			model.DNSConfig = dnsModel
 		}
 	}
 
