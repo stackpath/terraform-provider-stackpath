@@ -21,6 +21,7 @@ func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Worklo
 		Metadata: &workload_models.V1Metadata{
 			Annotations: convertToStringMap(data.Get("annotations").(map[string]interface{})),
 			Labels:      convertToStringMap(data.Get("labels").(map[string]interface{})),
+			Version:     data.Get("version").(string),
 		},
 		Spec: &workload_models.V1WorkloadSpec{
 			Containers:           convertComputeWorkloadContainers("container", data),
@@ -513,12 +514,17 @@ func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *sche
 }
 
 func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models.V1Workload) error {
+
 	if err := data.Set("name", workload.Name); err != nil {
 		return fmt.Errorf("error setting name: %v", err)
 	}
 
 	if err := data.Set("slug", workload.Slug); err != nil {
 		return fmt.Errorf("error setting slug: %v", err)
+	}
+
+	if err := data.Set("version", workload.Metadata.Version); err != nil {
+		return fmt.Errorf("error setting version: %v", err)
 	}
 
 	if err := data.Set("labels", flattenStringMap(workload.Metadata.Labels)); err != nil {

@@ -41,6 +41,10 @@ func resourceComputeWorkload() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
+			"version": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"annotations": {
 				Type:     schema.TypeMap,
 				Optional: true,
@@ -612,8 +616,39 @@ func resourceComputeWorkloadCreate(ctx context.Context, data *schema.ResourceDat
 	return resourceComputeWorkloadRead(ctx, data, meta)
 }
 
+func resourceComputeWorkloadReplace(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	config := meta.(*Config)
+	_, err := config.edgeCompute.Workloads.PutWorkload(&workloads.PutWorkloadParams{
+		Context:    ctx,
+		StackID:    config.StackID,
+		WorkloadID: data.Id(),
+		Body: &workload_models.V1PutWorkloadRequest{
+			Workload: convertComputeWorkload(data),
+		},
+	}, nil)
+	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
+		// Clear out the ID in terraform if the
+		// resource no longer exists in the API
+		data.SetId("")
+		return diag.Diagnostics{}
+	} else if err != nil {
+		return diag.FromErr(fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err)))
+	}
+	return resourceComputeWorkloadRead(ctx, data, meta)
+}
+
 func resourceComputeWorkloadUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
+
+	wk := convertComputeWorkload(data)
+	if wk.Metadata.Version != "" {
+		// Currently using PATCH in cases where we are making updates
+		// can miss array values, so we prefer to use PUT. But that requires
+		// the version to be present, which might not be there for
+		// older resources
+		return resourceComputeWorkloadReplace(ctx, data, meta)
+	}
+
 	_, err := config.edgeCompute.Workloads.UpdateWorkload(&workloads.UpdateWorkloadParams{
 		Context:    ctx,
 		StackID:    config.StackID,

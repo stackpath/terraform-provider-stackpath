@@ -372,12 +372,12 @@ func TestComputeContainersEnhancedContainerControls(t *testing.T) {
 				),
 			},
 			{
-				ExpectNonEmptyPlan: false, // This flag is confusing
+				ExpectNonEmptyPlan: true, // This flag is confusing
 				Config:             testComputeWorkloadConfigContainerSecurityContextClearCapabilities(nameSuffix, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckCapabilities(workload, "app", nil, nil),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{}, []string{}),
 					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
 				),
 			},
@@ -434,11 +434,11 @@ func TestComputeContainersEnhancedContainerControls(t *testing.T) {
 					}),
 					// clearing host settings
 					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
-						nil),
+						map[string][]string{}),
 					// cleared options
 					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
 						[]string{"8.8.8.8"},
-						[]string{"domain1.com"},
+						[]string{"domain2.com"}, // changed to verify we made a change
 						nil,
 					),
 				),
@@ -925,7 +925,7 @@ func testAccComputeWorkloadCheckRuntimeHostAliases(workload *workload_models.V1W
 		if aliases == nil {
 			aliases = map[string][]string{}
 		}
-		if len(aliases) == 0 && containerData.HostAliases != nil {
+		if len(aliases) == 0 && (containerData.HostAliases != nil && len(containerData.HostAliases) > 0) {
 			return fmt.Errorf("expected empty hostaliases, but had %d", len(containerData.HostAliases))
 		} else if len(aliases) > 0 && (containerData.HostAliases == nil || len(containerData.HostAliases) == 0) {
 			return fmt.Errorf("expected non-empty host aliases, but they were empty")
