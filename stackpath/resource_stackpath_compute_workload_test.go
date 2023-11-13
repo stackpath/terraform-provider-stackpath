@@ -1533,6 +1533,8 @@ resource "stackpath_compute_workload" "foo-volume" {
   volume_claim {
     name = "volume"
     slug = "volume"
+	# this is same as the default
+#	storage_class = "stackpath-edge/network-standard"
     resources {
       requests = {
         "storage" = "10Gi"

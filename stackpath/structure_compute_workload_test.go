@@ -126,3 +126,62 @@ func TestStackpathConvertContainerRuntime_DNS(t *testing.T) {
 	assert.Equal(t, "timeout", converted.DNSConfig.Options[0].Name)
 
 }
+
+func TestStackpathComputeVolumeClaims_Standard(t *testing.T) {
+
+	r := resourceComputeWorkload()
+
+	s := r.Schema
+
+	testData := schema.TestResourceDataRaw(t, s, nil)
+
+	testData.Set("volume_claim", []interface{}{
+		map[string]interface{}{
+			"name": "Some Volume",
+			"slug": "some-volume",
+			"resources": []interface{}{
+				map[string]interface{}{
+					"requests": map[string]interface{}{
+						"storage": "10Gi",
+					},
+				},
+			},
+		},
+	})
+
+	vmSpecs := convertComputeWorkloadVolumeClaims("volume_claim", testData)
+	assert.NotNil(t, vmSpecs)
+	assert.Len(t, vmSpecs, 1)
+
+	assert.Equal(t, "", vmSpecs[0].Spec.StorageClass)
+}
+
+func TestStackpathComputeVolumeClaims_NonStandard(t *testing.T) {
+
+	r := resourceComputeWorkload()
+
+	s := r.Schema
+
+	testData := schema.TestResourceDataRaw(t, s, nil)
+
+	testData.Set("volume_claim", []interface{}{
+		map[string]interface{}{
+			"name":          "Some Volume",
+			"slug":          "some-volume",
+			"storage_class": "stackpath-edge/direct-standard",
+			"resources": []interface{}{
+				map[string]interface{}{
+					"requests": map[string]interface{}{
+						"storage": "10Gi",
+					},
+				},
+			},
+		},
+	})
+
+	vmSpecs := convertComputeWorkloadVolumeClaims("volume_claim", testData)
+	assert.NotNil(t, vmSpecs)
+	assert.Len(t, vmSpecs, 1)
+
+	assert.Equal(t, "stackpath-edge/direct-standard", vmSpecs[0].Spec.StorageClass)
+}

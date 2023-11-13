@@ -179,6 +179,11 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"storage_class": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "stackpath-edge/network-standard",
+						},
 						"resources": resourceComputeWorkloadResourcesSchema(),
 					},
 				},

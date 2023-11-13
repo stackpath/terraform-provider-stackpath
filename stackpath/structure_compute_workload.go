@@ -60,7 +60,8 @@ func convertComputeWorkloadVolumeClaims(prefix string, data *schema.ResourceData
 			Name: volumeData["name"].(string),
 			Slug: volumeData["slug"].(string),
 			Spec: &workload_models.V1VolumeClaimSpec{
-				Resources: convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
+				StorageClass: volumeData["storage_class"].(string),
+				Resources:    convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
 			},
 		})
 	}
@@ -572,8 +573,9 @@ func flattenComputeWorkloadVolumeClaims(claims []*workload_models.V1VolumeClaim)
 	flattened := make([]interface{}, len(claims))
 	for i, claim := range claims {
 		flattened[i] = map[string]interface{}{
-			"name": claim.Name,
-			"slug": claim.Slug,
+			"name":          claim.Name,
+			"slug":          claim.Slug,
+			"storage_class": claim.Spec.StorageClass,
 			"resources": []interface{}{
 				map[string]interface{}{
 					"requests": map[string]interface{}{
