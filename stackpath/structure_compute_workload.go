@@ -358,8 +358,6 @@ func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceD
 		Capabilities:             convertComputeWorkloadSecurityContextCapabilities(prefix+"capabilities", data),
 	}
 
-	fmt.Printf("\tWe have an sc: %+v\n", sc)
-
 	return sc
 }
 
