@@ -345,15 +345,20 @@ func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceD
 		return nil
 	}
 
-	prefix = prefix + ".0"
-	sc := &workload_models.V1ContainerSecurityContext{
-		AllowPrivilegeEscalation: data.Get(prefix + ".allow_privilege_escalation").(bool),
-		RunAsGroup:               data.Get(prefix + ".run_as_group").(string),
-		RunAsNonRoot:             data.Get(prefix + ".run_as_non_root").(bool),
-		RunAsUser:                data.Get(prefix + ".run_as_user").(string),
-		ReadOnlyRootFilesystem:   data.Get(prefix + ".read_only_root_filesystem").(bool),
-		Capabilities:             convertComputeWorkloadSecurityContextCapabilities(prefix+".capabilities", data),
+	// We can come in where the base data is us
+	if prefix != "" {
+		prefix = prefix + ".0."
 	}
+	sc := &workload_models.V1ContainerSecurityContext{
+		AllowPrivilegeEscalation: data.Get(prefix + "allow_privilege_escalation").(bool),
+		RunAsGroup:               data.Get(prefix + "run_as_group").(string),
+		RunAsNonRoot:             data.Get(prefix + "run_as_non_root").(bool),
+		RunAsUser:                data.Get(prefix + "run_as_user").(string),
+		ReadOnlyRootFilesystem:   data.Get(prefix + "read_only_root_filesystem").(bool),
+		Capabilities:             convertComputeWorkloadSecurityContextCapabilities(prefix+"capabilities", data),
+	}
+
+	fmt.Printf("\tWe have an sc: %+v\n", sc)
 
 	return sc
 }

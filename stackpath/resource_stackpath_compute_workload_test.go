@@ -107,48 +107,6 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
 			},
-			{
-				ExpectNonEmptyPlan: true,
-				Config:             testComputeWorkloadConfigContainerSecurityContextCapabilities(nameSuffix, nil),
-				Check: resource.ComposeTestCheckFunc(
-					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
-					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{"NET_ADMIN"}, []string{"NET_BROADCAST"}),
-					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
-				),
-			},
-			{
-				ExpectNonEmptyPlan: true,
-				Config:             testComputeWorkloadConfigContainerRuntimeSettings(nameSuffix, nil),
-				Check: resource.ComposeTestCheckFunc(
-					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
-					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
-					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
-						"60",  // termination,
-						true,  // share namespace
-						"999", // run_as_user
-						"991", // run_as_group
-						true,  // run_as_non_root
-						[]string{"42"},
-					),
-					testAccComputeWorkloadCheckRuntimeSysctl(workload, map[string]string{
-						"net.core.rmem_max":     "10065408",
-						"net.core.rmem_default": "1006540",
-					}),
-					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
-						map[string][]string{
-							"192.168.3.4": []string{"domain.com"},
-						}),
-					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
-						[]string{"8.8.8.8"},
-						[]string{"domain.com"},
-						map[string]string{
-							"timeout": "10",
-						},
-					),
-				),
-			},
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
@@ -373,6 +331,91 @@ func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestComputeContainersEnhancedContainerControls(t *testing.T) {
+	//	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "ecc-" + strconv.Itoa(int(time.Now().Unix()))
+
+	// By design, the StackPath API does not return image pull secrets to the
+	// user when retrieving a workload. Expect to see an empty secret in the
+	// result and suppress the diff error.
+	//emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+				),
+			},
+			{
+				Config: testComputeWorkloadConfigContainerSecurityContextCapabilities(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{"NET_ADMIN"}, []string{"NET_BROADCAST"}),
+					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: false, // This flag is confusing
+				Config:             testComputeWorkloadConfigContainerSecurityContextClearCapabilities(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", nil, nil),
+					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerRuntimeSettings(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
+					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
+						"60",  // termination,
+						true,  // share namespace
+						"999", // run_as_user
+						"991", // run_as_group
+						true,  // run_as_non_root
+						[]string{"42"},
+					),
+					testAccComputeWorkloadCheckRuntimeSysctl(workload, map[string]string{
+						"net.core.rmem_max":     "10065408",
+						"net.core.rmem_default": "1006540",
+					}),
+					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
+						map[string][]string{
+							"192.168.3.4": {"domain.com"},
+						}),
+					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain.com"},
+						map[string]string{
+							"timeout": "10",
+						},
+					),
+				),
+			},
+		},
+	})
+
 }
 
 func TestComputeWorkloadVirtualMachines(t *testing.T) {
@@ -732,13 +775,18 @@ func testAccComputeWorkloadCheckCapabilities(workload *workload_models.V1Workloa
 			return fmt.Errorf("container not found: %s", containerName)
 		} else if container.SecurityContext == nil {
 			return fmt.Errorf("container '%s' does not contain a security context", containerName)
-		} else if container.SecurityContext.Capabilities == nil {
+		} else if container.SecurityContext.Capabilities == nil && (add != nil || drop != nil) {
 			return fmt.Errorf("container '%s' does not have capability requests: %+v", containerName, container.SecurityContext)
-		}
-		if !reflect.DeepEqual(container.SecurityContext.Capabilities.Add, add) {
+		} else if container.SecurityContext.Capabilities != nil && add == nil && drop == nil {
+			return fmt.Errorf("container '%s' expected to have empty capabilities, but has object (%v %v)",
+				containerName,
+				container.SecurityContext.Capabilities.Add,
+				container.SecurityContext.Capabilities.Drop,
+			)
+		} else if container.SecurityContext.Capabilities != nil && !reflect.DeepEqual(container.SecurityContext.Capabilities.Add, add) {
 			return fmt.Errorf("container '%s' ADD caps not the same (%v)!=(%v)",
 				containerName, container.SecurityContext.Capabilities.Add, add)
-		} else if !reflect.DeepEqual(container.SecurityContext.Capabilities.Drop, drop) {
+		} else if container.SecurityContext.Capabilities != nil && !reflect.DeepEqual(container.SecurityContext.Capabilities.Drop, drop) {
 			return fmt.Errorf("container '%s' DROP caps not the same (%v)!=(%v)",
 				containerName, container.SecurityContext.Capabilities.Drop, drop)
 		}
@@ -1507,6 +1555,55 @@ resource "stackpath_compute_workload" "foo" {
         average_utilization = 50
       }
     }
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+// Security context without requesting capability changes
+func testComputeWorkloadConfigContainerSecurityContextClearCapabilities(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+	security_context {
+
+		allow_privilege_escalation = true
+		run_as_non_root = true
+		run_as_user = "101"
+
+	}
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
     selector {
       key      = "cityCode"
       operator = "in"

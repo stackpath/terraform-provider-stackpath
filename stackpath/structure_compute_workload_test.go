@@ -7,6 +7,47 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestStackpathConvertContainerSecurityContext(t *testing.T) {
+	// Note that this is different from runtime container security context
+
+	// Keep in mind that within the schema security context
+	// is a single-element array
+	r := resourceComputeWorkloadSecurityContextSchema().Elem.(*schema.Resource)
+	s := r.Schema
+
+	rawData := map[string]interface{}{
+		"allow_privilege_escalation": true,
+		"read_only_root_filesystem":  true,
+		"run_as_user":                "999",
+		"run_as_group":               "991",
+		"run_as_non_root":            true,
+		"capabilities": []interface{}{
+			map[string]interface{}{
+				"add": []interface{}{
+					"NET_ADMIN",
+				},
+				"drop": []interface{}{
+					"NET_BROADCAST",
+					"FOO",
+				},
+			},
+		},
+	}
+	testData := schema.TestResourceDataRaw(t, s, rawData)
+
+	secContext := convertComputeWorkloadSecurityContext("", testData)
+
+	assert.NotNil(t, secContext)
+	assert.True(t, secContext.AllowPrivilegeEscalation)
+	assert.True(t, secContext.ReadOnlyRootFilesystem)
+	assert.Equal(t, "999", secContext.RunAsUser)
+	assert.Equal(t, "991", secContext.RunAsGroup)
+	assert.NotNil(t, secContext.Capabilities)
+
+	assert.Len(t, secContext.Capabilities.Add, 1)
+	assert.Len(t, secContext.Capabilities.Drop, 2)
+}
+
 func TestStackpathConvertContainerRuntime_SecurityContext(t *testing.T) {
 
 	r := resourceComputeContainerRuntimeEnvironment()
