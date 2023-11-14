@@ -1,3 +1,16 @@
+## 2.0.0 (November 2023)
+
+POTENTIALLY BREAKING CHANGES:
+ - Switched to PUT from PATCH. From this change, any attempts to manage propeties of a workload that the provider doesn't know about will be overwritten during the next apply.
+
+ENHANCEMENTS:
+ - Added support for runtime DNS configuration
+ - Added support for container security context
+ - Added support for setting storage class of volume claims
+
+BUG FIXES:
+ - As part of the change to PUT, container reordering should be functional
+
 ## 1.4.0 (???)
 
 ENHANCEMENTS:
