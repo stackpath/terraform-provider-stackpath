@@ -235,15 +235,19 @@ func convertComputeWorkloadResourceRequirements(prefix string, data *schema.Reso
 func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *workload_models.V1Probe {
 	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
 		return nil
-	} else if data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
-		log.Printf("[DEBUG] removing probe from container: %v", prefix)
-		// we are removing the probe so we should set the probe to an empty value
-		return &workload_models.V1Probe{}
 	}
+	// The probes have defaults, which means that once its set there
+	// is going to be some value here. If no action is set then we should
+	// consider it to be empty
 
 	probe := data.Get(prefix + ".0").(map[string]interface{})
 	if len(probe) == 0 {
 		log.Printf("[WARNING] length of probe is 0: %v", prefix)
+		return nil
+	}
+
+	if len(probe["http_get"].([]interface{})) == 0 && len(probe["tcp_socket"].([]interface{})) == 0 {
+		log.Printf("[DEBUG] neither http_get or tcp_socket set for %s, ignoring probe", prefix)
 		return nil
 	}
 
@@ -302,15 +306,9 @@ func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) workl
 	}
 
 	// Remove all ports that previously existed but were removed
-	if data.HasChange(prefix) {
-		old, _ := data.GetChange(prefix)
-		for _, s := range old.([]interface{}) {
-			portData := s.(map[string]interface{})
-			if !portNames[portData["name"]] {
-				ports[portData["name"].(string)] = workload_models.V1InstancePort{}
-			}
-		}
-	}
+	// NOTE: We previously used a PATCH when communicating with the API,
+	//	which required us to issue "empty" ports for ones that went away
+	// Using PUT means we can just send the current list
 
 	return ports
 }
@@ -327,16 +325,7 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 			SecretValue: envVarData["secret_value"].(string),
 		}
 	}
-	if data.HasChange(prefix) {
-		old, _ := data.GetChange(prefix)
-		for _, s := range old.([]interface{}) {
-			envVarData := s.(map[string]interface{})
-			if !envVarNames[envVarData["key"]] {
-				log.Printf("[DEBUG] removing env var %v", envVarData["key"])
-				envVars[envVarData["key"].(string)] = workload_models.V1EnvironmentVariable{}
-			}
-		}
-	}
+	// in a PUT world, we don't need to track old vs new
 	return envVars
 }
 

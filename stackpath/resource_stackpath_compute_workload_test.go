@@ -81,6 +81,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					resource.TestCheckResourceAttr("stackpath_compute_workload.foo", "container.0.readiness_probe.0.tcp_socket.0.port", "80"),
+					resource.TestCheckResourceAttr("stackpath_compute_workload.foo", "container.0.liveness_probe.0.http_get.0.port", "80"),
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
@@ -95,6 +97,9 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+					// ImagePullCredentials doesn't include the probes, so they should go away
+					resource.TestCheckNoResourceAttr("stackpath_compute_workload.foo", "container.0.readiness_probe.0"),
+					resource.TestCheckNoResourceAttr("stackpath_compute_workload.foo", "container.0.liveness_probe.0"),
 				),
 			},
 			{
@@ -110,14 +115,14 @@ func TestComputeWorkloadContainers(t *testing.T) {
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
-			// {
-			// 	Config: testComputeWorkloadConfigContainerAddContainer(),
-			// 	Check: resource.ComposeTestCheckFunc(
-			// 		testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
-			// 		testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-			// 		testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
-			// 	),
-			// },
+			{
+				Config: testComputeWorkloadConfigContainerAddContainer(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
+				),
+			},
 		},
 	})
 }
@@ -281,7 +286,7 @@ func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dual-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -309,7 +314,7 @@ func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dsub-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -479,7 +484,7 @@ func TestComputeWorkloadVirtualMachinesIPv6DualStack(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dual-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
