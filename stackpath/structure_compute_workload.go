@@ -181,21 +181,24 @@ func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) 
 	}
 
 	// Don't perform any actions when our list of containers hasn't changed at all
-	if data.HasChange("container") {
-		oldContainers, _ := data.GetChange(prefix)
+	// NOTE: This is no longer needed in a world of PUT
+	/*
+		if data.HasChange("container") {
+			oldContainers, _ := data.GetChange(prefix)
 
-		// Now loop through all the bad containers and create a
-		// blank entry to have the API remove the container
-		for _, s := range oldContainers.([]interface{}) {
-			containerData := s.(map[string]interface{})
-			// When the container name was not seen in the new containers
-			// it means the container was removed from the definition and
-			// should be removed from the API.
-			if !containerNames[containerData["name"]] {
-				containers[containerData["name"].(string)] = workload_models.V1ContainerSpec{}
+			// Now loop through all the bad containers and create a
+			// blank entry to have the API remove the container
+			for _, s := range oldContainers.([]interface{}) {
+				containerData := s.(map[string]interface{})
+				// When the container name was not seen in the new containers
+				// it means the container was removed from the definition and
+				// should be removed from the API.
+				if !containerNames[containerData["name"]] {
+					containers[containerData["name"].(string)] = workload_models.V1ContainerSpec{}
+				}
 			}
 		}
-	}
+	*/
 
 	return containers
 }
