@@ -209,4 +209,37 @@ EOT
       }
     }
   }
+
+  # Optional override of initial VM DNS settings
+  # Note these cannot be modified after a workload has been
+  # created, similar to the user-data
+  # virtual_machine_runtime_settings {
+
+  # If desired, override DNS/nameserver values here
+  #  dns {
+  #
+  #    # You may repeat host_aliases as many times as you need
+  #    # in order to override the lookup for the provided
+  #    # 'hostnames' to resolve to the given 'address' 
+  #    host_aliases {
+  #      address = "192.168.3.4"
+  #      hostnames = [ "domain.com" ]
+  #    }
+
+  #    # override resolv.conf (or equilvanet) in your container
+  #    # if you want to change the list of nameservers or
+  #    # search order from our defaults. Note this will prevent
+  #    # DNS discovery from working if you override nameservers
+  #    resolver_config {
+  #      # ordered list of nameserver ips
+  #      nameservers = [ "8.8.8.8" ]
+  #      # suffix(es) appended to hostname lookups
+  #      search = [ "domain.com" ]
+  #      # lookup options, timeout is a common one to set
+  #      options = {
+  #        timeout = "10"
+  #      }
+  #    }
+  #  }
+  #}
 }

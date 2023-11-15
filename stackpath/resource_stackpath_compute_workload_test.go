@@ -474,6 +474,18 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+					// VM settings channot be changed dynamically
+					testAccComputeWorkloadCheckVMRuntimeHostAliases(workload,
+						map[string][]string{
+							"192.168.3.4": {"domain.com"},
+						}),
+					testAccComputeWorkloadCheckVMRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain.com"},
+						map[string]string{
+							"timeout": "10",
+						},
+					),
 				),
 			},
 		},
@@ -927,34 +939,55 @@ func testAccComputeWorkloadCheckRuntimeHostAliases(workload *workload_models.V1W
 
 	return func(*terraform.State) error {
 		containerData := workload.Spec.Runtime.Containers
-		if aliases == nil {
-			aliases = map[string][]string{}
-		}
-		if len(aliases) == 0 && (containerData.HostAliases != nil && len(containerData.HostAliases) > 0) {
-			return fmt.Errorf("expected empty hostaliases, but had %d", len(containerData.HostAliases))
-		} else if len(aliases) > 0 && (containerData.HostAliases == nil || len(containerData.HostAliases) == 0) {
-			return fmt.Errorf("expected non-empty host aliases, but they were empty")
-		} else {
+		return verifyHostAliases(containerData.HostAliases, aliases)
+	}
+}
 
-			for _, hostAlias := range containerData.HostAliases {
-				if exp, ok := aliases[hostAlias.IP]; !ok {
-					return fmt.Errorf("did not expect to have alias for %s", hostAlias.IP)
-				} else {
-					sort.Sort(sort.StringSlice(hostAlias.Hostnames))
-					sort.Sort(sort.StringSlice(exp))
-					if !reflect.DeepEqual(exp, hostAlias.Hostnames) {
-						return fmt.Errorf("aliases for %s were not equal: %v != %v",
-							hostAlias.IP,
-							hostAlias.Hostnames,
-							exp,
-						)
-					}
+func testAccComputeWorkloadCheckVMRuntimeHostAliases(workload *workload_models.V1Workload,
+	aliases map[string][]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		if workload.Spec.Runtime == nil {
+			return fmt.Errorf("no runtime settings found")
+		}
+		vmData := workload.Spec.Runtime.VirtualMachines
+		if vmData == nil {
+			return fmt.Errorf("no virtual machine runtime settings found")
+		}
+		return verifyHostAliases(vmData.HostAliases, aliases)
+	}
+}
+
+func verifyHostAliases(actual []*workload_models.V1HostAlias, aliases map[string][]string) error {
+	if aliases == nil {
+		aliases = map[string][]string{}
+	}
+
+	if len(aliases) == 0 && (actual != nil && len(actual) > 0) {
+		return fmt.Errorf("expected empty hostaliases, but had %d", len(actual))
+	} else if len(aliases) > 0 && (actual == nil || len(actual) == 0) {
+		return fmt.Errorf("expected non-empty host aliases, but they were empty")
+	} else {
+
+		for _, hostAlias := range actual {
+			if exp, ok := aliases[hostAlias.IP]; !ok {
+				return fmt.Errorf("did not expect to have alias for %s", hostAlias.IP)
+			} else {
+				sort.Sort(sort.StringSlice(hostAlias.Hostnames))
+				sort.Sort(sort.StringSlice(exp))
+				if !reflect.DeepEqual(exp, hostAlias.Hostnames) {
+					return fmt.Errorf("aliases for %s were not equal: %v != %v",
+						hostAlias.IP,
+						hostAlias.Hostnames,
+						exp,
+					)
 				}
 			}
-
 		}
-		return nil
+
 	}
+	return nil
 }
 
 // Checks the resolver_config sub-resource (dns config in API)
@@ -971,32 +1004,60 @@ func testAccComputeWorkloadCheckRuntimeDNSConfig(workload *workload_models.V1Wor
 		} else {
 			dnsConfig := containerData.DNSConfig
 
-			if !reflect.DeepEqual(dnsConfig.Nameservers, nameservers) {
-				return fmt.Errorf("nameservers not equal: %v != %v",
-					dnsConfig.Nameservers, nameservers)
-			}
-			if !reflect.DeepEqual(dnsConfig.Searches, search) {
-				return fmt.Errorf("search options not equal: %v != %v",
-					dnsConfig.Searches, search,
-				)
-			}
-			if dnsConfig.Options == nil && len(options) > 0 {
-				return fmt.Errorf("expected to have dns options but had none")
-			}
-
-			for _, option := range dnsConfig.Options {
-				if val, ok := options[option.Name]; !ok {
-					return fmt.Errorf("unexpected resolver option '%s'", option.Name)
-				} else if val != option.Value {
-					return fmt.Errorf("unexpected value for resolver option '%s': %s != %s",
-						option.Name, option.Value, val,
-					)
-				}
-			}
+			return verifyDNSConfig(dnsConfig, nameservers, search, options)
 		}
-		return nil
 	}
 
+}
+
+func testAccComputeWorkloadCheckVMRuntimeDNSConfig(workload *workload_models.V1Workload,
+	nameservers []string,
+	search []string,
+	options map[string]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		containerData := workload.Spec.Runtime.VirtualMachines
+		if containerData.DNSConfig == nil && len(nameservers) > 0 {
+			return fmt.Errorf("did not expect to have dns config, but found it")
+		} else {
+			dnsConfig := containerData.DNSConfig
+
+			return verifyDNSConfig(dnsConfig, nameservers, search, options)
+		}
+	}
+
+}
+
+func verifyDNSConfig(dnsConfig *workload_models.V1DNSConfig,
+	nameservers []string,
+	search []string,
+	options map[string]string,
+) error {
+
+	if !reflect.DeepEqual(dnsConfig.Nameservers, nameservers) {
+		return fmt.Errorf("nameservers not equal: %v != %v",
+			dnsConfig.Nameservers, nameservers)
+	}
+	if !reflect.DeepEqual(dnsConfig.Searches, search) {
+		return fmt.Errorf("search options not equal: %v != %v",
+			dnsConfig.Searches, search,
+		)
+	}
+	if dnsConfig.Options == nil && len(options) > 0 {
+		return fmt.Errorf("expected to have dns options but had none")
+	}
+
+	for _, option := range dnsConfig.Options {
+		if val, ok := options[option.Name]; !ok {
+			return fmt.Errorf("unexpected resolver option '%s'", option.Name)
+		} else if val != option.Value {
+			return fmt.Errorf("unexpected value for resolver option '%s': %s != %s",
+				option.Name, option.Value, val,
+			)
+		}
+	}
+	return nil
 }
 
 func printSlice(a []string) string {
@@ -1498,6 +1559,24 @@ EOT
       ]
     }
   }
+
+  virtual_machine_runtime_environment {
+	dns {
+
+		host_aliases {
+			address = "192.168.3.4"
+			hostnames = [ "domain.com" ]
+		}
+
+		resolver_config {
+			nameservers = [ "8.8.8.8" ]
+			search = [ "domain.com" ]
+			options = {
+				timeout = "10"
+			}
+		}
+	}
+  }
 }`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
@@ -1706,6 +1785,52 @@ resource "stackpath_compute_workload" "foo" {
       ]
     }
   }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+// This will be unused as you can't edit the settings
+func testComputeWorkloadConfigVMRuntimeSettings(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "bar" {
+  name = "My Terraform Compute VM Workload - %s"
+  slug = "terraform-vm-workload-%s"
+  %s
+
+  virtual_machine {
+    name  = "app"
+    image = "stackpath-edge/centos-7:v201905012051"
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    user_data = <<EOT
+package_update: true
+packages:
+- nginx
+EOT
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+
+}
+
 }`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 

@@ -358,12 +358,19 @@ func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceD
 func convertComputeWorkloadRuntime(cPrefix string, vmPrefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceRuntimeSettings {
 
 	var containerRuntime *workload_models.V1WorkloadInstanceContainerRuntimeSettings
+	var vmRuntime *workload_models.V1WorkloadInstanceVMRuntimeSettings
+
+	// These can't both be *set* at the same time, but in theory it could "swap"
 	if data.HasChange(cPrefix) {
 		containerRuntime = convertComputeWorkloadRuntimeContainer(cPrefix, data)
 	}
+	if data.HasChange(vmPrefix) {
+		vmRuntime = convertComputeWorkloadRuntimeVM(vmPrefix, data)
+	}
 
 	return &workload_models.V1WorkloadInstanceRuntimeSettings{
-		Containers: containerRuntime,
+		Containers:      containerRuntime,
+		VirtualMachines: vmRuntime,
 	}
 
 }
@@ -422,59 +429,89 @@ func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.Resource
 	}
 
 	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
+		model.HostAliases = convertComputeWorkloadHostAliases(prefix+"dns.0.host_aliases", data)
+		model.DNSConfig = convertComputeWorkloadDNSConfig(prefix+"dns.0.resolver_config", data)
+	}
 
-		if had := data.Get(prefix + "dns.0.host_aliases"); had != nil {
-			hostAliasData := had.([]interface{})
-			hostAliasModel := make([]*workload_models.V1HostAlias, 0, len(hostAliasData))
+	return model
+}
 
-			for _, aliasData := range hostAliasData {
-				address := aliasData.(map[string]interface{})["address"]
-				aliases := aliasData.(map[string]interface{})["hostnames"]
-				hostAliasModel = append(hostAliasModel, &workload_models.V1HostAlias{
-					IP:        address.(string),
-					Hostnames: convertToStringArray(aliases.(*schema.Set).List()),
-				})
+func convertComputeWorkloadRuntimeVM(prefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceVMRuntimeSettings {
 
-			}
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
 
-			model.HostAliases = hostAliasModel
-		} else {
-			// This allows is to clear as necessary
-			model.HostAliases = []*workload_models.V1HostAlias{}
+	model := &workload_models.V1WorkloadInstanceVMRuntimeSettings{}
+
+	if prefix != "" {
+		prefix = prefix + ".0."
+	}
+
+	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
+		model.HostAliases = convertComputeWorkloadHostAliases(prefix+"dns.0.host_aliases", data)
+		model.DNSConfig = convertComputeWorkloadDNSConfig(prefix+"dns.0.resolver_config", data)
+	}
+
+	return model
+}
+func convertComputeWorkloadHostAliases(prefix string, data *schema.ResourceData) []*workload_models.V1HostAlias {
+
+	if had := data.Get(prefix); had != nil {
+		hostAliasData := had.([]interface{})
+		hostAliasModel := make([]*workload_models.V1HostAlias, 0, len(hostAliasData))
+
+		for _, aliasData := range hostAliasData {
+			address := aliasData.(map[string]interface{})["address"]
+			aliases := aliasData.(map[string]interface{})["hostnames"]
+			hostAliasModel = append(hostAliasModel, &workload_models.V1HostAlias{
+				IP:        address.(string),
+				Hostnames: convertToStringArray(aliases.(*schema.Set).List()),
+			})
+
 		}
 
+		return hostAliasModel
+
+	} else {
+		// This allows is to clear as necessary
+		return []*workload_models.V1HostAlias{}
+	}
+}
+
+func convertComputeWorkloadDNSConfig(prefix string, data *schema.ResourceData) *workload_models.V1DNSConfig {
+
+	if dd := data.Get(prefix); dd != nil {
 		dnsModel := &workload_models.V1DNSConfig{}
-		if dd, ok := data.GetOk(prefix + "dns.0.resolver_config"); ok {
-			configData := dd.([]interface{})
+		configData := dd.([]interface{})
 
-			if len(configData) > 0 {
-				config := configData[0].(map[string]interface{})
+		if len(configData) > 0 {
+			config := configData[0].(map[string]interface{})
 
-				dnsModel.Nameservers = convertToStringArray(config["nameservers"].([]interface{}))
-				dnsModel.Searches = convertToStringArray(config["search"].([]interface{}))
+			dnsModel.Nameservers = convertToStringArray(config["nameservers"].([]interface{}))
+			dnsModel.Searches = convertToStringArray(config["search"].([]interface{}))
 
-				if options, ok := config["options"]; ok {
-					switch t := options.(type) {
-					case map[string]interface{}:
-						dnsModel.Options = make([]*workload_models.V1DNSConfigOption, 0, len(t))
+			if options, ok := config["options"]; ok {
+				switch t := options.(type) {
+				case map[string]interface{}:
+					dnsModel.Options = make([]*workload_models.V1DNSConfigOption, 0, len(t))
 
-						for opt, value := range t {
-							dnsModel.Options = append(dnsModel.Options, &workload_models.V1DNSConfigOption{
-								Name:  opt,
-								Value: value.(string),
-							})
-						}
+					for opt, value := range t {
+						dnsModel.Options = append(dnsModel.Options, &workload_models.V1DNSConfigOption{
+							Name:  opt,
+							Value: value.(string),
+						})
 					}
-
 				}
 
 			}
 
-			model.DNSConfig = dnsModel
 		}
+
+		return dnsModel
 	}
 
-	return model
+	return nil
 }
 
 func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *schema.ResourceData) *workload_models.V1ContainerCapabilities {
