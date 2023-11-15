@@ -6,7 +6,7 @@ POTENTIALLY BREAKING CHANGES:
 ENHANCEMENTS:
  - Added support for runtime DNS configuration (containers and VMS)
  - Added support for container security context
- - Added support for container sysctl overridesk
+ - Added support for container sysctl overrides
  - Added support for setting storage class of volume claims
 
 BUG FIXES:
