@@ -1,7 +1,7 @@
 ## 2.0.0 (November 2023)
 
 POTENTIALLY BREAKING CHANGES:
- - Switched to PUT from PATCH. From this change, any attempts to manage propeties of a workload that the provider doesn't know about will be overwritten during the next apply.
+ - Switched to PUT from PATCH. From this change, any attempts to manage properties of a workload that the provider doesn't know about will be overwritten during the next apply.
 
 ENHANCEMENTS:
  - Added support for runtime DNS configuration (containers and VMS)
