@@ -133,6 +133,8 @@ func (m *StackpathRPCHelp) validateLinks(formats strfmt.Registry) error {
 			if err := m.Links[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("links" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -162,9 +164,16 @@ func (m *StackpathRPCHelp) contextValidateLinks(ctx context.Context, formats str
 	for i := 0; i < len(m.Links); i++ {
 
 		if m.Links[i] != nil {
+
+			if swag.IsZero(m.Links[i]) { // not required
+				return nil
+			}
+
 			if err := m.Links[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("links" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}

@@ -54,6 +54,8 @@ func (m *V1VirtualMachineStatus) validatePhase(formats strfmt.Registry) error {
 		if err := m.Phase.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -79,9 +81,16 @@ func (m *V1VirtualMachineStatus) ContextValidate(ctx context.Context, formats st
 func (m *V1VirtualMachineStatus) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Phase != nil {
+
+		if swag.IsZero(m.Phase) { // not required
+			return nil
+		}
+
 		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

@@ -3,6 +3,7 @@ package stackpath
 import (
 	"encoding/base64"
 	"fmt"
+	"strconv"
 
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
@@ -20,6 +21,7 @@ func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Worklo
 		Metadata: &workload_models.V1Metadata{
 			Annotations: convertToStringMap(data.Get("annotations").(map[string]interface{})),
 			Labels:      convertToStringMap(data.Get("labels").(map[string]interface{})),
+			Version:     data.Get("version").(string),
 		},
 		Spec: &workload_models.V1WorkloadSpec{
 			Containers:           convertComputeWorkloadContainers("container", data),
@@ -27,6 +29,7 @@ func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Worklo
 			NetworkInterfaces:    convertComputeWorkloadNetworkInterfaces(data.Get("network_interface").([]interface{})),
 			ImagePullCredentials: convertComputeWorkloadImagePullCredentials("image_pull_credentials", data),
 			VolumeClaimTemplates: convertComputeWorkloadVolumeClaims("volume_claim", data),
+			Runtime:              convertComputeWorkloadRuntime("container_runtime_environment", "virtual_machine_runtime_environment", data),
 		},
 		Targets: convertComputeWorkloadTargets(data.Get("target").([]interface{})),
 	}
@@ -57,7 +60,8 @@ func convertComputeWorkloadVolumeClaims(prefix string, data *schema.ResourceData
 			Name: volumeData["name"].(string),
 			Slug: volumeData["slug"].(string),
 			Spec: &workload_models.V1VolumeClaimSpec{
-				Resources: convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
+				StorageClass: volumeData["storage_class"].(string),
+				Resources:    convertComputeWorkloadResourceRequirements(fmt.Sprintf("%s.%d.resources", prefix, i), data),
 			},
 		})
 	}
@@ -177,35 +181,39 @@ func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) 
 	}
 
 	// Don't perform any actions when our list of containers hasn't changed at all
-	if data.HasChange("container") {
-		oldContainers, _ := data.GetChange(prefix)
+	// NOTE: This is no longer needed in a world of PUT
+	/*
+		if data.HasChange("container") {
+			oldContainers, _ := data.GetChange(prefix)
 
-		// Now loop through all the bad containers and create a
-		// blank entry to have the API remove the container
-		for _, s := range oldContainers.([]interface{}) {
-			containerData := s.(map[string]interface{})
-			// When the container name was not seen in the new containers
-			// it means the container was removed from the definition and
-			// should be removed from the API.
-			if !containerNames[containerData["name"]] {
-				containers[containerData["name"].(string)] = workload_models.V1ContainerSpec{}
+			// Now loop through all the bad containers and create a
+			// blank entry to have the API remove the container
+			for _, s := range oldContainers.([]interface{}) {
+				containerData := s.(map[string]interface{})
+				// When the container name was not seen in the new containers
+				// it means the container was removed from the definition and
+				// should be removed from the API.
+				if !containerNames[containerData["name"]] {
+					containers[containerData["name"].(string)] = workload_models.V1ContainerSpec{}
+				}
 			}
 		}
-	}
+	*/
 
 	return containers
 }
 
 func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) workload_models.V1ContainerSpec {
 	return workload_models.V1ContainerSpec{
-		Image:          data.Get(prefix).(map[string]interface{})["image"].(string),
-		Command:        convertToStringArray(data.Get(prefix + ".command").([]interface{})),
-		Ports:          convertComputeWorkloadPorts(prefix+".port", data),
-		Env:            convertComputeWorkloadEnvironmentVariables(prefix+".env", data),
-		LivenessProbe:  convertComputeWorkloadProbe(prefix+".liveness_probe", data),
-		ReadinessProbe: convertComputeWorkloadProbe(prefix+".readiness_probe", data),
-		Resources:      convertComputeWorkloadResourceRequirements(prefix+".resources", data),
-		VolumeMounts:   convertComputeWorkloadVolumeMounts(prefix+".volume_mount", data),
+		Image:           data.Get(prefix).(map[string]interface{})["image"].(string),
+		Command:         convertToStringArray(data.Get(prefix + ".command").([]interface{})),
+		Ports:           convertComputeWorkloadPorts(prefix+".port", data),
+		Env:             convertComputeWorkloadEnvironmentVariables(prefix+".env", data),
+		LivenessProbe:   convertComputeWorkloadProbe(prefix+".liveness_probe", data),
+		ReadinessProbe:  convertComputeWorkloadProbe(prefix+".readiness_probe", data),
+		Resources:       convertComputeWorkloadResourceRequirements(prefix+".resources", data),
+		VolumeMounts:    convertComputeWorkloadVolumeMounts(prefix+".volume_mount", data),
+		SecurityContext: convertComputeWorkloadSecurityContext(prefix+".security_context", data),
 	}
 }
 
@@ -230,15 +238,19 @@ func convertComputeWorkloadResourceRequirements(prefix string, data *schema.Reso
 func convertComputeWorkloadProbe(prefix string, data *schema.ResourceData) *workload_models.V1Probe {
 	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
 		return nil
-	} else if data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
-		log.Printf("[DEBUG] removing probe from container: %v", prefix)
-		// we are removing the probe so we should set the probe to an empty value
-		return &workload_models.V1Probe{}
 	}
+	// The probes have defaults, which means that once its set there
+	// is going to be some value here. If no action is set then we should
+	// consider it to be empty
 
 	probe := data.Get(prefix + ".0").(map[string]interface{})
 	if len(probe) == 0 {
 		log.Printf("[WARNING] length of probe is 0: %v", prefix)
+		return nil
+	}
+
+	if len(probe["http_get"].([]interface{})) == 0 && len(probe["tcp_socket"].([]interface{})) == 0 {
+		log.Printf("[DEBUG] neither http_get or tcp_socket set for %s, ignoring probe", prefix)
 		return nil
 	}
 
@@ -297,15 +309,9 @@ func convertComputeWorkloadPorts(prefix string, data *schema.ResourceData) workl
 	}
 
 	// Remove all ports that previously existed but were removed
-	if data.HasChange(prefix) {
-		old, _ := data.GetChange(prefix)
-		for _, s := range old.([]interface{}) {
-			portData := s.(map[string]interface{})
-			if !portNames[portData["name"]] {
-				ports[portData["name"].(string)] = workload_models.V1InstancePort{}
-			}
-		}
-	}
+	// NOTE: We previously used a PATCH when communicating with the API,
+	//	which required us to issue "empty" ports for ones that went away
+	// Using PUT means we can just send the current list
 
 	return ports
 }
@@ -322,26 +328,233 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 			SecretValue: envVarData["secret_value"].(string),
 		}
 	}
-	if data.HasChange(prefix) {
-		old, _ := data.GetChange(prefix)
-		for _, s := range old.([]interface{}) {
-			envVarData := s.(map[string]interface{})
-			if !envVarNames[envVarData["key"]] {
-				log.Printf("[DEBUG] removing env var %v", envVarData["key"])
-				envVars[envVarData["key"].(string)] = workload_models.V1EnvironmentVariable{}
-			}
-		}
-	}
+	// in a PUT world, we don't need to track old vs new
 	return envVars
 }
 
+func convertComputeWorkloadSecurityContext(prefix string, data *schema.ResourceData) *workload_models.V1ContainerSecurityContext {
+
+	// They aren't specifying a security context at all
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
+
+	// We can come in where the base data is us
+	if prefix != "" {
+		prefix = prefix + ".0."
+	}
+	sc := &workload_models.V1ContainerSecurityContext{
+		AllowPrivilegeEscalation: data.Get(prefix + "allow_privilege_escalation").(bool),
+		RunAsGroup:               data.Get(prefix + "run_as_group").(string),
+		RunAsNonRoot:             data.Get(prefix + "run_as_non_root").(bool),
+		RunAsUser:                data.Get(prefix + "run_as_user").(string),
+		ReadOnlyRootFilesystem:   data.Get(prefix + "read_only_root_filesystem").(bool),
+		Capabilities:             convertComputeWorkloadSecurityContextCapabilities(prefix+"capabilities", data),
+	}
+
+	return sc
+}
+
+func convertComputeWorkloadRuntime(cPrefix string, vmPrefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceRuntimeSettings {
+
+	var containerRuntime *workload_models.V1WorkloadInstanceContainerRuntimeSettings
+	var vmRuntime *workload_models.V1WorkloadInstanceVMRuntimeSettings
+
+	// These can't both be *set* at the same time, but in theory it could "swap"
+	if data.HasChange(cPrefix) {
+		containerRuntime = convertComputeWorkloadRuntimeContainer(cPrefix, data)
+	}
+	if data.HasChange(vmPrefix) {
+		vmRuntime = convertComputeWorkloadRuntimeVM(vmPrefix, data)
+	}
+
+	return &workload_models.V1WorkloadInstanceRuntimeSettings{
+		Containers:      containerRuntime,
+		VirtualMachines: vmRuntime,
+	}
+
+}
+
+func convertComputeWorkloadRuntimeContainer(prefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceContainerRuntimeSettings {
+
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
+
+	model := &workload_models.V1WorkloadInstanceContainerRuntimeSettings{}
+
+	if share, ok := data.GetOk("share_process_namespace"); ok {
+		model.ShareProcessNamespace = share.(bool)
+	}
+
+	if term, ok := data.GetOk("termination_grace_period_seconds"); ok {
+		model.TerminationGracePeriodSeconds = strconv.Itoa(term.(int))
+	} else {
+		model.TerminationGracePeriodSeconds = ""
+	}
+
+	if prefix != "" {
+		prefix = prefix + ".0."
+	}
+
+	if data.HasChange(prefix+"security_context") || data.Get(prefix+"security_context.#").(int) > 0 {
+		secModel := &workload_models.V1WorkloadInstanceSecurityContext{}
+		secContextData := data.Get(prefix + "security_context.0").(map[string]interface{})
+
+		sysctlM := []*workload_models.V1Sysctl{}
+		if sysctl, ok := secContextData["sysctl"]; ok {
+			for key, val := range sysctl.(map[string]interface{}) {
+				sysctlM = append(sysctlM, &workload_models.V1Sysctl{
+					Name:  key,
+					Value: val.(string),
+				})
+			}
+		}
+		secModel.Sysctls = sysctlM
+
+		if rg, ok := secContextData["run_as_group"]; ok {
+			secModel.RunAsGroup = rg.(string)
+		}
+		if ru, ok := secContextData["run_as_user"]; ok {
+			secModel.RunAsUser = ru.(string)
+		}
+		if ru, ok := secContextData["run_as_non_root"]; ok {
+			secModel.RunAsNonRoot = ru.(bool)
+		}
+		if sup, ok := secContextData["supplemental_groups"]; ok {
+			secModel.SupplementalGroups = convertToStringArray(sup.([]interface{}))
+		}
+
+		model.SecurityContext = secModel
+	}
+
+	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
+		model.HostAliases = convertComputeWorkloadHostAliases(prefix+"dns.0.host_aliases", data)
+		model.DNSConfig = convertComputeWorkloadDNSConfig(prefix+"dns.0.resolver_config", data)
+	}
+
+	return model
+}
+
+func convertComputeWorkloadRuntimeVM(prefix string, data *schema.ResourceData) *workload_models.V1WorkloadInstanceVMRuntimeSettings {
+
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil
+	}
+
+	model := &workload_models.V1WorkloadInstanceVMRuntimeSettings{}
+
+	if prefix != "" {
+		prefix = prefix + ".0."
+	}
+
+	if data.HasChange(prefix+"dns") || data.Get(prefix+"dns.#").(int) > 0 {
+		model.HostAliases = convertComputeWorkloadHostAliases(prefix+"dns.0.host_aliases", data)
+		model.DNSConfig = convertComputeWorkloadDNSConfig(prefix+"dns.0.resolver_config", data)
+	}
+
+	return model
+}
+func convertComputeWorkloadHostAliases(prefix string, data *schema.ResourceData) []*workload_models.V1HostAlias {
+
+	if had := data.Get(prefix); had != nil {
+		hostAliasData := had.([]interface{})
+		hostAliasModel := make([]*workload_models.V1HostAlias, 0, len(hostAliasData))
+
+		for _, aliasData := range hostAliasData {
+			address := aliasData.(map[string]interface{})["address"]
+			aliases := aliasData.(map[string]interface{})["hostnames"]
+			hostAliasModel = append(hostAliasModel, &workload_models.V1HostAlias{
+				IP:        address.(string),
+				Hostnames: convertToStringArray(aliases.(*schema.Set).List()),
+			})
+
+		}
+
+		return hostAliasModel
+
+	} else {
+		// This allows is to clear as necessary
+		return []*workload_models.V1HostAlias{}
+	}
+}
+
+func convertComputeWorkloadDNSConfig(prefix string, data *schema.ResourceData) *workload_models.V1DNSConfig {
+
+	if dd := data.Get(prefix); dd != nil {
+		dnsModel := &workload_models.V1DNSConfig{}
+		configData := dd.([]interface{})
+
+		if len(configData) > 0 {
+			config := configData[0].(map[string]interface{})
+
+			dnsModel.Nameservers = convertToStringArray(config["nameservers"].([]interface{}))
+			dnsModel.Searches = convertToStringArray(config["search"].([]interface{}))
+
+			if options, ok := config["options"]; ok {
+				switch t := options.(type) {
+				case map[string]interface{}:
+					dnsModel.Options = make([]*workload_models.V1DNSConfigOption, 0, len(t))
+
+					for opt, value := range t {
+						dnsModel.Options = append(dnsModel.Options, &workload_models.V1DNSConfigOption{
+							Name:  opt,
+							Value: value.(string),
+						})
+					}
+				}
+
+			}
+
+		}
+
+		return dnsModel
+	}
+
+	return nil
+}
+
+func convertComputeWorkloadSecurityContextCapabilities(prefix string, data *schema.ResourceData) *workload_models.V1ContainerCapabilities {
+
+	if !data.HasChange(prefix) && data.Get(prefix+".#").(int) == 0 {
+		return nil // no caps
+	}
+	prefix = prefix + ".0"
+
+	capData := data.Get(prefix).(map[string]interface{})
+
+	capabilities := &workload_models.V1ContainerCapabilities{}
+
+	adds, ok := capData["add"]
+	if ok {
+		capabilities.Add = convertSetToStringArray(adds.(*schema.Set))
+	} else {
+		capabilities.Add = []string{}
+	}
+
+	drops, ok := capData["drop"]
+	if ok {
+		capabilities.Drop = convertSetToStringArray(drops.(*schema.Set))
+	} else {
+		capabilities.Drop = []string{}
+	}
+
+	return capabilities
+
+}
+
 func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models.V1Workload) error {
+
 	if err := data.Set("name", workload.Name); err != nil {
 		return fmt.Errorf("error setting name: %v", err)
 	}
 
 	if err := data.Set("slug", workload.Slug); err != nil {
 		return fmt.Errorf("error setting slug: %v", err)
+	}
+
+	if err := data.Set("version", workload.Metadata.Version); err != nil {
+		return fmt.Errorf("error setting version: %v", err)
 	}
 
 	if err := data.Set("labels", flattenStringMap(workload.Metadata.Labels)); err != nil {
@@ -376,6 +589,12 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models
 		return fmt.Errorf("error setting target: %v", err)
 	}
 
+	if workload.Spec.Runtime != nil {
+		if err := data.Set("container_runtime_environment", flattenComputeWorkloadRuntimeContainer("container_runtime_environment", data, workload.Spec.Runtime.Containers)); err != nil {
+			return fmt.Errorf("error setting container_runtime_environment: %v", err)
+		}
+	}
+
 	return nil
 }
 
@@ -383,8 +602,9 @@ func flattenComputeWorkloadVolumeClaims(claims []*workload_models.V1VolumeClaim)
 	flattened := make([]interface{}, len(claims))
 	for i, claim := range claims {
 		flattened[i] = map[string]interface{}{
-			"name": claim.Name,
-			"slug": claim.Slug,
+			"name":          claim.Name,
+			"slug":          claim.Slug,
+			"storage_class": claim.Spec.StorageClass,
 			"resources": []interface{}{
 				map[string]interface{}{
 					"requests": map[string]interface{}{
@@ -614,15 +834,16 @@ func flattenComputeWorkloadContainers(prefix string, data *schema.ResourceData, 
 // with updates to existing resources and accurate diffs are desired.
 func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.ResourceData, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
-		"name":            name,
-		"image":           container.Image,
-		"command":         flattenStringArray(container.Command),
-		"port":            flattenComputeWorkloadPortsOrdered(prefix+".port", data, container.Ports),
-		"env":             flattenComputeWorkloadEnvVarsOrdered(prefix+".env", data, container.Env),
-		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
-		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
-		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
-		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"name":             name,
+		"image":            container.Image,
+		"command":          flattenStringArray(container.Command),
+		"port":             flattenComputeWorkloadPortsOrdered(prefix+".port", data, container.Ports),
+		"env":              flattenComputeWorkloadEnvVarsOrdered(prefix+".env", data, container.Env),
+		"readiness_probe":  flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":   flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
 	}
 }
 
@@ -631,15 +852,16 @@ func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.Re
 // is important, flattenComputeWorkloadContainerOrdered should be used.
 func flattenComputeWorkloadContainer(name string, container workload_models.V1ContainerSpec) map[string]interface{} {
 	return map[string]interface{}{
-		"name":            name,
-		"image":           container.Image,
-		"command":         flattenStringArray(container.Command),
-		"port":            flattenComputeWorkloadPorts(container.Ports),
-		"env":             flattenComputeWorkloadEnvVars(container.Env),
-		"readiness_probe": flattenComputeWorkloadProbe(container.ReadinessProbe),
-		"liveness_probe":  flattenComputeWorkloadProbe(container.LivenessProbe),
-		"resources":       flattenComputeWorkloadResourceRequirements(container.Resources),
-		"volume_mount":    flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"name":             name,
+		"image":            container.Image,
+		"command":          flattenStringArray(container.Command),
+		"port":             flattenComputeWorkloadPorts(container.Ports),
+		"env":              flattenComputeWorkloadEnvVars(container.Env),
+		"readiness_probe":  flattenComputeWorkloadProbe(container.ReadinessProbe),
+		"liveness_probe":   flattenComputeWorkloadProbe(container.LivenessProbe),
+		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
+		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
+		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
 	}
 }
 
@@ -741,6 +963,77 @@ func flattenComputeWorkloadEnvVars(envVars workload_models.V1EnvironmentVariable
 		})
 	}
 	return e
+}
+
+// Convert the model to "array" of maps, order of capabilities not maintained.
+func flattenComputeWorkloadSecurityContext(securityContext *workload_models.V1ContainerSecurityContext) []interface{} {
+	if securityContext == nil {
+		return nil
+	}
+	ret := []interface{}{map[string]interface{}{
+		"allow_privilege_escalation": securityContext.AllowPrivilegeEscalation,
+		"read_only_root_filesystem":  securityContext.ReadOnlyRootFilesystem,
+		"run_as_group":               securityContext.RunAsGroup,
+		"run_as_user":                securityContext.RunAsUser,
+		"run_as_non_root":            securityContext.RunAsNonRoot,
+		"capabilities":               flattenComputeWorkloadSecurityContextCapabilities(securityContext.Capabilities),
+	}}
+
+	return ret
+
+}
+
+func flattenComputeWorkloadSecurityContextCapabilities(capabilities *workload_models.V1ContainerCapabilities) []interface{} {
+	if capabilities == nil {
+		return nil
+	}
+
+	// for now we don't care about the order of the capabilities, we'll do so if it turns out to matter
+	caps := map[string][]interface{}{
+		"add":  flattenStringArray(capabilities.Add),
+		"drop": flattenStringArray(capabilities.Drop),
+	}
+
+	return []interface{}{caps}
+
+}
+
+func flattenComputeWorkloadRuntimeContainer(prefix string, data *schema.ResourceData, container *workload_models.V1WorkloadInstanceContainerRuntimeSettings) []interface{} {
+
+	if container == nil {
+		return nil
+	}
+
+	containerData := map[string]interface{}{
+		"share_process_namespace": container.ShareProcessNamespace,
+	}
+
+	if term, err := strconv.Atoi(container.TerminationGracePeriodSeconds); err == nil {
+		containerData["termination_grace_period_seconds"] = term
+	}
+
+	if container.SecurityContext != nil {
+		secData := map[string]interface{}{
+			"run_as_group":        container.SecurityContext.RunAsGroup,
+			"run_as_user":         container.SecurityContext.RunAsUser,
+			"run_as_non_root":     container.SecurityContext.RunAsNonRoot,
+			"supplemental_groups": flattenStringArray(container.SecurityContext.SupplementalGroups),
+		}
+
+		if container.SecurityContext.Sysctls != nil {
+			sysctl := map[string]interface{}{}
+
+			for _, s := range container.SecurityContext.Sysctls {
+				sysctl[s.Name] = s.Value
+			}
+			secData["sysctl"] = sysctl
+		}
+
+		containerData["security_context"] = []map[string]interface{}{secData}
+
+	}
+
+	return []interface{}{containerData}
 }
 
 // flattenComputeWorkloadPortsOrdered flattens the port definitions for a workload while

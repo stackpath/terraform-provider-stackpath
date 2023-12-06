@@ -52,10 +52,12 @@ func NewGetWorkloadsParamsWithHTTPClient(client *http.Client) *GetWorkloadsParam
 	}
 }
 
-/* GetWorkloadsParams contains all the parameters to send to the API endpoint
-   for the get workloads operation.
+/*
+GetWorkloadsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get workloads operation.
+
+	Typically these are written to a http.Request.
 */
 type GetWorkloadsParams struct {
 
@@ -85,7 +87,7 @@ type GetWorkloadsParams struct {
 
 	/* StackID.
 
-	   The ID of the stack to retrieve workloads from
+	   A stack ID or slug
 	*/
 	StackID string
 

@@ -6,6 +6,9 @@
 
 The StackPath provider is a plugin for Terraform to interact with resources on the StackPath edge platform. It is publicly available on the [Terraform registry](https://registry.terraform.io/providers/stackpath/stackpath/latest). Please see the [official documentation](https://registry.terraform.io/providers/stackpath/stackpath/latest/docs) to get started.
 
+**IMPORTANT NOTE**: From 2.0.0 onward, the provider is assumed to be the only application controlling an Edge Compute workload. Any fields/properties managed outside of Terraform
+will be overwritten if they are not fields the provider is aware of. Performing a `refresh` is suggested after upgrading.
+
 ## Provider development
 
 ### Requirements

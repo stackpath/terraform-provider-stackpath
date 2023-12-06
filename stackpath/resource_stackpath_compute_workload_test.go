@@ -13,8 +13,8 @@ import (
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
 	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -81,6 +81,8 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					resource.TestCheckResourceAttr("stackpath_compute_workload.foo", "container.0.readiness_probe.0.tcp_socket.0.port", "80"),
+					resource.TestCheckResourceAttr("stackpath_compute_workload.foo", "container.0.liveness_probe.0.http_get.0.port", "80"),
 					testAccComputeWorkloadCheckContainerPortNotExist(workload, "app", "https"),
 					testAccComputeWorkloadCheckContainerEnvVarNotExist(workload, "app", "MY_ENVIRONMENT_VARIABLE"),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 2, "AMS"),
@@ -95,6 +97,9 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckImagePullCredentials(workload, "docker.io", "my-registry-user", "developers@stackpath.com"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+					// ImagePullCredentials doesn't include the probes, so they should go away
+					resource.TestCheckNoResourceAttr("stackpath_compute_workload.foo", "container.0.readiness_probe.0"),
+					resource.TestCheckNoResourceAttr("stackpath_compute_workload.foo", "container.0.liveness_probe.0"),
 				),
 			},
 			{
@@ -110,14 +115,14 @@ func TestComputeWorkloadContainers(t *testing.T) {
 			// TODO: there's a ordering issue where the order of the containers is shuffled when being read in from the API
 			//   Need to ensure consistent ordering of containers when reading in state.
 			//
-			// {
-			// 	Config: testComputeWorkloadConfigContainerAddContainer(),
-			// 	Check: resource.ComposeTestCheckFunc(
-			// 		testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
-			// 		testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-			// 		testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
-			// 	),
-			// },
+			{
+				Config: testComputeWorkloadConfigContainerAddContainer(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
+				),
+			},
 		},
 	})
 }
@@ -281,7 +286,7 @@ func TestComputeWorkloadContainersIPv6DualStack(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dual-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -309,7 +314,7 @@ func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dsub-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -333,6 +338,121 @@ func TestComputeWorkloadContainersIPv6DualStackWithSubnets(t *testing.T) {
 	})
 }
 
+func TestComputeContainersEnhancedContainerControls(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "ecc-" + strconv.Itoa(int(time.Now().Unix()))
+
+	// By design, the StackPath API does not return image pull secrets to the
+	// user when retrieving a workload. Expect to see an empty secret in the
+	// result and suppress the diff error.
+	//emptyImagePullSecrets := regexp.MustCompile("(.*)image_pull_credentials.0.docker_registry.0.password:(\\s*)\"\" => \"secret registry password\"(.*)")
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigContainerBasic(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+				),
+			},
+			{
+				Config: testComputeWorkloadConfigContainerSecurityContextCapabilities(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{"NET_ADMIN"}, []string{"NET_BROADCAST"}),
+					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true, // This flag is confusing
+				Config:             testComputeWorkloadConfigContainerSecurityContextClearCapabilities(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckCapabilities(workload, "app", []string{}, []string{}),
+					testAccComputeWorkloadCheckSecurityContext(workload, "app", true /*priv */, false /*ro*/, true /*nonroot*/, "101", ""),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerRuntimeSettings(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
+					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
+						"60",  // termination,
+						true,  // share namespace
+						"999", // run_as_user
+						"991", // run_as_group
+						true,  // run_as_non_root
+						[]string{"42"},
+					),
+					testAccComputeWorkloadCheckRuntimeSysctl(workload, map[string]string{
+						"net.core.rmem_max":     "10065408",
+						"net.core.rmem_default": "1006540",
+					}),
+					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
+						map[string][]string{
+							"192.168.3.4": {"domain.com"},
+						}),
+					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain.com"},
+						map[string]string{
+							"timeout": "10",
+						},
+					),
+				),
+			},
+			{
+				ExpectNonEmptyPlan: true,
+				Config:             testComputeWorkloadConfigContainerRuntimeClearSettings(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
+					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
+						"60",           // termination,
+						true,           // share namespace
+						"999",          // run_as_user
+						"991",          // run_as_group
+						true,           // run_as_non_root
+						[]string{"43"}, // make sure it actually changed
+					),
+					testAccComputeWorkloadCheckRuntimeSysctl(workload, map[string]string{
+						"net.core.rmem_max":     "10065408",
+						"net.core.rmem_default": "1006540",
+					}),
+					// clearing host settings
+					testAccComputeWorkloadCheckRuntimeHostAliases(workload,
+						map[string][]string{}),
+					// cleared options
+					testAccComputeWorkloadCheckRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain2.com"}, // changed to verify we made a change
+						nil,
+					),
+				),
+			},
+		},
+	})
+
+}
+
 func TestComputeWorkloadVirtualMachines(t *testing.T) {
 	t.Parallel()
 
@@ -354,6 +474,18 @@ func TestComputeWorkloadVirtualMachines(t *testing.T) {
 					testAccComputeWorkloadCheckVirtualMachinePort(workload, "app", "http", "TCP", 80),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+					// VM settings channot be changed dynamically
+					testAccComputeWorkloadCheckVMRuntimeHostAliases(workload,
+						map[string][]string{
+							"192.168.3.4": {"domain.com"},
+						}),
+					testAccComputeWorkloadCheckVMRuntimeDNSConfig(workload,
+						[]string{"8.8.8.8"},
+						[]string{"domain.com"},
+						map[string]string{
+							"timeout": "10",
+						},
+					),
 				),
 			},
 		},
@@ -364,7 +496,7 @@ func TestComputeWorkloadVirtualMachinesIPv6DualStack(t *testing.T) {
 	t.Parallel()
 
 	workload := &workload_models.V1Workload{}
-	nameSuffix := "ipv6-" + strconv.Itoa(int(time.Now().Unix()))
+	nameSuffix := "dual-" + strconv.Itoa(int(time.Now().Unix()))
 
 	resource.Test(t, resource.TestCase{
 		ProviderFactories: testAccProviderFactories,
@@ -524,7 +656,7 @@ func testAccComputeWorkloadCheckVirtualMachineImage(workload *workload_models.V1
 
 func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(*terraform.State) error {
-		if len(workload.Spec.ImagePullCredentials) != 0 {
+		if workload.Spec.ImagePullCredentials != nil {
 			return fmt.Errorf("unexpected image pull credentials set on the workload")
 		}
 		return nil
@@ -533,7 +665,7 @@ func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models
 
 func testAccComputeWorkloadCheckImagePullCredentials(workload *workload_models.V1Workload, server, username, email string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
-		if len(workload.Spec.ImagePullCredentials) == 0 {
+		if workload.Spec.ImagePullCredentials == nil {
 			return fmt.Errorf("no image pull credentials set on the workload")
 		} else if creds := workload.Spec.ImagePullCredentials[0]; creds.DockerRegistry.Server != server {
 			return fmt.Errorf("image pull server '%s' does not match expected value '%s'", creds.DockerRegistry.Server, server)
@@ -631,7 +763,7 @@ func testAccComputeWorkloadCheckContainerImage(workload *workload_models.V1Workl
 	}
 }
 
-func testAccComputeWorkloadCheckExists(name string, workload *workload_models.V1Workload) resource.TestCheckFunc {
+func testAccComputeWorkloadCheckExists(name string, spec *workload_models.V1Workload) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -652,7 +784,7 @@ func testAccComputeWorkloadCheckExists(name string, workload *workload_models.V1
 			return fmt.Errorf("could not retrieve workload: %v", err)
 		}
 
-		*workload = *found.Payload.Workload
+		*spec = *found.Payload.Workload
 
 		return nil
 	}
@@ -680,6 +812,252 @@ func testAccComputeWorkloadCheckTargetAutoScaling(workload *workload_models.V1Wo
 		}
 		return nil
 	}
+}
+
+func testAccComputeWorkloadCheckCapabilities(workload *workload_models.V1Workload, containerName string, add []string, drop []string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		container, found := workload.Spec.Containers[containerName]
+		if !found {
+			return fmt.Errorf("container not found: %s", containerName)
+		} else if container.SecurityContext == nil {
+			return fmt.Errorf("container '%s' does not contain a security context", containerName)
+		} else if container.SecurityContext.Capabilities == nil && (add != nil || drop != nil) {
+			return fmt.Errorf("container '%s' does not have capability requests: %+v", containerName, container.SecurityContext)
+		} else if container.SecurityContext.Capabilities != nil && add == nil && drop == nil {
+			return fmt.Errorf("container '%s' expected to have empty capabilities, but has object (%v %v)",
+				containerName,
+				container.SecurityContext.Capabilities.Add,
+				container.SecurityContext.Capabilities.Drop,
+			)
+		} else if container.SecurityContext.Capabilities != nil && !reflect.DeepEqual(container.SecurityContext.Capabilities.Add, add) {
+			return fmt.Errorf("container '%s' ADD caps not the same (%v)!=(%v)",
+				containerName, container.SecurityContext.Capabilities.Add, add)
+		} else if container.SecurityContext.Capabilities != nil && !reflect.DeepEqual(container.SecurityContext.Capabilities.Drop, drop) {
+			return fmt.Errorf("container '%s' DROP caps not the same (%v)!=(%v)",
+				containerName, container.SecurityContext.Capabilities.Drop, drop)
+		}
+
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckSecurityContext(workload *workload_models.V1Workload, containerName string,
+	allowPrivEscalation, readOnly, nonRoot bool, uid, gid string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		container, found := workload.Spec.Containers[containerName]
+		if !found {
+			return fmt.Errorf("container not found: %s", containerName)
+		} else if container.SecurityContext == nil {
+			return fmt.Errorf("container '%s' does not contain a security context", containerName)
+
+		} else if container.SecurityContext.AllowPrivilegeEscalation != allowPrivEscalation {
+			return fmt.Errorf("container '%s' does not have correct allowPrivilegeEscalation", containerName)
+		} else if container.SecurityContext.ReadOnlyRootFilesystem != readOnly {
+			return fmt.Errorf("container '%s' does not have correct rootOnlyFilesystem", containerName)
+
+		} else if container.SecurityContext.RunAsNonRoot != nonRoot {
+			return fmt.Errorf("container '%s' does not have correct runAsNonRoot", containerName)
+		} else if container.SecurityContext.RunAsUser != uid {
+			return fmt.Errorf("container '%s' does not have correct runAsUser: %s", containerName, container.SecurityContext.RunAsUser)
+		} else if container.SecurityContext.RunAsGroup != gid {
+			return fmt.Errorf("container '%s' does not have correct runAsGroup: %s", containerName, container.SecurityContext.RunAsGroup)
+		}
+
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckContainerRuntimeExists(workload *workload_models.V1Workload, exists bool) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		if workload.Spec.Runtime == nil {
+			return fmt.Errorf("expected runtime settings, but had none")
+		} else if exists && workload.Spec.Runtime.Containers == nil {
+			return fmt.Errorf("expected runtime container settings, but had none")
+		} else if !exists && workload.Spec.Runtime.Containers != nil {
+			return fmt.Errorf("did not expect to have container runtime settings, but not nil")
+		}
+		return nil
+	}
+
+}
+
+// Precondition: testAccComputeWorkloadCheckContainerRuntimeExists has run
+func testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload *workload_models.V1Workload,
+	terminationGrace string, shareNamespace bool,
+	runAsUser string, runAsGroup string, nonRoot bool,
+	supplemental []string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		if workload.Spec.Runtime.Containers.SecurityContext == nil {
+			return fmt.Errorf("expected container runtime security context")
+		}
+		secContext := workload.Spec.Runtime.Containers.SecurityContext
+
+		if secContext.RunAsUser != runAsUser {
+			return fmt.Errorf("runtime: run_as_user %s != %s", secContext.RunAsUser, runAsUser)
+		} else if secContext.RunAsGroup != runAsGroup {
+			return fmt.Errorf("runtime: run_as_group %s != %s", secContext.RunAsGroup, runAsGroup)
+		} else if secContext.RunAsNonRoot != nonRoot {
+			return fmt.Errorf("runtime: run_as_non_root should be %v, but it was %v", nonRoot, secContext.RunAsNonRoot)
+		} else if !reflect.DeepEqual(secContext.SupplementalGroups, supplemental) {
+			return fmt.Errorf("runtime: supplemental groups, '%v' != '%v'", secContext.SupplementalGroups, supplemental)
+		}
+		return nil
+	}
+}
+
+// This test has precondition of verifying correct stsate of the runtime settings themselves
+func testAccComputeWorkloadCheckRuntimeSysctl(workload *workload_models.V1Workload, expected map[string]string) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		if workload.Spec.Runtime.Containers.SecurityContext == nil {
+			return fmt.Errorf("expected runtime sysctl settings, but had none")
+		} else if sysctls := workload.Spec.Runtime.Containers.SecurityContext.Sysctls; len(expected) > 0 && (sysctls == nil || len(sysctls) == 0) {
+			return fmt.Errorf("expected sysctl overrides, but had none")
+		} else if len(expected) == 0 && len(sysctls) > 0 {
+			return fmt.Errorf("expected empty sysctl overrides, but had some: %v", sysctls)
+		} else {
+			for _, sysctl := range sysctls {
+				if val, ok := expected[sysctl.Name]; !ok {
+					return fmt.Errorf("unexpected sysctl override %s=%s", sysctl.Name, sysctl.Value)
+				} else if sysctl.Value != val {
+					return fmt.Errorf("sysctl override did not match for %s: %s != %s", sysctl.Name, sysctl.Value, val)
+				}
+			}
+		}
+
+		return nil
+	}
+}
+
+// This test has precondition of verifying correct stsate of the runtime settings themselves
+func testAccComputeWorkloadCheckRuntimeHostAliases(workload *workload_models.V1Workload,
+	aliases map[string][]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		containerData := workload.Spec.Runtime.Containers
+		return verifyHostAliases(containerData.HostAliases, aliases)
+	}
+}
+
+func testAccComputeWorkloadCheckVMRuntimeHostAliases(workload *workload_models.V1Workload,
+	aliases map[string][]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		if workload.Spec.Runtime == nil {
+			return fmt.Errorf("no runtime settings found")
+		}
+		vmData := workload.Spec.Runtime.VirtualMachines
+		if vmData == nil {
+			return fmt.Errorf("no virtual machine runtime settings found")
+		}
+		return verifyHostAliases(vmData.HostAliases, aliases)
+	}
+}
+
+func verifyHostAliases(actual []*workload_models.V1HostAlias, aliases map[string][]string) error {
+	if aliases == nil {
+		aliases = map[string][]string{}
+	}
+
+	if len(aliases) == 0 && (actual != nil && len(actual) > 0) {
+		return fmt.Errorf("expected empty hostaliases, but had %d", len(actual))
+	} else if len(aliases) > 0 && (actual == nil || len(actual) == 0) {
+		return fmt.Errorf("expected non-empty host aliases, but they were empty")
+	} else {
+
+		for _, hostAlias := range actual {
+			if exp, ok := aliases[hostAlias.IP]; !ok {
+				return fmt.Errorf("did not expect to have alias for %s", hostAlias.IP)
+			} else {
+				sort.Sort(sort.StringSlice(hostAlias.Hostnames))
+				sort.Sort(sort.StringSlice(exp))
+				if !reflect.DeepEqual(exp, hostAlias.Hostnames) {
+					return fmt.Errorf("aliases for %s were not equal: %v != %v",
+						hostAlias.IP,
+						hostAlias.Hostnames,
+						exp,
+					)
+				}
+			}
+		}
+
+	}
+	return nil
+}
+
+// Checks the resolver_config sub-resource (dns config in API)
+func testAccComputeWorkloadCheckRuntimeDNSConfig(workload *workload_models.V1Workload,
+	nameservers []string,
+	search []string,
+	options map[string]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		containerData := workload.Spec.Runtime.Containers
+		if containerData.DNSConfig == nil && len(nameservers) > 0 {
+			return fmt.Errorf("did not expect to have dns config, but found it")
+		} else {
+			dnsConfig := containerData.DNSConfig
+
+			return verifyDNSConfig(dnsConfig, nameservers, search, options)
+		}
+	}
+
+}
+
+func testAccComputeWorkloadCheckVMRuntimeDNSConfig(workload *workload_models.V1Workload,
+	nameservers []string,
+	search []string,
+	options map[string]string,
+) resource.TestCheckFunc {
+
+	return func(*terraform.State) error {
+		containerData := workload.Spec.Runtime.VirtualMachines
+		if containerData.DNSConfig == nil && len(nameservers) > 0 {
+			return fmt.Errorf("did not expect to have dns config, but found it")
+		} else {
+			dnsConfig := containerData.DNSConfig
+
+			return verifyDNSConfig(dnsConfig, nameservers, search, options)
+		}
+	}
+
+}
+
+func verifyDNSConfig(dnsConfig *workload_models.V1DNSConfig,
+	nameservers []string,
+	search []string,
+	options map[string]string,
+) error {
+
+	if !reflect.DeepEqual(dnsConfig.Nameservers, nameservers) {
+		return fmt.Errorf("nameservers not equal: %v != %v",
+			dnsConfig.Nameservers, nameservers)
+	}
+	if !reflect.DeepEqual(dnsConfig.Searches, search) {
+		return fmt.Errorf("search options not equal: %v != %v",
+			dnsConfig.Searches, search,
+		)
+	}
+	if dnsConfig.Options == nil && len(options) > 0 {
+		return fmt.Errorf("expected to have dns options but had none")
+	}
+
+	for _, option := range dnsConfig.Options {
+		if val, ok := options[option.Name]; !ok {
+			return fmt.Errorf("unexpected resolver option '%s'", option.Name)
+		} else if val != option.Value {
+			return fmt.Errorf("unexpected value for resolver option '%s': %s != %s",
+				option.Name, option.Value, val,
+			)
+		}
+	}
+	return nil
 }
 
 func printSlice(a []string) string {
@@ -1181,6 +1559,24 @@ EOT
       ]
     }
   }
+
+  virtual_machine_runtime_environment {
+	dns {
+
+		host_aliases {
+			address = "192.168.3.4"
+			hostnames = [ "domain.com" ]
+		}
+
+		resolver_config {
+			nameservers = [ "8.8.8.8" ]
+			search = [ "domain.com" ]
+			options = {
+				timeout = "10"
+			}
+		}
+	}
+  }
 }`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }
 
@@ -1221,6 +1617,8 @@ resource "stackpath_compute_workload" "foo-volume" {
   volume_claim {
     name = "volume"
     slug = "volume"
+	# this is same as the default
+#	storage_class = "stackpath-edge/network-standard"
     resources {
       requests = {
         "storage" = "10Gi"
@@ -1260,6 +1658,7 @@ resource "stackpath_compute_workload" "foo" {
       port     = 80
       protocol = "TCP"
     }
+
   }
 
   target {
@@ -1279,6 +1678,310 @@ resource "stackpath_compute_workload" "foo" {
         "AMS",
       ]
     }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+// Security context without requesting capability changes
+func testComputeWorkloadConfigContainerSecurityContextClearCapabilities(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+	security_context {
+
+		allow_privilege_escalation = true
+		run_as_non_root = true
+		run_as_user = "101"
+
+	}
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerSecurityContextCapabilities(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+	security_context {
+
+		allow_privilege_escalation = true
+		run_as_non_root = true
+		run_as_user = "101"
+
+		capabilities {
+			add = [
+				"NET_ADMIN",
+			]
+
+			drop = [
+				"NET_BROADCAST",
+			]
+		}
+	}
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+// This will be unused as you can't edit the settings
+func testComputeWorkloadConfigVMRuntimeSettings(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "bar" {
+  name = "My Terraform Compute VM Workload - %s"
+  slug = "terraform-vm-workload-%s"
+  %s
+
+  virtual_machine {
+    name  = "app"
+    image = "stackpath-edge/centos-7:v201905012051"
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    user_data = <<EOT
+package_update: true
+packages:
+- nginx
+EOT
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+
+}
+
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerRuntimeSettings(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+
+  container_runtime_environment {
+	termination_grace_period_seconds = 60
+	share_process_namespace = true
+	security_context {
+		run_as_user = "999"
+		run_as_group = "991"
+		run_as_non_root = true
+
+		supplemental_groups = [ 
+			"42", 
+		]
+
+		sysctl = {
+			"net.core.rmem_max" = "10065408"
+			"net.core.rmem_default" = "1006540"
+		}
+	}
+
+
+
+	dns {
+
+		host_aliases {
+			address = "192.168.3.4"
+			hostnames = [ "domain.com" ]
+		}
+
+		resolver_config {
+			nameservers = [ "8.8.8.8" ]
+			search = [ "domain.com" ]
+			options = {
+				timeout = "10"
+			}
+		}
+	}
+
+
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerRuntimeClearSettings(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+
+  container_runtime_environment {
+	termination_grace_period_seconds = 60
+	share_process_namespace = true
+	security_context {
+		run_as_user = "999"
+		run_as_group = "991"
+		run_as_non_root = true
+
+		supplemental_groups = [ 
+			"43", 
+		]
+
+		sysctl = {
+			"net.core.rmem_max" = "10065408"
+			"net.core.rmem_default" = "1006540"
+		}
+	}
+
+
+
+	dns {
+
+		resolver_config {
+			nameservers = [ "8.8.8.8" ]
+			search = [ "domain2.com" ]
+		}
+	}
+
+
   }
 }`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
 }

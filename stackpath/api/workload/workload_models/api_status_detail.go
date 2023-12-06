@@ -10,7 +10,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -68,7 +67,7 @@ func UnmarshalAPIStatusDetailSlice(reader io.Reader, consumer runtime.Consumer) 
 // UnmarshalAPIStatusDetail unmarshals polymorphic APIStatusDetail
 func UnmarshalAPIStatusDetail(reader io.Reader, consumer runtime.Consumer) (APIStatusDetail, error) {
 	// we need to read this twice, so first into a buffer
-	data, err := ioutil.ReadAll(reader)
+	data, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}

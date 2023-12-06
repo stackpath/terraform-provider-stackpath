@@ -54,10 +54,12 @@ func NewCreateWorkloadParamsWithHTTPClient(client *http.Client) *CreateWorkloadP
 	}
 }
 
-/* CreateWorkloadParams contains all the parameters to send to the API endpoint
-   for the create workload operation.
+/*
+CreateWorkloadParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the create workload operation.
+
+	Typically these are written to a http.Request.
 */
 type CreateWorkloadParams struct {
 
@@ -66,7 +68,7 @@ type CreateWorkloadParams struct {
 
 	/* StackID.
 
-	   The ID of the stack to create the workload in
+	   A stack ID or slug
 	*/
 	StackID string
 

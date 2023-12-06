@@ -8,6 +8,7 @@ package workload_models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -22,15 +23,76 @@ type V1EnvironmentVariable struct {
 
 	// An environment variable's value
 	Value string `json:"value,omitempty"`
+
+	// value from
+	ValueFrom *V1EnvironmentVariableSource `json:"valueFrom,omitempty"`
 }
 
 // Validate validates this v1 environment variable
 func (m *V1EnvironmentVariable) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateValueFrom(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 environment variable based on context it is used
+func (m *V1EnvironmentVariable) validateValueFrom(formats strfmt.Registry) error {
+	if swag.IsZero(m.ValueFrom) { // not required
+		return nil
+	}
+
+	if m.ValueFrom != nil {
+		if err := m.ValueFrom.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("valueFrom")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 environment variable based on the context it is used
 func (m *V1EnvironmentVariable) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateValueFrom(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1EnvironmentVariable) contextValidateValueFrom(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ValueFrom != nil {
+
+		if swag.IsZero(m.ValueFrom) { // not required
+			return nil
+		}
+
+		if err := m.ValueFrom.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("valueFrom")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

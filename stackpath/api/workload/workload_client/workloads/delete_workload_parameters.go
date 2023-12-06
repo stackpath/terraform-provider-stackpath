@@ -52,22 +52,24 @@ func NewDeleteWorkloadParamsWithHTTPClient(client *http.Client) *DeleteWorkloadP
 	}
 }
 
-/* DeleteWorkloadParams contains all the parameters to send to the API endpoint
-   for the delete workload operation.
+/*
+DeleteWorkloadParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the delete workload operation.
+
+	Typically these are written to a http.Request.
 */
 type DeleteWorkloadParams struct {
 
 	/* StackID.
 
-	   The ID of the stack containing the workload to delete
+	   A stack ID or slug
 	*/
 	StackID string
 
 	/* WorkloadID.
 
-	   The ID of the workload to delete
+	   An EdgeCompute workload ID
 	*/
 	WorkloadID string
 

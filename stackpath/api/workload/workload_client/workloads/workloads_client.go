@@ -32,11 +32,11 @@ type ClientService interface {
 
 	DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteWorkloadNoContent, error)
 
-	GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocationsOK, error)
-
 	GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadOK, error)
 
 	GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadsOK, error)
+
+	PutWorkload(params *PutWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PutWorkloadOK, error)
 
 	UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateWorkloadOK, error)
 
@@ -44,7 +44,7 @@ type ClientService interface {
 }
 
 /*
-  CreateWorkload creates a new workload
+CreateWorkload creates a workload
 */
 func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateWorkloadOK, error) {
 	// TODO: Validate the params before sending
@@ -82,7 +82,7 @@ func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.C
 }
 
 /*
-  DeleteWorkload deletes a workload
+DeleteWorkload deletes a workload
 */
 func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteWorkloadNoContent, error) {
 	// TODO: Validate the params before sending
@@ -120,45 +120,7 @@ func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.C
 }
 
 /*
-  GetLocations retrieves the locations a workload may be created in
-*/
-func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocationsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetLocationsParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "GetLocations",
-		Method:             "GET",
-		PathPattern:        "/workload/v1/locations",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &GetLocationsReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetLocationsOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	unexpectedSuccess := result.(*GetLocationsDefault)
-	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
-}
-
-/*
-  GetWorkload retrieves an individual workload
+GetWorkload gets a workload
 */
 func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadOK, error) {
 	// TODO: Validate the params before sending
@@ -196,7 +158,7 @@ func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientA
 }
 
 /*
-  GetWorkloads retrieves a stack s workloads
+GetWorkloads gets all workloads
 */
 func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadsOK, error) {
 	// TODO: Validate the params before sending
@@ -234,7 +196,45 @@ func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.Clien
 }
 
 /*
-  UpdateWorkload updates a workload
+PutWorkload replaces a workload
+*/
+func (a *Client) PutWorkload(params *PutWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PutWorkloadOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPutWorkloadParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "PutWorkload",
+		Method:             "PUT",
+		PathPattern:        "/workload/v1/stacks/{stack_id}/workloads/{workload_id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PutWorkloadReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PutWorkloadOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*PutWorkloadDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+UpdateWorkload updates a workload
 */
 func (a *Client) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateWorkloadOK, error) {
 	// TODO: Validate the params before sending

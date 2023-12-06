@@ -41,6 +41,10 @@ func resourceComputeWorkload() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
+			"version": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"annotations": {
 				Type:     schema.TypeMap,
 				Optional: true,
@@ -175,6 +179,11 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"storage_class": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "stackpath-edge/network-standard",
+						},
 						"resources": resourceComputeWorkloadResourcesSchema(),
 					},
 				},
@@ -237,6 +246,29 @@ func resourceComputeWorkload() *schema.Resource {
 							Required: true,
 							MinItems: 1,
 							Elem:     resourceComputeMatchExpressionSchema(),
+						},
+					},
+				},
+			},
+			"container_runtime_environment": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				MaxItems:      1,
+				ConflictsWith: []string{"virtual_machine_runtime_environment"},
+				Elem:          resourceComputeContainerRuntimeEnvironment(),
+			},
+			"virtual_machine_runtime_environment": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				MaxItems:      1,
+				ConflictsWith: []string{"container_runtime_environment"},
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"dns": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Required: true,
+							Elem:     resourceComputeRuntimeEnvironmentDns(),
 						},
 					},
 				},
@@ -396,6 +428,179 @@ func resourceComputeWorkloadPortSchema() *schema.Schema {
 	}
 }
 
+func resourceComputeWorkloadSecurityContextSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_privilege_escalation": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"read_only_root_filesystem": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"run_as_group": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"run_as_user": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "",
+				},
+				"run_as_non_root": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
+				},
+				"capabilities": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"add": {
+								Type:     schema.TypeSet,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+							"drop": {
+								Type:     schema.TypeSet,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func resourceComputeContainerRuntimeEnvironment() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"termination_grace_period_seconds": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"share_process_namespace": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"security_context": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"run_as_group": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "",
+						},
+						"run_as_user": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Default:  "",
+						},
+						"run_as_non_root": {
+							Type:     schema.TypeBool,
+							Optional: true,
+							Default:  false,
+						},
+						"supplemental_groups": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"sysctl": {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"dns": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Required: true,
+				Elem:     resourceComputeRuntimeEnvironmentDns(),
+			},
+		},
+	}
+}
+
+func resourceComputeRuntimeEnvironmentDns() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"host_aliases": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"address": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"hostnames": {
+							Type:     schema.TypeSet,
+							Required: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"resolver_config": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+
+					Schema: map[string]*schema.Schema{
+						"nameservers": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"search": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"options": {
+							Type:     schema.TypeMap,
+							Optional: true,
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func resourceComputeWorkloadCreate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 	// Create the workload
@@ -416,8 +621,39 @@ func resourceComputeWorkloadCreate(ctx context.Context, data *schema.ResourceDat
 	return resourceComputeWorkloadRead(ctx, data, meta)
 }
 
+func resourceComputeWorkloadReplace(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	config := meta.(*Config)
+	_, err := config.edgeCompute.Workloads.PutWorkload(&workloads.PutWorkloadParams{
+		Context:    ctx,
+		StackID:    config.StackID,
+		WorkloadID: data.Id(),
+		Body: &workload_models.V1PutWorkloadRequest{
+			Workload: convertComputeWorkload(data),
+		},
+	}, nil)
+	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
+		// Clear out the ID in terraform if the
+		// resource no longer exists in the API
+		data.SetId("")
+		return diag.Diagnostics{}
+	} else if err != nil {
+		return diag.FromErr(fmt.Errorf("failed to update compute workload: %v", NewStackPathError(err)))
+	}
+	return resourceComputeWorkloadRead(ctx, data, meta)
+}
+
 func resourceComputeWorkloadUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
+
+	wk := convertComputeWorkload(data)
+	if wk.Metadata.Version != "" {
+		// Currently using PATCH in cases where we are making updates
+		// can miss array values, so we prefer to use PUT. But that requires
+		// the version to be present, which might not be there for
+		// older resources
+		return resourceComputeWorkloadReplace(ctx, data, meta)
+	}
+
 	_, err := config.edgeCompute.Workloads.UpdateWorkload(&workloads.UpdateWorkloadParams{
 		Context:    ctx,
 		StackID:    config.StackID,

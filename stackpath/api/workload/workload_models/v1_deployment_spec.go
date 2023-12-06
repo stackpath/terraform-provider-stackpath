@@ -59,6 +59,8 @@ func (m *V1DeploymentSpec) validateScaleSettings(formats strfmt.Registry) error 
 		if err := m.ScaleSettings.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("scaleSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -81,6 +83,8 @@ func (m *V1DeploymentSpec) validateSelectors(formats strfmt.Registry) error {
 			if err := m.Selectors[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}
@@ -112,9 +116,16 @@ func (m *V1DeploymentSpec) ContextValidate(ctx context.Context, formats strfmt.R
 func (m *V1DeploymentSpec) contextValidateScaleSettings(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ScaleSettings != nil {
+
+		if swag.IsZero(m.ScaleSettings) { // not required
+			return nil
+		}
+
 		if err := m.ScaleSettings.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("scaleSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -128,9 +139,16 @@ func (m *V1DeploymentSpec) contextValidateSelectors(ctx context.Context, formats
 	for i := 0; i < len(m.Selectors); i++ {
 
 		if m.Selectors[i] != nil {
+
+			if swag.IsZero(m.Selectors[i]) { // not required
+				return nil
+			}
+
 			if err := m.Selectors[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("selectors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce
 				}
 				return err
 			}

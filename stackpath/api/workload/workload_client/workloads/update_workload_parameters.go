@@ -54,10 +54,12 @@ func NewUpdateWorkloadParamsWithHTTPClient(client *http.Client) *UpdateWorkloadP
 	}
 }
 
-/* UpdateWorkloadParams contains all the parameters to send to the API endpoint
-   for the update workload operation.
+/*
+UpdateWorkloadParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update workload operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdateWorkloadParams struct {
 
@@ -66,13 +68,13 @@ type UpdateWorkloadParams struct {
 
 	/* StackID.
 
-	   The ID of the stack containing the workload to update
+	   A stack ID or slug
 	*/
 	StackID string
 
 	/* WorkloadID.
 
-	   The ID of the workload to update
+	   An EdgeCompute workload ID
 	*/
 	WorkloadID string
 

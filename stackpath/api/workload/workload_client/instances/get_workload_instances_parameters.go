@@ -52,10 +52,12 @@ func NewGetWorkloadInstancesParamsWithHTTPClient(client *http.Client) *GetWorklo
 	}
 }
 
-/* GetWorkloadInstancesParams contains all the parameters to send to the API endpoint
-   for the get workload instances operation.
+/*
+GetWorkloadInstancesParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get workload instances operation.
+
+	Typically these are written to a http.Request.
 */
 type GetWorkloadInstancesParams struct {
 
@@ -85,13 +87,13 @@ type GetWorkloadInstancesParams struct {
 
 	/* StackID.
 
-	   The ID of the stack containing the workload whose instances to retrieve
+	   A stack ID or slug
 	*/
 	StackID string
 
 	/* WorkloadID.
 
-	   The ID the workload whose instances to retrieve
+	   An EdgeCompute workload ID
 	*/
 	WorkloadID string
 

@@ -53,16 +53,18 @@ func NewGetLogsParamsWithHTTPClient(client *http.Client) *GetLogsParams {
 	}
 }
 
-/* GetLogsParams contains all the parameters to send to the API endpoint
-   for the get logs operation.
+/*
+GetLogsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get logs operation.
+
+	Typically these are written to a http.Request.
 */
 type GetLogsParams struct {
 
 	/* ContainerName.
 
-	   The name of the container to obtain logs for. This defaults to first container in instance.
+	   The name of the container to obtain logs for. This defaults to first container in the instance.
 	*/
 	ContainerName *string
 
@@ -76,7 +78,7 @@ type GetLogsParams struct {
 
 	/* InstanceName.
 
-	   The name of the instance to obtain logs for
+	   An EdgeCompute workload instance name
 	*/
 	InstanceName string
 
@@ -114,7 +116,7 @@ type GetLogsParams struct {
 
 	/* StackID.
 
-	   The ID of the stack containing the workload whose instances to retrieve
+	   A stack ID or slug
 	*/
 	StackID string
 
@@ -134,7 +136,7 @@ type GetLogsParams struct {
 
 	/* WorkloadID.
 
-	   The ID the workload whose instances to retrieve
+	   An EdgeCompute workload ID
 	*/
 	WorkloadID string
 

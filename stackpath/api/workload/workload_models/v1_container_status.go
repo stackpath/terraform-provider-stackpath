@@ -107,6 +107,8 @@ func (m *V1ContainerStatus) validatePhase(formats strfmt.Registry) error {
 		if err := m.Phase.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -124,6 +126,8 @@ func (m *V1ContainerStatus) validateRunning(formats strfmt.Registry) error {
 		if err := m.Running.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("running")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -153,6 +157,8 @@ func (m *V1ContainerStatus) validateTerminated(formats strfmt.Registry) error {
 		if err := m.Terminated.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("terminated")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -170,6 +176,8 @@ func (m *V1ContainerStatus) validateWaiting(formats strfmt.Registry) error {
 		if err := m.Waiting.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("waiting")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -207,9 +215,16 @@ func (m *V1ContainerStatus) ContextValidate(ctx context.Context, formats strfmt.
 func (m *V1ContainerStatus) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Phase != nil {
+
+		if swag.IsZero(m.Phase) { // not required
+			return nil
+		}
+
 		if err := m.Phase.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("phase")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -221,9 +236,16 @@ func (m *V1ContainerStatus) contextValidatePhase(ctx context.Context, formats st
 func (m *V1ContainerStatus) contextValidateRunning(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Running != nil {
+
+		if swag.IsZero(m.Running) { // not required
+			return nil
+		}
+
 		if err := m.Running.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("running")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -235,9 +257,16 @@ func (m *V1ContainerStatus) contextValidateRunning(ctx context.Context, formats 
 func (m *V1ContainerStatus) contextValidateTerminated(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Terminated != nil {
+
+		if swag.IsZero(m.Terminated) { // not required
+			return nil
+		}
+
 		if err := m.Terminated.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("terminated")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -249,9 +278,16 @@ func (m *V1ContainerStatus) contextValidateTerminated(ctx context.Context, forma
 func (m *V1ContainerStatus) contextValidateWaiting(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Waiting != nil {
+
+		if swag.IsZero(m.Waiting) { // not required
+			return nil
+		}
+
 		if err := m.Waiting.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("waiting")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

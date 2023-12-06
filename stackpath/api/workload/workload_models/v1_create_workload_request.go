@@ -45,6 +45,8 @@ func (m *V1CreateWorkloadRequest) validateWorkload(formats strfmt.Registry) erro
 		if err := m.Workload.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("workload")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -70,9 +72,16 @@ func (m *V1CreateWorkloadRequest) ContextValidate(ctx context.Context, formats s
 func (m *V1CreateWorkloadRequest) contextValidateWorkload(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Workload != nil {
+
+		if swag.IsZero(m.Workload) { // not required
+			return nil
+		}
+
 		if err := m.Workload.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("workload")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

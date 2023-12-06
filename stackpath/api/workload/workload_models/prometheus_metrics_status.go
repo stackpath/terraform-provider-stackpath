@@ -20,8 +20,12 @@ import (
 type PrometheusMetricsStatus string
 
 func NewPrometheusMetricsStatus(value PrometheusMetricsStatus) *PrometheusMetricsStatus {
-	v := value
-	return &v
+	return &value
+}
+
+// Pointer returns a pointer to a freshly-allocated PrometheusMetricsStatus.
+func (m PrometheusMetricsStatus) Pointer() *PrometheusMetricsStatus {
+	return &m
 }
 
 const (

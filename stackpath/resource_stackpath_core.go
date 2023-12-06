@@ -66,11 +66,12 @@ func resourceComputeWorkloadContainer() *schema.Resource {
 					},
 				},
 			},
-			"port":            resourceComputeWorkloadPortSchema(),
-			"readiness_probe": resourceComputeWorkloadProbeSchema(),
-			"liveness_probe":  resourceComputeWorkloadProbeSchema(),
-			"resources":       resourceComputeWorkloadResourcesSchema(),
-			"volume_mount":    resourceComputeWorkloadVolumeMountSchema(),
+			"port":             resourceComputeWorkloadPortSchema(),
+			"readiness_probe":  resourceComputeWorkloadProbeSchema(),
+			"liveness_probe":   resourceComputeWorkloadProbeSchema(),
+			"resources":        resourceComputeWorkloadResourcesSchema(),
+			"volume_mount":     resourceComputeWorkloadVolumeMountSchema(),
+			"security_context": resourceComputeWorkloadSecurityContextSchema(),
 		},
 	}
 }

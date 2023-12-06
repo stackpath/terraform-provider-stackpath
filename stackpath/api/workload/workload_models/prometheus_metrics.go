@@ -61,6 +61,8 @@ func (m *PrometheusMetrics) validateData(formats strfmt.Registry) error {
 		if err := m.Data.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("data")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -78,6 +80,8 @@ func (m *PrometheusMetrics) validateStatus(formats strfmt.Registry) error {
 		if err := m.Status.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -107,9 +111,16 @@ func (m *PrometheusMetrics) ContextValidate(ctx context.Context, formats strfmt.
 func (m *PrometheusMetrics) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Data != nil {
+
+		if swag.IsZero(m.Data) { // not required
+			return nil
+		}
+
 		if err := m.Data.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("data")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}
@@ -121,9 +132,16 @@ func (m *PrometheusMetrics) contextValidateData(ctx context.Context, formats str
 func (m *PrometheusMetrics) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Status != nil {
+
+		if swag.IsZero(m.Status) { // not required
+			return nil
+		}
+
 		if err := m.Status.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("status")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce
 			}
 			return err
 		}

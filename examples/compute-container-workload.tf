@@ -52,6 +52,30 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       }
     }
 
+    # security_context {
+
+    #  # Determine whether a process can request elevated privileges more
+    #  # than its parent. Default is false
+    #  allow_privilege_escalation = false
+    #  # Should this container be run as non-root user
+    #  run_as_non_root = false
+    #  # What non-root user should this run as
+    #  run_as_user = ""
+    #  # What non-root group id should this run as
+    #  run_as_group = ""
+    #  # The set of linux security capabilities that your container
+    #  # should have set or *dropped* when run. NET_ADMIN would be the most
+    #  # common
+    #  capabilities {
+    #    add = [
+    #      "NET_ADMIN",
+    #    ]
+    #    drop = [
+    #      "NET_BROADCAST",
+    #    ]
+    #  }
+    #}
+
     # The ports that should be publicly exposed on the containers.
     #
     # Warning, exposing these ports allows all internet traffic to access the
@@ -223,6 +247,9 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     name = "Logging volume"
     # A DNS compatible label that must not be changed
     slug = "logging-volume"
+    # One of the available storage classes. OPTIONAL
+    # below is the default
+    storage_class = "stackpath-edge/network-standard"
     # The resources used to configure the additional volume
     resources {
       requests = {
@@ -230,4 +257,62 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       }
     }
   }
+
+
+  # Completely optional override of settings around the global
+  # environment your container(s) are running inside
+  # these settings are shared among your containers
+  # container_runtime_settings {
+
+  #  # How many seconds we should wait before killing your
+  #  # container when restarting. Default is #0
+  #  termination_grace_period_seconds = 30
+  #  # Whether containers should be able to see each other
+  #  share_process_namespace = false
+  #  security_context {
+  #    # User id used to execute entry point. Set to empty string to reset
+  #    run_as_user = "100"
+  #    # Group id used to execute entry point. Set to empty string to reset
+  #    run_as_group = "100"
+  #    # Indicates container should run as non-root user
+  #    run_as_non_root = true
+  #    supplemental_groups = [
+  #      "101"
+  #    ]
+  #
+  #   # Any SYSCTL settings you want to override,
+  #   # use "setting"="value" 
+  #   sysctl = {
+  #      "net.core.rmem_max" = "10065408"
+  #      "net.core.rmem_default" = "1006540"
+  #     }
+  #  }
+
+  # If desired, override DNS/nameserver values here
+  #  dns {
+  #
+  #    # You may repeat host_aliases as many times as you need
+  #    # in order to override the lookup for the provided
+  #    # 'hostnames' to resolve to the given 'address' 
+  #    host_aliases {
+  #      address = "192.168.3.4"
+  #      hostnames = [ "domain.com" ]
+  #    }
+
+  #    # override resolv.conf (or equilvanet) in your container
+  #    # if you want to change the list of nameservers or
+  #    # search order from our defaults. Note this will prevent
+  #    # DNS discovery from working if you override nameservers
+  #    resolver_config {
+  #      # ordered list of nameserver ips
+  #      nameservers = [ "8.8.8.8" ]
+  #      # suffix(es) appended to hostname lookups
+  #      search = [ "domain.com" ]
+  #      # lookup options, timeout is a common one to set
+  #      options = {
+  #        timeout = "10"
+  #      }
+  #    }
+  #  }
+  #}
 }

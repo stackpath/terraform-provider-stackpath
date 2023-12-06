@@ -50,6 +50,9 @@ type Workloadv1Location struct {
 	// A location's ISO-3166-2 region code
 	RegionCode string `json:"regionCode,omitempty"`
 
+	// A location's status, either active or decommissioned
+	Status string `json:"status,omitempty"`
+
 	// A location's subdivision
 	Subdivision string `json:"subdivision,omitempty"`
 

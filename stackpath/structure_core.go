@@ -39,6 +39,10 @@ func convertToStringArray(data []interface{}) []string {
 	return s
 }
 
+func convertSetToStringArray(data *schema.Set) []string {
+	return convertToStringArray(data.List())
+}
+
 func convertWorkloadToIPAMMatchExpression(selectors []*workload_models.V1MatchExpression) []*ipam_models.NetworkMatchExpression {
 	converted := make([]*ipam_models.NetworkMatchExpression, len(selectors))
 
