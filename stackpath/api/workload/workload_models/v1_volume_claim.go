@@ -37,7 +37,7 @@ type V1VolumeClaim struct {
 
 	// A volume claim's programmatic name
 	//
-	// Volume claim slugs are used to programatically label a claim
+	// Volume claim slugs are used to programmatically label a claim
 	Slug string `json:"slug,omitempty"`
 
 	// spec

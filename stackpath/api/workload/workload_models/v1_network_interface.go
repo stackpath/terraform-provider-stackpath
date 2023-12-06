@@ -25,7 +25,7 @@ type V1NetworkInterface struct {
 	//
 	// Mark this property `false` to disable NAT on the first interface. Mark this property `true` to enable NAT on secondary interfaces.
 	//
-	// The `ExcludeNAT` workload annotation supercedes this property.
+	// The `ExcludeNAT` workload annotation supersedes this property.
 	EnableOneToOneNat bool `json:"enableOneToOneNat,omitempty"`
 
 	// A list of IP families to use for interface ip assignments
