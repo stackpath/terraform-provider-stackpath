@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // NewUpdateRouteParams creates a new UpdateRouteParams object,
@@ -54,10 +54,12 @@ func NewUpdateRouteParamsWithHTTPClient(client *http.Client) *UpdateRouteParams 
 	}
 }
 
-/* UpdateRouteParams contains all the parameters to send to the API endpoint
-   for the update route operation.
+/*
+UpdateRouteParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update route operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdateRouteParams struct {
 

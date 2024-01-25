@@ -8,8 +8,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_client/buckets"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_client/buckets"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 func resourceObjectStorageBucket() *schema.Resource {

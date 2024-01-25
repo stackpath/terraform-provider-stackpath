@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // UpdateNetworkPolicyReader is a Reader for the UpdateNetworkPolicy structure.
@@ -58,7 +58,8 @@ func NewUpdateNetworkPolicyOK() *UpdateNetworkPolicyOK {
 	return &UpdateNetworkPolicyOK{}
 }
 
-/* UpdateNetworkPolicyOK describes a response with status code 200, with default header values.
+/*
+	UpdateNetworkPolicyOK describes a response with status code 200, with default header values.
 
 UpdateNetworkPolicyOK update network policy o k
 */
@@ -90,7 +91,8 @@ func NewUpdateNetworkPolicyUnauthorized() *UpdateNetworkPolicyUnauthorized {
 	return &UpdateNetworkPolicyUnauthorized{}
 }
 
-/* UpdateNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
+/*
+	UpdateNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewUpdateNetworkPolicyInternalServerError() *UpdateNetworkPolicyInternalSer
 	return &UpdateNetworkPolicyInternalServerError{}
 }
 
-/* UpdateNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
+/*
+	UpdateNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewUpdateNetworkPolicyDefault(code int) *UpdateNetworkPolicyDefault {
 	}
 }
 
-/* UpdateNetworkPolicyDefault describes a response with status code -1, with default header values.
+/*
+	UpdateNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

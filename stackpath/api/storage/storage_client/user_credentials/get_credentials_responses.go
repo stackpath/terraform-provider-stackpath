@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // GetCredentialsReader is a Reader for the GetCredentials structure.
@@ -58,7 +58,8 @@ func NewGetCredentialsOK() *GetCredentialsOK {
 	return &GetCredentialsOK{}
 }
 
-/* GetCredentialsOK describes a response with status code 200, with default header values.
+/*
+	GetCredentialsOK describes a response with status code 200, with default header values.
 
 GetCredentialsOK get credentials o k
 */
@@ -90,7 +91,8 @@ func NewGetCredentialsUnauthorized() *GetCredentialsUnauthorized {
 	return &GetCredentialsUnauthorized{}
 }
 
-/* GetCredentialsUnauthorized describes a response with status code 401, with default header values.
+/*
+	GetCredentialsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGetCredentialsInternalServerError() *GetCredentialsInternalServerError {
 	return &GetCredentialsInternalServerError{}
 }
 
-/* GetCredentialsInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetCredentialsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGetCredentialsDefault(code int) *GetCredentialsDefault {
 	}
 }
 
-/* GetCredentialsDefault describes a response with status code -1, with default header values.
+/*
+	GetCredentialsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

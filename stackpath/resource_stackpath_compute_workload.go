@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/instances"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/workloads"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_models"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )

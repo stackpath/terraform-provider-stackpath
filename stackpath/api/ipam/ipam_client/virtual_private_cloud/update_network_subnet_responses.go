@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // UpdateNetworkSubnetReader is a Reader for the UpdateNetworkSubnet structure.
@@ -58,7 +58,8 @@ func NewUpdateNetworkSubnetOK() *UpdateNetworkSubnetOK {
 	return &UpdateNetworkSubnetOK{}
 }
 
-/* UpdateNetworkSubnetOK describes a response with status code 200, with default header values.
+/*
+	UpdateNetworkSubnetOK describes a response with status code 200, with default header values.
 
 UpdateNetworkSubnetOK update network subnet o k
 */
@@ -90,7 +91,8 @@ func NewUpdateNetworkSubnetUnauthorized() *UpdateNetworkSubnetUnauthorized {
 	return &UpdateNetworkSubnetUnauthorized{}
 }
 
-/* UpdateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
+/*
+	UpdateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewUpdateNetworkSubnetInternalServerError() *UpdateNetworkSubnetInternalSer
 	return &UpdateNetworkSubnetInternalServerError{}
 }
 
-/* UpdateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
+/*
+	UpdateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewUpdateNetworkSubnetDefault(code int) *UpdateNetworkSubnetDefault {
 	}
 }
 
-/* UpdateNetworkSubnetDefault describes a response with status code -1, with default header values.
+/*
+	UpdateNetworkSubnetDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

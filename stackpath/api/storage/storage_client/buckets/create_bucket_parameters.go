@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // NewCreateBucketParams creates a new CreateBucketParams object,
@@ -54,10 +54,12 @@ func NewCreateBucketParamsWithHTTPClient(client *http.Client) *CreateBucketParam
 	}
 }
 
-/* CreateBucketParams contains all the parameters to send to the API endpoint
-   for the create bucket operation.
+/*
+CreateBucketParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the create bucket operation.
+
+	Typically these are written to a http.Request.
 */
 type CreateBucketParams struct {
 

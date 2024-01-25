@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // GenerateCredentialsReader is a Reader for the GenerateCredentials structure.
@@ -58,7 +58,8 @@ func NewGenerateCredentialsOK() *GenerateCredentialsOK {
 	return &GenerateCredentialsOK{}
 }
 
-/* GenerateCredentialsOK describes a response with status code 200, with default header values.
+/*
+	GenerateCredentialsOK describes a response with status code 200, with default header values.
 
 GenerateCredentialsOK generate credentials o k
 */
@@ -90,7 +91,8 @@ func NewGenerateCredentialsUnauthorized() *GenerateCredentialsUnauthorized {
 	return &GenerateCredentialsUnauthorized{}
 }
 
-/* GenerateCredentialsUnauthorized describes a response with status code 401, with default header values.
+/*
+	GenerateCredentialsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGenerateCredentialsInternalServerError() *GenerateCredentialsInternalSer
 	return &GenerateCredentialsInternalServerError{}
 }
 
-/* GenerateCredentialsInternalServerError describes a response with status code 500, with default header values.
+/*
+	GenerateCredentialsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGenerateCredentialsDefault(code int) *GenerateCredentialsDefault {
 	}
 }
 
-/* GenerateCredentialsDefault describes a response with status code -1, with default header values.
+/*
+	GenerateCredentialsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

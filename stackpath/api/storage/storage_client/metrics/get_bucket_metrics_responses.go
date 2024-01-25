@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // GetBucketMetricsReader is a Reader for the GetBucketMetrics structure.
@@ -58,7 +58,8 @@ func NewGetBucketMetricsOK() *GetBucketMetricsOK {
 	return &GetBucketMetricsOK{}
 }
 
-/* GetBucketMetricsOK describes a response with status code 200, with default header values.
+/*
+	GetBucketMetricsOK describes a response with status code 200, with default header values.
 
 GetBucketMetricsOK get bucket metrics o k
 */
@@ -90,7 +91,8 @@ func NewGetBucketMetricsUnauthorized() *GetBucketMetricsUnauthorized {
 	return &GetBucketMetricsUnauthorized{}
 }
 
-/* GetBucketMetricsUnauthorized describes a response with status code 401, with default header values.
+/*
+	GetBucketMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGetBucketMetricsInternalServerError() *GetBucketMetricsInternalServerErr
 	return &GetBucketMetricsInternalServerError{}
 }
 
-/* GetBucketMetricsInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetBucketMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGetBucketMetricsDefault(code int) *GetBucketMetricsDefault {
 	}
 }
 
-/* GetBucketMetricsDefault describes a response with status code -1, with default header values.
+/*
+	GetBucketMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

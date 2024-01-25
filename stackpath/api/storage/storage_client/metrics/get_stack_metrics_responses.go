@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // GetStackMetricsReader is a Reader for the GetStackMetrics structure.
@@ -58,7 +58,8 @@ func NewGetStackMetricsOK() *GetStackMetricsOK {
 	return &GetStackMetricsOK{}
 }
 
-/* GetStackMetricsOK describes a response with status code 200, with default header values.
+/*
+	GetStackMetricsOK describes a response with status code 200, with default header values.
 
 GetStackMetricsOK get stack metrics o k
 */
@@ -90,7 +91,8 @@ func NewGetStackMetricsUnauthorized() *GetStackMetricsUnauthorized {
 	return &GetStackMetricsUnauthorized{}
 }
 
-/* GetStackMetricsUnauthorized describes a response with status code 401, with default header values.
+/*
+	GetStackMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGetStackMetricsInternalServerError() *GetStackMetricsInternalServerError
 	return &GetStackMetricsInternalServerError{}
 }
 
-/* GetStackMetricsInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetStackMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGetStackMetricsDefault(code int) *GetStackMetricsDefault {
 	}
 }
 
-/* GetStackMetricsDefault describes a response with status code -1, with default header values.
+/*
+	GetStackMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
