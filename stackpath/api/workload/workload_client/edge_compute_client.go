@@ -10,13 +10,13 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/infrastructure"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instance_logs"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/instances"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/metrics"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/virtual_machine_images"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/infrastructure"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/instance"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/instance_logs"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/instances"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/metrics"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/virtual_machine_images"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/workloads"
 )
 
 // Default edge compute HTTP client.

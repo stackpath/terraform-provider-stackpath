@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_models"
 	"golang.org/x/oauth2"
 )
 

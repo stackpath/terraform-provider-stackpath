@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // GetBucketReader is a Reader for the GetBucket structure.
@@ -58,7 +58,8 @@ func NewGetBucketOK() *GetBucketOK {
 	return &GetBucketOK{}
 }
 
-/* GetBucketOK describes a response with status code 200, with default header values.
+/*
+	GetBucketOK describes a response with status code 200, with default header values.
 
 GetBucketOK get bucket o k
 */
@@ -90,7 +91,8 @@ func NewGetBucketUnauthorized() *GetBucketUnauthorized {
 	return &GetBucketUnauthorized{}
 }
 
-/* GetBucketUnauthorized describes a response with status code 401, with default header values.
+/*
+	GetBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGetBucketInternalServerError() *GetBucketInternalServerError {
 	return &GetBucketInternalServerError{}
 }
 
-/* GetBucketInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGetBucketDefault(code int) *GetBucketDefault {
 	}
 }
 
-/* GetBucketDefault describes a response with status code -1, with default header values.
+/*
+	GetBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

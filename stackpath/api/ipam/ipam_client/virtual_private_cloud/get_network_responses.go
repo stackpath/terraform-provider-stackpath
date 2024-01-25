@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // GetNetworkReader is a Reader for the GetNetwork structure.
@@ -58,7 +58,8 @@ func NewGetNetworkOK() *GetNetworkOK {
 	return &GetNetworkOK{}
 }
 
-/* GetNetworkOK describes a response with status code 200, with default header values.
+/*
+	GetNetworkOK describes a response with status code 200, with default header values.
 
 GetNetworkOK get network o k
 */
@@ -90,7 +91,8 @@ func NewGetNetworkUnauthorized() *GetNetworkUnauthorized {
 	return &GetNetworkUnauthorized{}
 }
 
-/* GetNetworkUnauthorized describes a response with status code 401, with default header values.
+/*
+	GetNetworkUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewGetNetworkInternalServerError() *GetNetworkInternalServerError {
 	return &GetNetworkInternalServerError{}
 }
 
-/* GetNetworkInternalServerError describes a response with status code 500, with default header values.
+/*
+	GetNetworkInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewGetNetworkDefault(code int) *GetNetworkDefault {
 	}
 }
 
-/* GetNetworkDefault describes a response with status code -1, with default header values.
+/*
+	GetNetworkDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

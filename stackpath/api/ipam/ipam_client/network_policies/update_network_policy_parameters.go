@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // NewUpdateNetworkPolicyParams creates a new UpdateNetworkPolicyParams object,
@@ -54,10 +54,12 @@ func NewUpdateNetworkPolicyParamsWithHTTPClient(client *http.Client) *UpdateNetw
 	}
 }
 
-/* UpdateNetworkPolicyParams contains all the parameters to send to the API endpoint
-   for the update network policy operation.
+/*
+UpdateNetworkPolicyParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update network policy operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdateNetworkPolicyParams struct {
 

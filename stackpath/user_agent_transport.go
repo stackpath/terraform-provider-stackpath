@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stackpath/terraform-provider-stackpath/version"
+	"github.com/stackpath/terraform-provider-stackpath/v2/version"
 )
 
 const userAgentFormat = "HashiCorp Terraform/%s (+https://www.terraform.io) terraform-provider-stackpath/%s (+https://registry.terraform.io/providers/stackpath/stackpath)"
 
 // UserAgentTransport is an http RoundTripper that sets a descriptive User-Agent
-//header for all StackPath API requests.
+// header for all StackPath API requests.
 type UserAgentTransport struct {
 	terraformVersion string
 	http.RoundTripper

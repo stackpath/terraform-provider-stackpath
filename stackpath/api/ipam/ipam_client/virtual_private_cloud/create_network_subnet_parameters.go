@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/ipam/ipam_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
 
 // NewCreateNetworkSubnetParams creates a new CreateNetworkSubnetParams object,
@@ -54,10 +54,12 @@ func NewCreateNetworkSubnetParamsWithHTTPClient(client *http.Client) *CreateNetw
 	}
 }
 
-/* CreateNetworkSubnetParams contains all the parameters to send to the API endpoint
-   for the create network subnet operation.
+/*
+CreateNetworkSubnetParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the create network subnet operation.
+
+	Typically these are written to a http.Request.
 */
 type CreateNetworkSubnetParams struct {
 

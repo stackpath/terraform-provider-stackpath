@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_client/workloads"
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/workload/workload_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_client/workloads"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_models"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"

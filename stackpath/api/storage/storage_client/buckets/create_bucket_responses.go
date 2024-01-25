@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stackpath/terraform-provider-stackpath/stackpath/api/storage/storage_models"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/storage/storage_models"
 )
 
 // CreateBucketReader is a Reader for the CreateBucket structure.
@@ -58,7 +58,8 @@ func NewCreateBucketOK() *CreateBucketOK {
 	return &CreateBucketOK{}
 }
 
-/* CreateBucketOK describes a response with status code 200, with default header values.
+/*
+	CreateBucketOK describes a response with status code 200, with default header values.
 
 CreateBucketOK create bucket o k
 */
@@ -90,7 +91,8 @@ func NewCreateBucketUnauthorized() *CreateBucketUnauthorized {
 	return &CreateBucketUnauthorized{}
 }
 
-/* CreateBucketUnauthorized describes a response with status code 401, with default header values.
+/*
+	CreateBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -122,7 +124,8 @@ func NewCreateBucketInternalServerError() *CreateBucketInternalServerError {
 	return &CreateBucketInternalServerError{}
 }
 
-/* CreateBucketInternalServerError describes a response with status code 500, with default header values.
+/*
+	CreateBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -156,7 +159,8 @@ func NewCreateBucketDefault(code int) *CreateBucketDefault {
 	}
 }
 
-/* CreateBucketDefault describes a response with status code -1, with default header values.
+/*
+	CreateBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
