@@ -28,6 +28,11 @@ func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance
 		networkInterfaces = append(networkInterfaces, flattenComputeWorkloadNetworkInterfaceStatus(networkInterface))
 	}
 
+	initContainers := make([]interface{}, 0, len(instance.InitContainers))
+	for name, initContainer := range instance.InitContainers {
+		containers = append(containers, flattenComputeWorkloadContainer(name, initContainer))
+	}
+
 	return map[string]interface{}{
 		"name":                  instance.Name,
 		"ip_address":            instance.IPAddress,
@@ -40,6 +45,7 @@ func flattenComputeWorkloadInstance(instance *workload_models.Workloadv1Instance
 		"container":             containers,
 		"virtual_machine":       virtualMachines,
 		"network_interface":     networkInterfaces,
+		"init_container":        initContainers,
 	}
 }
 
