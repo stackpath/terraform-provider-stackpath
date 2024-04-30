@@ -1239,10 +1239,10 @@ resource "stackpath_compute_workload" "foo" {
         memory = "1Gi"
       }
     }
-	command = [
-		"cowsay",
-		"stackpath",
-	]
+    command = [
+      "cowsay",
+      "stackpath",
+    ]
     env {
       key   = "MY_INIT_ENVIRONMENT_VARIABLE"
       value = "value"
