@@ -1236,7 +1236,7 @@ resource "stackpath_compute_workload" "foo" {
     resources {
       requests = {
         cpu    = "1"
-        memory = "1Gi"
+        memory = "2Gi"
       }
     }
     command = [
