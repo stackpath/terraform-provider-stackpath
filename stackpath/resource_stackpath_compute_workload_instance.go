@@ -92,6 +92,12 @@ func resourceComputeWorkloadInstance() *schema.Resource {
 				ConflictsWith: []string{"virtual_machine"},
 				Elem:          resourceComputeWorkloadContainer(),
 			},
+			"init_container": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				ConflictsWith: []string{"virtual_machine"},
+				Elem:          resourceComputeWorkloadContainer(),
+			},
 			"reason": {
 				Type:     schema.TypeString,
 				Optional: true,

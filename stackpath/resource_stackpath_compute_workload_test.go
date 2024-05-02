@@ -123,6 +123,20 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerImage(workload, "app-2", "nginx:v1.15.0"),
 				),
 			},
+			{
+				Config: testComputeWorkloadConfigContainerWithInitContainer(nameSuffix, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckContainerPort(workload, "app", "http", "TCP", 80, false),
+					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckInitContainerImage(workload, "init-app", "docker/whalesay:latest"),
+					testAccComputeWorkloadCheckInitContainerEnvVar(workload, "init-app", "MY_INIT_ENVIRONMENT_VARIABLE", "value"),
+					testAccComputeWorkloadCheckInitContainerCommand(workload, "init-app", []string{"cowsay", "stackpath"}),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
+				),
+			},
 		},
 	})
 }
@@ -710,6 +724,38 @@ func testAccComputeWorkloadCheckContainerEnvVar(workload *workload_models.V1Work
 	}
 }
 
+func testAccComputeWorkloadCheckInitContainerEnvVar(workload *workload_models.V1Workload, containerName, envVar, value string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		containerSpec, found := workload.Spec.InitContainers[containerName]
+		if !found {
+			return fmt.Errorf("init container not found: %s", containerName)
+		} else if envVarSpec, found := containerSpec.Env[envVar]; !found {
+			return fmt.Errorf("environment variable not found: %s", envVar)
+		} else if envVarSpec.Value != value {
+			return fmt.Errorf(`environment variable '%s="%s"' does not match expected value '%s'`, envVar, envVarSpec.Value, value)
+		}
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckInitContainerCommand(workload *workload_models.V1Workload, containerName string, command []string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		containerSpec, found := workload.Spec.InitContainers[containerName]
+		if !found {
+			return fmt.Errorf("init container not found: %s", containerName)
+		} else if len(containerSpec.Command) != len(command) {
+			return fmt.Errorf("number of commands %d does not match expected value %d", len(containerSpec.Command), len(command))
+		}
+
+		for i := range containerSpec.Command {
+			if containerSpec.Command[i] != command[i] {
+				return fmt.Errorf("command '%s' does not match expected value '%s'", containerSpec.Command[i], command[i])
+			}
+		}
+		return nil
+	}
+}
+
 func testAccComputeWorkloadCheckContainerEnvVarNotExist(workload *workload_models.V1Workload, containerName, envVar string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.Containers[containerName]
@@ -758,6 +804,17 @@ func testAccComputeWorkloadCheckContainerImage(workload *workload_models.V1Workl
 			return fmt.Errorf("container not found: %s", containerName)
 		} else if containerSpec.Image != image {
 			return fmt.Errorf("container image '%s' does not match expected '%s'", containerSpec.Image, image)
+		}
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckInitContainerImage(workload *workload_models.V1Workload, containerName, image string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		if containerSpec, found := workload.Spec.InitContainers[containerName]; !found {
+			return fmt.Errorf("init container not found: %s", containerName)
+		} else if containerSpec.Image != image {
+			return fmt.Errorf("init container image '%s' does not match expected '%s'", containerSpec.Image, image)
 		}
 		return nil
 	}
@@ -1128,6 +1185,66 @@ resource "stackpath_compute_workload" "foo" {
     }
     env {
       key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerWithInitContainer(suffix string, enableNAT *bool) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  %s
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    port {
+      name     = "http"
+      port     = 80
+      protocol = "TCP"
+    }
+    env {
+      key   = "MY_ENVIRONMENT_VARIABLE"
+      value = "value"
+    }
+  }
+
+  init_container {
+    name  = "init-app"
+    image = "docker/whalesay:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+    command = [
+      "cowsay",
+      "stackpath",
+    ]
+    env {
+      key   = "MY_INIT_ENVIRONMENT_VARIABLE"
       value = "value"
     }
   }

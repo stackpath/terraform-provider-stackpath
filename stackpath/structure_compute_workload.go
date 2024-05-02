@@ -30,6 +30,7 @@ func convertComputeWorkload(data *schema.ResourceData) *workload_models.V1Worklo
 			ImagePullCredentials: convertComputeWorkloadImagePullCredentials("image_pull_credentials", data),
 			VolumeClaimTemplates: convertComputeWorkloadVolumeClaims("volume_claim", data),
 			Runtime:              convertComputeWorkloadRuntime("container_runtime_environment", "virtual_machine_runtime_environment", data),
+			InitContainers:       convertComputeWorkloadContainers("init_container", data),
 		},
 		Targets: convertComputeWorkloadTargets(data.Get("target").([]interface{})),
 	}
@@ -571,6 +572,10 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models
 
 	if err := data.Set("container", flattenComputeWorkloadContainers("container", data, workload.Spec.Containers)); err != nil {
 		return fmt.Errorf("error setting container: %v", err)
+	}
+
+	if err := data.Set("init_container", flattenComputeWorkloadContainers("init_container", data, workload.Spec.InitContainers)); err != nil {
+		return fmt.Errorf("error setting init_container: %v", err)
 	}
 
 	if err := data.Set("image_pull_credentials", flattenComputeWorkloadImagePullCredentials("image_pull_credentials", data, workload.Spec.ImagePullCredentials)); err != nil {
