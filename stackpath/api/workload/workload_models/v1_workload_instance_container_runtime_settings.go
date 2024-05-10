@@ -66,8 +66,6 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) validateDNSConfig(formats s
 		if err := m.DNSConfig.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("dnsConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -90,8 +88,6 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) validateHostAliases(formats
 			if err := m.HostAliases[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("hostAliases" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -111,8 +107,6 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) validateSecurityContext(for
 		if err := m.SecurityContext.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -146,16 +140,9 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) ContextValidate(ctx context
 func (m *V1WorkloadInstanceContainerRuntimeSettings) contextValidateDNSConfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DNSConfig != nil {
-
-		if swag.IsZero(m.DNSConfig) { // not required
-			return nil
-		}
-
 		if err := m.DNSConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("dnsConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -169,16 +156,9 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) contextValidateHostAliases(
 	for i := 0; i < len(m.HostAliases); i++ {
 
 		if m.HostAliases[i] != nil {
-
-			if swag.IsZero(m.HostAliases[i]) { // not required
-				return nil
-			}
-
 			if err := m.HostAliases[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("hostAliases" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -192,16 +172,9 @@ func (m *V1WorkloadInstanceContainerRuntimeSettings) contextValidateHostAliases(
 func (m *V1WorkloadInstanceContainerRuntimeSettings) contextValidateSecurityContext(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SecurityContext != nil {
-
-		if swag.IsZero(m.SecurityContext) { // not required
-			return nil
-		}
-
 		if err := m.SecurityContext.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

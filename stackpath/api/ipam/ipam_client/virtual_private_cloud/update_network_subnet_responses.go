@@ -59,7 +59,7 @@ func NewUpdateNetworkSubnetOK() *UpdateNetworkSubnetOK {
 }
 
 /*
-	UpdateNetworkSubnetOK describes a response with status code 200, with default header values.
+UpdateNetworkSubnetOK describes a response with status code 200, with default header values.
 
 UpdateNetworkSubnetOK update network subnet o k
 */
@@ -92,7 +92,7 @@ func NewUpdateNetworkSubnetUnauthorized() *UpdateNetworkSubnetUnauthorized {
 }
 
 /*
-	UpdateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
+UpdateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewUpdateNetworkSubnetInternalServerError() *UpdateNetworkSubnetInternalSer
 }
 
 /*
-	UpdateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
+UpdateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewUpdateNetworkSubnetDefault(code int) *UpdateNetworkSubnetDefault {
 }
 
 /*
-	UpdateNetworkSubnetDefault describes a response with status code -1, with default header values.
+UpdateNetworkSubnetDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

@@ -60,8 +60,6 @@ func (m *V1ContainerSecurityContext) validateCapabilities(formats strfmt.Registr
 		if err := m.Capabilities.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capabilities")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -87,16 +85,9 @@ func (m *V1ContainerSecurityContext) ContextValidate(ctx context.Context, format
 func (m *V1ContainerSecurityContext) contextValidateCapabilities(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Capabilities != nil {
-
-		if swag.IsZero(m.Capabilities) { // not required
-			return nil
-		}
-
 		if err := m.Capabilities.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capabilities")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

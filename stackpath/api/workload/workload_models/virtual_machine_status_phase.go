@@ -20,12 +20,8 @@ import (
 type VirtualMachineStatusPhase string
 
 func NewVirtualMachineStatusPhase(value VirtualMachineStatusPhase) *VirtualMachineStatusPhase {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated VirtualMachineStatusPhase.
-func (m VirtualMachineStatusPhase) Pointer() *VirtualMachineStatusPhase {
-	return &m
+	v := value
+	return &v
 }
 
 const (

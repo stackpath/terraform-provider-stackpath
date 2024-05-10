@@ -25,7 +25,7 @@ type V1NetworkInterface struct {
 	//
 	// Mark this property `false` to disable NAT on the first interface. Mark this property `true` to enable NAT on secondary interfaces.
 	//
-	// The `ExcludeNAT` workload annotation supersedes this property.
+	// The `ExcludeNAT` workload annotation supercedes this property.
 	EnableOneToOneNat bool `json:"enableOneToOneNat,omitempty"`
 
 	// A list of IP families to use for interface ip assignments
@@ -71,8 +71,6 @@ func (m *V1NetworkInterface) validateIPFamilies(formats strfmt.Registry) error {
 			if err := m.IPFamilies[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -102,16 +100,9 @@ func (m *V1NetworkInterface) contextValidateIPFamilies(ctx context.Context, form
 	for i := 0; i < len(m.IPFamilies); i++ {
 
 		if m.IPFamilies[i] != nil {
-
-			if swag.IsZero(m.IPFamilies[i]) { // not required
-				return nil
-			}
-
 			if err := m.IPFamilies[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

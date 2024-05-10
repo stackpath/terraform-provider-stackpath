@@ -45,8 +45,6 @@ func (m *V1GetWorkloadInstanceResponse) validateInstance(formats strfmt.Registry
 		if err := m.Instance.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instance")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -72,16 +70,9 @@ func (m *V1GetWorkloadInstanceResponse) ContextValidate(ctx context.Context, for
 func (m *V1GetWorkloadInstanceResponse) contextValidateInstance(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Instance != nil {
-
-		if swag.IsZero(m.Instance) { // not required
-			return nil
-		}
-
 		if err := m.Instance.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instance")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

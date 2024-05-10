@@ -30,7 +30,7 @@ type APIStatusDetail interface {
 	AtType() string
 	SetAtType(string)
 
-	// AdditionalProperties in base type should be handled just like regular properties
+	// AdditionalProperties in base type shoud be handled just like regular properties
 	// At this moment, the base type property is pushed down to the subtype
 }
 

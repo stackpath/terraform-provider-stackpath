@@ -59,7 +59,7 @@ func NewCreateRouteOK() *CreateRouteOK {
 }
 
 /*
-	CreateRouteOK describes a response with status code 200, with default header values.
+CreateRouteOK describes a response with status code 200, with default header values.
 
 CreateRouteOK create route o k
 */
@@ -92,7 +92,7 @@ func NewCreateRouteUnauthorized() *CreateRouteUnauthorized {
 }
 
 /*
-	CreateRouteUnauthorized describes a response with status code 401, with default header values.
+CreateRouteUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewCreateRouteInternalServerError() *CreateRouteInternalServerError {
 }
 
 /*
-	CreateRouteInternalServerError describes a response with status code 500, with default header values.
+CreateRouteInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewCreateRouteDefault(code int) *CreateRouteDefault {
 }
 
 /*
-	CreateRouteDefault describes a response with status code -1, with default header values.
+CreateRouteDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

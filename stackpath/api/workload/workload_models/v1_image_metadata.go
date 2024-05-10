@@ -75,8 +75,6 @@ func (m *V1ImageMetadata) validateAnnotations(formats strfmt.Registry) error {
 		if err := m.Annotations.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("annotations")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -106,8 +104,6 @@ func (m *V1ImageMetadata) validateLabels(formats strfmt.Registry) error {
 		if err := m.Labels.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("labels")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -156,15 +152,9 @@ func (m *V1ImageMetadata) ContextValidate(ctx context.Context, formats strfmt.Re
 
 func (m *V1ImageMetadata) contextValidateAnnotations(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Annotations) { // not required
-		return nil
-	}
-
 	if err := m.Annotations.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("annotations")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}
@@ -183,15 +173,9 @@ func (m *V1ImageMetadata) contextValidateCreatedAt(ctx context.Context, formats 
 
 func (m *V1ImageMetadata) contextValidateLabels(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Labels) { // not required
-		return nil
-	}
-
 	if err := m.Labels.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("labels")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}

@@ -36,9 +36,10 @@ type ClientService interface {
 }
 
 /*
-  GetBucketMetrics gets all daily utilizations for specific bucket
+	GetBucketMetrics gets all daily utilizations for specific bucket
 
-  When the start & end dates are not provided, the metrics for the last day will be returned.
+	When the start & end dates are not provided, the metrics for the last day will be returned.
+
 The date range used must be at least a day apart, and only beginning times are allowed (e.g. 2019-01-01T00:00:00)
 */
 func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketMetricsOK, error) {
@@ -77,9 +78,10 @@ func (a *Client) GetBucketMetrics(params *GetBucketMetricsParams, authInfo runti
 }
 
 /*
-  GetStackMetrics gets all daily utilizations for all buckets on a stack
+	GetStackMetrics gets all daily utilizations for all buckets on a stack
 
-  When the start & end dates are not provided, the metrics for the last day will be returned.
+	When the start & end dates are not provided, the metrics for the last day will be returned.
+
 The date range used must be at least a day apart, and only beginning times are allowed (e.g. 2019-01-01T00:00:00)
 */
 func (a *Client) GetStackMetrics(params *GetStackMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetStackMetricsOK, error) {

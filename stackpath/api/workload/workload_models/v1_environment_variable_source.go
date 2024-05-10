@@ -45,8 +45,6 @@ func (m *V1EnvironmentVariableSource) validateInstanceFieldRef(formats strfmt.Re
 		if err := m.InstanceFieldRef.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instanceFieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -72,16 +70,9 @@ func (m *V1EnvironmentVariableSource) ContextValidate(ctx context.Context, forma
 func (m *V1EnvironmentVariableSource) contextValidateInstanceFieldRef(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.InstanceFieldRef != nil {
-
-		if swag.IsZero(m.InstanceFieldRef) { // not required
-			return nil
-		}
-
 		if err := m.InstanceFieldRef.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instanceFieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

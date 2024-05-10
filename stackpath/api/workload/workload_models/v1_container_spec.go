@@ -131,8 +131,6 @@ func (m *V1ContainerSpec) validateEnv(formats strfmt.Registry) error {
 		if err := m.Env.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("env")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -150,8 +148,6 @@ func (m *V1ContainerSpec) validateImagePullPolicy(formats strfmt.Registry) error
 		if err := m.ImagePullPolicy.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("imagePullPolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -169,8 +165,6 @@ func (m *V1ContainerSpec) validateLifecycle(formats strfmt.Registry) error {
 		if err := m.Lifecycle.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("lifecycle")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -188,8 +182,6 @@ func (m *V1ContainerSpec) validateLivenessProbe(formats strfmt.Registry) error {
 		if err := m.LivenessProbe.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -207,8 +199,6 @@ func (m *V1ContainerSpec) validatePorts(formats strfmt.Registry) error {
 		if err := m.Ports.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ports")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -226,8 +216,6 @@ func (m *V1ContainerSpec) validateReadinessProbe(formats strfmt.Registry) error 
 		if err := m.ReadinessProbe.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -245,8 +233,6 @@ func (m *V1ContainerSpec) validateResources(formats strfmt.Registry) error {
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -264,8 +250,6 @@ func (m *V1ContainerSpec) validateSecurityContext(formats strfmt.Registry) error
 		if err := m.SecurityContext.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -283,8 +267,6 @@ func (m *V1ContainerSpec) validateStartupProbe(formats strfmt.Registry) error {
 		if err := m.StartupProbe.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("startupProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -302,8 +284,6 @@ func (m *V1ContainerSpec) validateTerminationMessagePolicy(formats strfmt.Regist
 		if err := m.TerminationMessagePolicy.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("terminationMessagePolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -326,8 +306,6 @@ func (m *V1ContainerSpec) validateVolumeMounts(formats strfmt.Registry) error {
 			if err := m.VolumeMounts[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -394,15 +372,9 @@ func (m *V1ContainerSpec) ContextValidate(ctx context.Context, formats strfmt.Re
 
 func (m *V1ContainerSpec) contextValidateEnv(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Env) { // not required
-		return nil
-	}
-
 	if err := m.Env.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("env")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}
@@ -413,16 +385,9 @@ func (m *V1ContainerSpec) contextValidateEnv(ctx context.Context, formats strfmt
 func (m *V1ContainerSpec) contextValidateImagePullPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ImagePullPolicy != nil {
-
-		if swag.IsZero(m.ImagePullPolicy) { // not required
-			return nil
-		}
-
 		if err := m.ImagePullPolicy.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("imagePullPolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -434,16 +399,9 @@ func (m *V1ContainerSpec) contextValidateImagePullPolicy(ctx context.Context, fo
 func (m *V1ContainerSpec) contextValidateLifecycle(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Lifecycle != nil {
-
-		if swag.IsZero(m.Lifecycle) { // not required
-			return nil
-		}
-
 		if err := m.Lifecycle.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("lifecycle")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -455,16 +413,9 @@ func (m *V1ContainerSpec) contextValidateLifecycle(ctx context.Context, formats 
 func (m *V1ContainerSpec) contextValidateLivenessProbe(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.LivenessProbe != nil {
-
-		if swag.IsZero(m.LivenessProbe) { // not required
-			return nil
-		}
-
 		if err := m.LivenessProbe.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -475,15 +426,9 @@ func (m *V1ContainerSpec) contextValidateLivenessProbe(ctx context.Context, form
 
 func (m *V1ContainerSpec) contextValidatePorts(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Ports) { // not required
-		return nil
-	}
-
 	if err := m.Ports.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("ports")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}
@@ -494,16 +439,9 @@ func (m *V1ContainerSpec) contextValidatePorts(ctx context.Context, formats strf
 func (m *V1ContainerSpec) contextValidateReadinessProbe(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ReadinessProbe != nil {
-
-		if swag.IsZero(m.ReadinessProbe) { // not required
-			return nil
-		}
-
 		if err := m.ReadinessProbe.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -515,16 +453,9 @@ func (m *V1ContainerSpec) contextValidateReadinessProbe(ctx context.Context, for
 func (m *V1ContainerSpec) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
-
-		if swag.IsZero(m.Resources) { // not required
-			return nil
-		}
-
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -536,16 +467,9 @@ func (m *V1ContainerSpec) contextValidateResources(ctx context.Context, formats 
 func (m *V1ContainerSpec) contextValidateSecurityContext(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SecurityContext != nil {
-
-		if swag.IsZero(m.SecurityContext) { // not required
-			return nil
-		}
-
 		if err := m.SecurityContext.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -557,16 +481,9 @@ func (m *V1ContainerSpec) contextValidateSecurityContext(ctx context.Context, fo
 func (m *V1ContainerSpec) contextValidateStartupProbe(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.StartupProbe != nil {
-
-		if swag.IsZero(m.StartupProbe) { // not required
-			return nil
-		}
-
 		if err := m.StartupProbe.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("startupProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -578,16 +495,9 @@ func (m *V1ContainerSpec) contextValidateStartupProbe(ctx context.Context, forma
 func (m *V1ContainerSpec) contextValidateTerminationMessagePolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.TerminationMessagePolicy != nil {
-
-		if swag.IsZero(m.TerminationMessagePolicy) { // not required
-			return nil
-		}
-
 		if err := m.TerminationMessagePolicy.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("terminationMessagePolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -601,16 +511,9 @@ func (m *V1ContainerSpec) contextValidateVolumeMounts(ctx context.Context, forma
 	for i := 0; i < len(m.VolumeMounts); i++ {
 
 		if m.VolumeMounts[i] != nil {
-
-			if swag.IsZero(m.VolumeMounts[i]) { // not required
-				return nil
-			}
-
 			if err := m.VolumeMounts[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

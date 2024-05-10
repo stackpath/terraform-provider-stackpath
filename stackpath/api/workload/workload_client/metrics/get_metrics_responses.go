@@ -67,44 +67,9 @@ type GetMetricsOK struct {
 	Payload *workload_models.PrometheusMetrics
 }
 
-// IsSuccess returns true when this get metrics o k response has a 2xx status code
-func (o *GetMetricsOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get metrics o k response has a 3xx status code
-func (o *GetMetricsOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get metrics o k response has a 4xx status code
-func (o *GetMetricsOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get metrics o k response has a 5xx status code
-func (o *GetMetricsOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get metrics o k response a status code equal to that given
-func (o *GetMetricsOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the get metrics o k response
-func (o *GetMetricsOK) Code() int {
-	return 200
-}
-
 func (o *GetMetricsOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsOK  %+v", 200, o.Payload)
 }
-
-func (o *GetMetricsOK) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsOK  %+v", 200, o.Payload)
-}
-
 func (o *GetMetricsOK) GetPayload() *workload_models.PrometheusMetrics {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type GetMetricsUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get metrics unauthorized response has a 2xx status code
-func (o *GetMetricsUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get metrics unauthorized response has a 3xx status code
-func (o *GetMetricsUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get metrics unauthorized response has a 4xx status code
-func (o *GetMetricsUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get metrics unauthorized response has a 5xx status code
-func (o *GetMetricsUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get metrics unauthorized response a status code equal to that given
-func (o *GetMetricsUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the get metrics unauthorized response
-func (o *GetMetricsUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetMetricsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *GetMetricsUnauthorized) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *GetMetricsUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type GetMetricsInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get metrics internal server error response has a 2xx status code
-func (o *GetMetricsInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get metrics internal server error response has a 3xx status code
-func (o *GetMetricsInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get metrics internal server error response has a 4xx status code
-func (o *GetMetricsInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get metrics internal server error response has a 5xx status code
-func (o *GetMetricsInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this get metrics internal server error response a status code equal to that given
-func (o *GetMetricsInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the get metrics internal server error response
-func (o *GetMetricsInternalServerError) Code() int {
-	return 500
-}
-
 func (o *GetMetricsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *GetMetricsInternalServerError) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] getMetricsInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *GetMetricsInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type GetMetricsDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get metrics default response has a 2xx status code
-func (o *GetMetricsDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this get metrics default response has a 3xx status code
-func (o *GetMetricsDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this get metrics default response has a 4xx status code
-func (o *GetMetricsDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this get metrics default response has a 5xx status code
-func (o *GetMetricsDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this get metrics default response a status code equal to that given
-func (o *GetMetricsDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the get metrics default response
 func (o *GetMetricsDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *GetMetricsDefault) Code() int {
 func (o *GetMetricsDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] GetMetrics default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *GetMetricsDefault) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/metrics][%d] GetMetrics default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *GetMetricsDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

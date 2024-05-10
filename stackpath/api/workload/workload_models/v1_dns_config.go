@@ -57,8 +57,6 @@ func (m *V1DNSConfig) validateOptions(formats strfmt.Registry) error {
 			if err := m.Options[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("options" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -88,16 +86,9 @@ func (m *V1DNSConfig) contextValidateOptions(ctx context.Context, formats strfmt
 	for i := 0; i < len(m.Options); i++ {
 
 		if m.Options[i] != nil {
-
-			if swag.IsZero(m.Options[i]) { // not required
-				return nil
-			}
-
 			if err := m.Options[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("options" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

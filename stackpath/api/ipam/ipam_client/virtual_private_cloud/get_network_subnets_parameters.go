@@ -52,10 +52,12 @@ func NewGetNetworkSubnetsParamsWithHTTPClient(client *http.Client) *GetNetworkSu
 	}
 }
 
-/* GetNetworkSubnetsParams contains all the parameters to send to the API endpoint
-   for the get network subnets operation.
+/*
+GetNetworkSubnetsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get network subnets operation.
+
+	Typically these are written to a http.Request.
 */
 type GetNetworkSubnetsParams struct {
 

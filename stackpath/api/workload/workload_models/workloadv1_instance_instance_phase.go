@@ -29,12 +29,8 @@ import (
 type Workloadv1InstanceInstancePhase string
 
 func NewWorkloadv1InstanceInstancePhase(value Workloadv1InstanceInstancePhase) *Workloadv1InstanceInstancePhase {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated Workloadv1InstanceInstancePhase.
-func (m Workloadv1InstanceInstancePhase) Pointer() *Workloadv1InstanceInstancePhase {
-	return &m
+	v := value
+	return &v
 }
 
 const (

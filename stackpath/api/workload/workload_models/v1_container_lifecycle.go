@@ -52,8 +52,6 @@ func (m *V1ContainerLifecycle) validatePostStart(formats strfmt.Registry) error 
 		if err := m.PostStart.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("postStart")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -71,8 +69,6 @@ func (m *V1ContainerLifecycle) validatePreStop(formats strfmt.Registry) error {
 		if err := m.PreStop.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("preStop")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -102,16 +98,9 @@ func (m *V1ContainerLifecycle) ContextValidate(ctx context.Context, formats strf
 func (m *V1ContainerLifecycle) contextValidatePostStart(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.PostStart != nil {
-
-		if swag.IsZero(m.PostStart) { // not required
-			return nil
-		}
-
 		if err := m.PostStart.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("postStart")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -123,16 +112,9 @@ func (m *V1ContainerLifecycle) contextValidatePostStart(ctx context.Context, for
 func (m *V1ContainerLifecycle) contextValidatePreStop(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.PreStop != nil {
-
-		if swag.IsZero(m.PreStop) { // not required
-			return nil
-		}
-
 		if err := m.PreStop.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("preStop")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

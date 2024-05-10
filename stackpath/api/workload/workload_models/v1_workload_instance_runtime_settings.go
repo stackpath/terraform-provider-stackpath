@@ -52,8 +52,6 @@ func (m *V1WorkloadInstanceRuntimeSettings) validateContainers(formats strfmt.Re
 		if err := m.Containers.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("containers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -71,8 +69,6 @@ func (m *V1WorkloadInstanceRuntimeSettings) validateVirtualMachines(formats strf
 		if err := m.VirtualMachines.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("virtualMachines")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -102,16 +98,9 @@ func (m *V1WorkloadInstanceRuntimeSettings) ContextValidate(ctx context.Context,
 func (m *V1WorkloadInstanceRuntimeSettings) contextValidateContainers(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Containers != nil {
-
-		if swag.IsZero(m.Containers) { // not required
-			return nil
-		}
-
 		if err := m.Containers.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("containers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -123,16 +112,9 @@ func (m *V1WorkloadInstanceRuntimeSettings) contextValidateContainers(ctx contex
 func (m *V1WorkloadInstanceRuntimeSettings) contextValidateVirtualMachines(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.VirtualMachines != nil {
-
-		if swag.IsZero(m.VirtualMachines) { // not required
-			return nil
-		}
-
 		if err := m.VirtualMachines.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("virtualMachines")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

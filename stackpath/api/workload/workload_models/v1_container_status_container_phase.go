@@ -26,12 +26,8 @@ import (
 type V1ContainerStatusContainerPhase string
 
 func NewV1ContainerStatusContainerPhase(value V1ContainerStatusContainerPhase) *V1ContainerStatusContainerPhase {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1ContainerStatusContainerPhase.
-func (m V1ContainerStatusContainerPhase) Pointer() *V1ContainerStatusContainerPhase {
-	return &m
+	v := value
+	return &v
 }
 
 const (

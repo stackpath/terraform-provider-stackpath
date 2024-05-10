@@ -48,8 +48,6 @@ func (m *V1TargetSpec) validateDeployments(formats strfmt.Registry) error {
 		if err := m.Deployments.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deployments")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -75,16 +73,9 @@ func (m *V1TargetSpec) ContextValidate(ctx context.Context, formats strfmt.Regis
 func (m *V1TargetSpec) contextValidateDeployments(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Deployments != nil {
-
-		if swag.IsZero(m.Deployments) { // not required
-			return nil
-		}
-
 		if err := m.Deployments.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deployments")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

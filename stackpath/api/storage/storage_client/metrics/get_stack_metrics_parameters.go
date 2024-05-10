@@ -52,10 +52,12 @@ func NewGetStackMetricsParamsWithHTTPClient(client *http.Client) *GetStackMetric
 	}
 }
 
-/* GetStackMetricsParams contains all the parameters to send to the API endpoint
-   for the get stack metrics operation.
+/*
+GetStackMetricsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get stack metrics operation.
+
+	Typically these are written to a http.Request.
 */
 type GetStackMetricsParams struct {
 

@@ -59,7 +59,7 @@ func NewCreateBucketOK() *CreateBucketOK {
 }
 
 /*
-	CreateBucketOK describes a response with status code 200, with default header values.
+CreateBucketOK describes a response with status code 200, with default header values.
 
 CreateBucketOK create bucket o k
 */
@@ -92,7 +92,7 @@ func NewCreateBucketUnauthorized() *CreateBucketUnauthorized {
 }
 
 /*
-	CreateBucketUnauthorized describes a response with status code 401, with default header values.
+CreateBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewCreateBucketInternalServerError() *CreateBucketInternalServerError {
 }
 
 /*
-	CreateBucketInternalServerError describes a response with status code 500, with default header values.
+CreateBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewCreateBucketDefault(code int) *CreateBucketDefault {
 }
 
 /*
-	CreateBucketDefault describes a response with status code -1, with default header values.
+CreateBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

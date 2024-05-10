@@ -59,7 +59,7 @@ func NewCreateNetworkPolicyOK() *CreateNetworkPolicyOK {
 }
 
 /*
-	CreateNetworkPolicyOK describes a response with status code 200, with default header values.
+CreateNetworkPolicyOK describes a response with status code 200, with default header values.
 
 CreateNetworkPolicyOK create network policy o k
 */
@@ -92,7 +92,7 @@ func NewCreateNetworkPolicyUnauthorized() *CreateNetworkPolicyUnauthorized {
 }
 
 /*
-	CreateNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
+CreateNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewCreateNetworkPolicyInternalServerError() *CreateNetworkPolicyInternalSer
 }
 
 /*
-	CreateNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
+CreateNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewCreateNetworkPolicyDefault(code int) *CreateNetworkPolicyDefault {
 }
 
 /*
-	CreateNetworkPolicyDefault describes a response with status code -1, with default header values.
+CreateNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

@@ -24,12 +24,8 @@ import (
 type V1IPFamily string
 
 func NewV1IPFamily(value V1IPFamily) *V1IPFamily {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1IPFamily.
-func (m V1IPFamily) Pointer() *V1IPFamily {
-	return &m
+	v := value
+	return &v
 }
 
 const (

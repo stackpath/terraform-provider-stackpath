@@ -52,8 +52,6 @@ func (m *V1CreateImageRequest) validateImage(formats strfmt.Registry) error {
 		if err := m.Image.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("image")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -71,8 +69,6 @@ func (m *V1CreateImageRequest) validateInstanceVolumeSource(formats strfmt.Regis
 		if err := m.InstanceVolumeSource.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instanceVolumeSource")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -102,16 +98,9 @@ func (m *V1CreateImageRequest) ContextValidate(ctx context.Context, formats strf
 func (m *V1CreateImageRequest) contextValidateImage(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Image != nil {
-
-		if swag.IsZero(m.Image) { // not required
-			return nil
-		}
-
 		if err := m.Image.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("image")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -123,16 +112,9 @@ func (m *V1CreateImageRequest) contextValidateImage(ctx context.Context, formats
 func (m *V1CreateImageRequest) contextValidateInstanceVolumeSource(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.InstanceVolumeSource != nil {
-
-		if swag.IsZero(m.InstanceVolumeSource) { // not required
-			return nil
-		}
-
 		if err := m.InstanceVolumeSource.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("instanceVolumeSource")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

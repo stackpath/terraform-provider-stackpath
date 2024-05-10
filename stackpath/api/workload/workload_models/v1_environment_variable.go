@@ -51,8 +51,6 @@ func (m *V1EnvironmentVariable) validateValueFrom(formats strfmt.Registry) error
 		if err := m.ValueFrom.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("valueFrom")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -78,16 +76,9 @@ func (m *V1EnvironmentVariable) ContextValidate(ctx context.Context, formats str
 func (m *V1EnvironmentVariable) contextValidateValueFrom(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ValueFrom != nil {
-
-		if swag.IsZero(m.ValueFrom) { // not required
-			return nil
-		}
-
 		if err := m.ValueFrom.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("valueFrom")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

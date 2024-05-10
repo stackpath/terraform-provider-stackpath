@@ -20,12 +20,8 @@ import (
 type V1ContainerTerminationMessagePolicy string
 
 func NewV1ContainerTerminationMessagePolicy(value V1ContainerTerminationMessagePolicy) *V1ContainerTerminationMessagePolicy {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1ContainerTerminationMessagePolicy.
-func (m V1ContainerTerminationMessagePolicy) Pointer() *V1ContainerTerminationMessagePolicy {
-	return &m
+	v := value
+	return &v
 }
 
 const (

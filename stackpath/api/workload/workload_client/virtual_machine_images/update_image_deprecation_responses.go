@@ -67,44 +67,9 @@ type UpdateImageDeprecationOK struct {
 	Payload *workload_models.V1UpdateImageDeprecationResponse
 }
 
-// IsSuccess returns true when this update image deprecation o k response has a 2xx status code
-func (o *UpdateImageDeprecationOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this update image deprecation o k response has a 3xx status code
-func (o *UpdateImageDeprecationOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image deprecation o k response has a 4xx status code
-func (o *UpdateImageDeprecationOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this update image deprecation o k response has a 5xx status code
-func (o *UpdateImageDeprecationOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this update image deprecation o k response a status code equal to that given
-func (o *UpdateImageDeprecationOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the update image deprecation o k response
-func (o *UpdateImageDeprecationOK) Code() int {
-	return 200
-}
-
 func (o *UpdateImageDeprecationOK) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationOK  %+v", 200, o.Payload)
 }
-
-func (o *UpdateImageDeprecationOK) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationOK  %+v", 200, o.Payload)
-}
-
 func (o *UpdateImageDeprecationOK) GetPayload() *workload_models.V1UpdateImageDeprecationResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type UpdateImageDeprecationUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image deprecation unauthorized response has a 2xx status code
-func (o *UpdateImageDeprecationUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this update image deprecation unauthorized response has a 3xx status code
-func (o *UpdateImageDeprecationUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image deprecation unauthorized response has a 4xx status code
-func (o *UpdateImageDeprecationUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this update image deprecation unauthorized response has a 5xx status code
-func (o *UpdateImageDeprecationUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this update image deprecation unauthorized response a status code equal to that given
-func (o *UpdateImageDeprecationUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the update image deprecation unauthorized response
-func (o *UpdateImageDeprecationUnauthorized) Code() int {
-	return 401
-}
-
 func (o *UpdateImageDeprecationUnauthorized) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *UpdateImageDeprecationUnauthorized) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *UpdateImageDeprecationUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type UpdateImageDeprecationInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image deprecation internal server error response has a 2xx status code
-func (o *UpdateImageDeprecationInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this update image deprecation internal server error response has a 3xx status code
-func (o *UpdateImageDeprecationInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image deprecation internal server error response has a 4xx status code
-func (o *UpdateImageDeprecationInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this update image deprecation internal server error response has a 5xx status code
-func (o *UpdateImageDeprecationInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this update image deprecation internal server error response a status code equal to that given
-func (o *UpdateImageDeprecationInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the update image deprecation internal server error response
-func (o *UpdateImageDeprecationInternalServerError) Code() int {
-	return 500
-}
-
 func (o *UpdateImageDeprecationInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *UpdateImageDeprecationInternalServerError) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] updateImageDeprecationInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *UpdateImageDeprecationInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type UpdateImageDeprecationDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image deprecation default response has a 2xx status code
-func (o *UpdateImageDeprecationDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this update image deprecation default response has a 3xx status code
-func (o *UpdateImageDeprecationDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this update image deprecation default response has a 4xx status code
-func (o *UpdateImageDeprecationDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this update image deprecation default response has a 5xx status code
-func (o *UpdateImageDeprecationDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this update image deprecation default response a status code equal to that given
-func (o *UpdateImageDeprecationDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the update image deprecation default response
 func (o *UpdateImageDeprecationDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *UpdateImageDeprecationDefault) Code() int {
 func (o *UpdateImageDeprecationDefault) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] UpdateImageDeprecation default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *UpdateImageDeprecationDefault) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}/deprecation][%d] UpdateImageDeprecation default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *UpdateImageDeprecationDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

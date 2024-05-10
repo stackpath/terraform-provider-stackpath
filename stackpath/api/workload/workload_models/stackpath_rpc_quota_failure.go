@@ -133,8 +133,6 @@ func (m *StackpathRPCQuotaFailure) validateViolations(formats strfmt.Registry) e
 			if err := m.Violations[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("violations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -164,16 +162,9 @@ func (m *StackpathRPCQuotaFailure) contextValidateViolations(ctx context.Context
 	for i := 0; i < len(m.Violations); i++ {
 
 		if m.Violations[i] != nil {
-
-			if swag.IsZero(m.Violations[i]) { // not required
-				return nil
-			}
-
 			if err := m.Violations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("violations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

@@ -67,44 +67,9 @@ type GetImagesForFamilyOK struct {
 	Payload *workload_models.V1GetImagesForFamilyResponse
 }
 
-// IsSuccess returns true when this get images for family o k response has a 2xx status code
-func (o *GetImagesForFamilyOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get images for family o k response has a 3xx status code
-func (o *GetImagesForFamilyOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images for family o k response has a 4xx status code
-func (o *GetImagesForFamilyOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get images for family o k response has a 5xx status code
-func (o *GetImagesForFamilyOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get images for family o k response a status code equal to that given
-func (o *GetImagesForFamilyOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the get images for family o k response
-func (o *GetImagesForFamilyOK) Code() int {
-	return 200
-}
-
 func (o *GetImagesForFamilyOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyOK  %+v", 200, o.Payload)
 }
-
-func (o *GetImagesForFamilyOK) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyOK  %+v", 200, o.Payload)
-}
-
 func (o *GetImagesForFamilyOK) GetPayload() *workload_models.V1GetImagesForFamilyResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type GetImagesForFamilyUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images for family unauthorized response has a 2xx status code
-func (o *GetImagesForFamilyUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get images for family unauthorized response has a 3xx status code
-func (o *GetImagesForFamilyUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images for family unauthorized response has a 4xx status code
-func (o *GetImagesForFamilyUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get images for family unauthorized response has a 5xx status code
-func (o *GetImagesForFamilyUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get images for family unauthorized response a status code equal to that given
-func (o *GetImagesForFamilyUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the get images for family unauthorized response
-func (o *GetImagesForFamilyUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetImagesForFamilyUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *GetImagesForFamilyUnauthorized) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *GetImagesForFamilyUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type GetImagesForFamilyInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images for family internal server error response has a 2xx status code
-func (o *GetImagesForFamilyInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get images for family internal server error response has a 3xx status code
-func (o *GetImagesForFamilyInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images for family internal server error response has a 4xx status code
-func (o *GetImagesForFamilyInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get images for family internal server error response has a 5xx status code
-func (o *GetImagesForFamilyInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this get images for family internal server error response a status code equal to that given
-func (o *GetImagesForFamilyInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the get images for family internal server error response
-func (o *GetImagesForFamilyInternalServerError) Code() int {
-	return 500
-}
-
 func (o *GetImagesForFamilyInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *GetImagesForFamilyInternalServerError) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] getImagesForFamilyInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *GetImagesForFamilyInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type GetImagesForFamilyDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images for family default response has a 2xx status code
-func (o *GetImagesForFamilyDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this get images for family default response has a 3xx status code
-func (o *GetImagesForFamilyDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this get images for family default response has a 4xx status code
-func (o *GetImagesForFamilyDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this get images for family default response has a 5xx status code
-func (o *GetImagesForFamilyDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this get images for family default response a status code equal to that given
-func (o *GetImagesForFamilyDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the get images for family default response
 func (o *GetImagesForFamilyDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *GetImagesForFamilyDefault) Code() int {
 func (o *GetImagesForFamilyDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] GetImagesForFamily default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *GetImagesForFamilyDefault) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images/{image_family}][%d] GetImagesForFamily default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *GetImagesForFamilyDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

@@ -66,41 +66,7 @@ No content
 type DeleteImageNoContent struct {
 }
 
-// IsSuccess returns true when this delete image no content response has a 2xx status code
-func (o *DeleteImageNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this delete image no content response has a 3xx status code
-func (o *DeleteImageNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete image no content response has a 4xx status code
-func (o *DeleteImageNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete image no content response has a 5xx status code
-func (o *DeleteImageNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete image no content response a status code equal to that given
-func (o *DeleteImageNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the delete image no content response
-func (o *DeleteImageNoContent) Code() int {
-	return 204
-}
-
 func (o *DeleteImageNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageNoContent ", 204)
-}
-
-func (o *DeleteImageNoContent) String() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageNoContent ", 204)
 }
 
@@ -123,44 +89,9 @@ type DeleteImageUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete image unauthorized response has a 2xx status code
-func (o *DeleteImageUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete image unauthorized response has a 3xx status code
-func (o *DeleteImageUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete image unauthorized response has a 4xx status code
-func (o *DeleteImageUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this delete image unauthorized response has a 5xx status code
-func (o *DeleteImageUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete image unauthorized response a status code equal to that given
-func (o *DeleteImageUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the delete image unauthorized response
-func (o *DeleteImageUnauthorized) Code() int {
-	return 401
-}
-
 func (o *DeleteImageUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *DeleteImageUnauthorized) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *DeleteImageUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -191,44 +122,9 @@ type DeleteImageInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete image internal server error response has a 2xx status code
-func (o *DeleteImageInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete image internal server error response has a 3xx status code
-func (o *DeleteImageInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete image internal server error response has a 4xx status code
-func (o *DeleteImageInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete image internal server error response has a 5xx status code
-func (o *DeleteImageInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this delete image internal server error response a status code equal to that given
-func (o *DeleteImageInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the delete image internal server error response
-func (o *DeleteImageInternalServerError) Code() int {
-	return 500
-}
-
 func (o *DeleteImageInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *DeleteImageInternalServerError) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] deleteImageInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *DeleteImageInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -263,31 +159,6 @@ type DeleteImageDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete image default response has a 2xx status code
-func (o *DeleteImageDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this delete image default response has a 3xx status code
-func (o *DeleteImageDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this delete image default response has a 4xx status code
-func (o *DeleteImageDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this delete image default response has a 5xx status code
-func (o *DeleteImageDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this delete image default response a status code equal to that given
-func (o *DeleteImageDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the delete image default response
 func (o *DeleteImageDefault) Code() int {
 	return o._statusCode
@@ -296,11 +167,6 @@ func (o *DeleteImageDefault) Code() int {
 func (o *DeleteImageDefault) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] DeleteImage default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *DeleteImageDefault) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] DeleteImage default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *DeleteImageDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

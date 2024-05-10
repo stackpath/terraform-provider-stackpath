@@ -59,7 +59,7 @@ func NewGetNetworkPoliciesOK() *GetNetworkPoliciesOK {
 }
 
 /*
-	GetNetworkPoliciesOK describes a response with status code 200, with default header values.
+GetNetworkPoliciesOK describes a response with status code 200, with default header values.
 
 GetNetworkPoliciesOK get network policies o k
 */
@@ -92,7 +92,7 @@ func NewGetNetworkPoliciesUnauthorized() *GetNetworkPoliciesUnauthorized {
 }
 
 /*
-	GetNetworkPoliciesUnauthorized describes a response with status code 401, with default header values.
+GetNetworkPoliciesUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewGetNetworkPoliciesInternalServerError() *GetNetworkPoliciesInternalServe
 }
 
 /*
-	GetNetworkPoliciesInternalServerError describes a response with status code 500, with default header values.
+GetNetworkPoliciesInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewGetNetworkPoliciesDefault(code int) *GetNetworkPoliciesDefault {
 }
 
 /*
-	GetNetworkPoliciesDefault describes a response with status code -1, with default header values.
+GetNetworkPoliciesDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

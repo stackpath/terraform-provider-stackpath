@@ -20,12 +20,8 @@ import (
 type V1ContainerImagePullPolicy string
 
 func NewV1ContainerImagePullPolicy(value V1ContainerImagePullPolicy) *V1ContainerImagePullPolicy {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1ContainerImagePullPolicy.
-func (m V1ContainerImagePullPolicy) Pointer() *V1ContainerImagePullPolicy {
-	return &m
+	v := value
+	return &v
 }
 
 const (

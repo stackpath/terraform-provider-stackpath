@@ -45,8 +45,6 @@ func (m *V1ImagePullCredential) validateDockerRegistry(formats strfmt.Registry) 
 		if err := m.DockerRegistry.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("dockerRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -72,16 +70,9 @@ func (m *V1ImagePullCredential) ContextValidate(ctx context.Context, formats str
 func (m *V1ImagePullCredential) contextValidateDockerRegistry(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DockerRegistry != nil {
-
-		if swag.IsZero(m.DockerRegistry) { // not required
-			return nil
-		}
-
 		if err := m.DockerRegistry.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("dockerRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

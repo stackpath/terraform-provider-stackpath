@@ -59,7 +59,7 @@ func NewDeleteNetworkNoContent() *DeleteNetworkNoContent {
 }
 
 /*
-	DeleteNetworkNoContent describes a response with status code 204, with default header values.
+DeleteNetworkNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -81,7 +81,7 @@ func NewDeleteNetworkUnauthorized() *DeleteNetworkUnauthorized {
 }
 
 /*
-	DeleteNetworkUnauthorized describes a response with status code 401, with default header values.
+DeleteNetworkUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -114,7 +114,7 @@ func NewDeleteNetworkInternalServerError() *DeleteNetworkInternalServerError {
 }
 
 /*
-	DeleteNetworkInternalServerError describes a response with status code 500, with default header values.
+DeleteNetworkInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -149,7 +149,7 @@ func NewDeleteNetworkDefault(code int) *DeleteNetworkDefault {
 }
 
 /*
-	DeleteNetworkDefault describes a response with status code -1, with default header values.
+DeleteNetworkDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

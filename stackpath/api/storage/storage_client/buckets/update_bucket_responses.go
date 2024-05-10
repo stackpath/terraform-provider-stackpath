@@ -59,7 +59,7 @@ func NewUpdateBucketOK() *UpdateBucketOK {
 }
 
 /*
-	UpdateBucketOK describes a response with status code 200, with default header values.
+UpdateBucketOK describes a response with status code 200, with default header values.
 
 UpdateBucketOK update bucket o k
 */
@@ -92,7 +92,7 @@ func NewUpdateBucketUnauthorized() *UpdateBucketUnauthorized {
 }
 
 /*
-	UpdateBucketUnauthorized describes a response with status code 401, with default header values.
+UpdateBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewUpdateBucketInternalServerError() *UpdateBucketInternalServerError {
 }
 
 /*
-	UpdateBucketInternalServerError describes a response with status code 500, with default header values.
+UpdateBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewUpdateBucketDefault(code int) *UpdateBucketDefault {
 }
 
 /*
-	UpdateBucketDefault describes a response with status code -1, with default header values.
+UpdateBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

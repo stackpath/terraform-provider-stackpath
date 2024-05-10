@@ -48,8 +48,6 @@ func (m *DataVectorResult) validateValue(formats strfmt.Registry) error {
 		if err := m.Value.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -75,16 +73,9 @@ func (m *DataVectorResult) ContextValidate(ctx context.Context, formats strfmt.R
 func (m *DataVectorResult) contextValidateValue(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Value != nil {
-
-		if swag.IsZero(m.Value) { // not required
-			return nil
-		}
-
 		if err := m.Value.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
