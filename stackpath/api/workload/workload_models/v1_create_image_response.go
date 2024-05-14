@@ -45,8 +45,6 @@ func (m *V1CreateImageResponse) validateImage(formats strfmt.Registry) error {
 		if err := m.Image.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("image")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -72,16 +70,9 @@ func (m *V1CreateImageResponse) ContextValidate(ctx context.Context, formats str
 func (m *V1CreateImageResponse) contextValidateImage(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Image != nil {
-
-		if swag.IsZero(m.Image) { // not required
-			return nil
-		}
-
 		if err := m.Image.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("image")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

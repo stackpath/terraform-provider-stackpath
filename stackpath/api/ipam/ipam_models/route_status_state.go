@@ -15,9 +15,9 @@ import (
 )
 
 // RouteStatusState - ROUTE_STATUS_UNSPECIFIED: Route in this region is in an undefined state
-//  - RUNNING: Route has 1 or more assigned gateways and is correctly configured in this region
-//  - NO_GATEWAY: Route does not have any assigned gateways but is configured in this region
-//  - DELETING: Route is being deleted from the region
+//   - RUNNING: Route has 1 or more assigned gateways and is correctly configured in this region
+//   - NO_GATEWAY: Route does not have any assigned gateways but is configured in this region
+//   - DELETING: Route is being deleted from the region
 //
 // swagger:model RouteStatusState
 type RouteStatusState string

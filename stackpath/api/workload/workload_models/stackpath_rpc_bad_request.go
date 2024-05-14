@@ -133,8 +133,6 @@ func (m *StackpathRPCBadRequest) validateFieldViolations(formats strfmt.Registry
 			if err := m.FieldViolations[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("fieldViolations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -164,16 +162,9 @@ func (m *StackpathRPCBadRequest) contextValidateFieldViolations(ctx context.Cont
 	for i := 0; i < len(m.FieldViolations); i++ {
 
 		if m.FieldViolations[i] != nil {
-
-			if swag.IsZero(m.FieldViolations[i]) { // not required
-				return nil
-			}
-
 			if err := m.FieldViolations[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("fieldViolations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

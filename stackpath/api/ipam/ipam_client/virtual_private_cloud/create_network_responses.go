@@ -59,7 +59,7 @@ func NewCreateNetworkOK() *CreateNetworkOK {
 }
 
 /*
-	CreateNetworkOK describes a response with status code 200, with default header values.
+CreateNetworkOK describes a response with status code 200, with default header values.
 
 CreateNetworkOK create network o k
 */
@@ -92,7 +92,7 @@ func NewCreateNetworkUnauthorized() *CreateNetworkUnauthorized {
 }
 
 /*
-	CreateNetworkUnauthorized describes a response with status code 401, with default header values.
+CreateNetworkUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewCreateNetworkInternalServerError() *CreateNetworkInternalServerError {
 }
 
 /*
-	CreateNetworkInternalServerError describes a response with status code 500, with default header values.
+CreateNetworkInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewCreateNetworkDefault(code int) *CreateNetworkDefault {
 }
 
 /*
-	CreateNetworkDefault describes a response with status code -1, with default header values.
+CreateNetworkDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

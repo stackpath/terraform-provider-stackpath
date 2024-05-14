@@ -52,10 +52,12 @@ func NewGenerateCredentialsParamsWithHTTPClient(client *http.Client) *GenerateCr
 	}
 }
 
-/* GenerateCredentialsParams contains all the parameters to send to the API endpoint
-   for the generate credentials operation.
+/*
+GenerateCredentialsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the generate credentials operation.
+
+	Typically these are written to a http.Request.
 */
 type GenerateCredentialsParams struct {
 

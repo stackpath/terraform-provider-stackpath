@@ -53,8 +53,6 @@ func (m *V1GetImagesResponse) validatePageInfo(formats strfmt.Registry) error {
 		if err := m.PageInfo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("pageInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -77,8 +75,6 @@ func (m *V1GetImagesResponse) validateResults(formats strfmt.Registry) error {
 			if err := m.Results[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("results" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -110,16 +106,9 @@ func (m *V1GetImagesResponse) ContextValidate(ctx context.Context, formats strfm
 func (m *V1GetImagesResponse) contextValidatePageInfo(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.PageInfo != nil {
-
-		if swag.IsZero(m.PageInfo) { // not required
-			return nil
-		}
-
 		if err := m.PageInfo.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("pageInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -133,16 +122,9 @@ func (m *V1GetImagesResponse) contextValidateResults(ctx context.Context, format
 	for i := 0; i < len(m.Results); i++ {
 
 		if m.Results[i] != nil {
-
-			if swag.IsZero(m.Results[i]) { // not required
-				return nil
-			}
-
 			if err := m.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("results" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

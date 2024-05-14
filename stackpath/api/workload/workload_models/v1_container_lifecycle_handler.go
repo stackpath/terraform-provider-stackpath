@@ -59,8 +59,6 @@ func (m *V1ContainerLifecycleHandler) validateExec(formats strfmt.Registry) erro
 		if err := m.Exec.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("exec")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -78,8 +76,6 @@ func (m *V1ContainerLifecycleHandler) validateHTTPGet(formats strfmt.Registry) e
 		if err := m.HTTPGet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpGet")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -97,8 +93,6 @@ func (m *V1ContainerLifecycleHandler) validateTCPSocket(formats strfmt.Registry)
 		if err := m.TCPSocket.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tcpSocket")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -132,16 +126,9 @@ func (m *V1ContainerLifecycleHandler) ContextValidate(ctx context.Context, forma
 func (m *V1ContainerLifecycleHandler) contextValidateExec(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Exec != nil {
-
-		if swag.IsZero(m.Exec) { // not required
-			return nil
-		}
-
 		if err := m.Exec.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("exec")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -153,16 +140,9 @@ func (m *V1ContainerLifecycleHandler) contextValidateExec(ctx context.Context, f
 func (m *V1ContainerLifecycleHandler) contextValidateHTTPGet(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.HTTPGet != nil {
-
-		if swag.IsZero(m.HTTPGet) { // not required
-			return nil
-		}
-
 		if err := m.HTTPGet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpGet")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -174,16 +154,9 @@ func (m *V1ContainerLifecycleHandler) contextValidateHTTPGet(ctx context.Context
 func (m *V1ContainerLifecycleHandler) contextValidateTCPSocket(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.TCPSocket != nil {
-
-		if swag.IsZero(m.TCPSocket) { // not required
-			return nil
-		}
-
 		if err := m.TCPSocket.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tcpSocket")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

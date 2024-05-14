@@ -66,41 +66,7 @@ No content
 type DeleteWorkloadNoContent struct {
 }
 
-// IsSuccess returns true when this delete workload no content response has a 2xx status code
-func (o *DeleteWorkloadNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this delete workload no content response has a 3xx status code
-func (o *DeleteWorkloadNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete workload no content response has a 4xx status code
-func (o *DeleteWorkloadNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete workload no content response has a 5xx status code
-func (o *DeleteWorkloadNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete workload no content response a status code equal to that given
-func (o *DeleteWorkloadNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the delete workload no content response
-func (o *DeleteWorkloadNoContent) Code() int {
-	return 204
-}
-
 func (o *DeleteWorkloadNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadNoContent ", 204)
-}
-
-func (o *DeleteWorkloadNoContent) String() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadNoContent ", 204)
 }
 
@@ -123,44 +89,9 @@ type DeleteWorkloadUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete workload unauthorized response has a 2xx status code
-func (o *DeleteWorkloadUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete workload unauthorized response has a 3xx status code
-func (o *DeleteWorkloadUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete workload unauthorized response has a 4xx status code
-func (o *DeleteWorkloadUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this delete workload unauthorized response has a 5xx status code
-func (o *DeleteWorkloadUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete workload unauthorized response a status code equal to that given
-func (o *DeleteWorkloadUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the delete workload unauthorized response
-func (o *DeleteWorkloadUnauthorized) Code() int {
-	return 401
-}
-
 func (o *DeleteWorkloadUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *DeleteWorkloadUnauthorized) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *DeleteWorkloadUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -191,44 +122,9 @@ type DeleteWorkloadInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete workload internal server error response has a 2xx status code
-func (o *DeleteWorkloadInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete workload internal server error response has a 3xx status code
-func (o *DeleteWorkloadInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete workload internal server error response has a 4xx status code
-func (o *DeleteWorkloadInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete workload internal server error response has a 5xx status code
-func (o *DeleteWorkloadInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this delete workload internal server error response a status code equal to that given
-func (o *DeleteWorkloadInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the delete workload internal server error response
-func (o *DeleteWorkloadInternalServerError) Code() int {
-	return 500
-}
-
 func (o *DeleteWorkloadInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *DeleteWorkloadInternalServerError) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] deleteWorkloadInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *DeleteWorkloadInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -263,31 +159,6 @@ type DeleteWorkloadDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete workload default response has a 2xx status code
-func (o *DeleteWorkloadDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this delete workload default response has a 3xx status code
-func (o *DeleteWorkloadDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this delete workload default response has a 4xx status code
-func (o *DeleteWorkloadDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this delete workload default response has a 5xx status code
-func (o *DeleteWorkloadDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this delete workload default response a status code equal to that given
-func (o *DeleteWorkloadDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the delete workload default response
 func (o *DeleteWorkloadDefault) Code() int {
 	return o._statusCode
@@ -296,11 +167,6 @@ func (o *DeleteWorkloadDefault) Code() int {
 func (o *DeleteWorkloadDefault) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] DeleteWorkload default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *DeleteWorkloadDefault) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] DeleteWorkload default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *DeleteWorkloadDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

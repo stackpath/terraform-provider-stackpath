@@ -63,8 +63,6 @@ func (m *V1WorkloadInstanceSecurityContext) validateSysctls(formats strfmt.Regis
 			if err := m.Sysctls[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("sysctls" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -94,16 +92,9 @@ func (m *V1WorkloadInstanceSecurityContext) contextValidateSysctls(ctx context.C
 	for i := 0; i < len(m.Sysctls); i++ {
 
 		if m.Sysctls[i] != nil {
-
-			if swag.IsZero(m.Sysctls[i]) { // not required
-				return nil
-			}
-
 			if err := m.Sysctls[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("sysctls" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

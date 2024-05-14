@@ -66,41 +66,7 @@ No content
 type DeleteImagesForFamilyNoContent struct {
 }
 
-// IsSuccess returns true when this delete images for family no content response has a 2xx status code
-func (o *DeleteImagesForFamilyNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this delete images for family no content response has a 3xx status code
-func (o *DeleteImagesForFamilyNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete images for family no content response has a 4xx status code
-func (o *DeleteImagesForFamilyNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete images for family no content response has a 5xx status code
-func (o *DeleteImagesForFamilyNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete images for family no content response a status code equal to that given
-func (o *DeleteImagesForFamilyNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the delete images for family no content response
-func (o *DeleteImagesForFamilyNoContent) Code() int {
-	return 204
-}
-
 func (o *DeleteImagesForFamilyNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyNoContent ", 204)
-}
-
-func (o *DeleteImagesForFamilyNoContent) String() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyNoContent ", 204)
 }
 
@@ -123,44 +89,9 @@ type DeleteImagesForFamilyUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete images for family unauthorized response has a 2xx status code
-func (o *DeleteImagesForFamilyUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete images for family unauthorized response has a 3xx status code
-func (o *DeleteImagesForFamilyUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete images for family unauthorized response has a 4xx status code
-func (o *DeleteImagesForFamilyUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this delete images for family unauthorized response has a 5xx status code
-func (o *DeleteImagesForFamilyUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this delete images for family unauthorized response a status code equal to that given
-func (o *DeleteImagesForFamilyUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the delete images for family unauthorized response
-func (o *DeleteImagesForFamilyUnauthorized) Code() int {
-	return 401
-}
-
 func (o *DeleteImagesForFamilyUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *DeleteImagesForFamilyUnauthorized) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *DeleteImagesForFamilyUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -191,44 +122,9 @@ type DeleteImagesForFamilyInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete images for family internal server error response has a 2xx status code
-func (o *DeleteImagesForFamilyInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this delete images for family internal server error response has a 3xx status code
-func (o *DeleteImagesForFamilyInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this delete images for family internal server error response has a 4xx status code
-func (o *DeleteImagesForFamilyInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this delete images for family internal server error response has a 5xx status code
-func (o *DeleteImagesForFamilyInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this delete images for family internal server error response a status code equal to that given
-func (o *DeleteImagesForFamilyInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the delete images for family internal server error response
-func (o *DeleteImagesForFamilyInternalServerError) Code() int {
-	return 500
-}
-
 func (o *DeleteImagesForFamilyInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *DeleteImagesForFamilyInternalServerError) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] deleteImagesForFamilyInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *DeleteImagesForFamilyInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -263,31 +159,6 @@ type DeleteImagesForFamilyDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this delete images for family default response has a 2xx status code
-func (o *DeleteImagesForFamilyDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this delete images for family default response has a 3xx status code
-func (o *DeleteImagesForFamilyDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this delete images for family default response has a 4xx status code
-func (o *DeleteImagesForFamilyDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this delete images for family default response has a 5xx status code
-func (o *DeleteImagesForFamilyDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this delete images for family default response a status code equal to that given
-func (o *DeleteImagesForFamilyDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the delete images for family default response
 func (o *DeleteImagesForFamilyDefault) Code() int {
 	return o._statusCode
@@ -296,11 +167,6 @@ func (o *DeleteImagesForFamilyDefault) Code() int {
 func (o *DeleteImagesForFamilyDefault) Error() string {
 	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] DeleteImagesForFamily default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *DeleteImagesForFamilyDefault) String() string {
-	return fmt.Sprintf("[DELETE /workload/v1/stacks/{stack_id}/images/{image_family}][%d] DeleteImagesForFamily default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *DeleteImagesForFamilyDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

@@ -24,12 +24,8 @@ import (
 type V1ImageConditionStatus string
 
 func NewV1ImageConditionStatus(value V1ImageConditionStatus) *V1ImageConditionStatus {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1ImageConditionStatus.
-func (m V1ImageConditionStatus) Pointer() *V1ImageConditionStatus {
-	return &m
+	v := value
+	return &v
 }
 
 const (

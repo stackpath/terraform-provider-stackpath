@@ -52,10 +52,12 @@ func NewGetBucketsParamsWithHTTPClient(client *http.Client) *GetBucketsParams {
 	}
 }
 
-/* GetBucketsParams contains all the parameters to send to the API endpoint
-   for the get buckets operation.
+/*
+GetBucketsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get buckets operation.
+
+	Typically these are written to a http.Request.
 */
 type GetBucketsParams struct {
 

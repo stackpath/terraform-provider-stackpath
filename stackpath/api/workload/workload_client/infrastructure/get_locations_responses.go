@@ -67,44 +67,9 @@ type GetLocationsOK struct {
 	Payload *workload_models.V1GetLocationsResponse
 }
 
-// IsSuccess returns true when this get locations o k response has a 2xx status code
-func (o *GetLocationsOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get locations o k response has a 3xx status code
-func (o *GetLocationsOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get locations o k response has a 4xx status code
-func (o *GetLocationsOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get locations o k response has a 5xx status code
-func (o *GetLocationsOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get locations o k response a status code equal to that given
-func (o *GetLocationsOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the get locations o k response
-func (o *GetLocationsOK) Code() int {
-	return 200
-}
-
 func (o *GetLocationsOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsOK  %+v", 200, o.Payload)
 }
-
-func (o *GetLocationsOK) String() string {
-	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsOK  %+v", 200, o.Payload)
-}
-
 func (o *GetLocationsOK) GetPayload() *workload_models.V1GetLocationsResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type GetLocationsUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get locations unauthorized response has a 2xx status code
-func (o *GetLocationsUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get locations unauthorized response has a 3xx status code
-func (o *GetLocationsUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get locations unauthorized response has a 4xx status code
-func (o *GetLocationsUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get locations unauthorized response has a 5xx status code
-func (o *GetLocationsUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get locations unauthorized response a status code equal to that given
-func (o *GetLocationsUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the get locations unauthorized response
-func (o *GetLocationsUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetLocationsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *GetLocationsUnauthorized) String() string {
-	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *GetLocationsUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type GetLocationsInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get locations internal server error response has a 2xx status code
-func (o *GetLocationsInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get locations internal server error response has a 3xx status code
-func (o *GetLocationsInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get locations internal server error response has a 4xx status code
-func (o *GetLocationsInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get locations internal server error response has a 5xx status code
-func (o *GetLocationsInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this get locations internal server error response a status code equal to that given
-func (o *GetLocationsInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the get locations internal server error response
-func (o *GetLocationsInternalServerError) Code() int {
-	return 500
-}
-
 func (o *GetLocationsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *GetLocationsInternalServerError) String() string {
-	return fmt.Sprintf("[GET /workload/v1/locations][%d] getLocationsInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *GetLocationsInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type GetLocationsDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get locations default response has a 2xx status code
-func (o *GetLocationsDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this get locations default response has a 3xx status code
-func (o *GetLocationsDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this get locations default response has a 4xx status code
-func (o *GetLocationsDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this get locations default response has a 5xx status code
-func (o *GetLocationsDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this get locations default response a status code equal to that given
-func (o *GetLocationsDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the get locations default response
 func (o *GetLocationsDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *GetLocationsDefault) Code() int {
 func (o *GetLocationsDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/locations][%d] GetLocations default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *GetLocationsDefault) String() string {
-	return fmt.Sprintf("[GET /workload/v1/locations][%d] GetLocations default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *GetLocationsDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

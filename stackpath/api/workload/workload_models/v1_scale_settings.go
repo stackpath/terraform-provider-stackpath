@@ -51,8 +51,6 @@ func (m *V1ScaleSettings) validateMetrics(formats strfmt.Registry) error {
 			if err := m.Metrics[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("metrics" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -82,16 +80,9 @@ func (m *V1ScaleSettings) contextValidateMetrics(ctx context.Context, formats st
 	for i := 0; i < len(m.Metrics); i++ {
 
 		if m.Metrics[i] != nil {
-
-			if swag.IsZero(m.Metrics[i]) { // not required
-				return nil
-			}
-
 			if err := m.Metrics[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("metrics" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

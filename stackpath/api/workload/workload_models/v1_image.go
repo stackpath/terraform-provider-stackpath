@@ -116,8 +116,6 @@ func (m *V1Image) validateConditions(formats strfmt.Registry) error {
 			if err := m.Conditions[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -137,8 +135,6 @@ func (m *V1Image) validateDeprecation(formats strfmt.Registry) error {
 		if err := m.Deprecation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deprecation")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -156,8 +152,6 @@ func (m *V1Image) validateMetadata(formats strfmt.Registry) error {
 		if err := m.Metadata.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -175,8 +169,6 @@ func (m *V1Image) validateStatus(formats strfmt.Registry) error {
 		if err := m.Status.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -236,16 +228,9 @@ func (m *V1Image) contextValidateConditions(ctx context.Context, formats strfmt.
 	for i := 0; i < len(m.Conditions); i++ {
 
 		if m.Conditions[i] != nil {
-
-			if swag.IsZero(m.Conditions[i]) { // not required
-				return nil
-			}
-
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -259,16 +244,9 @@ func (m *V1Image) contextValidateConditions(ctx context.Context, formats strfmt.
 func (m *V1Image) contextValidateDeprecation(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Deprecation != nil {
-
-		if swag.IsZero(m.Deprecation) { // not required
-			return nil
-		}
-
 		if err := m.Deprecation.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deprecation")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -298,16 +276,9 @@ func (m *V1Image) contextValidateImageSize(ctx context.Context, formats strfmt.R
 func (m *V1Image) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Metadata != nil {
-
-		if swag.IsZero(m.Metadata) { // not required
-			return nil
-		}
-
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -328,16 +299,9 @@ func (m *V1Image) contextValidateStackID(ctx context.Context, formats strfmt.Reg
 func (m *V1Image) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Status != nil {
-
-		if swag.IsZero(m.Status) { // not required
-			return nil
-		}
-
 		if err := m.Status.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

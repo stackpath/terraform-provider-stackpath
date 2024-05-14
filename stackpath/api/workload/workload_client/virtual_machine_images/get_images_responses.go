@@ -67,44 +67,9 @@ type GetImagesOK struct {
 	Payload *workload_models.V1GetImagesResponse
 }
 
-// IsSuccess returns true when this get images o k response has a 2xx status code
-func (o *GetImagesOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get images o k response has a 3xx status code
-func (o *GetImagesOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images o k response has a 4xx status code
-func (o *GetImagesOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get images o k response has a 5xx status code
-func (o *GetImagesOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get images o k response a status code equal to that given
-func (o *GetImagesOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the get images o k response
-func (o *GetImagesOK) Code() int {
-	return 200
-}
-
 func (o *GetImagesOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesOK  %+v", 200, o.Payload)
 }
-
-func (o *GetImagesOK) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesOK  %+v", 200, o.Payload)
-}
-
 func (o *GetImagesOK) GetPayload() *workload_models.V1GetImagesResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type GetImagesUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images unauthorized response has a 2xx status code
-func (o *GetImagesUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get images unauthorized response has a 3xx status code
-func (o *GetImagesUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images unauthorized response has a 4xx status code
-func (o *GetImagesUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get images unauthorized response has a 5xx status code
-func (o *GetImagesUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get images unauthorized response a status code equal to that given
-func (o *GetImagesUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the get images unauthorized response
-func (o *GetImagesUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetImagesUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *GetImagesUnauthorized) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *GetImagesUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type GetImagesInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images internal server error response has a 2xx status code
-func (o *GetImagesInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get images internal server error response has a 3xx status code
-func (o *GetImagesInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get images internal server error response has a 4xx status code
-func (o *GetImagesInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get images internal server error response has a 5xx status code
-func (o *GetImagesInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this get images internal server error response a status code equal to that given
-func (o *GetImagesInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the get images internal server error response
-func (o *GetImagesInternalServerError) Code() int {
-	return 500
-}
-
 func (o *GetImagesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *GetImagesInternalServerError) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] getImagesInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *GetImagesInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type GetImagesDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get images default response has a 2xx status code
-func (o *GetImagesDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this get images default response has a 3xx status code
-func (o *GetImagesDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this get images default response has a 4xx status code
-func (o *GetImagesDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this get images default response has a 5xx status code
-func (o *GetImagesDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this get images default response a status code equal to that given
-func (o *GetImagesDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the get images default response
 func (o *GetImagesDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *GetImagesDefault) Code() int {
 func (o *GetImagesDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] GetImages default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *GetImagesDefault) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/images][%d] GetImages default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *GetImagesDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

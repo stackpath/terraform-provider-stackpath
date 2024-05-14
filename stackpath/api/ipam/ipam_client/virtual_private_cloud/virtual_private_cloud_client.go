@@ -62,7 +62,7 @@ type ClientService interface {
 }
 
 /*
-  CreateNetwork creates a v p c network
+CreateNetwork creates a v p c network
 */
 func (a *Client) CreateNetwork(params *CreateNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkOK, error) {
 	// TODO: Validate the params before sending
@@ -100,7 +100,7 @@ func (a *Client) CreateNetwork(params *CreateNetworkParams, authInfo runtime.Cli
 }
 
 /*
-  CreateNetworkSubnet create network subnet API
+CreateNetworkSubnet create network subnet API
 */
 func (a *Client) CreateNetworkSubnet(params *CreateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkSubnetOK, error) {
 	// TODO: Validate the params before sending
@@ -138,13 +138,15 @@ func (a *Client) CreateNetworkSubnet(params *CreateNetworkSubnetParams, authInfo
 }
 
 /*
-  CreateRoute creates a network route
+	CreateRoute creates a network route
 
-  [block:callout]
-{
-  "type": "danger",
-  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
-}
+	[block:callout]
+
+	{
+	  "type": "danger",
+	  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
+	}
+
 [/block]
 */
 func (a *Client) CreateRoute(params *CreateRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateRouteOK, error) {
@@ -183,7 +185,7 @@ func (a *Client) CreateRoute(params *CreateRouteParams, authInfo runtime.ClientA
 }
 
 /*
-  DeleteNetwork deletes a v p c network
+DeleteNetwork deletes a v p c network
 */
 func (a *Client) DeleteNetwork(params *DeleteNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkNoContent, error) {
 	// TODO: Validate the params before sending
@@ -221,7 +223,7 @@ func (a *Client) DeleteNetwork(params *DeleteNetworkParams, authInfo runtime.Cli
 }
 
 /*
-  DeleteNetworkSubnet delete network subnet API
+DeleteNetworkSubnet delete network subnet API
 */
 func (a *Client) DeleteNetworkSubnet(params *DeleteNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkSubnetNoContent, error) {
 	// TODO: Validate the params before sending
@@ -259,13 +261,15 @@ func (a *Client) DeleteNetworkSubnet(params *DeleteNetworkSubnetParams, authInfo
 }
 
 /*
-  DeleteRoute deletes a network route
+	DeleteRoute deletes a network route
 
-  [block:callout]
-{
-  "type": "danger",
-  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
-}
+	[block:callout]
+
+	{
+	  "type": "danger",
+	  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
+	}
+
 [/block]
 */
 func (a *Client) DeleteRoute(params *DeleteRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteRouteNoContent, error) {
@@ -304,7 +308,7 @@ func (a *Client) DeleteRoute(params *DeleteRouteParams, authInfo runtime.ClientA
 }
 
 /*
-  GetNetwork gets a v p c network
+GetNetwork gets a v p c network
 */
 func (a *Client) GetNetwork(params *GetNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkOK, error) {
 	// TODO: Validate the params before sending
@@ -342,7 +346,7 @@ func (a *Client) GetNetwork(params *GetNetworkParams, authInfo runtime.ClientAut
 }
 
 /*
-  GetNetworkSubnet get network subnet API
+GetNetworkSubnet get network subnet API
 */
 func (a *Client) GetNetworkSubnet(params *GetNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetOK, error) {
 	// TODO: Validate the params before sending
@@ -380,7 +384,7 @@ func (a *Client) GetNetworkSubnet(params *GetNetworkSubnetParams, authInfo runti
 }
 
 /*
-  GetNetworkSubnets get network subnets API
+GetNetworkSubnets get network subnets API
 */
 func (a *Client) GetNetworkSubnets(params *GetNetworkSubnetsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetsOK, error) {
 	// TODO: Validate the params before sending
@@ -418,7 +422,7 @@ func (a *Client) GetNetworkSubnets(params *GetNetworkSubnetsParams, authInfo run
 }
 
 /*
-  GetNetworks gets all v p c networks
+GetNetworks gets all v p c networks
 */
 func (a *Client) GetNetworks(params *GetNetworksParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworksOK, error) {
 	// TODO: Validate the params before sending
@@ -456,13 +460,15 @@ func (a *Client) GetNetworks(params *GetNetworksParams, authInfo runtime.ClientA
 }
 
 /*
-  GetRoute gets a network route
+	GetRoute gets a network route
 
-  [block:callout]
-{
-  "type": "danger",
-  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
-}
+	[block:callout]
+
+	{
+	  "type": "danger",
+	  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
+	}
+
 [/block]
 */
 func (a *Client) GetRoute(params *GetRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetRouteOK, error) {
@@ -501,13 +507,15 @@ func (a *Client) GetRoute(params *GetRouteParams, authInfo runtime.ClientAuthInf
 }
 
 /*
-  GetRoutes gets all network routes
+	GetRoutes gets all network routes
 
-  [block:callout]
-{
-  "type": "danger",
-  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
-}
+	[block:callout]
+
+	{
+	  "type": "danger",
+	  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
+	}
+
 [/block]
 */
 func (a *Client) GetRoutes(params *GetRoutesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetRoutesOK, error) {
@@ -546,9 +554,9 @@ func (a *Client) GetRoutes(params *GetRoutesParams, authInfo runtime.ClientAuthI
 }
 
 /*
-  UpdateNetwork updates a v p c network
+UpdateNetwork updates a v p c network
 
-  Only a network's name may be updated
+Only a network's name may be updated
 */
 func (a *Client) UpdateNetwork(params *UpdateNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkOK, error) {
 	// TODO: Validate the params before sending
@@ -586,7 +594,7 @@ func (a *Client) UpdateNetwork(params *UpdateNetworkParams, authInfo runtime.Cli
 }
 
 /*
-  UpdateNetworkSubnet update network subnet API
+UpdateNetworkSubnet update network subnet API
 */
 func (a *Client) UpdateNetworkSubnet(params *UpdateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkSubnetOK, error) {
 	// TODO: Validate the params before sending
@@ -624,13 +632,15 @@ func (a *Client) UpdateNetworkSubnet(params *UpdateNetworkSubnetParams, authInfo
 }
 
 /*
-  UpdateRoute updates a network route
+	UpdateRoute updates a network route
 
-  [block:callout]
-{
-  "type": "danger",
-  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
-}
+	[block:callout]
+
+	{
+	  "type": "danger",
+	  "body": "This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information."
+	}
+
 [/block]
 */
 func (a *Client) UpdateRoute(params *UpdateRouteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateRouteOK, error) {

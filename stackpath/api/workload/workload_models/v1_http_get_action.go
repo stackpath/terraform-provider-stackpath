@@ -54,8 +54,6 @@ func (m *V1HTTPGetAction) validateHTTPHeaders(formats strfmt.Registry) error {
 		if err := m.HTTPHeaders.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpHeaders")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -80,15 +78,9 @@ func (m *V1HTTPGetAction) ContextValidate(ctx context.Context, formats strfmt.Re
 
 func (m *V1HTTPGetAction) contextValidateHTTPHeaders(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.HTTPHeaders) { // not required
-		return nil
-	}
-
 	if err := m.HTTPHeaders.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("httpHeaders")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}

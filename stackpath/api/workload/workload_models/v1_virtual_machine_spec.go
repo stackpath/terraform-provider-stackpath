@@ -82,8 +82,6 @@ func (m *V1VirtualMachineSpec) validateLivenessProbe(formats strfmt.Registry) er
 		if err := m.LivenessProbe.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -101,8 +99,6 @@ func (m *V1VirtualMachineSpec) validatePorts(formats strfmt.Registry) error {
 		if err := m.Ports.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ports")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -120,8 +116,6 @@ func (m *V1VirtualMachineSpec) validateReadinessProbe(formats strfmt.Registry) e
 		if err := m.ReadinessProbe.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -139,8 +133,6 @@ func (m *V1VirtualMachineSpec) validateResources(formats strfmt.Registry) error 
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -163,8 +155,6 @@ func (m *V1VirtualMachineSpec) validateVolumeMounts(formats strfmt.Registry) err
 			if err := m.VolumeMounts[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}
@@ -208,16 +198,9 @@ func (m *V1VirtualMachineSpec) ContextValidate(ctx context.Context, formats strf
 func (m *V1VirtualMachineSpec) contextValidateLivenessProbe(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.LivenessProbe != nil {
-
-		if swag.IsZero(m.LivenessProbe) { // not required
-			return nil
-		}
-
 		if err := m.LivenessProbe.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -228,15 +211,9 @@ func (m *V1VirtualMachineSpec) contextValidateLivenessProbe(ctx context.Context,
 
 func (m *V1VirtualMachineSpec) contextValidatePorts(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Ports) { // not required
-		return nil
-	}
-
 	if err := m.Ports.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("ports")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}
@@ -247,16 +224,9 @@ func (m *V1VirtualMachineSpec) contextValidatePorts(ctx context.Context, formats
 func (m *V1VirtualMachineSpec) contextValidateReadinessProbe(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ReadinessProbe != nil {
-
-		if swag.IsZero(m.ReadinessProbe) { // not required
-			return nil
-		}
-
 		if err := m.ReadinessProbe.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -268,16 +238,9 @@ func (m *V1VirtualMachineSpec) contextValidateReadinessProbe(ctx context.Context
 func (m *V1VirtualMachineSpec) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
-
-		if swag.IsZero(m.Resources) { // not required
-			return nil
-		}
-
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -291,16 +254,9 @@ func (m *V1VirtualMachineSpec) contextValidateVolumeMounts(ctx context.Context, 
 	for i := 0; i < len(m.VolumeMounts); i++ {
 
 		if m.VolumeMounts[i] != nil {
-
-			if swag.IsZero(m.VolumeMounts[i]) { // not required
-				return nil
-			}
-
 			if err := m.VolumeMounts[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce
 				}
 				return err
 			}

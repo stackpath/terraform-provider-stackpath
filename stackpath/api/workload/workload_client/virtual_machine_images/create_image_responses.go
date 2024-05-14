@@ -67,44 +67,9 @@ type CreateImageOK struct {
 	Payload *workload_models.V1CreateImageResponse
 }
 
-// IsSuccess returns true when this create image o k response has a 2xx status code
-func (o *CreateImageOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this create image o k response has a 3xx status code
-func (o *CreateImageOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this create image o k response has a 4xx status code
-func (o *CreateImageOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this create image o k response has a 5xx status code
-func (o *CreateImageOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this create image o k response a status code equal to that given
-func (o *CreateImageOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the create image o k response
-func (o *CreateImageOK) Code() int {
-	return 200
-}
-
 func (o *CreateImageOK) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageOK  %+v", 200, o.Payload)
 }
-
-func (o *CreateImageOK) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageOK  %+v", 200, o.Payload)
-}
-
 func (o *CreateImageOK) GetPayload() *workload_models.V1CreateImageResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type CreateImageUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this create image unauthorized response has a 2xx status code
-func (o *CreateImageUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this create image unauthorized response has a 3xx status code
-func (o *CreateImageUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this create image unauthorized response has a 4xx status code
-func (o *CreateImageUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this create image unauthorized response has a 5xx status code
-func (o *CreateImageUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this create image unauthorized response a status code equal to that given
-func (o *CreateImageUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the create image unauthorized response
-func (o *CreateImageUnauthorized) Code() int {
-	return 401
-}
-
 func (o *CreateImageUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *CreateImageUnauthorized) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *CreateImageUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type CreateImageInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this create image internal server error response has a 2xx status code
-func (o *CreateImageInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this create image internal server error response has a 3xx status code
-func (o *CreateImageInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this create image internal server error response has a 4xx status code
-func (o *CreateImageInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this create image internal server error response has a 5xx status code
-func (o *CreateImageInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this create image internal server error response a status code equal to that given
-func (o *CreateImageInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the create image internal server error response
-func (o *CreateImageInternalServerError) Code() int {
-	return 500
-}
-
 func (o *CreateImageInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *CreateImageInternalServerError) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] createImageInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *CreateImageInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type CreateImageDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this create image default response has a 2xx status code
-func (o *CreateImageDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this create image default response has a 3xx status code
-func (o *CreateImageDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this create image default response has a 4xx status code
-func (o *CreateImageDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this create image default response has a 5xx status code
-func (o *CreateImageDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this create image default response a status code equal to that given
-func (o *CreateImageDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the create image default response
 func (o *CreateImageDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *CreateImageDefault) Code() int {
 func (o *CreateImageDefault) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] CreateImage default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *CreateImageDefault) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] CreateImage default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *CreateImageDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

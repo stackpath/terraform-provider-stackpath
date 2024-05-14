@@ -66,41 +66,7 @@ No content
 type RestartInstanceNoContent struct {
 }
 
-// IsSuccess returns true when this restart instance no content response has a 2xx status code
-func (o *RestartInstanceNoContent) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this restart instance no content response has a 3xx status code
-func (o *RestartInstanceNoContent) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this restart instance no content response has a 4xx status code
-func (o *RestartInstanceNoContent) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this restart instance no content response has a 5xx status code
-func (o *RestartInstanceNoContent) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this restart instance no content response a status code equal to that given
-func (o *RestartInstanceNoContent) IsCode(code int) bool {
-	return code == 204
-}
-
-// Code gets the status code for the restart instance no content response
-func (o *RestartInstanceNoContent) Code() int {
-	return 204
-}
-
 func (o *RestartInstanceNoContent) Error() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceNoContent ", 204)
-}
-
-func (o *RestartInstanceNoContent) String() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceNoContent ", 204)
 }
 
@@ -123,44 +89,9 @@ type RestartInstanceUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this restart instance unauthorized response has a 2xx status code
-func (o *RestartInstanceUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this restart instance unauthorized response has a 3xx status code
-func (o *RestartInstanceUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this restart instance unauthorized response has a 4xx status code
-func (o *RestartInstanceUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this restart instance unauthorized response has a 5xx status code
-func (o *RestartInstanceUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this restart instance unauthorized response a status code equal to that given
-func (o *RestartInstanceUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the restart instance unauthorized response
-func (o *RestartInstanceUnauthorized) Code() int {
-	return 401
-}
-
 func (o *RestartInstanceUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *RestartInstanceUnauthorized) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *RestartInstanceUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -191,44 +122,9 @@ type RestartInstanceInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this restart instance internal server error response has a 2xx status code
-func (o *RestartInstanceInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this restart instance internal server error response has a 3xx status code
-func (o *RestartInstanceInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this restart instance internal server error response has a 4xx status code
-func (o *RestartInstanceInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this restart instance internal server error response has a 5xx status code
-func (o *RestartInstanceInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this restart instance internal server error response a status code equal to that given
-func (o *RestartInstanceInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the restart instance internal server error response
-func (o *RestartInstanceInternalServerError) Code() int {
-	return 500
-}
-
 func (o *RestartInstanceInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *RestartInstanceInternalServerError) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] restartInstanceInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *RestartInstanceInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -263,31 +159,6 @@ type RestartInstanceDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this restart instance default response has a 2xx status code
-func (o *RestartInstanceDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this restart instance default response has a 3xx status code
-func (o *RestartInstanceDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this restart instance default response has a 4xx status code
-func (o *RestartInstanceDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this restart instance default response has a 5xx status code
-func (o *RestartInstanceDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this restart instance default response a status code equal to that given
-func (o *RestartInstanceDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the restart instance default response
 func (o *RestartInstanceDefault) Code() int {
 	return o._statusCode
@@ -296,11 +167,6 @@ func (o *RestartInstanceDefault) Code() int {
 func (o *RestartInstanceDefault) Error() string {
 	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] RestartInstance default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *RestartInstanceDefault) String() string {
-	return fmt.Sprintf("[POST /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}/power/restart][%d] RestartInstance default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *RestartInstanceDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

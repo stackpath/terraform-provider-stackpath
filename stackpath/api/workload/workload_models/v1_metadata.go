@@ -85,8 +85,6 @@ func (m *V1Metadata) validateAnnotations(formats strfmt.Registry) error {
 		if err := m.Annotations.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("annotations")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -128,8 +126,6 @@ func (m *V1Metadata) validateLabels(formats strfmt.Registry) error {
 		if err := m.Labels.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("labels")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -182,15 +178,9 @@ func (m *V1Metadata) ContextValidate(ctx context.Context, formats strfmt.Registr
 
 func (m *V1Metadata) contextValidateAnnotations(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Annotations) { // not required
-		return nil
-	}
-
 	if err := m.Annotations.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("annotations")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}
@@ -218,15 +208,9 @@ func (m *V1Metadata) contextValidateDeleteRequestedAt(ctx context.Context, forma
 
 func (m *V1Metadata) contextValidateLabels(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Labels) { // not required
-		return nil
-	}
-
 	if err := m.Labels.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("labels")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce
 		}
 		return err
 	}

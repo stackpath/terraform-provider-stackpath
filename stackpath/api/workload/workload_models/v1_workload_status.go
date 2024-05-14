@@ -25,12 +25,8 @@ import (
 type V1WorkloadStatus string
 
 func NewV1WorkloadStatus(value V1WorkloadStatus) *V1WorkloadStatus {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated V1WorkloadStatus.
-func (m V1WorkloadStatus) Pointer() *V1WorkloadStatus {
-	return &m
+	v := value
+	return &v
 }
 
 const (

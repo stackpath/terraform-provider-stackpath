@@ -82,8 +82,6 @@ func (m *V1Probe) validateExec(formats strfmt.Registry) error {
 		if err := m.Exec.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("exec")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -101,8 +99,6 @@ func (m *V1Probe) validateHTTPGet(formats strfmt.Registry) error {
 		if err := m.HTTPGet.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpGet")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -120,8 +116,6 @@ func (m *V1Probe) validateTCPSocket(formats strfmt.Registry) error {
 		if err := m.TCPSocket.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tcpSocket")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -155,16 +149,9 @@ func (m *V1Probe) ContextValidate(ctx context.Context, formats strfmt.Registry) 
 func (m *V1Probe) contextValidateExec(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Exec != nil {
-
-		if swag.IsZero(m.Exec) { // not required
-			return nil
-		}
-
 		if err := m.Exec.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("exec")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -176,16 +163,9 @@ func (m *V1Probe) contextValidateExec(ctx context.Context, formats strfmt.Regist
 func (m *V1Probe) contextValidateHTTPGet(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.HTTPGet != nil {
-
-		if swag.IsZero(m.HTTPGet) { // not required
-			return nil
-		}
-
 		if err := m.HTTPGet.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("httpGet")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}
@@ -197,16 +177,9 @@ func (m *V1Probe) contextValidateHTTPGet(ctx context.Context, formats strfmt.Reg
 func (m *V1Probe) contextValidateTCPSocket(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.TCPSocket != nil {
-
-		if swag.IsZero(m.TCPSocket) { // not required
-			return nil
-		}
-
 		if err := m.TCPSocket.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tcpSocket")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce
 			}
 			return err
 		}

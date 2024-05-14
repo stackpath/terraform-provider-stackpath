@@ -67,44 +67,9 @@ type GetWorkloadInstanceOK struct {
 	Payload *workload_models.V1GetWorkloadInstanceResponse
 }
 
-// IsSuccess returns true when this get workload instance o k response has a 2xx status code
-func (o *GetWorkloadInstanceOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this get workload instance o k response has a 3xx status code
-func (o *GetWorkloadInstanceOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get workload instance o k response has a 4xx status code
-func (o *GetWorkloadInstanceOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get workload instance o k response has a 5xx status code
-func (o *GetWorkloadInstanceOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get workload instance o k response a status code equal to that given
-func (o *GetWorkloadInstanceOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the get workload instance o k response
-func (o *GetWorkloadInstanceOK) Code() int {
-	return 200
-}
-
 func (o *GetWorkloadInstanceOK) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceOK  %+v", 200, o.Payload)
 }
-
-func (o *GetWorkloadInstanceOK) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceOK  %+v", 200, o.Payload)
-}
-
 func (o *GetWorkloadInstanceOK) GetPayload() *workload_models.V1GetWorkloadInstanceResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type GetWorkloadInstanceUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get workload instance unauthorized response has a 2xx status code
-func (o *GetWorkloadInstanceUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get workload instance unauthorized response has a 3xx status code
-func (o *GetWorkloadInstanceUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get workload instance unauthorized response has a 4xx status code
-func (o *GetWorkloadInstanceUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this get workload instance unauthorized response has a 5xx status code
-func (o *GetWorkloadInstanceUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this get workload instance unauthorized response a status code equal to that given
-func (o *GetWorkloadInstanceUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the get workload instance unauthorized response
-func (o *GetWorkloadInstanceUnauthorized) Code() int {
-	return 401
-}
-
 func (o *GetWorkloadInstanceUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *GetWorkloadInstanceUnauthorized) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *GetWorkloadInstanceUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type GetWorkloadInstanceInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get workload instance internal server error response has a 2xx status code
-func (o *GetWorkloadInstanceInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this get workload instance internal server error response has a 3xx status code
-func (o *GetWorkloadInstanceInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this get workload instance internal server error response has a 4xx status code
-func (o *GetWorkloadInstanceInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this get workload instance internal server error response has a 5xx status code
-func (o *GetWorkloadInstanceInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this get workload instance internal server error response a status code equal to that given
-func (o *GetWorkloadInstanceInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the get workload instance internal server error response
-func (o *GetWorkloadInstanceInternalServerError) Code() int {
-	return 500
-}
-
 func (o *GetWorkloadInstanceInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *GetWorkloadInstanceInternalServerError) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] getWorkloadInstanceInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *GetWorkloadInstanceInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type GetWorkloadInstanceDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this get workload instance default response has a 2xx status code
-func (o *GetWorkloadInstanceDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this get workload instance default response has a 3xx status code
-func (o *GetWorkloadInstanceDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this get workload instance default response has a 4xx status code
-func (o *GetWorkloadInstanceDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this get workload instance default response has a 5xx status code
-func (o *GetWorkloadInstanceDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this get workload instance default response a status code equal to that given
-func (o *GetWorkloadInstanceDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the get workload instance default response
 func (o *GetWorkloadInstanceDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *GetWorkloadInstanceDefault) Code() int {
 func (o *GetWorkloadInstanceDefault) Error() string {
 	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] GetWorkloadInstance default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *GetWorkloadInstanceDefault) String() string {
-	return fmt.Sprintf("[GET /workload/v1/stacks/{stack_id}/workloads/{workload_id}/instances/{instance_name}][%d] GetWorkloadInstance default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *GetWorkloadInstanceDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

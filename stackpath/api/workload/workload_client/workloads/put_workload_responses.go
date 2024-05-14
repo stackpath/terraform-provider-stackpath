@@ -67,44 +67,9 @@ type PutWorkloadOK struct {
 	Payload *workload_models.V1PutWorkloadResponse
 }
 
-// IsSuccess returns true when this put workload o k response has a 2xx status code
-func (o *PutWorkloadOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this put workload o k response has a 3xx status code
-func (o *PutWorkloadOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this put workload o k response has a 4xx status code
-func (o *PutWorkloadOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this put workload o k response has a 5xx status code
-func (o *PutWorkloadOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this put workload o k response a status code equal to that given
-func (o *PutWorkloadOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the put workload o k response
-func (o *PutWorkloadOK) Code() int {
-	return 200
-}
-
 func (o *PutWorkloadOK) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadOK  %+v", 200, o.Payload)
 }
-
-func (o *PutWorkloadOK) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadOK  %+v", 200, o.Payload)
-}
-
 func (o *PutWorkloadOK) GetPayload() *workload_models.V1PutWorkloadResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type PutWorkloadUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this put workload unauthorized response has a 2xx status code
-func (o *PutWorkloadUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this put workload unauthorized response has a 3xx status code
-func (o *PutWorkloadUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this put workload unauthorized response has a 4xx status code
-func (o *PutWorkloadUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this put workload unauthorized response has a 5xx status code
-func (o *PutWorkloadUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this put workload unauthorized response a status code equal to that given
-func (o *PutWorkloadUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the put workload unauthorized response
-func (o *PutWorkloadUnauthorized) Code() int {
-	return 401
-}
-
 func (o *PutWorkloadUnauthorized) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *PutWorkloadUnauthorized) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *PutWorkloadUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type PutWorkloadInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this put workload internal server error response has a 2xx status code
-func (o *PutWorkloadInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this put workload internal server error response has a 3xx status code
-func (o *PutWorkloadInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this put workload internal server error response has a 4xx status code
-func (o *PutWorkloadInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this put workload internal server error response has a 5xx status code
-func (o *PutWorkloadInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this put workload internal server error response a status code equal to that given
-func (o *PutWorkloadInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the put workload internal server error response
-func (o *PutWorkloadInternalServerError) Code() int {
-	return 500
-}
-
 func (o *PutWorkloadInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *PutWorkloadInternalServerError) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] putWorkloadInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *PutWorkloadInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type PutWorkloadDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this put workload default response has a 2xx status code
-func (o *PutWorkloadDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this put workload default response has a 3xx status code
-func (o *PutWorkloadDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this put workload default response has a 4xx status code
-func (o *PutWorkloadDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this put workload default response has a 5xx status code
-func (o *PutWorkloadDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this put workload default response a status code equal to that given
-func (o *PutWorkloadDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the put workload default response
 func (o *PutWorkloadDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *PutWorkloadDefault) Code() int {
 func (o *PutWorkloadDefault) Error() string {
 	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] PutWorkload default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *PutWorkloadDefault) String() string {
-	return fmt.Sprintf("[PUT /workload/v1/stacks/{stack_id}/workloads/{workload_id}][%d] PutWorkload default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *PutWorkloadDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

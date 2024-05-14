@@ -67,44 +67,9 @@ type UpdateImageOK struct {
 	Payload *workload_models.V1UpdateImageResponse
 }
 
-// IsSuccess returns true when this update image o k response has a 2xx status code
-func (o *UpdateImageOK) IsSuccess() bool {
-	return true
-}
-
-// IsRedirect returns true when this update image o k response has a 3xx status code
-func (o *UpdateImageOK) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image o k response has a 4xx status code
-func (o *UpdateImageOK) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this update image o k response has a 5xx status code
-func (o *UpdateImageOK) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this update image o k response a status code equal to that given
-func (o *UpdateImageOK) IsCode(code int) bool {
-	return code == 200
-}
-
-// Code gets the status code for the update image o k response
-func (o *UpdateImageOK) Code() int {
-	return 200
-}
-
 func (o *UpdateImageOK) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageOK  %+v", 200, o.Payload)
 }
-
-func (o *UpdateImageOK) String() string {
-	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageOK  %+v", 200, o.Payload)
-}
-
 func (o *UpdateImageOK) GetPayload() *workload_models.V1UpdateImageResponse {
 	return o.Payload
 }
@@ -135,44 +100,9 @@ type UpdateImageUnauthorized struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image unauthorized response has a 2xx status code
-func (o *UpdateImageUnauthorized) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this update image unauthorized response has a 3xx status code
-func (o *UpdateImageUnauthorized) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image unauthorized response has a 4xx status code
-func (o *UpdateImageUnauthorized) IsClientError() bool {
-	return true
-}
-
-// IsServerError returns true when this update image unauthorized response has a 5xx status code
-func (o *UpdateImageUnauthorized) IsServerError() bool {
-	return false
-}
-
-// IsCode returns true when this update image unauthorized response a status code equal to that given
-func (o *UpdateImageUnauthorized) IsCode(code int) bool {
-	return code == 401
-}
-
-// Code gets the status code for the update image unauthorized response
-func (o *UpdateImageUnauthorized) Code() int {
-	return 401
-}
-
 func (o *UpdateImageUnauthorized) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageUnauthorized  %+v", 401, o.Payload)
 }
-
-func (o *UpdateImageUnauthorized) String() string {
-	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageUnauthorized  %+v", 401, o.Payload)
-}
-
 func (o *UpdateImageUnauthorized) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -203,44 +133,9 @@ type UpdateImageInternalServerError struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image internal server error response has a 2xx status code
-func (o *UpdateImageInternalServerError) IsSuccess() bool {
-	return false
-}
-
-// IsRedirect returns true when this update image internal server error response has a 3xx status code
-func (o *UpdateImageInternalServerError) IsRedirect() bool {
-	return false
-}
-
-// IsClientError returns true when this update image internal server error response has a 4xx status code
-func (o *UpdateImageInternalServerError) IsClientError() bool {
-	return false
-}
-
-// IsServerError returns true when this update image internal server error response has a 5xx status code
-func (o *UpdateImageInternalServerError) IsServerError() bool {
-	return true
-}
-
-// IsCode returns true when this update image internal server error response a status code equal to that given
-func (o *UpdateImageInternalServerError) IsCode(code int) bool {
-	return code == 500
-}
-
-// Code gets the status code for the update image internal server error response
-func (o *UpdateImageInternalServerError) Code() int {
-	return 500
-}
-
 func (o *UpdateImageInternalServerError) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *UpdateImageInternalServerError) String() string {
-	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] updateImageInternalServerError  %+v", 500, o.Payload)
-}
-
 func (o *UpdateImageInternalServerError) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }
@@ -275,31 +170,6 @@ type UpdateImageDefault struct {
 	Payload *workload_models.StackpathapiStatus
 }
 
-// IsSuccess returns true when this update image default response has a 2xx status code
-func (o *UpdateImageDefault) IsSuccess() bool {
-	return o._statusCode/100 == 2
-}
-
-// IsRedirect returns true when this update image default response has a 3xx status code
-func (o *UpdateImageDefault) IsRedirect() bool {
-	return o._statusCode/100 == 3
-}
-
-// IsClientError returns true when this update image default response has a 4xx status code
-func (o *UpdateImageDefault) IsClientError() bool {
-	return o._statusCode/100 == 4
-}
-
-// IsServerError returns true when this update image default response has a 5xx status code
-func (o *UpdateImageDefault) IsServerError() bool {
-	return o._statusCode/100 == 5
-}
-
-// IsCode returns true when this update image default response a status code equal to that given
-func (o *UpdateImageDefault) IsCode(code int) bool {
-	return o._statusCode == code
-}
-
 // Code gets the status code for the update image default response
 func (o *UpdateImageDefault) Code() int {
 	return o._statusCode
@@ -308,11 +178,6 @@ func (o *UpdateImageDefault) Code() int {
 func (o *UpdateImageDefault) Error() string {
 	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] UpdateImage default  %+v", o._statusCode, o.Payload)
 }
-
-func (o *UpdateImageDefault) String() string {
-	return fmt.Sprintf("[PATCH /workload/v1/stacks/{stack_id}/images/{image_family}/{image_tag}][%d] UpdateImage default  %+v", o._statusCode, o.Payload)
-}
-
 func (o *UpdateImageDefault) GetPayload() *workload_models.StackpathapiStatus {
 	return o.Payload
 }

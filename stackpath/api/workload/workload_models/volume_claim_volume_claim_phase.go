@@ -25,12 +25,8 @@ import (
 type VolumeClaimVolumeClaimPhase string
 
 func NewVolumeClaimVolumeClaimPhase(value VolumeClaimVolumeClaimPhase) *VolumeClaimVolumeClaimPhase {
-	return &value
-}
-
-// Pointer returns a pointer to a freshly-allocated VolumeClaimVolumeClaimPhase.
-func (m VolumeClaimVolumeClaimPhase) Pointer() *VolumeClaimVolumeClaimPhase {
-	return &m
+	v := value
+	return &v
 }
 
 const (

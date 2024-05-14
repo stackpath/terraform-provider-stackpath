@@ -59,7 +59,7 @@ func NewDeleteBucketNoContent() *DeleteBucketNoContent {
 }
 
 /*
-	DeleteBucketNoContent describes a response with status code 204, with default header values.
+DeleteBucketNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -81,7 +81,7 @@ func NewDeleteBucketUnauthorized() *DeleteBucketUnauthorized {
 }
 
 /*
-	DeleteBucketUnauthorized describes a response with status code 401, with default header values.
+DeleteBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -114,7 +114,7 @@ func NewDeleteBucketInternalServerError() *DeleteBucketInternalServerError {
 }
 
 /*
-	DeleteBucketInternalServerError describes a response with status code 500, with default header values.
+DeleteBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -149,7 +149,7 @@ func NewDeleteBucketDefault(code int) *DeleteBucketDefault {
 }
 
 /*
-	DeleteBucketDefault describes a response with status code -1, with default header values.
+DeleteBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

@@ -59,7 +59,7 @@ func NewGetBucketOK() *GetBucketOK {
 }
 
 /*
-	GetBucketOK describes a response with status code 200, with default header values.
+GetBucketOK describes a response with status code 200, with default header values.
 
 GetBucketOK get bucket o k
 */
@@ -92,7 +92,7 @@ func NewGetBucketUnauthorized() *GetBucketUnauthorized {
 }
 
 /*
-	GetBucketUnauthorized describes a response with status code 401, with default header values.
+GetBucketUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -125,7 +125,7 @@ func NewGetBucketInternalServerError() *GetBucketInternalServerError {
 }
 
 /*
-	GetBucketInternalServerError describes a response with status code 500, with default header values.
+GetBucketInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -160,7 +160,7 @@ func NewGetBucketDefault(code int) *GetBucketDefault {
 }
 
 /*
-	GetBucketDefault describes a response with status code -1, with default header values.
+GetBucketDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
