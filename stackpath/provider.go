@@ -49,6 +49,7 @@ func Provider() *schema.Provider {
 			"stackpath_compute_vpc_route":          resourceComputeVPCRoute(),
 			"stackpath_compute_network_policy":     resourceComputeNetworkPolicy(),
 			"stackpath_object_storage_bucket":      resourceObjectStorageBucket(),
+			"stackpath_compute_network_allocation": resourceComputeNetworkAllocation(),
 		},
 	}
 

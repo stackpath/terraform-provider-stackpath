@@ -13,15 +13,15 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkUpdateNetworkRequest network update network request
+// NetworkUpdateNetworkRequest A request to update a network
 //
 // swagger:model networkUpdateNetworkRequest
 type NetworkUpdateNetworkRequest struct {
 
 	// metadata
-	Metadata *NetworkMetadata `json:"metadata,omitempty"`
+	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
 
-	// The network's new name
+	// name
 	Name string `json:"name,omitempty"`
 }
 

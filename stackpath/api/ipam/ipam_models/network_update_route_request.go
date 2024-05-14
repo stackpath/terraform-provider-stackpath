@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkUpdateRouteRequest network update route request
+// NetworkUpdateRouteRequest A request to update a route on a network
 //
 // swagger:model networkUpdateRouteRequest
 type NetworkUpdateRouteRequest struct {

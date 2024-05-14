@@ -1,6 +1,9 @@
 package stackpath
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_models"
@@ -25,6 +28,14 @@ func convertComputeMatchExpression(data []interface{}) []*workload_models.V1Matc
 
 func convertToStringMap(data map[string]interface{}) workload_models.V1StringMapEntry {
 	stringMap := make(workload_models.V1StringMapEntry, len(data))
+	for k, v := range data {
+		stringMap[k] = v.(string)
+	}
+	return stringMap
+}
+
+func convertToMetaV1StringMap(data map[string]interface{}) ipam_models.Metav1StringMapEntry {
+	stringMap := make(ipam_models.Metav1StringMapEntry, len(data))
 	for k, v := range data {
 		stringMap[k] = v.(string)
 	}
@@ -112,6 +123,27 @@ func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceD
 	return flattened
 }
 
+// flattenComputeMetaV1MatchExpressionsOrdered flattens the provided allocation match expressions
+// with respect to the order of any existing match expressions defined in the provided
+// ResourceData. The prefix should be the flattened key of the list of match expressions
+// in the ResourceData.
+func flattenComputeMetaV1MatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*ipam_models.Metav1MatchExpression) []interface{} {
+	ordered := make(map[string]int, len(selectors))
+	for i, selector := range selectors {
+		ordered[selector.Key] = i
+	}
+	flattened := make([]interface{}, len(selectors))
+	for _, selector := range selectors {
+		data := map[string]interface{}{
+			"key":      selector.Key,
+			"operator": selector.Operator,
+			"values":   flattenStringArray(selector.Values),
+		}
+		flattened[ordered[selector.Key]] = data
+	}
+	return flattened
+}
+
 // flattenComputeMatchExpressions flattens the provided workload match expressions
 // as given with no respect to ordering. If the order of the resulting match expressions
 // is important, eg when using for diff logic, then flattenComputeMatchExpressionsOrdered
@@ -144,10 +176,38 @@ func flattenStringMap(stringMap workload_models.V1StringMapEntry) map[string]int
 	return m
 }
 
+func flattenMetaV1StringMap(stringMap ipam_models.Metav1StringMapEntry) map[string]interface{} {
+	m := make(map[string]interface{}, len(stringMap))
+	for k, v := range stringMap {
+		m[k] = v
+	}
+	return m
+}
+
 func flattenStringArray(arr []string) []interface{} {
 	a := make([]interface{}, len(arr))
 	for i, s := range arr {
 		a[i] = s
 	}
 	return a
+}
+
+// unmarshalProtobufAny unmarshal *ipam_models.ProtobufAny payload into string map
+func unmarshalProtobufAny(p *ipam_models.ProtobufAny) (map[string]interface{}, error) {
+	if p == nil {
+		return nil, nil
+	}
+
+	bytes, err := p.Value.MarshalJSON()
+	if err != nil {
+		return nil, fmt.Errorf("failed marshalling ProtobufAny value: %v", NewStackPathError(err))
+	}
+
+	var mappedData map[string]interface{}
+	err = json.Unmarshal(bytes, &mappedData)
+	if err != nil {
+		return nil, fmt.Errorf("failed unmarshalling protobuf any bytes: %v", NewStackPathError(err))
+	}
+
+	return mappedData, nil
 }

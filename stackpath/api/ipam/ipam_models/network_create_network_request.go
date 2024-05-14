@@ -14,27 +14,29 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkCreateNetworkRequest network create network request
+// NetworkCreateNetworkRequest A request to create a network
 //
 // swagger:model networkCreateNetworkRequest
 type NetworkCreateNetworkRequest struct {
 
-	// IPFamilies of IPs which will be assigned to network interface
-	IPFamilies []*V1IPFamily `json:"ipFamilies"`
+	// A list of IP families to use for interface ip assignments
+	//
+	// This is an optional property and supports ['IPv4'] or ['IPv4', 'IPv6'] list
+	IPFamilies []*StackpathservicenetworkIPFamily `json:"ipFamilies"`
 
 	// ipv6 subnet
 	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
-	Metadata *NetworkMetadata `json:"metadata,omitempty"`
+	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
 
-	// The network's human-readable name
+	// name
 	Name string `json:"name,omitempty"`
 
-	// The network's primary subnet, in CIDR notation format
+	// root subnet
 	RootSubnet string `json:"rootSubnet,omitempty"`
 
-	// The network's machine-readable name
+	// slug
 	Slug string `json:"slug,omitempty"`
 }
 

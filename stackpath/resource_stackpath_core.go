@@ -173,3 +173,34 @@ func resourceComputeLocation() *schema.Resource {
 		},
 	}
 }
+
+func resourceComputeCondition() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"status": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"observed_version": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"last_transition_time": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"reason": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"message": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+		},
+	}
+}

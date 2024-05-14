@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkCreateRouteRequest network create route request
+// NetworkCreateRouteRequest A request to create a route on a network
 //
 // swagger:model networkCreateRouteRequest
 type NetworkCreateRouteRequest struct {

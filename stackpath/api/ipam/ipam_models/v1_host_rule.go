@@ -20,13 +20,13 @@ import (
 type V1HostRule struct {
 
 	// List of instance selectors
-	InstanceSelectors []*NetworkMatchExpression `json:"instanceSelectors"`
+	InstanceSelectors []*SchemanetworkMatchExpression `json:"instanceSelectors"`
 
 	// List of ip blocks
 	IPBlock []*V1IPBlock `json:"ipBlock"`
 
 	// List of network selectors
-	NetworkSelectors []*NetworkMatchExpression `json:"networkSelectors"`
+	NetworkSelectors []*SchemanetworkMatchExpression `json:"networkSelectors"`
 }
 
 // Validate validates this v1 host rule

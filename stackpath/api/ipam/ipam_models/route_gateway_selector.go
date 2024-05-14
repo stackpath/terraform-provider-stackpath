@@ -20,7 +20,7 @@ import (
 type RouteGatewaySelector struct {
 
 	// List of match expressions that must all match a single interface
-	InterfaceSelectors []*NetworkMatchExpression `json:"interfaceSelectors"`
+	InterfaceSelectors []*SchemanetworkMatchExpression `json:"interfaceSelectors"`
 }
 
 // Validate validates this route gateway selector

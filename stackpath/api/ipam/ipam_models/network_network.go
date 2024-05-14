@@ -13,12 +13,12 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkNetwork A network defined within a Virtual Private Cloud
+// NetworkNetwork network network
 //
 // swagger:model networkNetwork
 type NetworkNetwork struct {
 
-	// A network's unique identifier
+	// id
 	ID string `json:"id,omitempty"`
 
 	// ip families
@@ -28,23 +28,21 @@ type NetworkNetwork struct {
 	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
-	Metadata *NetworkMetadata `json:"metadata,omitempty"`
+	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
 
-	// A network's human-readable name
+	// name
 	Name string `json:"name,omitempty"`
 
-	// A subnet identifier and network mask in CIDR notation format
-	//
-	// A network's root subnet is its primary subnet.
+	// root subnet
 	RootSubnet string `json:"rootSubnet,omitempty"`
 
-	// A network's machine-readable name
+	// slug
 	Slug string `json:"slug,omitempty"`
 
 	// The ID of the stack that a network belongs to
 	StackID string `json:"stackId,omitempty"`
 
-	// A network's VLAN identifier
+	// virtual network identifier
 	VirtualNetworkIdentifier int32 `json:"virtualNetworkIdentifier,omitempty"`
 }
 
