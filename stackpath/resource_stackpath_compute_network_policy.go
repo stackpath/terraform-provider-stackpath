@@ -417,11 +417,11 @@ func resourceComputeNetworkPolicyRead(ctx context.Context, data *schema.Resource
 		return diag.FromErr(fmt.Errorf("error setting annotations: %v", err))
 	}
 
-	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered("instance_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.InstanceSelectors))); err != nil {
+	if err := data.Set("instance_selector", flattenComputeMatchExpressionsOrdered(convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.InstanceSelectors))); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting instance_selector: %v", err))
 	}
 
-	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered("network_selector", data, convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.NetworkSelectors))); err != nil {
+	if err := data.Set("network_selector", flattenComputeMatchExpressionsOrdered(convertIPAMToWorkloadMatchExpression(resp.Payload.NetworkPolicy.Spec.NetworkSelectors))); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting network_selector: %v", err))
 	}
 

@@ -133,10 +133,14 @@ func resourceComputeNetworkAllocationCreate(ctx context.Context, data *schema.Re
 	} else if operation.Error != nil {
 		// (TODO)- print *ipam_models.GooglerpcStatus in format aligning with NewStackPathError
 		return diag.FromErr(fmt.Errorf("network allocation operation failed: %v", operation.Error))
-	} else if allocation, err := unmarshalProtobufAny(operation.Response); err != nil {
-		return diag.FromErr(err)
-	} else if allocation != nil {
-		data.SetId(allocation["id"].(string))
+	} else {
+		// (TODO)- Currently there is is issue in GetOperation client api generated through
+		// swagger which leads to ProtobufAny typed fields like .Response or .Metadata in
+		// ipam_models.V1Operation to be always nil even if rest API response has that data.
+		// Hence currently there is no way to get allocation ID during create context.
+		// until we get that working, going to use stackID/allocationSlug named string
+		// as ID as it is expected that allocation slug to be unique in a stack.
+		data.SetId(formatAllocationID(config.StackID, data.Get("slug").(string)))
 	}
 
 	return resourceComputeNetworkAllocationRead(ctx, data, meta)
@@ -145,11 +149,16 @@ func resourceComputeNetworkAllocationCreate(ctx context.Context, data *schema.Re
 func resourceComputeNetworkAllocationRead(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
 
-	resp, err := config.edgeComputeNetworking.Allocations.GetAllocation(&allocations.GetAllocationParams{
-		StackID:        config.StackID,
-		AllocationSlug: data.Get("slug").(string),
-		Context:        ctx,
-	}, nil)
+	params := allocations.GetAllocationParams{
+		Context: ctx,
+	}
+	var err error
+	id := data.Id()
+	if params.StackID, params.AllocationSlug, err = parseAllocationID(id); err != nil {
+		return diag.FromErr(fmt.Errorf("failed to parse allocation ID (%s): %w", id, NewStackPathError(err)))
+	}
+
+	resp, err := config.edgeComputeNetworking.Allocations.GetAllocation(&params, nil)
 	if c, ok := err.(interface{ Code() int }); ok && c.Code() == http.StatusNotFound {
 		// Clear out the ID in terraform if the
 		// resource no longer exists in the API
@@ -187,19 +196,19 @@ func resourceComputeNetworkAllocationRead(ctx context.Context, data *schema.Reso
 		return diag.FromErr(fmt.Errorf("error setting allocation class: %v", err))
 	}
 
-	if err := data.Set("prefix_length", resp.Payload.Allocation.Spec.PrefixLength); err != nil {
+	if err := data.Set("prefix_length", int(resp.Payload.Allocation.Spec.PrefixLength)); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting prefix length: %v", err))
 	}
 
-	if err := data.Set("ip_family", resp.Payload.Allocation.Spec.IPFamily); err != nil {
+	if err := data.Set("ip_family", string(*resp.Payload.Allocation.Spec.IPFamily)); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting ip family: %v", err))
 	}
 
-	if err := data.Set("version", flattenComputeNetworkAllocationReclaimPolicy(resp.Payload.Allocation.Spec.ReclaimPolicy)); err != nil {
+	if err := data.Set("reclaim_policy", flattenComputeNetworkAllocationReclaimPolicy(resp.Payload.Allocation.Spec.ReclaimPolicy)); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting reclaim policy: %v", err))
 	}
 
-	if err := data.Set("selectors", flattenComputeMetaV1MatchExpressionsOrdered("selectors", data, (resp.Payload.Allocation.Spec.Selectors))); err != nil {
+	if err := data.Set("selectors", flattenComputeMetaV1MatchExpressionsOrdered(resp.Payload.Allocation.Spec.Selectors)); err != nil {
 		return diag.FromErr(fmt.Errorf("error setting selectors: %v", err))
 	}
 
@@ -214,8 +223,7 @@ func resourceComputeNetworkAllocationRead(ctx context.Context, data *schema.Reso
 
 func resourceComputeNetworkAllocationUpdate(ctx context.Context, data *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	config := meta.(*Config)
-	allocation := convertComputeNetworkAllocation(data)
-	allocation.ID = data.Id()
+	allocation := convertComputeNetworkAllocationUpdate(data)
 
 	resp, err := config.edgeComputeNetworking.Allocations.UpdateAllocation(&allocations.UpdateAllocationParams{
 		Context:        ctx,

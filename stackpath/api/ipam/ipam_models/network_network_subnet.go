@@ -22,7 +22,7 @@ type NetworkNetworkSubnet struct {
 	ID string `json:"id,omitempty"`
 
 	// metadata
-	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
+	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
 	// A network subnet's name as it appears in the StackPath portal
 	Name string `json:"name,omitempty"`

@@ -22,12 +22,12 @@ type NetworkMetadata struct {
 	// annotations
 	Annotations NetworkStringMapEntry `json:"annotations,omitempty"`
 
-	// The date that a metadata entry was created
+	// The date that an entity was created
 	// Read Only: true
 	// Format: date-time
 	CreatedAt *strfmt.DateTime `json:"createdAt,omitempty"`
 
-	// The date that an entity was requested for deletion
+	// The date that and entity was requested for deletion
 	// Read Only: true
 	// Format: date-time
 	DeleteRequestedAt *strfmt.DateTime `json:"deleteRequestedAt,omitempty"`
@@ -35,7 +35,7 @@ type NetworkMetadata struct {
 	// labels
 	Labels NetworkStringMapEntry `json:"labels,omitempty"`
 
-	// The date that a metadata entry was last updated
+	// The date that an entity was last updated
 	// Read Only: true
 	// Format: date-time
 	UpdatedAt *strfmt.DateTime `json:"updatedAt,omitempty"`

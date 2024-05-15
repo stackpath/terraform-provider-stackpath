@@ -30,10 +30,10 @@ type V1NetworkPolicySpec struct {
 	Ingress []*V1Ingress `json:"ingress"`
 
 	// A selector to match workload instances
-	InstanceSelectors []*SchemanetworkMatchExpression `json:"instanceSelectors"`
+	InstanceSelectors []*NetworkMatchExpression `json:"instanceSelectors"`
 
 	// A selector to match networks
-	NetworkSelectors []*SchemanetworkMatchExpression `json:"networkSelectors"`
+	NetworkSelectors []*NetworkMatchExpression `json:"networkSelectors"`
 
 	// A list of policy types
 	//

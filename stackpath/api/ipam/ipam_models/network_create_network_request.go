@@ -22,13 +22,13 @@ type NetworkCreateNetworkRequest struct {
 	// A list of IP families to use for interface ip assignments
 	//
 	// This is an optional property and supports ['IPv4'] or ['IPv4', 'IPv6'] list
-	IPFamilies []*StackpathservicenetworkIPFamily `json:"ipFamilies"`
+	IPFamilies []*V1IPFamily `json:"ipFamilies"`
 
 	// ipv6 subnet
 	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
-	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
+	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`

@@ -23,12 +23,14 @@ type Metav1Metadata struct {
 	Annotations Metav1StringMapEntry `json:"annotations,omitempty"`
 
 	// The UTC date that an entity was created.
+	// Read Only: true
 	// Format: date-time
-	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+	CreatedAt *strfmt.DateTime `json:"createdAt,omitempty"`
 
 	// The UTC date that an entity was requested for deletion.
+	// Read Only: true
 	// Format: date-time
-	DeleteRequestedAt strfmt.DateTime `json:"deleteRequestedAt,omitempty"`
+	DeleteRequestedAt *strfmt.DateTime `json:"deleteRequestedAt,omitempty"`
 
 	// labels
 	Labels Metav1StringMapEntry `json:"labels,omitempty"`
@@ -39,8 +41,9 @@ type Metav1Metadata struct {
 	ResourceName string `json:"resourceName,omitempty"`
 
 	// The UTC date that an entity was last updated.
+	// Read Only: true
 	// Format: date-time
-	UpdatedAt strfmt.DateTime `json:"updatedAt,omitempty"`
+	UpdatedAt *strfmt.DateTime `json:"updatedAt,omitempty"`
 
 	// An entity's version.
 	//
@@ -156,7 +159,19 @@ func (m *Metav1Metadata) ContextValidate(ctx context.Context, formats strfmt.Reg
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateCreatedAt(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDeleteRequestedAt(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateLabels(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateUpdatedAt(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -178,12 +193,39 @@ func (m *Metav1Metadata) contextValidateAnnotations(ctx context.Context, formats
 	return nil
 }
 
+func (m *Metav1Metadata) contextValidateCreatedAt(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "createdAt", "body", m.CreatedAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Metav1Metadata) contextValidateDeleteRequestedAt(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deleteRequestedAt", "body", m.DeleteRequestedAt); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *Metav1Metadata) contextValidateLabels(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := m.Labels.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("labels")
 		}
+		return err
+	}
+
+	return nil
+}
+
+func (m *Metav1Metadata) contextValidateUpdatedAt(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "updatedAt", "body", m.UpdatedAt); err != nil {
 		return err
 	}
 

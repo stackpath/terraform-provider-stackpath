@@ -22,7 +22,7 @@ type V1AllocationClaimSpec struct {
 	Allocation *AllocationClaimSpecAllocationClaimSpecAllocation `json:"allocation,omitempty"`
 
 	// ip family
-	IPFamily *StackpathschemanetworkIPFamily `json:"ipFamily,omitempty"`
+	IPFamily *V1IPFamily `json:"ipFamily,omitempty"`
 
 	// prefix length
 	PrefixLength int32 `json:"prefixLength,omitempty"`

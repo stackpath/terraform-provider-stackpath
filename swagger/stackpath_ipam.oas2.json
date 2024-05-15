@@ -1861,7 +1861,7 @@
         "interfaceSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/schemanetworkMatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "title": "List of match expressions that must all match a single interface"
         }
@@ -1957,16 +1957,22 @@
         "createdAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "description": "The UTC date that an entity was created."
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "description": "The UTC date that an entity was last updated."
         },
         "deleteRequestedAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "description": "The UTC date that an entity was requested for deletion."
         },
         "version": {
@@ -2000,7 +2006,7 @@
           "type": "string"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         },
         "ipv6Subnet": {
           "type": "string"
@@ -2008,7 +2014,7 @@
         "ipFamilies": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/stackpathservicenetworkIPFamily"
+            "$ref": "#/definitions/v1IPFamily"
           },
           "description": "This is an optional property and supports ['IPv4'] or ['IPv4', 'IPv6'] list",
           "title": "A list of IP families to use for interface ip assignments"
@@ -2146,7 +2152,7 @@
           "type": "string"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         },
         "rootSubnet": {
           "type": "string"
@@ -2198,7 +2204,7 @@
           "description": "The network prefix in CIDR notation that the network subnet will use.\n\nThis must be a full valid network CIDR without host bits. Ex: 10.16.0.0/16"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         }
       }
     },
@@ -2226,7 +2232,7 @@
           "title": "The ID of the network that a route belongs to"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         },
         "statuses": {
           "type": "array",
@@ -2284,7 +2290,7 @@
           "type": "string"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         }
       },
       "title": "A request to update a network"
@@ -2398,7 +2404,7 @@
         }
       }
     },
-    "schemanetworkMatchExpression": {
+    "networkMatchExpression": {
       "type": "object",
       "properties": {
         "key": {
@@ -2420,28 +2426,34 @@
       },
       "title": "An expression to match selectors against a set of values"
     },
-    "schemanetworkMetadata": {
+    "networkMetadata": {
       "type": "object",
       "properties": {
         "annotations": {
-          "$ref": "#/definitions/schemanetworkStringMapEntry"
+          "$ref": "#/definitions/networkStringMapEntry"
         },
         "labels": {
-          "$ref": "#/definitions/schemanetworkStringMapEntry"
+          "$ref": "#/definitions/networkStringMapEntry"
         },
         "createdAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "title": "The date that an entity was created"
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "title": "The date that an entity was last updated"
         },
         "deleteRequestedAt": {
           "type": "string",
           "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
           "title": "The date that and entity was requested for deletion"
         },
         "version": {
@@ -2452,7 +2464,7 @@
       },
       "title": "Metadata associated with an entity"
     },
-    "schemanetworkStringMapEntry": {
+    "networkStringMapEntry": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
@@ -2671,18 +2683,7 @@
         }
       }
     },
-    "stackpathschemanetworkIPFamily": {
-      "type": "string",
-      "enum": [
-        "UNSPECIFIED",
-        "IPv4",
-        "IPv6"
-      ],
-      "default": "UNSPECIFIED",
-      "description": "- UNSPECIFIED: Unknown IP family\n - IPv4: IPv4 IP family\n - IPv6: IPv6 IP family",
-      "title": "supported IP families"
-    },
-    "stackpathservicenetworkIPFamily": {
+    "v1IPFamily": {
       "type": "string",
       "enum": [
         "UNSPECIFIED",
@@ -2762,7 +2763,7 @@
           "$ref": "#/definitions/v1ReclaimPolicy"
         },
         "ipFamily": {
-          "$ref": "#/definitions/stackpathschemanetworkIPFamily"
+          "$ref": "#/definitions/v1IPFamily"
         },
         "prefixLength": {
           "type": "integer",
@@ -2806,7 +2807,7 @@
           "type": "string"
         },
         "ipFamily": {
-          "$ref": "#/definitions/stackpathschemanetworkIPFamily"
+          "$ref": "#/definitions/v1IPFamily"
         },
         "prefixLength": {
           "type": "integer",
@@ -3027,14 +3028,14 @@
         "instanceSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/schemanetworkMatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "title": "List of instance selectors"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/schemanetworkMatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "title": "List of network selectors"
         }
@@ -3103,7 +3104,7 @@
           "title": "Detailed summary of what the policy does"
         },
         "metadata": {
-          "$ref": "#/definitions/schemanetworkMetadata"
+          "$ref": "#/definitions/networkMetadata"
         },
         "spec": {
           "$ref": "#/definitions/v1NetworkPolicySpec"
@@ -3118,14 +3119,14 @@
         "instanceSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/schemanetworkMatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "title": "A selector to match workload instances"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/schemanetworkMatchExpression"
+            "$ref": "#/definitions/networkMatchExpression"
           },
           "title": "A selector to match networks"
         },

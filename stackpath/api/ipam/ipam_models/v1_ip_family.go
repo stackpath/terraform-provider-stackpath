@@ -14,7 +14,11 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// V1IPFamily v1 IP family
+// V1IPFamily supported IP families
+//
+// - UNSPECIFIED: Unknown IP family
+//   - IPv4: IPv4 IP family
+//   - IPv6: IPv6 IP family
 //
 // swagger:model v1IPFamily
 type V1IPFamily string

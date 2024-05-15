@@ -19,7 +19,7 @@ import (
 type NetworkUpdateNetworkRequest struct {
 
 	// metadata
-	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
+	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`

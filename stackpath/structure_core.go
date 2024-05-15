@@ -1,9 +1,6 @@
 package stackpath
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/workload/workload_models"
@@ -18,6 +15,23 @@ func convertComputeMatchExpression(data []interface{}) []*workload_models.V1Matc
 			vals[j] = v.(string)
 		}
 		selectors[i] = &workload_models.V1MatchExpression{
+			Key:      selector["key"].(string),
+			Operator: selector["operator"].(string),
+			Values:   vals,
+		}
+	}
+	return selectors
+}
+
+func convertComputeMetaV1MatchExpression(data []interface{}) []*ipam_models.Metav1MatchExpression {
+	selectors := make([]*ipam_models.Metav1MatchExpression, len(data))
+	for i, s := range data {
+		selector := s.(map[string]interface{})
+		vals := make([]string, len(selector["values"].([]interface{})))
+		for j, v := range selector["values"].([]interface{}) {
+			vals[j] = v.(string)
+		}
+		selectors[i] = &ipam_models.Metav1MatchExpression{
 			Key:      selector["key"].(string),
 			Operator: selector["operator"].(string),
 			Values:   vals,
@@ -106,7 +120,7 @@ func convertIPAMToWorkloadStringMapEntry(mapEntries ipam_models.NetworkStringMap
 // with respect to the order of any existing match expressions defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
-func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*workload_models.V1MatchExpression) []interface{} {
+func flattenComputeMatchExpressionsOrdered(selectors []*workload_models.V1MatchExpression) []interface{} {
 	ordered := make(map[string]int, len(selectors))
 	for i, selector := range selectors {
 		ordered[selector.Key] = i
@@ -127,7 +141,7 @@ func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceD
 // with respect to the order of any existing match expressions defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
-func flattenComputeMetaV1MatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*ipam_models.Metav1MatchExpression) []interface{} {
+func flattenComputeMetaV1MatchExpressionsOrdered(selectors []*ipam_models.Metav1MatchExpression) []interface{} {
 	ordered := make(map[string]int, len(selectors))
 	for i, selector := range selectors {
 		ordered[selector.Key] = i
@@ -190,24 +204,4 @@ func flattenStringArray(arr []string) []interface{} {
 		a[i] = s
 	}
 	return a
-}
-
-// unmarshalProtobufAny unmarshal *ipam_models.ProtobufAny payload into string map
-func unmarshalProtobufAny(p *ipam_models.ProtobufAny) (map[string]interface{}, error) {
-	if p == nil {
-		return nil, nil
-	}
-
-	bytes, err := p.Value.MarshalJSON()
-	if err != nil {
-		return nil, fmt.Errorf("failed marshalling ProtobufAny value: %v", NewStackPathError(err))
-	}
-
-	var mappedData map[string]interface{}
-	err = json.Unmarshal(bytes, &mappedData)
-	if err != nil {
-		return nil, fmt.Errorf("failed unmarshalling protobuf any bytes: %v", NewStackPathError(err))
-	}
-
-	return mappedData, nil
 }

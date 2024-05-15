@@ -28,7 +28,7 @@ type NetworkNetwork struct {
 	IPV6Subnet string `json:"ipv6Subnet,omitempty"`
 
 	// metadata
-	Metadata *SchemanetworkMetadata `json:"metadata,omitempty"`
+	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
