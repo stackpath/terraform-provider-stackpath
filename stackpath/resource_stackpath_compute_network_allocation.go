@@ -68,19 +68,8 @@ func resourceComputeNetworkAllocation() *schema.Resource {
 			"reclaim_policy": {
 				Type:     schema.TypeList,
 				MaxItems: 1,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"action": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"idle_retention_period": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-					},
-				},
+				Required: true,
+				Elem:     resourceComputeNetworkAllocationReclaimPolicy(),
 			},
 			"selectors": {
 				Type:     schema.TypeList,
@@ -214,7 +203,7 @@ func resourceComputeNetworkAllocationRead(ctx context.Context, data *schema.Reso
 
 	if resp.Payload.Allocation.Status != nil {
 		if err := data.Set("status", flattenComputeNetworkAllocationStatus(resp.Payload.Allocation.Status)); err != nil {
-			return diag.FromErr(fmt.Errorf("error setting allocation status: %v", err))
+			return diag.FromErr(fmt.Errorf("error setting status: %v", err))
 		}
 	}
 

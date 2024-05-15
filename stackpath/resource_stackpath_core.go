@@ -204,3 +204,33 @@ func resourceComputeCondition() *schema.Resource {
 		},
 	}
 }
+
+func resourceComputeNetworkAllocationReclaimPolicy() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"action": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"idle_retention_period": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+		},
+	}
+}
+
+func resourceComputeNetworkAllocationResourceBinding() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+		},
+	}
+}

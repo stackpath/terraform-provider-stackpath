@@ -34,3 +34,31 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation" 
     values = ["EC4LAB01"]
   }
 }
+
+
+# This examples provides all the options available when creating a network
+# allocation claim for StackPath edge compute workloads.
+#
+resource "stackpath_compute_network_allocation_claim" "my-compute-network-allocation-claim" {
+  # A human friendly name
+  name = "My compute network allocation claim"
+  # A DNS compatible label value that is unique to your stack. This value must
+  # be RFC 1123 compliant (only contain "a-z", "0-9", "-", ".").
+  slug = "my-compute-network-allocation-claim"
+
+  # allocation IP family, either IPv4 or IPv6
+  ip_family = "IPv4"
+
+  # allocation prefix length
+  prefix_length = 32
+
+  # allocation reclaim policy, only RETAIN action is supported from API
+  reclaim_policy {
+    action = "RETAIN"
+  }
+
+  allocation {
+    # name of the allocation to claim IP from
+    name = "oc-testing-stack-3b4060/my-compute-network-allocation"
+  }
+}
