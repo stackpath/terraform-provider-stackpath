@@ -75,6 +75,11 @@ func waitForIPAMOperationToBeDone(ctx context.Context, name string, meta interfa
 		return nil, fmt.Errorf("unable to extract operation name")
 	}
 
+	// (TODO)- WaitOperation is not working currently due to missing kong paths
+	// configuration for /ipam/v1/stacks/{stack_id}/operations/{operation_name}/wait api
+	// endpoint. replace below ticker based implementation to wait for operation
+	// completion with WaitOperation api call once it starts working.
+
 	timeout := time.After(OperationWaitTimeout)
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
