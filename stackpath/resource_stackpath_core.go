@@ -45,27 +45,14 @@ func resourceComputeWorkloadContainer() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"env": {
+			"args": {
 				Type:     schema.TypeList,
 				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"key": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"value": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"secret_value": {
-							Type:      schema.TypeString,
-							Optional:  true,
-							Sensitive: true,
-						},
-					},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
+			"env":              resourceComputeWorkloadEnvVars(),
 			"port":             resourceComputeWorkloadPortSchema(),
 			"readiness_probe":  resourceComputeWorkloadProbeSchema(),
 			"liveness_probe":   resourceComputeWorkloadProbeSchema(),
