@@ -262,6 +262,6 @@ func resourceComputeNetworkAllocationDelete(ctx context.Context, data *schema.Re
 
 func resourceComputeNetworkAllocationImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	// We expect that to import a resource, the user will pass in the
-	// full UUID of the network policy they're attempting to import.
+	// stackID/allocationSlug formatted name of allocation they're attempting to import.
 	return []*schema.ResourceData{d}, nil
 }

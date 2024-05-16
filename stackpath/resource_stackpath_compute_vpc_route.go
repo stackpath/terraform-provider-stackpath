@@ -227,6 +227,6 @@ func resourceComputeVPCRouteDelete(ctx context.Context, data *schema.ResourceDat
 
 func resourceComputeVPCRouteImportState(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	// We expect that to import a resource, the user will pass in the
-	// stackID/allocationSlug formatted name of allocation they're attempting to import.
+	// full UUID of the network they're attempting to import.
 	return []*schema.ResourceData{d}, nil
 }
