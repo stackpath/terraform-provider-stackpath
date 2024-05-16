@@ -26,13 +26,31 @@ func convertComputeNetworkAllocationClaim(data *schema.ResourceData) *ipam_model
 	}
 }
 
-// convert from the terraform data structure to the allocation data structure we need for update API
+// convert from the terraform data structure to the allocation claim data structure we need for update API
 func convertComputeNetworkAllocationClaimUpdate(data *schema.ResourceData) *ipam_models.V1AllocationClaim {
 	// prepare data structure with only fields which are allowed to update, passing in
 	// any additional fields which are not allowed to update causes update api to throw
 	// validation error. hence to allow succesful updates for data changes we are preparing
 	// request body only with fields which are allowed to pass in.
-	return &ipam_models.V1AllocationClaim{}
+	// We allow updates to:
+	//  - metadata.annotations
+	//  - metadata.labels
+	//  - name
+	//  - spec.reclaimPolicy.action
+	//  - spec.reclaimPolicy.idleRetentionPeriod
+	//  - spec.resourceBinding
+
+	return &ipam_models.V1AllocationClaim{
+		Name: data.Get("name").(string),
+		Metadata: &ipam_models.Metav1Metadata{
+			Annotations: convertToMetaV1StringMap(data.Get("annotations").(map[string]interface{})),
+			Labels:      convertToMetaV1StringMap(data.Get("labels").(map[string]interface{})),
+		},
+		Spec: &ipam_models.V1AllocationClaimSpec{
+			ReclaimPolicy:   convertComputeNetworkAllocationReclaimPolicy(data.Get("reclaim_policy")),
+			ResourceBinding: convertComputeNetworkAllocationResourceBinding(data.Get("resource_binding")),
+		},
+	}
 }
 
 func convertComputeNetworkAllocationResourceBinding(p interface{}) *ipam_models.V1TypedResourceReference {

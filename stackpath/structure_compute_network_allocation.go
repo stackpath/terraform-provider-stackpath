@@ -32,6 +32,13 @@ func convertComputeNetworkAllocationUpdate(data *schema.ResourceData) *ipam_mode
 	// any additional fields which are not allowed to update causes update api to throw
 	// validation error. hence to allow succesful updates for data changes we are preparing
 	// request body only with fields which are allowed to pass in.
+	// We allow updates to:
+	//  - metadata.annotations
+	//  - metadata.labels
+	//  - name
+	//  - spec.reclaimPolicy.action
+	//  - spec.reclaimPolicy.idleRetentionPeriod
+
 	return &ipam_models.V1Allocation{
 		Name: data.Get("name").(string),
 		Metadata: &ipam_models.Metav1Metadata{
