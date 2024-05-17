@@ -80,13 +80,15 @@ func resourceComputeNetworkAllocationClaim() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"name": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:          schema.TypeString,
+							Optional:      true,
+							ConflictsWith: []string{"allocation.0.selector", "allocation.0.template"},
 						},
 						"selector": {
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:          schema.TypeList,
+							MaxItems:      1,
+							Optional:      true,
+							ConflictsWith: []string{"allocation.0.name", "allocation.0.template"},
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"allocation_class": {
@@ -102,9 +104,10 @@ func resourceComputeNetworkAllocationClaim() *schema.Resource {
 							},
 						},
 						"template": {
-							Type:     schema.TypeList,
-							MaxItems: 1,
-							Optional: true,
+							Type:          schema.TypeList,
+							MaxItems:      1,
+							Optional:      true,
+							ConflictsWith: []string{"allocation.0.selector", "allocation.0.name"},
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"allocation_class": {

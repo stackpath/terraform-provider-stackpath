@@ -5,14 +5,10 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_client/operations"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_models"
 )
-
-// operation wait timeout in seconds
-var OperationWaitTimeout = 30 * time.Second
 
 func formatAllocationID(stackID, slug string) string {
 	return stackID + "/" + slug
@@ -75,34 +71,19 @@ func waitForIPAMOperationToBeDone(ctx context.Context, name string, meta interfa
 		return nil, fmt.Errorf("unable to extract operation name")
 	}
 
-	// (TODO)- WaitOperation is not working currently due to missing kong paths
-	// configuration for /ipam/v1/stacks/{stack_id}/operations/{operation_name}/wait api
-	// endpoint. replace below ticker based implementation to wait for operation
-	// completion with WaitOperation api call once it starts working.
+	resp, err := config.edgeComputeNetworking.Operations.WaitOperation(&operations.WaitOperationParams{
+		StackID:       config.StackID,
+		OperationName: name,
+		Context:       ctx,
+	}, nil)
 
-	timeout := time.After(OperationWaitTimeout)
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			resp, err := config.edgeComputeNetworking.Operations.GetOperation(&operations.GetOperationParams{
-				StackID:       config.StackID,
-				OperationName: name,
-				Context:       ctx,
-			}, nil)
-
-			if err != nil {
-				return nil, fmt.Errorf("failed to get operation: %v", NewStackPathError(err))
-			}
-
-			if resp.Payload.Done {
-				return resp.Payload, nil
-			}
-		case <-timeout:
-			return nil, fmt.Errorf("timed out waiting for operation to be done")
-		}
+	if err != nil {
+		return nil, fmt.Errorf("failed to wait for operation %s: %v", name, NewStackPathError(err))
+	} else if !resp.Payload.Done {
+		return resp.Payload, fmt.Errorf("timed out waiting for operation %s to be done", name)
 	}
+
+	return resp.Payload, nil
 }
 
 func extractOperationName(name string) string {
