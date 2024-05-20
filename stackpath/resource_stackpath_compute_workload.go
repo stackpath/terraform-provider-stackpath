@@ -405,6 +405,56 @@ func resourceComputeWorkloadResourcesSchema() *schema.Schema {
 	}
 }
 
+func resourceComputeWorkloadEnvVars() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"value": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"secret_value": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"value_from": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"instance_field_ref": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"field_path": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+										"optional": {
+											Type:     schema.TypeBool,
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func resourceComputeWorkloadPortSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,

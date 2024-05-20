@@ -52,12 +52,10 @@ func NewGetNetworkPoliciesParamsWithHTTPClient(client *http.Client) *GetNetworkP
 	}
 }
 
-/*
-GetNetworkPoliciesParams contains all the parameters to send to the API endpoint
+/* GetNetworkPoliciesParams contains all the parameters to send to the API endpoint
+   for the get network policies operation.
 
-	for the get network policies operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetNetworkPoliciesParams struct {
 

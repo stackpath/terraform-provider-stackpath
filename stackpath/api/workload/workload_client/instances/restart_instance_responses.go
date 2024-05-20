@@ -58,8 +58,7 @@ func NewRestartInstanceNoContent() *RestartInstanceNoContent {
 	return &RestartInstanceNoContent{}
 }
 
-/*
-RestartInstanceNoContent describes a response with status code 204, with default header values.
+/* RestartInstanceNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewRestartInstanceUnauthorized() *RestartInstanceUnauthorized {
 	return &RestartInstanceUnauthorized{}
 }
 
-/*
-RestartInstanceUnauthorized describes a response with status code 401, with default header values.
+/* RestartInstanceUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewRestartInstanceInternalServerError() *RestartInstanceInternalServerError
 	return &RestartInstanceInternalServerError{}
 }
 
-/*
-RestartInstanceInternalServerError describes a response with status code 500, with default header values.
+/* RestartInstanceInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewRestartInstanceDefault(code int) *RestartInstanceDefault {
 	}
 }
 
-/*
-RestartInstanceDefault describes a response with status code -1, with default header values.
+/* RestartInstanceDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

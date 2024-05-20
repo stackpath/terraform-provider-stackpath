@@ -53,12 +53,10 @@ func NewDeleteBucketParamsWithHTTPClient(client *http.Client) *DeleteBucketParam
 	}
 }
 
-/*
-DeleteBucketParams contains all the parameters to send to the API endpoint
+/* DeleteBucketParams contains all the parameters to send to the API endpoint
+   for the delete bucket operation.
 
-	for the delete bucket operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type DeleteBucketParams struct {
 

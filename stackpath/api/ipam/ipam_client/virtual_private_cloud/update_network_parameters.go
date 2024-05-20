@@ -54,12 +54,10 @@ func NewUpdateNetworkParamsWithHTTPClient(client *http.Client) *UpdateNetworkPar
 	}
 }
 
-/*
-UpdateNetworkParams contains all the parameters to send to the API endpoint
+/* UpdateNetworkParams contains all the parameters to send to the API endpoint
+   for the update network operation.
 
-	for the update network operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type UpdateNetworkParams struct {
 

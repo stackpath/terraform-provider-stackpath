@@ -17,10 +17,10 @@ import (
 // V1ContainerStatusContainerPhase Which phase of runtime a container is currently in
 //
 // - CONTAINER_PHASE_UNSPECIFIED: The container has not reported a state back or StackPath is unable to determine the container's state
-//   - STARTING: The container is starting up
-//   - RUNNING: The container is running
-//   - FAILED: The container has terminated due to a failure
-//   - STOPPED: The container was terminated by the user
+//  - STARTING: The container is starting up
+//  - RUNNING: The container is running
+//  - FAILED: The container has terminated due to a failure
+//  - STOPPED: The container was terminated by the user
 //
 // swagger:model v1ContainerStatusContainerPhase
 type V1ContainerStatusContainerPhase string

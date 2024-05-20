@@ -17,9 +17,9 @@ import (
 // VolumeClaimVolumeClaimPhase Which phase a volume claim is currently in
 //
 // - VOLUME_CLAIM_PHASE_UNSPECIFIED: StackPath is unable to determine the volume claim's state
-//   - PENDING: The volume claim is pending
-//   - UNBOUND: The volume claim is unbound
-//   - BOUND: The volume claim is bound to an instance
+//  - PENDING: The volume claim is pending
+//  - UNBOUND: The volume claim is unbound
+//  - BOUND: The volume claim is bound to an instance
 //
 // swagger:model VolumeClaimVolumeClaimPhase
 type VolumeClaimVolumeClaimPhase string

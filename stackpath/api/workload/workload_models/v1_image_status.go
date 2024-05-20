@@ -17,10 +17,10 @@ import (
 // V1ImageStatus Which capture status an image is currently in
 //
 // - IMAGE_STATUS_UNKNOWN: The image status is unknown
-//   - PENDING: The image is pending creation
-//   - PROCESSING: The image is processing
-//   - READY: The image is ready
-//   - FAILED: The image failed to be created
+//  - PENDING: The image is pending creation
+//  - PROCESSING: The image is processing
+//  - READY: The image is ready
+//  - FAILED: The image failed to be created
 //
 // swagger:model v1ImageStatus
 type V1ImageStatus string

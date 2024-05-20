@@ -44,7 +44,7 @@ type ClientService interface {
 }
 
 /*
-CreateWorkload creates a workload
+  CreateWorkload creates a workload
 */
 func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateWorkloadOK, error) {
 	// TODO: Validate the params before sending
@@ -82,7 +82,7 @@ func (a *Client) CreateWorkload(params *CreateWorkloadParams, authInfo runtime.C
 }
 
 /*
-DeleteWorkload deletes a workload
+  DeleteWorkload deletes a workload
 */
 func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteWorkloadNoContent, error) {
 	// TODO: Validate the params before sending
@@ -120,7 +120,7 @@ func (a *Client) DeleteWorkload(params *DeleteWorkloadParams, authInfo runtime.C
 }
 
 /*
-GetWorkload gets a workload
+  GetWorkload gets a workload
 */
 func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadOK, error) {
 	// TODO: Validate the params before sending
@@ -158,7 +158,7 @@ func (a *Client) GetWorkload(params *GetWorkloadParams, authInfo runtime.ClientA
 }
 
 /*
-GetWorkloads gets all workloads
+  GetWorkloads gets all workloads
 */
 func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadsOK, error) {
 	// TODO: Validate the params before sending
@@ -196,7 +196,7 @@ func (a *Client) GetWorkloads(params *GetWorkloadsParams, authInfo runtime.Clien
 }
 
 /*
-PutWorkload replaces a workload
+  PutWorkload replaces a workload
 */
 func (a *Client) PutWorkload(params *PutWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PutWorkloadOK, error) {
 	// TODO: Validate the params before sending
@@ -234,7 +234,7 @@ func (a *Client) PutWorkload(params *PutWorkloadParams, authInfo runtime.ClientA
 }
 
 /*
-UpdateWorkload updates a workload
+  UpdateWorkload updates a workload
 */
 func (a *Client) UpdateWorkload(params *UpdateWorkloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateWorkloadOK, error) {
 	// TODO: Validate the params before sending

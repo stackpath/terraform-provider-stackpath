@@ -215,6 +215,7 @@ func convertComputeWorkloadContainer(prefix string, data *schema.ResourceData) w
 		Resources:       convertComputeWorkloadResourceRequirements(prefix+".resources", data),
 		VolumeMounts:    convertComputeWorkloadVolumeMounts(prefix+".volume_mount", data),
 		SecurityContext: convertComputeWorkloadSecurityContext(prefix+".security_context", data),
+		Args:            convertToStringArray(data.Get(prefix + ".args").([]interface{})),
 	}
 }
 
@@ -324,10 +325,23 @@ func convertComputeWorkloadEnvironmentVariables(prefix string, data *schema.Reso
 		envVarData := s.(map[string]interface{})
 		log.Printf("[DEBUG] setting environment variable '%s'", envVarData["key"])
 		envVarNames[envVarData["key"]] = true
-		envVars[envVarData["key"].(string)] = workload_models.V1EnvironmentVariable{
+		environmentVariables := workload_models.V1EnvironmentVariable{
 			Value:       envVarData["value"].(string),
 			SecretValue: envVarData["secret_value"].(string),
 		}
+		if len(envVarData["value_from"].([]interface{})) > 0 {
+			valueFromData := envVarData["value_from"].([]interface{})[0].(map[string]interface{})
+			if len(valueFromData["instance_field_ref"].([]interface{})) > 0 {
+				interfaceFieldRefData := valueFromData["instance_field_ref"].([]interface{})[0].(map[string]interface{})
+				environmentVariables.ValueFrom = &workload_models.V1EnvironmentVariableSource{
+					InstanceFieldRef: &workload_models.V1InstanceFieldRef{
+						Optional:  interfaceFieldRefData["optional"].(bool),
+						FieldPath: interfaceFieldRefData["field_path"].(string),
+					},
+				}
+			}
+		}
+		envVars[envVarData["key"].(string)] = environmentVariables
 	}
 	// in a PUT world, we don't need to track old vs new
 	return envVars
@@ -849,6 +863,7 @@ func flattenComputeWorkloadContainerOrdered(prefix, name string, data *schema.Re
 		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
 		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
 		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
+		"args":             flattenStringArray(container.Args),
 	}
 }
 
@@ -867,6 +882,7 @@ func flattenComputeWorkloadContainer(name string, container workload_models.V1Co
 		"resources":        flattenComputeWorkloadResourceRequirements(container.Resources),
 		"volume_mount":     flattenComputeWorkloadVolumeMounts(container.VolumeMounts),
 		"security_context": flattenComputeWorkloadSecurityContext(container.SecurityContext),
+		"args":             flattenStringArray(container.Args),
 	}
 }
 
@@ -946,8 +962,10 @@ func flattenComputeWorkloadEnvVarsOrdered(prefix string, data *schema.ResourceDa
 	e := make([]interface{}, data.Get(prefix+".#").(int))
 	for key, v := range envVars {
 		val := map[string]interface{}{
-			"key":   key,
-			"value": v.Value,
+			"key":          key,
+			"value":        v.Value,
+			"secret_value": v.SecretValue,
+			"value_from":   flattenComputeWorkloadEnvVarValueFrom(v.ValueFrom),
 		}
 
 		if index, exists := ordered[key]; exists {
@@ -963,11 +981,36 @@ func flattenComputeWorkloadEnvVars(envVars workload_models.V1EnvironmentVariable
 	e := make([]interface{}, 0, len(envVars))
 	for k, v := range envVars {
 		e = append(e, map[string]interface{}{
-			"key":   k,
-			"value": v.Value,
+			"key":          k,
+			"value":        v.Value,
+			"secret_value": v.SecretValue,
+			"value_from":   flattenComputeWorkloadEnvVarValueFrom(v.ValueFrom),
 		})
 	}
 	return e
+}
+
+func flattenComputeWorkloadEnvVarValueFrom(valueFrom *workload_models.V1EnvironmentVariableSource) []interface{} {
+	if valueFrom == nil {
+		return nil
+	}
+
+	return []interface{}{map[string]interface{}{
+		"instance_field_ref": flattenComputeWorkloadEnvVarValueFromInstanceFieldRef(valueFrom.InstanceFieldRef),
+	}}
+}
+
+func flattenComputeWorkloadEnvVarValueFromInstanceFieldRef(instanceFieldRef *workload_models.V1InstanceFieldRef) []interface{} {
+	if instanceFieldRef == nil {
+		return nil
+	}
+
+	fieldRef := map[string]interface{}{
+		"optional":   instanceFieldRef.Optional,
+		"field_path": instanceFieldRef.FieldPath,
+	}
+
+	return []interface{}{fieldRef}
 }
 
 // Convert the model to "array" of maps, order of capabilities not maintained.

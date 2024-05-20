@@ -52,12 +52,10 @@ func NewGetRoutesParamsWithHTTPClient(client *http.Client) *GetRoutesParams {
 	}
 }
 
-/*
-GetRoutesParams contains all the parameters to send to the API endpoint
+/* GetRoutesParams contains all the parameters to send to the API endpoint
+   for the get routes operation.
 
-	for the get routes operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetRoutesParams struct {
 

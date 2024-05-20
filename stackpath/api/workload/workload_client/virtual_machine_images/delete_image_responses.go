@@ -58,8 +58,7 @@ func NewDeleteImageNoContent() *DeleteImageNoContent {
 	return &DeleteImageNoContent{}
 }
 
-/*
-DeleteImageNoContent describes a response with status code 204, with default header values.
+/* DeleteImageNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewDeleteImageUnauthorized() *DeleteImageUnauthorized {
 	return &DeleteImageUnauthorized{}
 }
 
-/*
-DeleteImageUnauthorized describes a response with status code 401, with default header values.
+/* DeleteImageUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewDeleteImageInternalServerError() *DeleteImageInternalServerError {
 	return &DeleteImageInternalServerError{}
 }
 
-/*
-DeleteImageInternalServerError describes a response with status code 500, with default header values.
+/* DeleteImageInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewDeleteImageDefault(code int) *DeleteImageDefault {
 	}
 }
 
-/*
-DeleteImageDefault describes a response with status code -1, with default header values.
+/* DeleteImageDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

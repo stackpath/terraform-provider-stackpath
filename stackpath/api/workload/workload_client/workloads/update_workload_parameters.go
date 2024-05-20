@@ -54,12 +54,10 @@ func NewUpdateWorkloadParamsWithHTTPClient(client *http.Client) *UpdateWorkloadP
 	}
 }
 
-/*
-UpdateWorkloadParams contains all the parameters to send to the API endpoint
+/* UpdateWorkloadParams contains all the parameters to send to the API endpoint
+   for the update workload operation.
 
-	for the update workload operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type UpdateWorkloadParams struct {
 

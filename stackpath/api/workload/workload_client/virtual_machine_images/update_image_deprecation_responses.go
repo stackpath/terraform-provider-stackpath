@@ -58,8 +58,7 @@ func NewUpdateImageDeprecationOK() *UpdateImageDeprecationOK {
 	return &UpdateImageDeprecationOK{}
 }
 
-/*
-UpdateImageDeprecationOK describes a response with status code 200, with default header values.
+/* UpdateImageDeprecationOK describes a response with status code 200, with default header values.
 
 UpdateImageDeprecationOK update image deprecation o k
 */
@@ -91,8 +90,7 @@ func NewUpdateImageDeprecationUnauthorized() *UpdateImageDeprecationUnauthorized
 	return &UpdateImageDeprecationUnauthorized{}
 }
 
-/*
-UpdateImageDeprecationUnauthorized describes a response with status code 401, with default header values.
+/* UpdateImageDeprecationUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewUpdateImageDeprecationInternalServerError() *UpdateImageDeprecationInter
 	return &UpdateImageDeprecationInternalServerError{}
 }
 
-/*
-UpdateImageDeprecationInternalServerError describes a response with status code 500, with default header values.
+/* UpdateImageDeprecationInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewUpdateImageDeprecationDefault(code int) *UpdateImageDeprecationDefault {
 	}
 }
 
-/*
-UpdateImageDeprecationDefault describes a response with status code -1, with default header values.
+/* UpdateImageDeprecationDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

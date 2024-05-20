@@ -58,8 +58,7 @@ func NewDeleteNetworkPolicyNoContent() *DeleteNetworkPolicyNoContent {
 	return &DeleteNetworkPolicyNoContent{}
 }
 
-/*
-DeleteNetworkPolicyNoContent describes a response with status code 204, with default header values.
+/* DeleteNetworkPolicyNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewDeleteNetworkPolicyUnauthorized() *DeleteNetworkPolicyUnauthorized {
 	return &DeleteNetworkPolicyUnauthorized{}
 }
 
-/*
-DeleteNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
+/* DeleteNetworkPolicyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewDeleteNetworkPolicyInternalServerError() *DeleteNetworkPolicyInternalSer
 	return &DeleteNetworkPolicyInternalServerError{}
 }
 
-/*
-DeleteNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
+/* DeleteNetworkPolicyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewDeleteNetworkPolicyDefault(code int) *DeleteNetworkPolicyDefault {
 	}
 }
 
-/*
-DeleteNetworkPolicyDefault describes a response with status code -1, with default header values.
+/* DeleteNetworkPolicyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

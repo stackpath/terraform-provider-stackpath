@@ -58,8 +58,7 @@ func NewPutWorkloadOK() *PutWorkloadOK {
 	return &PutWorkloadOK{}
 }
 
-/*
-PutWorkloadOK describes a response with status code 200, with default header values.
+/* PutWorkloadOK describes a response with status code 200, with default header values.
 
 PutWorkloadOK put workload o k
 */
@@ -91,8 +90,7 @@ func NewPutWorkloadUnauthorized() *PutWorkloadUnauthorized {
 	return &PutWorkloadUnauthorized{}
 }
 
-/*
-PutWorkloadUnauthorized describes a response with status code 401, with default header values.
+/* PutWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewPutWorkloadInternalServerError() *PutWorkloadInternalServerError {
 	return &PutWorkloadInternalServerError{}
 }
 
-/*
-PutWorkloadInternalServerError describes a response with status code 500, with default header values.
+/* PutWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewPutWorkloadDefault(code int) *PutWorkloadDefault {
 	}
 }
 
-/*
-PutWorkloadDefault describes a response with status code -1, with default header values.
+/* PutWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

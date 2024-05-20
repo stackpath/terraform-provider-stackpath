@@ -58,8 +58,7 @@ func NewCreateNetworkSubnetOK() *CreateNetworkSubnetOK {
 	return &CreateNetworkSubnetOK{}
 }
 
-/*
-CreateNetworkSubnetOK describes a response with status code 200, with default header values.
+/* CreateNetworkSubnetOK describes a response with status code 200, with default header values.
 
 CreateNetworkSubnetOK create network subnet o k
 */
@@ -91,8 +90,7 @@ func NewCreateNetworkSubnetUnauthorized() *CreateNetworkSubnetUnauthorized {
 	return &CreateNetworkSubnetUnauthorized{}
 }
 
-/*
-CreateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
+/* CreateNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewCreateNetworkSubnetInternalServerError() *CreateNetworkSubnetInternalSer
 	return &CreateNetworkSubnetInternalServerError{}
 }
 
-/*
-CreateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
+/* CreateNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewCreateNetworkSubnetDefault(code int) *CreateNetworkSubnetDefault {
 	}
 }
 
-/*
-CreateNetworkSubnetDefault describes a response with status code -1, with default header values.
+/* CreateNetworkSubnetDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

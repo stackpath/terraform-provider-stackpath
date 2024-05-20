@@ -34,7 +34,7 @@ type ClientService interface {
 }
 
 /*
-GetWorkloadInstanceInitialPassword gets an instance s initial password
+  GetWorkloadInstanceInitialPassword gets an instance s initial password
 */
 func (a *Client) GetWorkloadInstanceInitialPassword(params *GetWorkloadInstanceInitialPasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceInitialPasswordOK, error) {
 	// TODO: Validate the params before sending

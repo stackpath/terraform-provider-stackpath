@@ -58,8 +58,7 @@ func NewDeleteWorkloadNoContent() *DeleteWorkloadNoContent {
 	return &DeleteWorkloadNoContent{}
 }
 
-/*
-DeleteWorkloadNoContent describes a response with status code 204, with default header values.
+/* DeleteWorkloadNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewDeleteWorkloadUnauthorized() *DeleteWorkloadUnauthorized {
 	return &DeleteWorkloadUnauthorized{}
 }
 
-/*
-DeleteWorkloadUnauthorized describes a response with status code 401, with default header values.
+/* DeleteWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewDeleteWorkloadInternalServerError() *DeleteWorkloadInternalServerError {
 	return &DeleteWorkloadInternalServerError{}
 }
 
-/*
-DeleteWorkloadInternalServerError describes a response with status code 500, with default header values.
+/* DeleteWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewDeleteWorkloadDefault(code int) *DeleteWorkloadDefault {
 	}
 }
 
-/*
-DeleteWorkloadDefault describes a response with status code -1, with default header values.
+/* DeleteWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

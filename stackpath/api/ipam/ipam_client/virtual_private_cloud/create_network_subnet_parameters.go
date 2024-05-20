@@ -54,12 +54,10 @@ func NewCreateNetworkSubnetParamsWithHTTPClient(client *http.Client) *CreateNetw
 	}
 }
 
-/*
-CreateNetworkSubnetParams contains all the parameters to send to the API endpoint
+/* CreateNetworkSubnetParams contains all the parameters to send to the API endpoint
+   for the create network subnet operation.
 
-	for the create network subnet operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type CreateNetworkSubnetParams struct {
 

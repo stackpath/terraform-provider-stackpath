@@ -58,8 +58,7 @@ func NewCreateWorkloadOK() *CreateWorkloadOK {
 	return &CreateWorkloadOK{}
 }
 
-/*
-CreateWorkloadOK describes a response with status code 200, with default header values.
+/* CreateWorkloadOK describes a response with status code 200, with default header values.
 
 CreateWorkloadOK create workload o k
 */
@@ -91,8 +90,7 @@ func NewCreateWorkloadUnauthorized() *CreateWorkloadUnauthorized {
 	return &CreateWorkloadUnauthorized{}
 }
 
-/*
-CreateWorkloadUnauthorized describes a response with status code 401, with default header values.
+/* CreateWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewCreateWorkloadInternalServerError() *CreateWorkloadInternalServerError {
 	return &CreateWorkloadInternalServerError{}
 }
 
-/*
-CreateWorkloadInternalServerError describes a response with status code 500, with default header values.
+/* CreateWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewCreateWorkloadDefault(code int) *CreateWorkloadDefault {
 	}
 }
 
-/*
-CreateWorkloadDefault describes a response with status code -1, with default header values.
+/* CreateWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

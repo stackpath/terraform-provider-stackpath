@@ -38,7 +38,7 @@ type ClientService interface {
 }
 
 /*
-GetWorkloadInstance gets a workload instance
+  GetWorkloadInstance gets a workload instance
 */
 func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstanceOK, error) {
 	// TODO: Validate the params before sending
@@ -76,7 +76,7 @@ func (a *Client) GetWorkloadInstance(params *GetWorkloadInstanceParams, authInfo
 }
 
 /*
-GetWorkloadInstances gets all workload instances
+  GetWorkloadInstances gets all workload instances
 */
 func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWorkloadInstancesOK, error) {
 	// TODO: Validate the params before sending
@@ -114,9 +114,9 @@ func (a *Client) GetWorkloadInstances(params *GetWorkloadInstancesParams, authIn
 }
 
 /*
-RestartInstance restarts a workload instance
+  RestartInstance restarts a workload instance
 
-The action is performed asynchronously and a successful response does not mean the instance has restarted yet.
+  The action is performed asynchronously and a successful response does not mean the instance has restarted yet.
 */
 func (a *Client) RestartInstance(params *RestartInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartInstanceNoContent, error) {
 	// TODO: Validate the params before sending

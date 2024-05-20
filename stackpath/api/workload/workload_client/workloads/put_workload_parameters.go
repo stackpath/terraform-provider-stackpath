@@ -54,12 +54,10 @@ func NewPutWorkloadParamsWithHTTPClient(client *http.Client) *PutWorkloadParams 
 	}
 }
 
-/*
-PutWorkloadParams contains all the parameters to send to the API endpoint
+/* PutWorkloadParams contains all the parameters to send to the API endpoint
+   for the put workload operation.
 
-	for the put workload operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type PutWorkloadParams struct {
 

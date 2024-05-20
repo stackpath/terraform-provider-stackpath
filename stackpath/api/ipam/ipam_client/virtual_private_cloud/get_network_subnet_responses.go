@@ -58,8 +58,7 @@ func NewGetNetworkSubnetOK() *GetNetworkSubnetOK {
 	return &GetNetworkSubnetOK{}
 }
 
-/*
-GetNetworkSubnetOK describes a response with status code 200, with default header values.
+/* GetNetworkSubnetOK describes a response with status code 200, with default header values.
 
 GetNetworkSubnetOK get network subnet o k
 */
@@ -91,8 +90,7 @@ func NewGetNetworkSubnetUnauthorized() *GetNetworkSubnetUnauthorized {
 	return &GetNetworkSubnetUnauthorized{}
 }
 
-/*
-GetNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
+/* GetNetworkSubnetUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetNetworkSubnetInternalServerError() *GetNetworkSubnetInternalServerErr
 	return &GetNetworkSubnetInternalServerError{}
 }
 
-/*
-GetNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
+/* GetNetworkSubnetInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetNetworkSubnetDefault(code int) *GetNetworkSubnetDefault {
 	}
 }
 
-/*
-GetNetworkSubnetDefault describes a response with status code -1, with default header values.
+/* GetNetworkSubnetDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

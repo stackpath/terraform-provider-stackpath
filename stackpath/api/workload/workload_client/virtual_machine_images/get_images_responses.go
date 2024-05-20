@@ -58,8 +58,7 @@ func NewGetImagesOK() *GetImagesOK {
 	return &GetImagesOK{}
 }
 
-/*
-GetImagesOK describes a response with status code 200, with default header values.
+/* GetImagesOK describes a response with status code 200, with default header values.
 
 GetImagesOK get images o k
 */
@@ -91,8 +90,7 @@ func NewGetImagesUnauthorized() *GetImagesUnauthorized {
 	return &GetImagesUnauthorized{}
 }
 
-/*
-GetImagesUnauthorized describes a response with status code 401, with default header values.
+/* GetImagesUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetImagesInternalServerError() *GetImagesInternalServerError {
 	return &GetImagesInternalServerError{}
 }
 
-/*
-GetImagesInternalServerError describes a response with status code 500, with default header values.
+/* GetImagesInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetImagesDefault(code int) *GetImagesDefault {
 	}
 }
 
-/*
-GetImagesDefault describes a response with status code -1, with default header values.
+/* GetImagesDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

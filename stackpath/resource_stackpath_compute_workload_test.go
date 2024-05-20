@@ -132,7 +132,14 @@ func TestComputeWorkloadContainers(t *testing.T) {
 					testAccComputeWorkloadCheckContainerEnvVar(workload, "app", "MY_ENVIRONMENT_VARIABLE", "value"),
 					testAccComputeWorkloadCheckInitContainerImage(workload, "init-app", "docker/whalesay:latest"),
 					testAccComputeWorkloadCheckInitContainerEnvVar(workload, "init-app", "MY_INIT_ENVIRONMENT_VARIABLE", "value"),
-					testAccComputeWorkloadCheckInitContainerCommand(workload, "init-app", []string{"cowsay", "stackpath"}),
+					testAccComputeWorkloadCheckInitContainerEnvVarValueFrom(workload, "init-app", "MY_INIT_ENVVAR_VALUE_FROM", &workload_models.V1EnvironmentVariableSource{
+						InstanceFieldRef: &workload_models.V1InstanceFieldRef{
+							Optional:  true,
+							FieldPath: ".location.cityCode",
+						},
+					}),
+					testAccComputeWorkloadCheckInitContainerCommand(workload, "init-app", []string{"cowsay"}),
+					testAccComputeWorkloadCheckInitContainerArgs(workload, "init-app", []string{"stackpath", "anotherarg"}),
 					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", IPv4IPFamilies),
 				),
@@ -738,6 +745,28 @@ func testAccComputeWorkloadCheckInitContainerEnvVar(workload *workload_models.V1
 	}
 }
 
+func testAccComputeWorkloadCheckInitContainerEnvVarValueFrom(workload *workload_models.V1Workload, containerName, envVar string, valueFrom *workload_models.V1EnvironmentVariableSource) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		containerSpec, found := workload.Spec.InitContainers[containerName]
+		if !found {
+			return fmt.Errorf("init container not found: %s", containerName)
+		} else if envVarSpec, found := containerSpec.Env[envVar]; !found {
+			return fmt.Errorf("environment variable not found: %s", envVar)
+		} else if envVarSpec.ValueFrom == nil {
+			return fmt.Errorf("environment variable is nil: %s", envVar)
+		} else if envVarSpec.ValueFrom.InstanceFieldRef == nil {
+			return fmt.Errorf("environment variable value_from instance_field_ref is nil: %s", envVar)
+		} else if valueFrom != nil && envVarSpec.ValueFrom.InstanceFieldRef.Optional != valueFrom.InstanceFieldRef.Optional {
+			return fmt.Errorf(`environment variable value_from optional '%v' does not match expected value_from optional '%v'`,
+				envVarSpec.ValueFrom.InstanceFieldRef.Optional, valueFrom.InstanceFieldRef.Optional)
+		} else if valueFrom != nil && envVarSpec.ValueFrom.InstanceFieldRef.FieldPath != valueFrom.InstanceFieldRef.FieldPath {
+			return fmt.Errorf(`environment variable value_from field_path '%s' does not match expected value_from field_path '%s'`,
+				envVarSpec.ValueFrom.InstanceFieldRef.FieldPath, valueFrom.InstanceFieldRef.FieldPath)
+		}
+		return nil
+	}
+}
+
 func testAccComputeWorkloadCheckInitContainerCommand(workload *workload_models.V1Workload, containerName string, command []string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		containerSpec, found := workload.Spec.InitContainers[containerName]
@@ -750,6 +779,24 @@ func testAccComputeWorkloadCheckInitContainerCommand(workload *workload_models.V
 		for i := range containerSpec.Command {
 			if containerSpec.Command[i] != command[i] {
 				return fmt.Errorf("command '%s' does not match expected value '%s'", containerSpec.Command[i], command[i])
+			}
+		}
+		return nil
+	}
+}
+
+func testAccComputeWorkloadCheckInitContainerArgs(workload *workload_models.V1Workload, containerName string, args []string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		containerSpec, found := workload.Spec.InitContainers[containerName]
+		if !found {
+			return fmt.Errorf("init container not found: %s", containerName)
+		} else if len(containerSpec.Args) != len(args) {
+			return fmt.Errorf("number of args %d does not match expected value %d", len(containerSpec.Args), len(args))
+		}
+
+		for i := range containerSpec.Args {
+			if containerSpec.Args[i] != args[i] {
+				return fmt.Errorf("args '%s' does not match expected value '%s'", containerSpec.Args[i], args[i])
 			}
 		}
 		return nil
@@ -1241,11 +1288,23 @@ resource "stackpath_compute_workload" "foo" {
     }
     command = [
       "cowsay",
-      "stackpath",
     ]
+	args = [
+	  "stackpath",
+	  "anotherarg",
+	]
     env {
-      key   = "MY_INIT_ENVIRONMENT_VARIABLE"
-      value = "value"
+        key   = "MY_INIT_ENVIRONMENT_VARIABLE"
+        value = "value"
+    }
+    env {
+        key  = "MY_INIT_ENVVAR_VALUE_FROM"
+        value_from {
+          instance_field_ref {
+            field_path = ".location.cityCode"
+            optional = true
+          }
+        }
     }
   }
 

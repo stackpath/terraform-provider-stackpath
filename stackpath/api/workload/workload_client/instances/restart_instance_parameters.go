@@ -52,12 +52,10 @@ func NewRestartInstanceParamsWithHTTPClient(client *http.Client) *RestartInstanc
 	}
 }
 
-/*
-RestartInstanceParams contains all the parameters to send to the API endpoint
+/* RestartInstanceParams contains all the parameters to send to the API endpoint
+   for the restart instance operation.
 
-	for the restart instance operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type RestartInstanceParams struct {
 
