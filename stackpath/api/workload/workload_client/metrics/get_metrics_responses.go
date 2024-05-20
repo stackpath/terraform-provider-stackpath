@@ -58,8 +58,7 @@ func NewGetMetricsOK() *GetMetricsOK {
 	return &GetMetricsOK{}
 }
 
-/*
-GetMetricsOK describes a response with status code 200, with default header values.
+/* GetMetricsOK describes a response with status code 200, with default header values.
 
 GetMetricsOK get metrics o k
 */
@@ -91,8 +90,7 @@ func NewGetMetricsUnauthorized() *GetMetricsUnauthorized {
 	return &GetMetricsUnauthorized{}
 }
 
-/*
-GetMetricsUnauthorized describes a response with status code 401, with default header values.
+/* GetMetricsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetMetricsInternalServerError() *GetMetricsInternalServerError {
 	return &GetMetricsInternalServerError{}
 }
 
-/*
-GetMetricsInternalServerError describes a response with status code 500, with default header values.
+/* GetMetricsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetMetricsDefault(code int) *GetMetricsDefault {
 	}
 }
 
-/*
-GetMetricsDefault describes a response with status code -1, with default header values.
+/* GetMetricsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

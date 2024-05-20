@@ -54,12 +54,10 @@ func NewUpdateImageParamsWithHTTPClient(client *http.Client) *UpdateImageParams 
 	}
 }
 
-/*
-UpdateImageParams contains all the parameters to send to the API endpoint
+/* UpdateImageParams contains all the parameters to send to the API endpoint
+   for the update image operation.
 
-	for the update image operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type UpdateImageParams struct {
 

@@ -58,8 +58,7 @@ func NewUpdateWorkloadOK() *UpdateWorkloadOK {
 	return &UpdateWorkloadOK{}
 }
 
-/*
-UpdateWorkloadOK describes a response with status code 200, with default header values.
+/* UpdateWorkloadOK describes a response with status code 200, with default header values.
 
 UpdateWorkloadOK update workload o k
 */
@@ -91,8 +90,7 @@ func NewUpdateWorkloadUnauthorized() *UpdateWorkloadUnauthorized {
 	return &UpdateWorkloadUnauthorized{}
 }
 
-/*
-UpdateWorkloadUnauthorized describes a response with status code 401, with default header values.
+/* UpdateWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewUpdateWorkloadInternalServerError() *UpdateWorkloadInternalServerError {
 	return &UpdateWorkloadInternalServerError{}
 }
 
-/*
-UpdateWorkloadInternalServerError describes a response with status code 500, with default header values.
+/* UpdateWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewUpdateWorkloadDefault(code int) *UpdateWorkloadDefault {
 	}
 }
 
-/*
-UpdateWorkloadDefault describes a response with status code -1, with default header values.
+/* UpdateWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

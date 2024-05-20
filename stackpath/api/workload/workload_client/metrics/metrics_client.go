@@ -34,9 +34,9 @@ type ClientService interface {
 }
 
 /*
-GetMetrics gets metrics
+  GetMetrics gets metrics
 
-Retrieve usage metrics for all workloads in a stack, a specific workload, or a specific instance in a workload
+  Retrieve usage metrics for all workloads in a stack, a specific workload, or a specific instance in a workload
 */
 func (a *Client) GetMetrics(params *GetMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetMetricsOK, error) {
 	// TODO: Validate the params before sending

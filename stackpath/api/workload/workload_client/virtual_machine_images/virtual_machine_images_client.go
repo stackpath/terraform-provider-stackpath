@@ -48,7 +48,7 @@ type ClientService interface {
 }
 
 /*
-CreateImage creates an image
+  CreateImage creates an image
 */
 func (a *Client) CreateImage(params *CreateImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateImageOK, error) {
 	// TODO: Validate the params before sending
@@ -86,7 +86,7 @@ func (a *Client) CreateImage(params *CreateImageParams, authInfo runtime.ClientA
 }
 
 /*
-DeleteImage deletes an image
+  DeleteImage deletes an image
 */
 func (a *Client) DeleteImage(params *DeleteImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteImageNoContent, error) {
 	// TODO: Validate the params before sending
@@ -124,7 +124,7 @@ func (a *Client) DeleteImage(params *DeleteImageParams, authInfo runtime.ClientA
 }
 
 /*
-DeleteImagesForFamily deletes a family s images
+  DeleteImagesForFamily deletes a family s images
 */
 func (a *Client) DeleteImagesForFamily(params *DeleteImagesForFamilyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteImagesForFamilyNoContent, error) {
 	// TODO: Validate the params before sending
@@ -162,7 +162,7 @@ func (a *Client) DeleteImagesForFamily(params *DeleteImagesForFamilyParams, auth
 }
 
 /*
-GetImage gets an image
+  GetImage gets an image
 */
 func (a *Client) GetImage(params *GetImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetImageOK, error) {
 	// TODO: Validate the params before sending
@@ -200,9 +200,9 @@ func (a *Client) GetImage(params *GetImageParams, authInfo runtime.ClientAuthInf
 }
 
 /*
-GetImages gets all images
+  GetImages gets all images
 
-Only non-deprecated images are returned by default
+  Only non-deprecated images are returned by default
 */
 func (a *Client) GetImages(params *GetImagesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetImagesOK, error) {
 	// TODO: Validate the params before sending
@@ -240,9 +240,9 @@ func (a *Client) GetImages(params *GetImagesParams, authInfo runtime.ClientAuthI
 }
 
 /*
-GetImagesForFamily gets a family s images
+  GetImagesForFamily gets a family s images
 
-Only non-deprecated images are returned by default. This will not error but instead return an empty list if the family is not found.
+  Only non-deprecated images are returned by default. This will not error but instead return an empty list if the family is not found.
 */
 func (a *Client) GetImagesForFamily(params *GetImagesForFamilyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetImagesForFamilyOK, error) {
 	// TODO: Validate the params before sending
@@ -280,9 +280,9 @@ func (a *Client) GetImagesForFamily(params *GetImagesForFamilyParams, authInfo r
 }
 
 /*
-UpdateImage updates an image
+  UpdateImage updates an image
 
-Only metadata and description can be updated. The metadata, if set, replaces the entire existing metadata set. The tag cannot be "default".
+  Only metadata and description can be updated. The metadata, if set, replaces the entire existing metadata set. The tag cannot be "default".
 */
 func (a *Client) UpdateImage(params *UpdateImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateImageOK, error) {
 	// TODO: Validate the params before sending
@@ -320,9 +320,9 @@ func (a *Client) UpdateImage(params *UpdateImageParams, authInfo runtime.ClientA
 }
 
 /*
-UpdateImageDeprecation updates deprecation settings
+  UpdateImageDeprecation updates deprecation settings
 
-This replaces an image's deprecation settings, so it can also undeprecate an image.
+  This replaces an image's deprecation settings, so it can also undeprecate an image.
 */
 func (a *Client) UpdateImageDeprecation(params *UpdateImageDeprecationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateImageDeprecationOK, error) {
 	// TODO: Validate the params before sending

@@ -16,7 +16,7 @@ import (
 
 // V1NetworkPolicy A network policy
 //
-// # Network policies define an ACL that applies to one or many workload instances
+// Network policies define an ACL that applies to one or many workload instances
 //
 // swagger:model v1NetworkPolicy
 type V1NetworkPolicy struct {

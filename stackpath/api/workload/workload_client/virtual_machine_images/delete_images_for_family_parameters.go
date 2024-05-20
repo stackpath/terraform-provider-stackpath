@@ -52,12 +52,10 @@ func NewDeleteImagesForFamilyParamsWithHTTPClient(client *http.Client) *DeleteIm
 	}
 }
 
-/*
-DeleteImagesForFamilyParams contains all the parameters to send to the API endpoint
+/* DeleteImagesForFamilyParams contains all the parameters to send to the API endpoint
+   for the delete images for family operation.
 
-	for the delete images for family operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type DeleteImagesForFamilyParams struct {
 

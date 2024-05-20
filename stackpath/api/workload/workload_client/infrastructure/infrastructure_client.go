@@ -34,9 +34,9 @@ type ClientService interface {
 }
 
 /*
-GetLocations gets compute locations
+  GetLocations gets compute locations
 
-Retrieve information about the StackPath edge network that can host a compute workload
+  Retrieve information about the StackPath edge network that can host a compute workload
 */
 func (a *Client) GetLocations(params *GetLocationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetLocationsOK, error) {
 	// TODO: Validate the params before sending

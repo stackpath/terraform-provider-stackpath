@@ -58,8 +58,7 @@ func NewGetWorkloadInstanceInitialPasswordOK() *GetWorkloadInstanceInitialPasswo
 	return &GetWorkloadInstanceInitialPasswordOK{}
 }
 
-/*
-GetWorkloadInstanceInitialPasswordOK describes a response with status code 200, with default header values.
+/* GetWorkloadInstanceInitialPasswordOK describes a response with status code 200, with default header values.
 
 GetWorkloadInstanceInitialPasswordOK get workload instance initial password o k
 */
@@ -91,8 +90,7 @@ func NewGetWorkloadInstanceInitialPasswordUnauthorized() *GetWorkloadInstanceIni
 	return &GetWorkloadInstanceInitialPasswordUnauthorized{}
 }
 
-/*
-GetWorkloadInstanceInitialPasswordUnauthorized describes a response with status code 401, with default header values.
+/* GetWorkloadInstanceInitialPasswordUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetWorkloadInstanceInitialPasswordInternalServerError() *GetWorkloadInst
 	return &GetWorkloadInstanceInitialPasswordInternalServerError{}
 }
 
-/*
-GetWorkloadInstanceInitialPasswordInternalServerError describes a response with status code 500, with default header values.
+/* GetWorkloadInstanceInitialPasswordInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetWorkloadInstanceInitialPasswordDefault(code int) *GetWorkloadInstance
 	}
 }
 
-/*
-GetWorkloadInstanceInitialPasswordDefault describes a response with status code -1, with default header values.
+/* GetWorkloadInstanceInitialPasswordDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

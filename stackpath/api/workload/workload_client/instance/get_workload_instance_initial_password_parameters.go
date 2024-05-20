@@ -52,12 +52,10 @@ func NewGetWorkloadInstanceInitialPasswordParamsWithHTTPClient(client *http.Clie
 	}
 }
 
-/*
-GetWorkloadInstanceInitialPasswordParams contains all the parameters to send to the API endpoint
+/* GetWorkloadInstanceInitialPasswordParams contains all the parameters to send to the API endpoint
+   for the get workload instance initial password operation.
 
-	for the get workload instance initial password operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetWorkloadInstanceInitialPasswordParams struct {
 

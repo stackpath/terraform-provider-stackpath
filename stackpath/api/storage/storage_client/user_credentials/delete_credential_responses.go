@@ -58,8 +58,7 @@ func NewDeleteCredentialNoContent() *DeleteCredentialNoContent {
 	return &DeleteCredentialNoContent{}
 }
 
-/*
-DeleteCredentialNoContent describes a response with status code 204, with default header values.
+/* DeleteCredentialNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewDeleteCredentialUnauthorized() *DeleteCredentialUnauthorized {
 	return &DeleteCredentialUnauthorized{}
 }
 
-/*
-DeleteCredentialUnauthorized describes a response with status code 401, with default header values.
+/* DeleteCredentialUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewDeleteCredentialInternalServerError() *DeleteCredentialInternalServerErr
 	return &DeleteCredentialInternalServerError{}
 }
 
-/*
-DeleteCredentialInternalServerError describes a response with status code 500, with default header values.
+/* DeleteCredentialInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewDeleteCredentialDefault(code int) *DeleteCredentialDefault {
 	}
 }
 
-/*
-DeleteCredentialDefault describes a response with status code -1, with default header values.
+/* DeleteCredentialDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

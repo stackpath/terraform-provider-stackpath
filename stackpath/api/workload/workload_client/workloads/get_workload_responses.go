@@ -58,8 +58,7 @@ func NewGetWorkloadOK() *GetWorkloadOK {
 	return &GetWorkloadOK{}
 }
 
-/*
-GetWorkloadOK describes a response with status code 200, with default header values.
+/* GetWorkloadOK describes a response with status code 200, with default header values.
 
 GetWorkloadOK get workload o k
 */
@@ -91,8 +90,7 @@ func NewGetWorkloadUnauthorized() *GetWorkloadUnauthorized {
 	return &GetWorkloadUnauthorized{}
 }
 
-/*
-GetWorkloadUnauthorized describes a response with status code 401, with default header values.
+/* GetWorkloadUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetWorkloadInternalServerError() *GetWorkloadInternalServerError {
 	return &GetWorkloadInternalServerError{}
 }
 
-/*
-GetWorkloadInternalServerError describes a response with status code 500, with default header values.
+/* GetWorkloadInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetWorkloadDefault(code int) *GetWorkloadDefault {
 	}
 }
 
-/*
-GetWorkloadDefault describes a response with status code -1, with default header values.
+/* GetWorkloadDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

@@ -58,8 +58,7 @@ func NewCreateImageOK() *CreateImageOK {
 	return &CreateImageOK{}
 }
 
-/*
-CreateImageOK describes a response with status code 200, with default header values.
+/* CreateImageOK describes a response with status code 200, with default header values.
 
 CreateImageOK create image o k
 */
@@ -91,8 +90,7 @@ func NewCreateImageUnauthorized() *CreateImageUnauthorized {
 	return &CreateImageUnauthorized{}
 }
 
-/*
-CreateImageUnauthorized describes a response with status code 401, with default header values.
+/* CreateImageUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewCreateImageInternalServerError() *CreateImageInternalServerError {
 	return &CreateImageInternalServerError{}
 }
 
-/*
-CreateImageInternalServerError describes a response with status code 500, with default header values.
+/* CreateImageInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewCreateImageDefault(code int) *CreateImageDefault {
 	}
 }
 
-/*
-CreateImageDefault describes a response with status code -1, with default header values.
+/* CreateImageDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

@@ -17,13 +17,13 @@ import (
 // Workloadv1InstanceInstancePhase An instance's startup state
 //
 // - INSTANCE_PHASE_UNSPECIFIED: StackPath is unable to determine the instance's startup state
-//   - STARTING: The instance is still initializing
-//   - RUNNING: The instance is running
-//   - FAILED: The instance failed to start
-//   - COMPLETED: The instance finished running
-//   - SCHEDULING: The instance is being scheduled
-//   - STOPPED: The instance is stopped
-//   - DELETING: The instance is being deleted
+//  - STARTING: The instance is still initializing
+//  - RUNNING: The instance is running
+//  - FAILED: The instance failed to start
+//  - COMPLETED: The instance finished running
+//  - SCHEDULING: The instance is being scheduled
+//  - STOPPED: The instance is stopped
+//  - DELETING: The instance is being deleted
 //
 // swagger:model workloadv1InstanceInstancePhase
 type Workloadv1InstanceInstancePhase string

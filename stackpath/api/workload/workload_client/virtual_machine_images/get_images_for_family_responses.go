@@ -58,8 +58,7 @@ func NewGetImagesForFamilyOK() *GetImagesForFamilyOK {
 	return &GetImagesForFamilyOK{}
 }
 
-/*
-GetImagesForFamilyOK describes a response with status code 200, with default header values.
+/* GetImagesForFamilyOK describes a response with status code 200, with default header values.
 
 GetImagesForFamilyOK get images for family o k
 */
@@ -91,8 +90,7 @@ func NewGetImagesForFamilyUnauthorized() *GetImagesForFamilyUnauthorized {
 	return &GetImagesForFamilyUnauthorized{}
 }
 
-/*
-GetImagesForFamilyUnauthorized describes a response with status code 401, with default header values.
+/* GetImagesForFamilyUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetImagesForFamilyInternalServerError() *GetImagesForFamilyInternalServe
 	return &GetImagesForFamilyInternalServerError{}
 }
 
-/*
-GetImagesForFamilyInternalServerError describes a response with status code 500, with default header values.
+/* GetImagesForFamilyInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetImagesForFamilyDefault(code int) *GetImagesForFamilyDefault {
 	}
 }
 
-/*
-GetImagesForFamilyDefault describes a response with status code -1, with default header values.
+/* GetImagesForFamilyDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

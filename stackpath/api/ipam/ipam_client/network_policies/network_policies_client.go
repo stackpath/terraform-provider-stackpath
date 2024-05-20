@@ -42,7 +42,7 @@ type ClientService interface {
 }
 
 /*
-CreateNetworkPolicy creates a policy
+  CreateNetworkPolicy creates a policy
 */
 func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending
@@ -80,7 +80,7 @@ func (a *Client) CreateNetworkPolicy(params *CreateNetworkPolicyParams, authInfo
 }
 
 /*
-DeleteNetworkPolicy deletes a policy
+  DeleteNetworkPolicy deletes a policy
 */
 func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkPolicyNoContent, error) {
 	// TODO: Validate the params before sending
@@ -118,7 +118,7 @@ func (a *Client) DeleteNetworkPolicy(params *DeleteNetworkPolicyParams, authInfo
 }
 
 /*
-GetNetworkPolicies gets all policies
+  GetNetworkPolicies gets all policies
 */
 func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPoliciesOK, error) {
 	// TODO: Validate the params before sending
@@ -156,7 +156,7 @@ func (a *Client) GetNetworkPolicies(params *GetNetworkPoliciesParams, authInfo r
 }
 
 /*
-GetNetworkPolicy gets a policy
+  GetNetworkPolicy gets a policy
 */
 func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending
@@ -194,7 +194,7 @@ func (a *Client) GetNetworkPolicy(params *GetNetworkPolicyParams, authInfo runti
 }
 
 /*
-UpdateNetworkPolicy updates a policy
+  UpdateNetworkPolicy updates a policy
 */
 func (a *Client) UpdateNetworkPolicy(params *UpdateNetworkPolicyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkPolicyOK, error) {
 	// TODO: Validate the params before sending

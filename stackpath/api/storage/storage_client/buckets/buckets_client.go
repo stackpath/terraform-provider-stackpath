@@ -42,7 +42,7 @@ type ClientService interface {
 }
 
 /*
-CreateBucket creates a bucket under a stack
+  CreateBucket creates a bucket under a stack
 */
 func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateBucketOK, error) {
 	// TODO: Validate the params before sending
@@ -80,7 +80,7 @@ func (a *Client) CreateBucket(params *CreateBucketParams, authInfo runtime.Clien
 }
 
 /*
-DeleteBucket deletes a given bucket
+  DeleteBucket deletes a given bucket
 */
 func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBucketNoContent, error) {
 	// TODO: Validate the params before sending
@@ -118,7 +118,7 @@ func (a *Client) DeleteBucket(params *DeleteBucketParams, authInfo runtime.Clien
 }
 
 /*
-GetBucket retrieves a bucket in the storage provider for a given stack
+  GetBucket retrieves a bucket in the storage provider for a given stack
 */
 func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketOK, error) {
 	// TODO: Validate the params before sending
@@ -156,7 +156,7 @@ func (a *Client) GetBucket(params *GetBucketParams, authInfo runtime.ClientAuthI
 }
 
 /*
-GetBuckets retrieves all buckets in the storage provider for a given stack
+  GetBuckets retrieves all buckets in the storage provider for a given stack
 */
 func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBucketsOK, error) {
 	// TODO: Validate the params before sending
@@ -194,7 +194,7 @@ func (a *Client) GetBuckets(params *GetBucketsParams, authInfo runtime.ClientAut
 }
 
 /*
-UpdateBucket updates the name of a bucket
+  UpdateBucket updates the name of a bucket
 */
 func (a *Client) UpdateBucket(params *UpdateBucketParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBucketOK, error) {
 	// TODO: Validate the params before sending

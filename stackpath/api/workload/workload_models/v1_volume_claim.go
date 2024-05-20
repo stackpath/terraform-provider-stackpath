@@ -16,7 +16,7 @@ import (
 
 // V1VolumeClaim A claim for a volume
 //
-// # Volumes may be attached to workload instance containers or virtual machines
+// Volumes may be attached to workload instance containers or virtual machines
 //
 // swagger:model v1VolumeClaim
 type V1VolumeClaim struct {

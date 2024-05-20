@@ -52,12 +52,10 @@ func NewGetWorkloadParamsWithHTTPClient(client *http.Client) *GetWorkloadParams 
 	}
 }
 
-/*
-GetWorkloadParams contains all the parameters to send to the API endpoint
+/* GetWorkloadParams contains all the parameters to send to the API endpoint
+   for the get workload operation.
 
-	for the get workload operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetWorkloadParams struct {
 

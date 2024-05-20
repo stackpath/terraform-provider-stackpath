@@ -17,8 +17,8 @@ import (
 // V1IPFamily supported IP families
 //
 // - IP_FAMILY_UNSPECIFIED: Unknown IP family
-//   - IPv4: IPv4 IP family.
-//   - IPv6: IPv6 IP family. Currently, IPv6 IP family must be used with IPv4.
+//  - IPv4: IPv4 IP family.
+//  - IPv6: IPv6 IP family. Currently, IPv6 IP family must be used with IPv4.
 //
 // swagger:model v1IPFamily
 type V1IPFamily string

@@ -52,12 +52,10 @@ func NewDeleteWorkloadParamsWithHTTPClient(client *http.Client) *DeleteWorkloadP
 	}
 }
 
-/*
-DeleteWorkloadParams contains all the parameters to send to the API endpoint
+/* DeleteWorkloadParams contains all the parameters to send to the API endpoint
+   for the delete workload operation.
 
-	for the delete workload operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type DeleteWorkloadParams struct {
 

@@ -54,12 +54,10 @@ func NewCreateRouteParamsWithHTTPClient(client *http.Client) *CreateRouteParams 
 	}
 }
 
-/*
-CreateRouteParams contains all the parameters to send to the API endpoint
+/* CreateRouteParams contains all the parameters to send to the API endpoint
+   for the create route operation.
 
-	for the create route operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type CreateRouteParams struct {
 
