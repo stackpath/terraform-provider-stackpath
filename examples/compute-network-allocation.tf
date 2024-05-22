@@ -1,8 +1,24 @@
-# This examples provides all the options available when creating a network
-# allocation for StackPath edge compute workloads.
-#
-# Network allocation leverage selectors to select the edge compute location.
+# This examples provides all options to create allocation and allocation claims
+# to claim that allocation.
 
+# An allocation for the claim can be defined in three mutually exclusive ways:
+#
+# 1. Directly via reference in resource name format.
+# 2. Selecting across a set of existing allocations, allowing for the definition
+#    of "pools" of addresses to use for different purposes.
+# 3. Via the definition of a `template`, which will create an allocation for
+#    the claim if one does not already exist. The allocation will be identified
+#    by a slug unique to the claim.
+
+# This example covers all above ways by creating 2 allocations and using/referring
+# those during allocation claim creation through allocation.name and allocation.selector
+# resource specs respectively. and 3rd allocation claim is created using
+# allocation.template which creates allocation internally if it does not exist.
+
+# Network allocation leverage selectors to select the edge compute location and ip family
+# to allocate IP of particular ip family(IPv4/IPv6).
+
+# Allocation resource to be claimed using allocation.name in allocation claim spec.
 resource "stackpath_compute_network_allocation" "my-compute-network-allocation-name-reference" {
   # A human friendly name
   name = "My compute network allocation name reference"
@@ -31,13 +47,12 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-n
     # label. Only the "in" operator is supported.
     operator = "in"
     # The values that the label value should be compared to
-    values = ["EC4LAB01"]
+    values = ["DFW"]
   }
 }
 
-# This examples provides all the options available when creating a network
-# allocation Claim with allocation name reference.
-#
+# Allocation claim resource using allocation.name spec to refer allocation and
+# claim IP from it.
 resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocation-name-reference" {
   # A human friendly name
   name = "My allocation claim with name reference"
@@ -67,7 +82,7 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
   ]
 }
 
-# Allocation resource to be claimed using allocation selector in allocation claim spec.
+# Allocation resource to be claimed using allocation.selector in allocation claim spec.
 resource "stackpath_compute_network_allocation" "my-compute-network-allocation-selector" {
   # A human friendly name
   name = "My compute network allocation selector"
@@ -107,9 +122,8 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-s
 }
 
 
-# This examples provides all the options available when creating a network
-# allocation Claim with allocation selector.
-#
+# Allocation claim resource using allocation.selector spec to refer allocation and
+# claim IP from it.
 resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocation-selector" {
   # A human friendly name
   name = "My allocation claim with selector"
@@ -151,9 +165,9 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
   ]
 }
 
-# This examples provides all the options available when creating a network
-# allocation Claim with allocation template.
-#
+# Allocation claim resource using allocation.template spec to specify allocation
+# specification. allocation is created internally with provided template spec and then
+# used to claim IP from it.
 resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocation-template" {
   # A human friendly name
   name = "My allocation claim with allocation template"
