@@ -144,9 +144,8 @@ func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*workload_mod
 			if ipFamilies, ok := rawValue.([]interface{}); ok {
 				convertedIPFamilies := make([]*workload_models.V1IPFamily, len(ipFamilies))
 				for i, ipFamilyRawValue := range ipFamilies {
-					if ipFamily, ok := ipFamilyRawValue.(string); ok {
-						ipFamily := workload_models.V1IPFamily(ipFamily)
-						convertedIPFamilies[i] = &ipFamily
+					if ipFamily := convertComputeWorkloadIPFamily(ipFamilyRawValue); ipFamily != nil {
+						convertedIPFamilies[i] = ipFamily
 					}
 				}
 				interfaces[i].IPFamilies = convertedIPFamilies
@@ -162,8 +161,147 @@ func convertComputeWorkloadNetworkInterfaces(data []interface{}) []*workload_mod
 				interfaces[i].IPV6Subnet = ipv6Subnet
 			}
 		}
+		if rawValue, ok := interfaceMap["assignments"]; ok {
+			if assignments, ok := rawValue.([]interface{}); ok {
+				convertedAssignments := make([]*workload_models.V1Assignment, len(assignments))
+				for i, assignmentRawValue := range assignments {
+					convertedAssignments[i] = convertComputeWorkloadNetworkAssignment(assignmentRawValue)
+				}
+				interfaces[i].Assignments = convertedAssignments
+			}
+		}
 	}
 	return interfaces
+}
+
+func convertComputeWorkloadNetworkAssignment(data interface{}) *workload_models.V1Assignment {
+	assignmentMap := data.(map[string]interface{})
+
+	assignment := &workload_models.V1Assignment{}
+
+	if rawValue, ok := assignmentMap["slug"]; ok {
+		if slug, ok := rawValue.(string); ok {
+			assignment.Slug = slug
+		}
+	}
+
+	if rawValue, ok := assignmentMap["mode"]; ok {
+		if mode, ok := rawValue.(string); ok {
+			mode := workload_models.V1AssignmentMode(mode)
+			assignment.Mode = &mode
+		}
+	}
+
+	if rawValue, ok := assignmentMap["allocation_claim_template"]; ok {
+		if allocationClaimTemplates, ok := rawValue.([]interface{}); ok && len(allocationClaimTemplates) > 0 {
+			allocationClaimTemplate := allocationClaimTemplates[0].(map[string]interface{})
+			assignment.AllocationClaimTemplate = &workload_models.V1AllocationClaim{
+				Spec: &workload_models.V1AllocationClaimSpec{
+					PrefixLength:  int32(allocationClaimTemplate["prefix_length"].(int)),
+					IPFamily:      convertComputeWorkloadIPFamily(allocationClaimTemplate["ip_family"]),
+					ReclaimPolicy: convertComputeWorkloadAllocationReclaimPolicy(allocationClaimTemplate["reclaim_policy"]),
+					Allocation:    convertComputeWorkloadAllocationClaimSpecAllocation(allocationClaimTemplate["allocation"]),
+				},
+			}
+		}
+	}
+
+	return assignment
+}
+
+func convertComputeWorkloadAllocationClaimSpecAllocation(
+	p interface{},
+) *workload_models.AllocationClaimSpecAllocationClaimSpecAllocation {
+	if len(p.([]interface{})) == 0 {
+		return nil
+	}
+
+	allocationClaimSpecAllocation := &workload_models.AllocationClaimSpecAllocationClaimSpecAllocation{}
+	allocationClaimSpecAllocationData := p.([]interface{})[0].(map[string]interface{})
+	if name, ok := allocationClaimSpecAllocationData["name"]; ok {
+		allocationClaimSpecAllocation.Name = name.(string)
+	}
+
+	if selector, ok := allocationClaimSpecAllocationData["selector"]; ok {
+		allocationClaimSpecAllocation.Selector = convertWorkloadAllocationClaimSpecAllocationSelector(selector)
+	}
+
+	if template, ok := allocationClaimSpecAllocationData["template"]; ok {
+		allocationClaimSpecAllocation.Template = convertWorkloadAllocationClaimSpecAllocationTemplate(template)
+	}
+
+	return allocationClaimSpecAllocation
+}
+
+func convertWorkloadAllocationClaimSpecAllocationSelector(
+	p interface{},
+) *workload_models.AllocationClaimSpecAllocationClaimSpecAllocationSelector {
+	if len(p.([]interface{})) == 0 {
+		return nil
+	}
+
+	selector := &workload_models.AllocationClaimSpecAllocationClaimSpecAllocationSelector{}
+	selectorData := p.([]interface{})[0].(map[string]interface{})
+
+	if allocationClass, ok := selectorData["allocation_class"]; ok {
+		selector.AllocationClass = allocationClass.(string)
+	}
+
+	if matchExpressions, ok := selectorData["match_expressions"]; ok {
+		selector.MatchExpressions = convertComputeMatchExpression(matchExpressions.([]interface{}))
+	}
+
+	return selector
+}
+
+func convertWorkloadAllocationClaimSpecAllocationTemplate(
+	p interface{},
+) *workload_models.V1Allocation {
+	if len(p.([]interface{})) == 0 {
+		return nil
+	}
+
+	allocation := &workload_models.V1Allocation{}
+	allocationData := p.([]interface{})[0].(map[string]interface{})
+
+	allocation.Spec = &workload_models.V1AllocationSpec{
+		AllocationClass: allocationData["allocation_class"].(string),
+		PrefixLength:    int32(allocationData["prefix_length"].(int)),
+		IPFamily:        convertComputeWorkloadIPFamily(allocationData["ip_family"]),
+		ReclaimPolicy:   convertComputeWorkloadAllocationReclaimPolicy(allocationData["reclaim_policy"]),
+		Selectors:       convertComputeMatchExpression(allocationData["selectors"].([]interface{})),
+	}
+
+	return allocation
+}
+
+func convertComputeWorkloadAllocationReclaimPolicy(
+	p interface{},
+) *workload_models.V1ReclaimPolicy {
+	if len(p.([]interface{})) == 0 {
+		return nil
+	}
+
+	reclaimPolicyData := p.([]interface{})[0].(map[string]interface{})
+	reclaimPolicy := &workload_models.V1ReclaimPolicy{}
+	if reclaimPolicyData["action"].(string) != "" {
+		action := workload_models.ReclaimPolicyReclaimPolicyAction(reclaimPolicyData["action"].(string))
+		reclaimPolicy.Action = &action
+	}
+	if reclaimPolicyData["idle_retention_period"].(string) != "" {
+		reclaimPolicy.IdleRetentionPeriod = reclaimPolicyData["idle_retention_period"].(string)
+	}
+
+	return reclaimPolicy
+}
+
+func convertComputeWorkloadIPFamily(data interface{}) *workload_models.V1IPFamily {
+	if ipFamily, ok := data.(string); ok {
+		ipFamily := workload_models.V1IPFamily(ipFamily)
+		return &ipFamily
+	}
+
+	return nil
 }
 
 func convertComputeWorkloadContainers(prefix string, data *schema.ResourceData) workload_models.V1ContainerSpecMapEntry {
@@ -595,7 +733,7 @@ func flattenComputeWorkload(data *schema.ResourceData, workload *workload_models
 	}
 
 	if workload.Spec.Runtime != nil {
-		if err := data.Set("container_runtime_environment", flattenComputeWorkloadRuntimeContainer("container_runtime_environment", data, workload.Spec.Runtime.Containers)); err != nil {
+		if err := data.Set("container_runtime_environment", flattenComputeWorkloadRuntimeContainer(workload.Spec.Runtime.Containers)); err != nil {
 			return fmt.Errorf("error setting container_runtime_environment: %v", err)
 		}
 	}
@@ -805,6 +943,7 @@ func flattenComputeWorkloadNetworkInterfaces(networkInterfaces []*workload_model
 			"ip_families":           flattenIPFamilies(n.IPFamilies),
 			"subnet":                n.Subnet,
 			"ipv6_subnet":           n.IPV6Subnet,
+			"assignments":           flattenWorkloadNetworkAssignments(n.Assignments),
 		}
 	}
 	return flattened
@@ -1003,7 +1142,7 @@ func flattenComputeWorkloadSecurityContextCapabilities(capabilities *workload_mo
 
 }
 
-func flattenComputeWorkloadRuntimeContainer(prefix string, data *schema.ResourceData, container *workload_models.V1WorkloadInstanceContainerRuntimeSettings) []interface{} {
+func flattenComputeWorkloadRuntimeContainer(container *workload_models.V1WorkloadInstanceContainerRuntimeSettings) []interface{} {
 
 	if container == nil {
 		return nil
@@ -1077,4 +1216,105 @@ func flattenComputeWorkloadPorts(ports workload_models.V1InstancePortMapEntry) [
 		})
 	}
 	return p
+}
+
+func flattenWorkloadNetworkAssignments(
+	assignments []*workload_models.V1Assignment,
+) []interface{} {
+	assignmentsData := make([]interface{}, 0, len(assignments))
+
+	for _, assignment := range assignments {
+		assignmentData := map[string]interface{}{
+			"slug": assignment.Slug,
+		}
+
+		if assignment.Mode != nil {
+			assignmentData["mode"] = string(*assignment.Mode)
+		}
+		if assignment.AllocationClaimTemplate != nil && assignment.AllocationClaimTemplate.Spec != nil {
+			assignmentData["allocation_claim_template"] = []interface{}{
+				map[string]interface{}{
+					"ip_family":      string(*assignment.AllocationClaimTemplate.Spec.IPFamily),
+					"prefix_length":  int(assignment.AllocationClaimTemplate.Spec.PrefixLength),
+					"reclaim_policy": flattenComputeWorkloadAllocationReclaimPolicy(assignment.AllocationClaimTemplate.Spec.ReclaimPolicy),
+					"allocation":     flattenComputeWorkloadAllocationClaimSpecAllocation(assignment.AllocationClaimTemplate.Spec.Allocation),
+				},
+			}
+		}
+
+		assignmentsData = append(assignmentsData, assignmentData)
+	}
+
+	return assignmentsData
+}
+
+func flattenComputeWorkloadAllocationClaimSpecAllocation(
+	r *workload_models.AllocationClaimSpecAllocationClaimSpecAllocation,
+) []interface{} {
+	allocation := map[string]interface{}{}
+
+	if r != nil {
+		if r.Name != "" {
+			allocation["name"] = r.Name
+		}
+
+		if r.Selector != nil {
+			allocation["selector"] = flattenWorkloadAllocationClaimSpecAllocationSelector(r.Selector)
+		}
+		if r.Template != nil {
+			allocation["template"] = flattenWorkloadAllocationClaimSpecAllocationTemplate(r.Template)
+		}
+	}
+
+	return []interface{}{allocation}
+}
+
+func flattenWorkloadAllocationClaimSpecAllocationSelector(
+	r *workload_models.AllocationClaimSpecAllocationClaimSpecAllocationSelector,
+) []interface{} {
+	selector := map[string]interface{}{
+		"allocation_class": r.AllocationClass,
+	}
+	if len(r.MatchExpressions) > 0 {
+		selector["match_expressions"] = flattenComputeMatchExpressionsOrdered(r.MatchExpressions)
+	}
+
+	return []interface{}{selector}
+}
+
+func flattenWorkloadAllocationClaimSpecAllocationTemplate(
+	r *workload_models.V1Allocation,
+) []interface{} {
+	if r.Spec == nil {
+		return []interface{}{}
+	}
+
+	template := map[string]interface{}{
+		"allocation_class": r.Spec.AllocationClass,
+		"prefix_length":    int(r.Spec.PrefixLength),
+		"ip_family":        string(*r.Spec.IPFamily),
+		"reclaim_policy":   flattenComputeWorkloadAllocationReclaimPolicy(r.Spec.ReclaimPolicy),
+	}
+
+	if len(r.Spec.Selectors) > 0 {
+		template["selectors"] = flattenComputeMatchExpressionsOrdered(r.Spec.Selectors)
+	}
+
+	return []interface{}{template}
+}
+
+func flattenComputeWorkloadAllocationReclaimPolicy(
+	r *workload_models.V1ReclaimPolicy,
+) []interface{} {
+	var action string
+	if r.Action != nil {
+		action = string(*r.Action)
+	}
+
+	return []interface{}{
+		map[string]interface{}{
+			"action":                action,
+			"idle_retention_period": r.IdleRetentionPeriod,
+		},
+	}
 }

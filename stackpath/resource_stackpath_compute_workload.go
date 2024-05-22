@@ -115,6 +115,15 @@ func resourceComputeWorkload() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"assignments": {
+							Type:     schema.TypeList,
+							Optional: true,
+							// when assignments are not provided, api creates workload with default network assignments
+							// terraform plugin sdk does not support a way to configure Default for TypeList
+							// hence to avoid update in-place errors treating resource as computed
+							Computed: true,
+							Elem:     resourceComputeWorkloadNetworkAssignments(),
+						},
 					},
 				},
 			},
@@ -599,6 +608,110 @@ func resourceComputeRuntimeEnvironmentDns() *schema.Resource {
 						"options": {
 							Type:     schema.TypeMap,
 							Optional: true,
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func resourceComputeWorkloadNetworkAssignments() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"slug": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"mode": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"allocation_claim_template": {
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"ip_family": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"prefix_length": {
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+						"reclaim_policy": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem:     resourceComputeNetworkAllocationReclaimPolicy(),
+						},
+						"allocation": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.selector", "allocation_claim_template.0.allocation.0.template"},
+									},
+									"selector": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.name", "allocation_claim_template.0.allocation.0.template"},
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"allocation_class": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"match_expressions": {
+													Type:     schema.TypeList,
+													Required: true,
+													Elem:     resourceComputeMatchExpressionSchema(),
+												},
+											},
+										},
+									},
+									"template": {
+										Type:     schema.TypeList,
+										MaxItems: 1,
+										Optional: true,
+										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.selector", "allocation_claim_template.0.allocation.0.name"},
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"allocation_class": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"ip_family": {
+													Type:     schema.TypeString,
+													Required: true,
+												},
+												"prefix_length": {
+													Type:     schema.TypeInt,
+													Required: true,
+												},
+												"reclaim_policy": {
+													Type:     schema.TypeList,
+													MaxItems: 1,
+													Required: true,
+													Elem:     resourceComputeNetworkAllocationReclaimPolicy(),
+												},
+												"selectors": {
+													Type:     schema.TypeList,
+													Optional: true,
+													Elem:     resourceComputeMatchExpressionSchema(),
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},

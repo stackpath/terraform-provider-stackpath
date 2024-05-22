@@ -19,6 +19,9 @@ import (
 // swagger:model v1NetworkInterface
 type V1NetworkInterface struct {
 
+	// assignments
+	Assignments []*V1Assignment `json:"assignments"`
+
 	// Whether to provide [one-to-one NAT](https://en.wikipedia.org/wiki/Network_address_translation#Basic_NAT) for this network interface
 	//
 	// This is an optional property used to enable or disable the NAT'ing the network interface. NAT is enabled by default on the first/primary interface and disabled on secondary/multi interfaces.
@@ -47,6 +50,10 @@ type V1NetworkInterface struct {
 func (m *V1NetworkInterface) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAssignments(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateIPFamilies(formats); err != nil {
 		res = append(res, err)
 	}
@@ -54,6 +61,30 @@ func (m *V1NetworkInterface) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1NetworkInterface) validateAssignments(formats strfmt.Registry) error {
+	if swag.IsZero(m.Assignments) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Assignments); i++ {
+		if swag.IsZero(m.Assignments[i]) { // not required
+			continue
+		}
+
+		if m.Assignments[i] != nil {
+			if err := m.Assignments[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("assignments" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -85,6 +116,10 @@ func (m *V1NetworkInterface) validateIPFamilies(formats strfmt.Registry) error {
 func (m *V1NetworkInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAssignments(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateIPFamilies(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -92,6 +127,24 @@ func (m *V1NetworkInterface) ContextValidate(ctx context.Context, formats strfmt
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1NetworkInterface) contextValidateAssignments(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Assignments); i++ {
+
+		if m.Assignments[i] != nil {
+			if err := m.Assignments[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("assignments" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
