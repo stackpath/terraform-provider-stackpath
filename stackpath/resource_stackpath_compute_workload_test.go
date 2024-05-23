@@ -547,7 +547,7 @@ func TestComputeWorkloadContainersNetworkAssignments(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
-					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "EC4LAB01"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
 					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", DualStackIPFamilies),
 					testAccComputeWorkloadCheckInterfaceAssignments(workload, 0, true, DualStackIPFamilies),
 				),
@@ -2322,7 +2322,7 @@ resource "stackpath_compute_workload" "foo" {
       key      = "cityCode"
       operator = "in"
       values = [
-        "EC4LAB01",
+        "AMS",
       ]
     }
   }
