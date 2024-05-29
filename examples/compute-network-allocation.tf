@@ -117,7 +117,7 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-s
     # label. Only the "in" operator is supported.
     operator = "in"
     # The values that the label value should be compared to
-    values = ["EC4LAB01"]
+    values = ["DFW"]
   }
 }
 
@@ -149,7 +149,7 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
       match_expressions {
         key = "cityCode"
         operator = "in"
-        values = ["EC4LAB01"]
+        values = ["DFW"]
       }
 
       match_expressions {
@@ -199,7 +199,7 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
       selectors {
         key = "cityCode"
         operator = "in"
-        values = ["EC4LAB01"]
+        values = ["DFW"]
       }
     }
   }
