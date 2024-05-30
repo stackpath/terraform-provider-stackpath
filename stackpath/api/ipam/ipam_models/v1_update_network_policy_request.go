@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// V1UpdateNetworkPolicyRequest v1 update network policy request
+// V1UpdateNetworkPolicyRequest A request to update a network policy
 //
 // swagger:model v1UpdateNetworkPolicyRequest
 type V1UpdateNetworkPolicyRequest struct {

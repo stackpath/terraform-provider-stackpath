@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkUpdateNetworkSubnetResponse network update network subnet response
+// NetworkUpdateNetworkSubnetResponse A response from a request to update a subnet
 //
 // swagger:model networkUpdateNetworkSubnetResponse
 type NetworkUpdateNetworkSubnetResponse struct {

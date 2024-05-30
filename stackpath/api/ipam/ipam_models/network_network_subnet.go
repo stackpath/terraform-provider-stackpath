@@ -18,25 +18,27 @@ import (
 // swagger:model networkNetworkSubnet
 type NetworkNetworkSubnet struct {
 
-	// id
+	// A network subnet's unique identifier
 	ID string `json:"id,omitempty"`
 
 	// metadata
 	Metadata *NetworkMetadata `json:"metadata,omitempty"`
 
-	// name
+	// A network subnet's name as it appears in the StackPath portal
 	Name string `json:"name,omitempty"`
 
-	// network Id
+	// The ID of the network that a network subnet belongs to
 	NetworkID string `json:"networkId,omitempty"`
 
-	// prefix
+	// The network prefix in CIDR notation that the network subnet will use.
+	//
+	// This must be a full valid network CIDR without host bits. Ex: 10.16.0.0/16
 	Prefix string `json:"prefix,omitempty"`
 
-	// slug
+	// A network subnet's programmatic name
 	Slug string `json:"slug,omitempty"`
 
-	// stack Id
+	// The ID of the stack that a network subnet belongs to
 	StackID string `json:"stackId,omitempty"`
 }
 

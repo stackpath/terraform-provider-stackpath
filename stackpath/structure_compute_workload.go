@@ -756,7 +756,7 @@ func flattenComputeWorkloadTarget(prefix, name string, data *schema.ResourceData
 		"max_replicas":     target.Spec.Deployments.MaxReplicas,
 		"deployment_scope": target.Spec.DeploymentScope,
 		"scale_settings":   flattenComputeWorkloadTargetScaleSettings(prefix+".scale_settings", data, target.Spec.Deployments.ScaleSettings),
-		"selector":         flattenComputeMatchExpressionsOrdered(prefix+".selector", data, target.Spec.Deployments.Selectors),
+		"selector":         flattenComputeMatchExpressionsOrdered(target.Spec.Deployments.Selectors),
 	}
 }
 

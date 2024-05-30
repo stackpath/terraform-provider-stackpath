@@ -23,8 +23,33 @@ func convertComputeMatchExpression(data []interface{}) []*workload_models.V1Matc
 	return selectors
 }
 
+func convertComputeMetaV1MatchExpression(data []interface{}) []*ipam_models.Metav1MatchExpression {
+	selectors := make([]*ipam_models.Metav1MatchExpression, len(data))
+	for i, s := range data {
+		selector := s.(map[string]interface{})
+		vals := make([]string, len(selector["values"].([]interface{})))
+		for j, v := range selector["values"].([]interface{}) {
+			vals[j] = v.(string)
+		}
+		selectors[i] = &ipam_models.Metav1MatchExpression{
+			Key:      selector["key"].(string),
+			Operator: selector["operator"].(string),
+			Values:   vals,
+		}
+	}
+	return selectors
+}
+
 func convertToStringMap(data map[string]interface{}) workload_models.V1StringMapEntry {
 	stringMap := make(workload_models.V1StringMapEntry, len(data))
+	for k, v := range data {
+		stringMap[k] = v.(string)
+	}
+	return stringMap
+}
+
+func convertToMetaV1StringMap(data map[string]interface{}) ipam_models.Metav1StringMapEntry {
+	stringMap := make(ipam_models.Metav1StringMapEntry, len(data))
 	for k, v := range data {
 		stringMap[k] = v.(string)
 	}
@@ -95,7 +120,28 @@ func convertIPAMToWorkloadStringMapEntry(mapEntries ipam_models.NetworkStringMap
 // with respect to the order of any existing match expressions defined in the provided
 // ResourceData. The prefix should be the flattened key of the list of match expressions
 // in the ResourceData.
-func flattenComputeMatchExpressionsOrdered(prefix string, data *schema.ResourceData, selectors []*workload_models.V1MatchExpression) []interface{} {
+func flattenComputeMatchExpressionsOrdered(selectors []*workload_models.V1MatchExpression) []interface{} {
+	ordered := make(map[string]int, len(selectors))
+	for i, selector := range selectors {
+		ordered[selector.Key] = i
+	}
+	flattened := make([]interface{}, len(selectors))
+	for _, selector := range selectors {
+		data := map[string]interface{}{
+			"key":      selector.Key,
+			"operator": selector.Operator,
+			"values":   flattenStringArray(selector.Values),
+		}
+		flattened[ordered[selector.Key]] = data
+	}
+	return flattened
+}
+
+// flattenComputeMetaV1MatchExpressionsOrdered flattens the provided allocation match expressions
+// with respect to the order of any existing match expressions defined in the provided
+// ResourceData. The prefix should be the flattened key of the list of match expressions
+// in the ResourceData.
+func flattenComputeMetaV1MatchExpressionsOrdered(selectors []*ipam_models.Metav1MatchExpression) []interface{} {
 	ordered := make(map[string]int, len(selectors))
 	for i, selector := range selectors {
 		ordered[selector.Key] = i
@@ -137,6 +183,14 @@ func flattenIPFamilies(ipFamilies []*workload_models.V1IPFamily) []interface{} {
 }
 
 func flattenStringMap(stringMap workload_models.V1StringMapEntry) map[string]interface{} {
+	m := make(map[string]interface{}, len(stringMap))
+	for k, v := range stringMap {
+		m[k] = v
+	}
+	return m
+}
+
+func flattenMetaV1StringMap(stringMap ipam_models.Metav1StringMapEntry) map[string]interface{} {
 	m := make(map[string]interface{}, len(stringMap))
 	for k, v := range stringMap {
 		m[k] = v

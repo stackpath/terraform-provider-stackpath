@@ -12,10 +12,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// V1MatchExpression An expression to match selectors against a set of values
+// Metav1MatchExpression An expression to match selectors against a set of values
 //
-// swagger:model v1MatchExpression
-type V1MatchExpression struct {
+// swagger:model metav1MatchExpression
+type Metav1MatchExpression struct {
 
 	// The name of the selector to perform a match against
 	Key string `json:"key,omitempty"`
@@ -29,18 +29,18 @@ type V1MatchExpression struct {
 	Values []string `json:"values"`
 }
 
-// Validate validates this v1 match expression
-func (m *V1MatchExpression) Validate(formats strfmt.Registry) error {
+// Validate validates this metav1 match expression
+func (m *Metav1MatchExpression) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this v1 match expression based on context it is used
-func (m *V1MatchExpression) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this metav1 match expression based on context it is used
+func (m *Metav1MatchExpression) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *V1MatchExpression) MarshalBinary() ([]byte, error) {
+func (m *Metav1MatchExpression) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -48,8 +48,8 @@ func (m *V1MatchExpression) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *V1MatchExpression) UnmarshalBinary(b []byte) error {
-	var res V1MatchExpression
+func (m *Metav1MatchExpression) UnmarshalBinary(b []byte) error {
+	var res Metav1MatchExpression
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // NetworkRouteStatus network route status
@@ -19,18 +18,13 @@ import (
 // swagger:model networkRouteStatus
 type NetworkRouteStatus struct {
 
-	// A list of route gateway IPs in the region
-	// Read Only: true
+	// List of IPs that are being used as gateways
 	GatewayIps []string `json:"gatewayIps"`
 
-	// The region in which a route's status resides
-	//
-	// Regions take the form `<pop name>-<cluster name>`, where `pop` is a StackPath EdgeCompute POP and `cluster` is a networking cluster within that POP.
-	// Read Only: true
+	// Region that this status describes
 	Region string `json:"region,omitempty"`
 
 	// state
-	// Read Only: true
 	State *RouteStatusState `json:"state,omitempty"`
 }
 
@@ -69,14 +63,6 @@ func (m *NetworkRouteStatus) validateState(formats strfmt.Registry) error {
 func (m *NetworkRouteStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateGatewayIps(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateRegion(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateState(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -84,24 +70,6 @@ func (m *NetworkRouteStatus) ContextValidate(ctx context.Context, formats strfmt
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *NetworkRouteStatus) contextValidateGatewayIps(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := validate.ReadOnly(ctx, "gatewayIps", "body", []string(m.GatewayIps)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *NetworkRouteStatus) contextValidateRegion(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := validate.ReadOnly(ctx, "region", "body", string(m.Region)); err != nil {
-		return err
-	}
-
 	return nil
 }
 
