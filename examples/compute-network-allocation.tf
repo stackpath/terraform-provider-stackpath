@@ -27,12 +27,14 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-n
   slug = "my-compute-network-allocation-name-reference"
 
   # allocation class name
+  # only stackpath-edge/private and stackpath-edge/unicast allocation classes are supported for now
   allocation_class = "stackpath-edge/unicast"
 
   # allocation IP family, either IPv4 or IPv6
   ip_family = "IPv4"
 
   # allocation prefix length
+  # 32 and 128 are the only values supported for IPv4 and IPv6 respectively for now
   prefix_length = 32
 
   # allocation reclaim policy, only RETAIN action is supported from API
@@ -74,7 +76,7 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
   allocation {
     # name of the allocation to claim IP from
     # <replace stack slug with actual stack slug where resources are being created>
-    name = "oc-testing-stack-3b4060/my-compute-network-allocation-name-reference"
+    name = "<stack-slug>/my-compute-network-allocation-name-reference"
   }
 
   depends_on = [

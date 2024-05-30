@@ -123,12 +123,12 @@ func resourceComputeNetworkAllocationCreate(ctx context.Context, data *schema.Re
 		// (TODO)- print *ipam_models.GooglerpcStatus in format aligning with NewStackPathError
 		return diag.FromErr(fmt.Errorf("network allocation operation failed: %v", operation.Error))
 	} else {
-		// (TODO)- Currently there is is issue in GetOperation client api generated through
+		// (TODO)- Currently there is an issue in the GetOperation client API generated through
 		// swagger which leads to ProtobufAny typed fields like .Response or .Metadata in
-		// ipam_models.V1Operation to be always nil even if rest API response has that data.
+		// ipam_models.V1Operation to be always nil even if the REST API response has that data.
 		// Hence currently there is no way to get allocation ID during create context.
-		// until we get that working, going to use stackID/allocationSlug named string
-		// as ID as it is expected that allocation slug to be unique in a stack.
+		// Until we get that working, we are going to use stackID/allocationSlug named string
+		// as ID since it is expected that the allocation slug be unique in a stack.
 		data.SetId(formatAllocationID(config.StackID, data.Get("slug").(string)))
 	}
 

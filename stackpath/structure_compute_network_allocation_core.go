@@ -68,7 +68,7 @@ func waitForIPAMOperationToBeDone(ctx context.Context, name string, meta interfa
 	// format, extract actual operation name as GET /operation expects actual operation name
 	name = extractOperationName(name)
 	if name == "" {
-		return nil, fmt.Errorf("unable to extract operation name")
+		return nil, fmt.Errorf("received blank operation name")
 	}
 
 	resp, err := config.edgeComputeNetworking.Operations.WaitOperation(&operations.WaitOperationParams{
