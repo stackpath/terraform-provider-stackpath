@@ -1,4 +1,4 @@
-# Create a new nginx container workload with network assignments deployed to Seattle, WA, USA.
+# Create a new nginx container workload with network assignments deployed to Dallas, TX, USA.
 
 resource "stackpath_compute_workload" "my-compute-workload" {
   # A human friendly name for the workload
@@ -39,7 +39,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
         prefix_length = 32
 
         # Reclaim policy defines what to do when the binding is removed.
-        # If a claim is created manually, the reclaimPolicy MUST be Retain.
+        # Supported reclaim policies are RETAIN and DELETE.
         reclaim_policy {
           action = "DELETE"
         }
@@ -97,7 +97,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
         prefix_length = 32
 
         # Reclaim policy defines what to do when the binding is removed.
-        # If a claim is created manually, the reclaimPolicy MUST be Retain.
+        # Supported reclaim policies are RETAIN and DELETE.
         reclaim_policy {
           action = "DELETE"
         }
@@ -155,7 +155,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
         prefix_length = 128
 
         # Reclaim policy defines what to do when the binding is removed.
-        # If a claim is created manually, the reclaimPolicy MUST be Retain.
+        # Supported reclaim policies are RETAIN and DELETE.
         reclaim_policy {
           action = "DELETE"
         }
@@ -213,7 +213,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
         prefix_length = 128
 
         # Reclaim policy defines what to do when the binding is removed.
-        # If a claim is created manually, the reclaimPolicy MUST be Retain.
+        # Supported reclaim policies are RETAIN and DELETE.
         reclaim_policy {
           action = "DELETE"
         }
@@ -275,7 +275,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
     # docker image is used.
     # command = ["sleep", "infinity"]
 
-    # Hardware resources to request of the contsainer
+    # Hardware resources to request of the container
     resources {
       requests = {
         # The number of CPU cores to allocate
@@ -413,7 +413,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
       # The city code that instances should be created in. Cities are designated
       # by their IATA airport code.
       values = [
-        "SEA",
+        "DFW",
       ]
     }
   }
@@ -459,7 +459,7 @@ resource "stackpath_compute_workload" "my-compute-workload" {
   #      hostnames = [ "domain.com" ]
   #    }
 
-  #    # override resolv.conf (or equilvanet) in your container
+  #    # override resolv.conf (or equivalent) in your container
   #    # if you want to change the list of nameservers or
   #    # search order from our defaults. Note this will prevent
   #    # DNS discovery from working if you override nameservers
