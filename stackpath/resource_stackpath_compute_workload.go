@@ -653,16 +653,20 @@ func resourceComputeWorkloadNetworkAssignments() *schema.Resource {
 							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
+									// (TODO)- Add in schema validation to allow only one of name, selector
+									// and template in allocation spec.
+									// Currently ConflictsWith does not work for nested block schema hence
+									// we could not put schema validation to make name, selector and template mutually
+									// exclusive in resource schema however API gives error in this scenario which will
+									// make apply failed anyway when more than one is provided.
 									"name": {
 										Type:     schema.TypeString,
 										Optional: true,
-										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.selector", "allocation_claim_template.0.allocation.0.template"},
 									},
 									"selector": {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
-										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.name", "allocation_claim_template.0.allocation.0.template"},
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 												"allocation_class": {
@@ -681,7 +685,6 @@ func resourceComputeWorkloadNetworkAssignments() *schema.Resource {
 										Type:     schema.TypeList,
 										MaxItems: 1,
 										Optional: true,
-										//ConflictsWith: []string{"allocation_claim_template.0.allocation.0.selector", "allocation_claim_template.0.allocation.0.name"},
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 												"allocation_class": {
