@@ -58,8 +58,7 @@ func NewGetLocationsOK() *GetLocationsOK {
 	return &GetLocationsOK{}
 }
 
-/*
-GetLocationsOK describes a response with status code 200, with default header values.
+/* GetLocationsOK describes a response with status code 200, with default header values.
 
 GetLocationsOK get locations o k
 */
@@ -91,8 +90,7 @@ func NewGetLocationsUnauthorized() *GetLocationsUnauthorized {
 	return &GetLocationsUnauthorized{}
 }
 
-/*
-GetLocationsUnauthorized describes a response with status code 401, with default header values.
+/* GetLocationsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetLocationsInternalServerError() *GetLocationsInternalServerError {
 	return &GetLocationsInternalServerError{}
 }
 
-/*
-GetLocationsInternalServerError describes a response with status code 500, with default header values.
+/* GetLocationsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetLocationsDefault(code int) *GetLocationsDefault {
 	}
 }
 
-/*
-GetLocationsDefault describes a response with status code -1, with default header values.
+/* GetLocationsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

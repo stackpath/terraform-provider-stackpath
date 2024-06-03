@@ -17,8 +17,8 @@ import (
 // V1ImageConditionStatus Which status an image is currently in
 //
 // - IMAGE_CONDITION_STATUS_UNKNOWN: The condition status is unknown
-//   - TRUE: The condition is true
-//   - FALSE: The condition is false
+//  - TRUE: The condition is true
+//  - FALSE: The condition is false
 //
 // swagger:model v1ImageConditionStatus
 type V1ImageConditionStatus string

@@ -58,8 +58,7 @@ func NewGetLogsOK() *GetLogsOK {
 	return &GetLogsOK{}
 }
 
-/*
-GetLogsOK describes a response with status code 200, with default header values.
+/* GetLogsOK describes a response with status code 200, with default header values.
 
 (streaming responses)
 */
@@ -91,8 +90,7 @@ func NewGetLogsUnauthorized() *GetLogsUnauthorized {
 	return &GetLogsUnauthorized{}
 }
 
-/*
-GetLogsUnauthorized describes a response with status code 401, with default header values.
+/* GetLogsUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetLogsInternalServerError() *GetLogsInternalServerError {
 	return &GetLogsInternalServerError{}
 }
 
-/*
-GetLogsInternalServerError describes a response with status code 500, with default header values.
+/* GetLogsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetLogsDefault(code int) *GetLogsDefault {
 	}
 }
 
-/*
-GetLogsDefault describes a response with status code -1, with default header values.
+/* GetLogsDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

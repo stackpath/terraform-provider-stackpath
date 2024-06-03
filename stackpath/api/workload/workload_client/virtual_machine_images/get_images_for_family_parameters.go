@@ -53,12 +53,10 @@ func NewGetImagesForFamilyParamsWithHTTPClient(client *http.Client) *GetImagesFo
 	}
 }
 
-/*
-GetImagesForFamilyParams contains all the parameters to send to the API endpoint
+/* GetImagesForFamilyParams contains all the parameters to send to the API endpoint
+   for the get images for family operation.
 
-	for the get images for family operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type GetImagesForFamilyParams struct {
 

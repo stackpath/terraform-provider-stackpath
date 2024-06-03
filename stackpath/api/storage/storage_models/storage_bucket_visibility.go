@@ -15,7 +15,7 @@ import (
 )
 
 // StorageBucketVisibility - PRIVATE: The bucket is private and only accessibly with credentials
-//   - PUBLIC: The bucket is public and accessible over the internet
+//  - PUBLIC: The bucket is public and accessible over the internet
 //
 // swagger:model storageBucketVisibility
 type StorageBucketVisibility string

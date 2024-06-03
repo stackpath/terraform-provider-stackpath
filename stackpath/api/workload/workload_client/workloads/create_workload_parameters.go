@@ -54,12 +54,10 @@ func NewCreateWorkloadParamsWithHTTPClient(client *http.Client) *CreateWorkloadP
 	}
 }
 
-/*
-CreateWorkloadParams contains all the parameters to send to the API endpoint
+/* CreateWorkloadParams contains all the parameters to send to the API endpoint
+   for the create workload operation.
 
-	for the create workload operation.
-
-	Typically these are written to a http.Request.
+   Typically these are written to a http.Request.
 */
 type CreateWorkloadParams struct {
 

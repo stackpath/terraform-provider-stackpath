@@ -38,7 +38,7 @@ type ClientService interface {
 }
 
 /*
-DeleteCredential deletes provided storage access credentials for the given user
+  DeleteCredential deletes provided storage access credentials for the given user
 */
 func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteCredentialNoContent, error) {
 	// TODO: Validate the params before sending
@@ -76,9 +76,9 @@ func (a *Client) DeleteCredential(params *DeleteCredentialParams, authInfo runti
 }
 
 /*
-GenerateCredentials generates storage credentials for the given user
+  GenerateCredentials generates storage credentials for the given user
 
-Generate storage credentials for the given user. Users can only have one set of credentials, so calling this method will generate a new set and invalidate any existing ones.
+  Generate storage credentials for the given user. Users can only have one set of credentials, so calling this method will generate a new set and invalidate any existing ones.
 */
 func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GenerateCredentialsOK, error) {
 	// TODO: Validate the params before sending
@@ -116,7 +116,7 @@ func (a *Client) GenerateCredentials(params *GenerateCredentialsParams, authInfo
 }
 
 /*
-GetCredentials gets credentials for a given user
+  GetCredentials gets credentials for a given user
 */
 func (a *Client) GetCredentials(params *GetCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetCredentialsOK, error) {
 	// TODO: Validate the params before sending

@@ -2855,6 +2855,7 @@
         "enableOneToOneNat": {
           "type": "boolean",
           "format": "boolean",
+          "x-omitempty": false,
           "description": "Whether to provide [one-to-one NAT](https://en.wikipedia.org/wiki/Network_address_translation#Basic_NAT) for this network interface\n\nThis is an optional property used to enable or disable the NAT'ing the network interface. NAT is enabled by default on the first/primary interface and disabled on secondary/multi interfaces.\n\nMark this property `false` to disable NAT on the first interface. Mark this property `true` to enable NAT on secondary interfaces.\n\nThe `ExcludeNAT` workload annotation supercedes this property."
         }
       },

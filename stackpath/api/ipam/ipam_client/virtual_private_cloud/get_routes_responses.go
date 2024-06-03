@@ -58,8 +58,7 @@ func NewGetRoutesOK() *GetRoutesOK {
 	return &GetRoutesOK{}
 }
 
-/*
-GetRoutesOK describes a response with status code 200, with default header values.
+/* GetRoutesOK describes a response with status code 200, with default header values.
 
 GetRoutesOK get routes o k
 */
@@ -91,8 +90,7 @@ func NewGetRoutesUnauthorized() *GetRoutesUnauthorized {
 	return &GetRoutesUnauthorized{}
 }
 
-/*
-GetRoutesUnauthorized describes a response with status code 401, with default header values.
+/* GetRoutesUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetRoutesInternalServerError() *GetRoutesInternalServerError {
 	return &GetRoutesInternalServerError{}
 }
 
-/*
-GetRoutesInternalServerError describes a response with status code 500, with default header values.
+/* GetRoutesInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetRoutesDefault(code int) *GetRoutesDefault {
 	}
 }
 
-/*
-GetRoutesDefault describes a response with status code -1, with default header values.
+/* GetRoutesDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

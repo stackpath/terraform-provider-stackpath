@@ -58,8 +58,7 @@ func NewDeleteRouteNoContent() *DeleteRouteNoContent {
 	return &DeleteRouteNoContent{}
 }
 
-/*
-DeleteRouteNoContent describes a response with status code 204, with default header values.
+/* DeleteRouteNoContent describes a response with status code 204, with default header values.
 
 No content
 */
@@ -80,8 +79,7 @@ func NewDeleteRouteUnauthorized() *DeleteRouteUnauthorized {
 	return &DeleteRouteUnauthorized{}
 }
 
-/*
-DeleteRouteUnauthorized describes a response with status code 401, with default header values.
+/* DeleteRouteUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -113,8 +111,7 @@ func NewDeleteRouteInternalServerError() *DeleteRouteInternalServerError {
 	return &DeleteRouteInternalServerError{}
 }
 
-/*
-DeleteRouteInternalServerError describes a response with status code 500, with default header values.
+/* DeleteRouteInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -148,8 +145,7 @@ func NewDeleteRouteDefault(code int) *DeleteRouteDefault {
 	}
 }
 
-/*
-DeleteRouteDefault describes a response with status code -1, with default header values.
+/* DeleteRouteDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

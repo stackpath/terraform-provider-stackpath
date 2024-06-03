@@ -58,8 +58,7 @@ func NewUpdateImageOK() *UpdateImageOK {
 	return &UpdateImageOK{}
 }
 
-/*
-UpdateImageOK describes a response with status code 200, with default header values.
+/* UpdateImageOK describes a response with status code 200, with default header values.
 
 UpdateImageOK update image o k
 */
@@ -91,8 +90,7 @@ func NewUpdateImageUnauthorized() *UpdateImageUnauthorized {
 	return &UpdateImageUnauthorized{}
 }
 
-/*
-UpdateImageUnauthorized describes a response with status code 401, with default header values.
+/* UpdateImageUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewUpdateImageInternalServerError() *UpdateImageInternalServerError {
 	return &UpdateImageInternalServerError{}
 }
 
-/*
-UpdateImageInternalServerError describes a response with status code 500, with default header values.
+/* UpdateImageInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewUpdateImageDefault(code int) *UpdateImageDefault {
 	}
 }
 
-/*
-UpdateImageDefault describes a response with status code -1, with default header values.
+/* UpdateImageDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */

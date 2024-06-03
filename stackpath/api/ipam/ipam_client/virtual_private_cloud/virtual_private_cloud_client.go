@@ -214,7 +214,7 @@ func (a *Client) DeleteNetwork(params *DeleteNetworkParams, authInfo runtime.Cli
 }
 
 /*
-DeleteNetworkSubnet delete network subnet API
+  DeleteNetworkSubnet delete network subnet API
 */
 func (a *Client) DeleteNetworkSubnet(params *DeleteNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteNetworkSubnetNoContent, error) {
 	// TODO: Validate the params before sending
@@ -328,7 +328,7 @@ func (a *Client) GetNetwork(params *GetNetworkParams, authInfo runtime.ClientAut
 }
 
 /*
-GetNetworkSubnet get network subnet API
+  GetNetworkSubnet get network subnet API
 */
 func (a *Client) GetNetworkSubnet(params *GetNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetNetworkSubnetOK, error) {
 	// TODO: Validate the params before sending
@@ -556,7 +556,7 @@ func (a *Client) UpdateNetwork(params *UpdateNetworkParams, authInfo runtime.Cli
 }
 
 /*
-UpdateNetworkSubnet update network subnet API
+  UpdateNetworkSubnet update network subnet API
 */
 func (a *Client) UpdateNetworkSubnet(params *UpdateNetworkSubnetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateNetworkSubnetOK, error) {
 	// TODO: Validate the params before sending

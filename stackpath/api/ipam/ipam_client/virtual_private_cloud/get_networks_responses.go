@@ -58,8 +58,7 @@ func NewGetNetworksOK() *GetNetworksOK {
 	return &GetNetworksOK{}
 }
 
-/*
-GetNetworksOK describes a response with status code 200, with default header values.
+/* GetNetworksOK describes a response with status code 200, with default header values.
 
 GetNetworksOK get networks o k
 */
@@ -91,8 +90,7 @@ func NewGetNetworksUnauthorized() *GetNetworksUnauthorized {
 	return &GetNetworksUnauthorized{}
 }
 
-/*
-GetNetworksUnauthorized describes a response with status code 401, with default header values.
+/* GetNetworksUnauthorized describes a response with status code 401, with default header values.
 
 Returned when an unauthorized request is attempted.
 */
@@ -124,8 +122,7 @@ func NewGetNetworksInternalServerError() *GetNetworksInternalServerError {
 	return &GetNetworksInternalServerError{}
 }
 
-/*
-GetNetworksInternalServerError describes a response with status code 500, with default header values.
+/* GetNetworksInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error.
 */
@@ -159,8 +156,7 @@ func NewGetNetworksDefault(code int) *GetNetworksDefault {
 	}
 }
 
-/*
-GetNetworksDefault describes a response with status code -1, with default header values.
+/* GetNetworksDefault describes a response with status code -1, with default header values.
 
 Default error structure.
 */
