@@ -35,6 +35,9 @@ type V1Metadata struct {
 	// labels
 	Labels V1StringMapEntry `json:"labels,omitempty"`
 
+	// resource name
+	ResourceName string `json:"resourceName,omitempty"`
+
 	// The date that a metadata entry was last updated
 	// Read Only: true
 	// Format: date-time

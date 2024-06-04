@@ -1643,6 +1643,16 @@
       ],
       "discriminator": "@type"
     },
+    "apimetav1ConditionStatus": {
+      "type": "string",
+      "enum": [
+        "CONDITION_STATUS_UNSPECIFIED",
+        "CONDITION_STATUS_TRUE",
+        "CONDITION_STATUS_FALSE",
+        "CONDITION_STATUS_UNKNOWN"
+      ],
+      "default": "CONDITION_STATUS_UNSPECIFIED"
+    },
     "paginationPageInfo": {
       "type": "object",
       "properties": {
@@ -1916,6 +1926,249 @@
           "items": {
             "$ref": "#/definitions/apiStatusDetail"
           }
+        }
+      }
+    },
+    "AllocationClaimSpecAllocationClaimSpecAllocation": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "selector": {
+          "$ref": "#/definitions/AllocationClaimSpecAllocationClaimSpecAllocationSelector"
+        },
+        "template": {
+          "$ref": "#/definitions/v1Allocation"
+        }
+      }
+    },
+    "AllocationClaimSpecAllocationClaimSpecAllocationSelector": {
+      "type": "object",
+      "properties": {
+        "allocationClass": {
+          "type": "string"
+        },
+        "matchExpressions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          }
+        }
+      }
+    },
+    "v1Allocation": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata"
+        },
+        "spec": {
+          "$ref": "#/definitions/v1AllocationSpec"
+        },
+        "status": {
+          "$ref": "#/definitions/v1AllocationStatus"
+        }
+      }
+    },
+    "v1AllocationClaim": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata"
+        },
+        "spec": {
+          "$ref": "#/definitions/v1AllocationClaimSpec"
+        },
+        "status": {
+          "$ref": "#/definitions/v1AllocationClaimStatus"
+        }
+      }
+    },
+    "v1AllocationClaimSpec": {
+      "type": "object",
+      "properties": {
+        "reclaimPolicy": {
+          "$ref": "#/definitions/v1ReclaimPolicy"
+        },
+        "ipFamily": {
+          "$ref": "#/definitions/v1IPFamily"
+        },
+        "prefixLength": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "resourceBinding": {
+          "$ref": "#/definitions/v1TypedResourceReference"
+        },
+        "allocation": {
+          "$ref": "#/definitions/AllocationClaimSpecAllocationClaimSpecAllocation"
+        }
+      }
+    },
+    "v1AllocationClaimStatus": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string"
+        },
+        "allocation": {
+          "type": "string"
+        },
+        "resourceBinding": {
+          "$ref": "#/definitions/v1TypedResourceReference"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Condition"
+          }
+        }
+      }
+    },
+    "v1AllocationSpec": {
+      "type": "object",
+      "properties": {
+        "reclaimPolicy": {
+          "$ref": "#/definitions/v1ReclaimPolicy"
+        },
+        "allocationClass": {
+          "type": "string"
+        },
+        "ipFamily": {
+          "$ref": "#/definitions/v1IPFamily"
+        },
+        "prefixLength": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "selectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MatchExpression"
+          }
+        }
+      }
+    },
+    "v1AllocationStatus": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string"
+        },
+        "parentAllocation": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Condition"
+          }
+        }
+      }
+    },
+    "v1Assignment": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1AssignmentMode"
+        },
+        "allocationClaimTemplate": {
+          "$ref": "#/definitions/v1AllocationClaim"
+        }
+      }
+    },
+    "v1AssignmentMode": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "PRIMARY",
+        "ONE_TO_ONE_NAT",
+        "ADDITIONAL",
+        "FORWARD"
+      ],
+      "default": "UNSPECIFIED"
+    },
+    "v1Condition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/apimetav1ConditionStatus"
+        },
+        "observedVersion": {
+          "type": "string"
+        },
+        "lastTransitionTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ReclaimPolicy": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/ReclaimPolicyReclaimPolicyAction"
+        },
+        "idleRetentionPeriod": {
+          "type": "string"
+        }
+      }
+    },
+    "ReclaimPolicyReclaimPolicyAction": {
+      "type": "string",
+      "enum": [
+        "RECLAIM_POLICY_ACTION_UNSPECIFIED",
+        "DELETE",
+        "RETAIN",
+        "RETAIN_FOR_IDLE_PERIOD"
+      ],
+      "default": "RECLAIM_POLICY_ACTION_UNSPECIFIED"
+    },
+    "v1TypedResourceReference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -2808,6 +3061,9 @@
         "version": {
           "type": "string",
           "description": "A metadata entry's version number\n\nMetadata versions start at 1 when they are created and increment by 1 every time they are updated."
+        },
+        "resourceName": {
+          "type": "string"
         }
       },
       "description": "Metadata associated with an entity"
@@ -2856,6 +3112,12 @@
           "type": "boolean",
           "format": "boolean",
           "description": "Whether to provide [one-to-one NAT](https://en.wikipedia.org/wiki/Network_address_translation#Basic_NAT) for this network interface\n\nThis is an optional property used to enable or disable the NAT'ing the network interface. NAT is enabled by default on the first/primary interface and disabled on secondary/multi interfaces.\n\nMark this property `false` to disable NAT on the first interface. Mark this property `true` to enable NAT on secondary interfaces.\n\nThe `ExcludeNAT` workload annotation supercedes this property."
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Assignment"
+          }
         }
       },
       "description": "Network interfaces that will be created on instances in the workload"
