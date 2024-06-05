@@ -54,7 +54,7 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-n
 * `name` - (Required) A human readable name.
 * `slug` - (Required) A programmatic name for the network allocation.
 * `labels` - (Optional) Key/value pairs of arbitrary label names and values that can be referenced as selectors.
-* `annotations` - (Optional) Key/value pairs that define StackPath-specific network allocation configuration.
+* `annotations` - (Optional) Key/value pairs that define StackPath-specific network allocation configuration. Currently `ipam.platform.stackpath.net/force-assign-requested-ips` annotation is used to force assign requested ips from assignment.
 * `allocation_class` - (Required) A IP allocation class to allocate IP from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
 * `ip_family` - (Required) An IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
 * `prefix_length` - (Required) A Prefix length of IP allocation. Currently only 32 and 128
