@@ -8,7 +8,7 @@ description: |-
 
 # stackpath\_compute\_network\_allocation\_claim
 
-IP allocation claim used to claim IP from an allocation to network interfaces of StackPath computing workloads.
+IP allocation claim is used to claim an IP address from an allocation and bind it to a named resource such as a network interface of StackPath computing workloads.
 
 ## Example Usage
 
@@ -131,10 +131,10 @@ resource "stackpath_compute_network_allocation_claim" "allocation-claim-allocati
 * `slug` - (Required) A programmatic name for the network allocation claim.
 * `labels` - (Optional) Key/value pairs of arbitrary label names and values that can be referenced as selectors.
 * `annotations` - (Optional) Key/value pairs that define StackPath-specific network allocation configuration.
-* `ip_family` - (Required) A IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
-* `prefix_length` - (Required) A Prefix length of IP allocation. Currently only 32 and 128
+* `ip_family` - (Required) An IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
+* `prefix_length` - (Required) A prefix length of IP allocation. Currently only 32 and 128
 prefix length values are supported for IPv4 and IPv6 respectively.
-* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. only RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
+* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. Only the RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
 * `allocation` - (Required) An allocation for the claim can be defined in three mutually exclusive ways:
 
 1. Directly via reference in resource name format.
@@ -147,22 +147,21 @@ See [Allocation](#allocation) below for details.
 
 `allocation` take the one of the following arguments:
 
-* `name` - (Optional) The name of allocation in resource name format.
-* `selector` - (Required) A selector to select existing allocation using allocation_class
-and match_expressions used to match allocation. See [Selector](#selector) below for details.
-* `template` - (Required) A allocation resource template, it creates an allocation using
-provided template if allocation does not exist. See [Template](#template) below for details.
+* `name` - (Optional) The name of an allocation in resource name format.
+* `selector` - (Required) A selector to select an existing allocation using allocation_class
+and match_expressions used to match an allocation. See [Selector](#selector) below for details.
+* `template` - (Required) An allocation resource template which is used to create an allocation if allocation does not exist. See [Template](#template) below for details.
 
 ### Selector
 
 `selector` takes following arguments:
 
-* `allocation_class` - (Required) A IP allocation class to allocate IP from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
+* `allocation_class` - (Required) An IP allocation class to allocate an IP address from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
 * `match_expressions` - (Required) A list of match expressions to match allocation. See [Match_Expressions](#match_expressions) below for details
 
 ### Match_Expressions
 
-`match_expressions` take the following arguments:
+`match_expressions` values take the following arguments:
 
 * `key` - (Required) The name of the data that a selector is based on.
 * `operator` - (Required) A logical operator to apply to a selector. Only the "in" operator is supported.
@@ -172,16 +171,16 @@ provided template if allocation does not exist. See [Template](#template) below 
 
 `template` take the following arguments:
 
-* `allocation_class` - (Required) A IP allocation class to allocate IP from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
-* `ip_family` - (Required) A IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
-* `prefix_length` - (Required) A Prefix length of IP allocation. Currently only 32 and 128
+* `allocation_class` - (Required) An IP allocation class to allocate IP address from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
+* `ip_family` - (Required) An IP Family of the IPs being allocated. One of IPv4 or IPv6 can be provided.
+* `prefix_length` - (Required) A prefix length of IP allocation. Currently only 32 and 128
 prefix length values are supported for IPv4 and IPv6 respectively.
-* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. only RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
-* `selectors` - (Required) A edge location selector that the network allocation applies to. See [Selectors](#selectors) below for details.
+* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. Only RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
+* `selectors` - (Required) An edge location selector that the network allocation applies to. See [Selectors](#selectors) below for details.
 
 ### Selectors
 
-`selectors` take the following arguments:
+`selectors` values take the following arguments:
 
 * `key` - (Required) The name of the data that a selector is based on.
 * `operator` - (Required) A logical operator to apply to a selector. Only the "in" operator is supported.

@@ -3,12 +3,12 @@ layout: "stackpath"
 page_title: "StackPath: stackpath_compute_network_allocation"
 sidebar_current: "docs-stackpath-resource-compute-network-allocation"
 description: |-
-  IP allocation required for network interfaces of StackPath computing workloads.
+  IP allocations are used to allocate an IP address for immediate or future use with an allocation claim.
 ---
 
 # stackpath\_compute\_network\_allocation
 
-IP allocation used to allocate IP to network interfaces of StackPath computing workloads.
+IP allocations are used to allocate an IP address for immediate or future use with an allocation claim.
 
 ## Example Usage
 
@@ -38,7 +38,7 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-n
   }
 
   selectors {
-    # Apply the selectos to a specific edge compute location
+    # Apply the selectors to a specific edge compute location
     key = "cityCode"
     # The operator is the operation that should be applied to the value of the
     # label. Only the "in" operator is supported.
@@ -56,11 +56,11 @@ resource "stackpath_compute_network_allocation" "my-compute-network-allocation-n
 * `labels` - (Optional) Key/value pairs of arbitrary label names and values that can be referenced as selectors.
 * `annotations` - (Optional) Key/value pairs that define StackPath-specific network allocation configuration.
 * `allocation_class` - (Required) A IP allocation class to allocate IP from. Supported values are stackpath-edge/private and stackpath-edge/unicast.
-* `ip_family` - (Required) A IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
+* `ip_family` - (Required) An IP Family of the IPs being allocated. One of the IPv4 or IPv6 can be provided.
 * `prefix_length` - (Required) A Prefix length of IP allocation. Currently only 32 and 128
 prefix length values are supported for IPv4 and IPv6 respectively.
-* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. only RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
-* `selectors` - (Required) A edge location selector that the network allocation applies to. See [Selectors](#selectors) below for details.
+* `reclaim_policy` - (Required) A reclaim policy to be used for IP allocation. Only the RETAIN action is supported in reclaim policy specified in allocation resources being created from API.
+* `selectors` - (Required) An edge location selector that the network allocation applies to. See [Selectors](#selectors) below for details.
 
 ### Selectors
 

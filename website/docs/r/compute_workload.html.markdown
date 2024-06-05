@@ -165,17 +165,17 @@ nat to interface VPC IP address. Default is true.
 If Dual stack [IPv4, IPv6] is requested then VPC network specified in `network` field
 is expected to enabled for Dual stack networking. Bu default all Default networks are enabled for Dual stack, any user created VPC network needs to be created with [IPv4, IPv6] IPFamilies to enable it for Dual stack networking.
 * `assignments` - (Optional) A list of network assignments used to assign IPs to a network
-interface. If assignments are not provided explicitely then default network assignments
-are added to workload spec based on `ip_families` and `enable_one_to_one_nat` fields.
+interface. If assignments are not provided explicitly then default network assignments
+are added to the workload spec based on `ip_families` and `enable_one_to_one_nat` fields.
 See [Assignments](#assignments) below for details.
 
 ### Assignments
 
-Each assignment spec support the following arguments:
+Each assignment spec supports the following arguments:
 
 * `slug` - (Required) Unique identifier name for the assignment.
-* `mode` - (Required) Assignment mode representing allocation class from where IP allocation should happen. Currently supported assignment modes are PRIMARY, ONE_TO_ONE_NAT and FORWARD.
-* `allocation_claim_template` - (Required) Allocation claim template used to claim IPs from an allocation. more details about arguments required by allocation_claim_template can be found in [allocation claim](/docs/providers/stackpath/r/compute_network_allocation_claim.html).
+* `mode` - (Required) Assignment mode representing an allocation class from where IP allocation should happen. Currently supported assignment modes are PRIMARY, ONE_TO_ONE_NAT and FORWARD.
+* `allocation_claim_template` - (Required) Allocation claim template used to claim IPs from an allocation. More details about arguments required by allocation_claim_template can be found in [allocation claim](/docs/providers/stackpath/r/compute_network_allocation_claim.html).
 
 ### Image Pull Credentials
 
