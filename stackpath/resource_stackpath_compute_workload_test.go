@@ -415,8 +415,6 @@ func TestComputeContainersEnhancedContainerControls(t *testing.T) {
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
 					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
-						"60",  // termination,
-						true,  // share namespace
 						"999", // run_as_user
 						"991", // run_as_group
 						true,  // run_as_non_root
@@ -447,8 +445,6 @@ func TestComputeContainersEnhancedContainerControls(t *testing.T) {
 					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
 					testAccComputeWorkloadCheckContainerRuntimeExists(workload, true),
 					testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload,
-						"60",           // termination,
-						true,           // share namespace
 						"999",          // run_as_user
 						"991",          // run_as_group
 						true,           // run_as_non_root
@@ -540,6 +536,33 @@ func TestComputeWorkloadVirtualMachinesIPv6DualStack(t *testing.T) {
 	})
 }
 
+func TestComputeWorkloadContainersNetworkAssignments(t *testing.T) {
+	t.Parallel()
+
+	workload := &workload_models.V1Workload{}
+	nameSuffix := "assignments"
+
+	resource.Test(t, resource.TestCase{
+		ProviderFactories: testAccProviderFactories,
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		CheckDestroy: testAccComputeWorkloadCheckDestroy(),
+		Steps: []resource.TestStep{
+			{
+				Config: testComputeWorkloadConfigContainerNetworkAssignments(nameSuffix),
+				Check: resource.ComposeTestCheckFunc(
+					testAccComputeWorkloadCheckExists("stackpath_compute_workload.foo", workload),
+					testAccComputeWorkloadCheckContainerImage(workload, "app", "nginx:latest"),
+					testAccComputeWorkloadCheckTarget(workload, "us", "cityCode", "in", 1, "AMS"),
+					testAccComputeWorkloadCheckInterface(workload, 0, "default", true, "", "", DualStackIPFamilies),
+					testAccComputeWorkloadCheckInterfaceAssignments(workload, 0, true, DualStackIPFamilies),
+				),
+			},
+		},
+	})
+}
+
 func testAccComputeWorkloadCheckDestroy() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config := testAccProvider.Meta().(*Config)
@@ -609,6 +632,82 @@ func testAccComputeWorkloadCheckInterface(
 	}
 }
 
+func testAccComputeWorkloadCheckInterfaceAssignments(
+	workload *workload_models.V1Workload,
+	interfaceIndex int,
+	enableOneToOneNAT bool,
+	ipFamilies []string,
+) resource.TestCheckFunc {
+	return func(_ *terraform.State) error {
+		interfaces := workload.Spec.NetworkInterfaces
+		if interfaceIndex < 0 {
+			return fmt.Errorf("invalid interface index to check: %d", interfaceIndex)
+		}
+		if interfaceIndex >= len(interfaces) {
+			return fmt.Errorf("could not find the interface index %d/%d", interfaceIndex, len(interfaces))
+		}
+
+		prefixLengthMap := map[string]int32{
+			"IPv4": 32,
+			"IPv6": 128,
+		}
+
+		allocationClassMap := map[string]string{
+			"PRIMARY":        "stackpath-edge/private",
+			"ONE_TO_ONE_NAT": "stackpath-edge/unicast",
+		}
+
+		assignmentModes := []string{"PRIMARY"}
+		if enableOneToOneNAT {
+			assignmentModes = append(assignmentModes, "ONE_TO_ONE_NAT")
+		}
+
+		expectedAssignments := []*workload_models.V1Assignment{}
+		for _, ipFamily := range ipFamilies {
+			for _, assignmentMode := range assignmentModes {
+				slug := strings.ReplaceAll(strings.ToLower(assignmentMode), "_", "-") + "-" + string(ipFamily[len(ipFamily)-2:])
+				expectedAssignments = append(expectedAssignments, &workload_models.V1Assignment{
+					Slug: slug,
+					Mode: workload_models.NewV1AssignmentMode(workload_models.V1AssignmentMode(assignmentMode)),
+					AllocationClaimTemplate: &workload_models.V1AllocationClaim{
+						Spec: &workload_models.V1AllocationClaimSpec{
+							IPFamily:     workload_models.NewV1IPFamily(workload_models.V1IPFamily(ipFamily)),
+							PrefixLength: prefixLengthMap[ipFamily],
+							ReclaimPolicy: &workload_models.V1ReclaimPolicy{
+								Action: workload_models.NewReclaimPolicyReclaimPolicyAction(workload_models.ReclaimPolicyReclaimPolicyActionDELETE),
+							},
+							Allocation: &workload_models.AllocationClaimSpecAllocationClaimSpecAllocation{
+								Template: &workload_models.V1Allocation{
+									Spec: &workload_models.V1AllocationSpec{
+										AllocationClass: allocationClassMap[assignmentMode],
+										IPFamily:        workload_models.NewV1IPFamily(workload_models.V1IPFamily(ipFamily)),
+										PrefixLength:    prefixLengthMap[ipFamily],
+										ReclaimPolicy: &workload_models.V1ReclaimPolicy{
+											Action: workload_models.NewReclaimPolicyReclaimPolicyAction(workload_models.ReclaimPolicyReclaimPolicyActionDELETE),
+										},
+									},
+								},
+							},
+						},
+					},
+				})
+			}
+		}
+
+		inter := interfaces[interfaceIndex]
+
+		if len(inter.Assignments) > 0 {
+			for i, assignment := range inter.Assignments {
+				if !reflect.DeepEqual(assignment, expectedAssignments[i]) {
+					return fmt.Errorf("invalid assignment %d. got=%#v want=%#v", i, assignment, expectedAssignments[i])
+				}
+			}
+		}
+
+		return nil
+	}
+}
+
 func testAccComputeWorkloadContainerVolumeMount(workload *workload_models.V1Workload, containerName, volumeSlug, mountPath string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		container, found := workload.Spec.Containers[containerName]
@@ -670,15 +769,6 @@ func testAccComputeWorkloadCheckVirtualMachineImage(workload *workload_models.V1
 			return fmt.Errorf("virtual machine was not found: %s", name)
 		} else if vm.Image != image {
 			return fmt.Errorf("virtual machine image '%s' does not match expected '%s'", vm.Image, image)
-		}
-		return nil
-	}
-}
-
-func testAccComputeWorkloadCheckNoImagePullCredentials(workload *workload_models.V1Workload) resource.TestCheckFunc {
-	return func(*terraform.State) error {
-		if workload.Spec.ImagePullCredentials != nil {
-			return fmt.Errorf("unexpected image pull credentials set on the workload")
 		}
 		return nil
 	}
@@ -989,7 +1079,6 @@ func testAccComputeWorkloadCheckContainerRuntimeExists(workload *workload_models
 
 // Precondition: testAccComputeWorkloadCheckContainerRuntimeExists has run
 func testAccComputeWorkloadCheckContainerRuntimeSecurityContext(workload *workload_models.V1Workload,
-	terminationGrace string, shareNamespace bool,
 	runAsUser string, runAsGroup string, nonRoot bool,
 	supplemental []string) resource.TestCheckFunc {
 
@@ -2160,4 +2249,141 @@ resource "stackpath_compute_workload" "foo" {
 
   }
 }`, suffix, suffix, getInterface("default", "", "", enableNAT, nil))
+}
+
+func testComputeWorkloadConfigContainerNetworkAssignments(suffix string) string {
+	return fmt.Sprintf(`
+resource "stackpath_compute_workload" "foo" {
+  name = "My Compute Workload - %s"
+  slug = "my-compute-workload-%s"
+  network_interface {
+		enable_one_to_one_nat = true
+		ip_families           = ["IPv4", "IPv6"]
+		network               = "default"
+
+		assignments {
+				mode = "PRIMARY"
+				slug = "primary-v4"
+
+				allocation_claim_template {
+						ip_family     = "IPv4"
+						prefix_length = 32
+
+						allocation {
+								template {
+										allocation_class = "stackpath-edge/private"
+										ip_family        = "IPv4"
+										prefix_length    = 32
+
+										reclaim_policy {
+												action = "DELETE"
+										}
+								}
+						}
+
+						reclaim_policy {
+								action = "DELETE"
+						}
+				}
+		}
+		assignments {
+				mode = "ONE_TO_ONE_NAT"
+				slug = "one-to-one-nat-v4"
+
+				allocation_claim_template {
+						ip_family     = "IPv4"
+						prefix_length = 32
+
+						allocation {
+								template {
+										allocation_class = "stackpath-edge/unicast"
+										ip_family        = "IPv4"
+										prefix_length    = 32
+
+										reclaim_policy {
+												action = "DELETE"
+										}
+								}
+						}
+
+						reclaim_policy {
+								action = "DELETE"
+						}
+				}
+		}
+		assignments {
+				mode = "PRIMARY"
+				slug = "primary-v6"
+
+				allocation_claim_template {
+						ip_family     = "IPv6"
+						prefix_length = 128
+
+						allocation {
+								template {
+										allocation_class = "stackpath-edge/private"
+										ip_family        = "IPv6"
+										prefix_length    = 128
+
+										reclaim_policy {
+												action = "DELETE"
+										}
+								}
+						}
+
+						reclaim_policy {
+								action = "DELETE"
+						}
+				}
+		}
+		assignments {
+				mode = "ONE_TO_ONE_NAT"
+				slug = "one-to-one-nat-v6"
+
+				allocation_claim_template {
+						ip_family     = "IPv6"
+						prefix_length = 128
+
+						allocation {
+								template {
+										allocation_class = "stackpath-edge/unicast"
+										ip_family        = "IPv6"
+										prefix_length    = 128
+
+										reclaim_policy {
+												action = "DELETE"
+										}
+								}
+						}
+
+						reclaim_policy {
+								action = "DELETE"
+						}
+				}
+		}
+	}
+
+  container {
+    name  = "app"
+    image = "nginx:latest"
+    resources {
+      requests = {
+        cpu    = "1"
+        memory = "2Gi"
+      }
+    }
+  }
+
+  target {
+    name         = "us"
+    min_replicas = 1
+    selector {
+      key      = "cityCode"
+      operator = "in"
+      values = [
+        "AMS",
+      ]
+    }
+  }
+}`, suffix, suffix)
 }
