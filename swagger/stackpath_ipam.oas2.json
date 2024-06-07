@@ -19,9 +19,642 @@
     "application/json"
   ],
   "paths": {
+    "/ipam/v1/stacks/{stack_id}/operations/{operation_name}": {
+      "get": {
+        "summary": "Get Operation",
+        "description": "An operation is a common type in the StackPath API used to provide a\nconsistent interface to API consumers to be able to determine the status\nof the action which was executed.\n\nThe recommended integration is for API consumers to read the `name` and\n`metadata.apiVersion` of the operation which is returned and construct\nan API request to one of the following endpoints:\n\n- `GET /ipam/{metadata.apiVersion}/{name}` - Will immediatey return the\n  current status of the operation, which may not be done executing.\n- `GET /ipam/{metadata.apiVersion}/{name}/wait` - Will wait up to 30\n  seconds for the operation to be done executing, and will return the\n  current status of the operation upon a timeout. If a timeout shorter\n  than 30 seconds is desired, a value may be provided in the `timeout`\n  URL parameter.\n\nWhen an operation is done executing, the `done` field will have a value\nof `true`, and either the `error` field will be populated with error\ninformation, or the `response` field will have the resource which was\nacted upon as a result of the request.\n",
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "description": "A stack ID or slug",
+            "type": "string"
+          },
+          {
+            "name": "operation_name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "operationId": "GetOperation",
+        "tags": [
+          "Operations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Operation",
+        "description": "Deleting an operation will have no impact on the resource which the\noperation was tracking.\n",
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "description": "A stack ID or slug",
+            "type": "string"
+          },
+          {
+            "name": "operation_name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "operationId": "DeleteOperation",
+        "tags": [
+          "Operations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/operations/{operation_name}/wait": {
+      "get": {
+        "summary": "Wait for Operation",
+        "description": "An operation is a common type in the StackPath API used to provide a\nconsistent interface to API consumers to be able to determine the status\nof the action which was executed.\n\nThe recommended integration is for API consumers to read the `name` and\n`metadata.apiVersion` of the operation which is returned and construct\nan API request to one of the following endpoints:\n\n- `GET /ipam/{metadata.apiVersion}/{name}` - Will immediatey return the\n  current status of the operation, which may not be done executing.\n- `GET /ipam/{metadata.apiVersion}/{name}/wait` - Will wait up to 30\n  seconds for the operation to be done executing, and will return the\n  current status of the operation upon a timeout. If a timeout shorter\n  than 30 seconds is desired, a value may be provided in the `timeout`\n  URL parameter.\n\nWhen an operation is done executing, the `done` field will have a value\nof `true`, and either the `error` field will be populated with error\ninformation, or the `response` field will have the resource which was\nacted upon as a result of the request.\n",
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "description": "A stack ID or slug",
+            "type": "string"
+          },
+          {
+            "name": "operation_name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "timeout",
+            "description": "Time to wait for an operation. Max value is limited to 30s.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "operationId": "WaitOperation",
+        "tags": [
+          "Operations"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          }
+        }
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/allocations": {
+      "post": {
+        "operationId": "CreateAllocation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAllocationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "get": {
+        "operationId": "GetAllocations",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllocationsResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/allocations/{allocation_slug}": {
+      "patch": {
+        "operationId": "UpdateAllocation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateAllocationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "get": {
+        "operationId": "GetAllocation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllocationResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteAllocation",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/allocation_claims": {
+      "post": {
+        "operationId": "CreateAllocationClaim",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAllocationClaimRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "get": {
+        "operationId": "GetAllocationClaims",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllocationClaimsResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_request.first",
+            "description": "The number of items desired.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.after",
+            "description": "The cursor value after which data will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.filter",
+            "description": "SQL-style constraint filters.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_request.sort_by",
+            "description": "Sort the response by the given field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      }
+    },
+    "/ipam/v1/stacks/{stack_id}/allocation_claims/{allocation_claim_slug}": {
+      "patch": {
+        "operationId": "UpdateAllocationClaim",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_claim_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateAllocationClaimRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "get": {
+        "operationId": "GetAllocationClaim",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllocationClaimResponse"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_claim_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteAllocationClaim",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Operation"
+            }
+          },
+          "401": {
+            "description": "Returned when an unauthorized request is attempted.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          },
+          "default": {
+            "description": "Default error structure.",
+            "schema": {
+              "$ref": "#/definitions/apiStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stack_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_claim_slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Allocations"
+        ]
+      }
+    },
     "/ipam/v1/stacks/{stack_id}/network_policies": {
       "post": {
-        "summary": "Create a policy",
+        "summary": "Create a network policy",
         "operationId": "CreateNetworkPolicy",
         "responses": {
           "200": {
@@ -71,10 +704,7 @@
         ]
       },
       "get": {
-        "tags": [
-          "Network Policies"
-        ],
-        "summary": "Get all policies",
+        "summary": "Get a list of network policies by stack id",
         "operationId": "GetNetworkPolicies",
         "responses": {
           "200": {
@@ -138,12 +768,15 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "Network Policies"
         ]
       }
     },
     "/ipam/v1/stacks/{stack_id}/network_policies/{network_policy_id}": {
       "put": {
-        "summary": "Update a policy",
+        "summary": "Update a network policy",
         "operationId": "UpdateNetworkPolicy",
         "responses": {
           "200": {
@@ -200,10 +833,7 @@
         ]
       },
       "get": {
-        "summary": "Get a policy",
-        "tags": [
-          "Network Policies"
-        ],
+        "summary": "Get a network policy",
         "operationId": "GetNetworkPolicy",
         "responses": {
           "200": {
@@ -246,13 +876,13 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "Network Policies"
         ]
       },
       "delete": {
-        "summary": "Delete a policy",
-        "tags": [
-          "Network Policies"
-        ],
+        "summary": "Delete a network policy",
         "operationId": "DeleteNetworkPolicy",
         "responses": {
           "204": {
@@ -292,12 +922,15 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "Network Policies"
         ]
       }
     },
     "/ipam/v1/stacks/{stack_id}/networks": {
       "get": {
-        "summary": "Get all VPC networks",
+        "summary": "Get a paginated list of network resources",
         "operationId": "GetNetworks",
         "responses": {
           "200": {
@@ -367,7 +1000,7 @@
         ]
       },
       "post": {
-        "summary": "Create a VPC network",
+        "summary": "Create a new network resource",
         "operationId": "CreateNetwork",
         "responses": {
           "200": {
@@ -419,7 +1052,7 @@
     },
     "/ipam/v1/stacks/{stack_id}/networks/{network_id}": {
       "get": {
-        "summary": "Get a VPC network",
+        "summary": "Get a network resource",
         "operationId": "GetNetwork",
         "responses": {
           "200": {
@@ -468,7 +1101,7 @@
         ]
       },
       "delete": {
-        "summary": "Delete a VPC network",
+        "summary": "Delete a network resource",
         "operationId": "DeleteNetwork",
         "responses": {
           "204": {
@@ -514,7 +1147,7 @@
         ]
       },
       "patch": {
-        "summary": "Update a VPC network",
+        "summary": "Update a network. Currently only the name can be updated",
         "operationId": "UpdateNetwork",
         "responses": {
           "200": {
@@ -568,8 +1201,7 @@
         ],
         "tags": [
           "Virtual Private Cloud"
-        ],
-        "description": "Only a network's name may be updated"
+        ]
       }
     },
     "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/routes": {
@@ -628,7 +1260,6 @@
         "tags": [
           "Virtual Private Cloud"
         ],
-        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Create a network route"
       },
       "get": {
@@ -706,7 +1337,6 @@
         "tags": [
           "Virtual Private Cloud"
         ],
-        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Get all network routes"
       }
     },
@@ -773,7 +1403,6 @@
         "tags": [
           "Virtual Private Cloud"
         ],
-        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Update a network route"
       },
       "get": {
@@ -830,7 +1459,6 @@
         "tags": [
           "Virtual Private Cloud"
         ],
-        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Get a network route"
       },
       "delete": {
@@ -884,12 +1512,12 @@
         "tags": [
           "Virtual Private Cloud"
         ],
-        "description": "[block:callout]\n{\n  \"type\": \"danger\",\n  \"body\": \"This is an alpha API call and should be considered very unstable. Please do not execute this in a production environment. See our [versioning guidelines](doc:versioning) for more information.\"\n}\n[/block]",
         "summary": "Delete a network route"
       }
     },
     "/ipam/v1alpha/stacks/{stack_id}/networks/{network_id}/subnets": {
       "get": {
+        "summary": "Get all subnets in a network",
         "operationId": "GetNetworkSubnets",
         "responses": {
           "200": {
@@ -960,6 +1588,7 @@
         ]
       },
       "post": {
+        "summary": "Create a new network subnet",
         "operationId": "CreateNetworkSubnet",
         "responses": {
           "200": {
@@ -1179,6 +1808,34 @@
     }
   },
   "definitions": {
+    "AllocationClaimSpecAllocationClaimSpecAllocation": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "selector": {
+          "$ref": "#/definitions/AllocationClaimSpecAllocationClaimSpecAllocationSelector"
+        },
+        "template": {
+          "$ref": "#/definitions/v1Allocation"
+        }
+      }
+    },
+    "AllocationClaimSpecAllocationClaimSpecAllocationSelector": {
+      "type": "object",
+      "properties": {
+        "allocationClass": {
+          "type": "string"
+        },
+        "matchExpressions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metav1MatchExpression"
+          }
+        }
+      }
+    },
     "NetworkPolicySpecPolicyType": {
       "type": "string",
       "enum": [
@@ -1188,6 +1845,16 @@
       ],
       "default": "POLICY_TYPE_NOT_SPECIFIED"
     },
+    "ReclaimPolicyReclaimPolicyAction": {
+      "type": "string",
+      "enum": [
+        "RECLAIM_POLICY_ACTION_UNSPECIFIED",
+        "DELETE",
+        "RETAIN",
+        "RETAIN_FOR_IDLE_PERIOD"
+      ],
+      "default": "RECLAIM_POLICY_ACTION_UNSPECIFIED"
+    },
     "RouteGatewaySelector": {
       "type": "object",
       "properties": {
@@ -1196,7 +1863,22 @@
           "items": {
             "$ref": "#/definitions/networkMatchExpression"
           },
-          "description": "List of match expressions that must all match a single interface"
+          "title": "List of match expressions that must all match a single interface"
+        }
+      }
+    },
+    "RouteNetworkSelector": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string",
+          "description": "If this is empty, then the route's stack ID will be assumed",
+          "title": "Stack ID that a network belongs to"
+        },
+        "networkId": {
+          "type": "string",
+          "description": "If this is empty, then the route's network ID will be assumed",
+          "title": "Network ID that a network belongs to"
         }
       }
     },
@@ -1209,25 +1891,7 @@
         "DELETING"
       ],
       "default": "ROUTE_STATUS_UNSPECIFIED",
-      "description": "- ROUTE_STATUS_UNSPECIFIED: Route in this region is in an undefined state\n - RUNNING: Route has 1 or more assigned gateways and is correctly configured in this region\n - NO_GATEWAY: Route does not have any assigned gateways but is configured in this region\n - DELETING: Route is being deleted from the region"
-    },
-    "apiStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/apiStatusDetail"
-          }
-        }
-      }
+      "title": "- ROUTE_STATUS_UNSPECIFIED: Route in this region is in an undefined state\n - RUNNING: Route has 1 or more assigned gateways and is correctly configured in this region\n - NO_GATEWAY: Route does not have any assigned gateways but is configured in this region\n - DELETING: Route is being deleted from the region"
     },
     "apiStatusDetail": {
       "type": "object",
@@ -1241,29 +1905,105 @@
       ],
       "discriminator": "@type"
     },
-    "v1IPFamily": {
-      "type": "string",
-      "enum": [
-        "UNSPECIFIED",
-        "IPv4",
-        "IPv6"
-      ],
-      "default": "UNSPECIFIED"
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "metav1MatchExpression": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "title": "The name of the selector to perform a match against"
+        },
+        "operator": {
+          "type": "string",
+          "description": "Valid values are \"in\" with support for more possible in the future",
+          "title": "The operation to perform to match a selector"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The values to match in the selector"
+        }
+      },
+      "title": "An expression to match selectors against a set of values"
+    },
+    "metav1Metadata": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/definitions/metav1StringMapEntry"
+        },
+        "labels": {
+          "$ref": "#/definitions/metav1StringMapEntry"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The UTC date that an entity was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The UTC date that an entity was last updated."
+        },
+        "deleteRequestedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "x-nullable": true,
+          "description": "The UTC date that an entity was requested for deletion."
+        },
+        "version": {
+          "type": "string",
+          "description": "An entity's version.\n\nVersions should be considered an opaque string by clients and may be used when updating entities."
+        },
+        "resourceName": {
+          "type": "string",
+          "description": "An entity's resource name.\n\nA unique identifier for a resource that may be used to construct a URL to access it within the service."
+        }
+      },
+      "description": "Metadata associated with an entity."
+    },
+    "metav1StringMapEntry": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "A string to string key/value pair"
     },
     "networkCreateNetworkRequest": {
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "description": "The network's human-readable name"
+          "type": "string"
         },
         "slug": {
-          "type": "string",
-          "description": "The network's machine-readable name"
+          "type": "string"
         },
         "rootSubnet": {
-          "type": "string",
-          "description": "The network's primary subnet, in CIDR notation format"
+          "type": "string"
         },
         "metadata": {
           "$ref": "#/definitions/networkMetadata"
@@ -1276,10 +2016,11 @@
           "items": {
             "$ref": "#/definitions/v1IPFamily"
           },
-          "description": "IPFamilies of IPs which will be assigned to network interface"
+          "description": "This is an optional property and supports ['IPv4'] or ['IPv4', 'IPv6'] list",
+          "title": "A list of IP families to use for interface ip assignments"
         }
       },
-      "title": ""
+      "title": "A request to create a network"
     },
     "networkCreateNetworkResponse": {
       "type": "object",
@@ -1288,7 +2029,7 @@
           "$ref": "#/definitions/networkNetwork"
         }
       },
-      "description": "A response from a request to create a network"
+      "title": "A response from a request to create a network"
     },
     "networkCreateNetworkSubnetRequest": {
       "type": "object",
@@ -1296,7 +2037,8 @@
         "subnet": {
           "$ref": "#/definitions/networkNetworkSubnet"
         }
-      }
+      },
+      "title": "A request to create a new subnet in a network"
     },
     "networkCreateNetworkSubnetResponse": {
       "type": "object",
@@ -1304,7 +2046,8 @@
         "subnet": {
           "$ref": "#/definitions/networkNetworkSubnet"
         }
-      }
+      },
+      "title": "A response from a request to create a subnet"
     },
     "networkCreateRouteRequest": {
       "type": "object",
@@ -1313,7 +2056,7 @@
           "$ref": "#/definitions/networkRoute"
         }
       },
-      "title": ""
+      "title": "A request to create a route on a network"
     },
     "networkCreateRouteResponse": {
       "type": "object",
@@ -1322,7 +2065,7 @@
           "$ref": "#/definitions/networkRoute"
         }
       },
-      "description": "A response from a request to create a route on a network"
+      "title": "A response from a request to create a route on a network"
     },
     "networkGetNetworkResponse": {
       "type": "object",
@@ -1331,7 +2074,7 @@
           "$ref": "#/definitions/networkNetwork"
         }
       },
-      "description": "The requested VPC network"
+      "title": "A response from a request to retrieve an individual network"
     },
     "networkGetNetworkSubnetResponse": {
       "type": "object",
@@ -1339,7 +2082,8 @@
         "subnet": {
           "$ref": "#/definitions/networkNetworkSubnet"
         }
-      }
+      },
+      "title": "A response from a request to retrieve a specific a subnet"
     },
     "networkGetNetworkSubnetsResponse": {
       "type": "object",
@@ -1353,7 +2097,8 @@
             "$ref": "#/definitions/networkNetworkSubnet"
           }
         }
-      }
+      },
+      "title": "A response from a request to retrieve all subnets"
     },
     "networkGetNetworksResponse": {
       "type": "object",
@@ -1368,7 +2113,7 @@
           }
         }
       },
-      "description": "The requested VPC networks"
+      "title": "A response from a request to retrieve a stack's networks"
     },
     "networkGetRouteResponse": {
       "type": "object",
@@ -1377,7 +2122,7 @@
           "$ref": "#/definitions/networkRoute"
         }
       },
-      "description": "A response to retrieve an individual route on a network"
+      "title": "A response to retrieve an individual route on a network"
     },
     "networkGetRoutesResponse": {
       "type": "object",
@@ -1392,28 +2137,294 @@
           }
         }
       },
-      "description": "A response to retrieve any routes on a given network"
+      "title": "A response to retrieve any routes on a given network"
+    },
+    "networkNetwork": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        },
+        "rootSubnet": {
+          "type": "string"
+        },
+        "virtualNetworkIdentifier": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stackId": {
+          "type": "string",
+          "title": "The ID of the stack that a network belongs to"
+        },
+        "ipv6Subnet": {
+          "type": "string"
+        },
+        "ipFamilies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "networkNetworkSubnet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "A network subnet's unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "title": "A network subnet's name as it appears in the StackPath portal"
+        },
+        "slug": {
+          "type": "string",
+          "title": "A network subnet's programmatic name"
+        },
+        "stackId": {
+          "type": "string",
+          "title": "The ID of the stack that a network subnet belongs to"
+        },
+        "networkId": {
+          "type": "string",
+          "title": "The ID of the network that a network subnet belongs to"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "The network prefix in CIDR notation that the network subnet will use.\n\nThis must be a full valid network CIDR without host bits. Ex: 10.16.0.0/16"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        }
+      }
+    },
+    "networkRoute": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "A routes's unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "title": "A routes's name as it appears in the StackPath portal"
+        },
+        "slug": {
+          "type": "string",
+          "title": "A route's programmatic name"
+        },
+        "stackId": {
+          "type": "string",
+          "title": "The ID of the stack that a route belongs to"
+        },
+        "networkId": {
+          "type": "string",
+          "title": "The ID of the network that a route belongs to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkRouteStatus"
+          },
+          "title": "Statuses of the route in different regions"
+        },
+        "destinationPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Network prefixes of a route's destination blocks"
+        },
+        "destinationNetworks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RouteNetworkSelector"
+          },
+          "title": "Networks of a route's destination blocks"
+        },
+        "gatewaySelectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RouteGatewaySelector"
+          },
+          "title": "Selectors used to select which interfaces should be used as route gateways"
+        }
+      }
+    },
+    "networkRouteStatus": {
+      "type": "object",
+      "properties": {
+        "region": {
+          "type": "string",
+          "title": "Region that this status describes"
+        },
+        "state": {
+          "$ref": "#/definitions/RouteStatusState"
+        },
+        "gatewayIps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "List of IPs that are being used as gateways"
+        }
+      }
+    },
+    "networkUpdateNetworkRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/networkMetadata"
+        }
+      },
+      "title": "A request to update a network"
+    },
+    "networkUpdateNetworkResponse": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/networkNetwork"
+        }
+      },
+      "title": "A response from a request to update a network"
+    },
+    "networkUpdateNetworkSubnetRequest": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      },
+      "title": "A request to update an existing subnet in a network"
+    },
+    "networkUpdateNetworkSubnetResponse": {
+      "type": "object",
+      "properties": {
+        "subnet": {
+          "$ref": "#/definitions/networkNetworkSubnet"
+        }
+      },
+      "title": "A response from a request to update a subnet"
+    },
+    "networkUpdateRouteRequest": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "title": "A request to update a route on a network"
+    },
+    "networkUpdateRouteResponse": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "#/definitions/networkRoute"
+        }
+      },
+      "title": "A response from an update to a route on a network"
+    },
+    "paginationPageInfo": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "string",
+          "title": "The total number of items in the dataset"
+        },
+        "hasPreviousPage": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "Whether or not a previous page of data exists"
+        },
+        "hasNextPage": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "Whether or not another page of data is available"
+        },
+        "startCursor": {
+          "type": "string",
+          "title": "The cursor for the first item in the set of data returned"
+        },
+        "endCursor": {
+          "type": "string",
+          "title": "The cursor for the last item in the set of data returned"
+        }
+      },
+      "description": "This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.",
+      "title": "Information about a paginated response"
+    },
+    "paginationPageRequest": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "string",
+          "title": "The number of items desired"
+        },
+        "after": {
+          "type": "string",
+          "title": "The cursor value after which data will be returned"
+        },
+        "filter": {
+          "type": "string",
+          "title": "SQL-style constraint filters"
+        },
+        "sortBy": {
+          "type": "string",
+          "title": "Sort the response by the given field"
+        }
+      },
+      "description": "This is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination.",
+      "title": "Pagination request information"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "networkMatchExpression": {
       "type": "object",
       "properties": {
         "key": {
           "type": "string",
-          "description": "The name of the selector to perform a match against\n\nProvide the key `workload.platform.stackpath.net/workload-slug` to select EdgeCompute workloads by their slug. All network interfaces in the workload are used as the route's gateway."
+          "title": "The name of the selector to perform a match against"
         },
         "operator": {
           "type": "string",
-          "description": "The operation to perform to match a selector\n\nValid values are \"in\" with support for more possible in the future"
+          "description": "Valid values are \"in\" with support for more possible in the future",
+          "title": "The operation to perform to match a selector"
         },
         "values": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "The values to match in the selector"
+          "title": "The values to match in the selector"
         }
       },
-      "description": "An expression to match selectors against a set of values"
+      "title": "An expression to match selectors against a set of values"
     },
     "networkMetadata": {
       "type": "object",
@@ -1429,263 +2440,36 @@
           "format": "date-time",
           "readOnly": true,
           "x-nullable": true,
-          "description": "The date that a metadata entry was created"
+          "title": "The date that an entity was created"
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time",
           "readOnly": true,
           "x-nullable": true,
-          "description": "The date that a metadata entry was last updated"
+          "title": "The date that an entity was last updated"
         },
         "deleteRequestedAt": {
           "type": "string",
           "format": "date-time",
           "readOnly": true,
           "x-nullable": true,
-          "description": "The date that an entity was requested for deletion"
+          "title": "The date that and entity was requested for deletion"
         },
         "version": {
           "type": "string",
-          "description": "An entity's version number\n\nVersions start at 1 when they are created and increment by 1 every time they are updated."
+          "description": "Versions start at 1 when they are created and increment by 1 every time they are updated.",
+          "title": "An entity's version number"
         }
       },
-      "description": "Metadata associated with an entity"
-    },
-    "networkNetwork": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "A network's unique identifier"
-        },
-        "name": {
-          "type": "string",
-          "description": "A network's human-readable name"
-        },
-        "slug": {
-          "type": "string",
-          "description": "A network's machine-readable name"
-        },
-        "metadata": {
-          "$ref": "#/definitions/networkMetadata"
-        },
-        "rootSubnet": {
-          "type": "string",
-          "description": "A subnet identifier and network mask in CIDR notation format\n\nA network's root subnet is its primary subnet."
-        },
-        "virtualNetworkIdentifier": {
-          "type": "integer",
-          "format": "int32",
-          "description": "A network's VLAN identifier"
-        },
-        "stackId": {
-          "type": "string",
-          "description": "The ID of the stack that a network belongs to"
-        },
-        "ipv6Subnet": {
-          "type": "string"
-        },
-        "ipFamilies": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "description": "A network defined within a Virtual Private Cloud"
-    },
-    "networkNetworkSubnet": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "slug": {
-          "type": "string"
-        },
-        "stackId": {
-          "type": "string"
-        },
-        "networkId": {
-          "type": "string"
-        },
-        "prefix": {
-          "type": "string"
-        },
-        "metadata": {
-          "$ref": "#/definitions/networkMetadata"
-        }
-      }
-    },
-    "networkRoute": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "readOnly": true,
-          "description": "A route's unique identifier"
-        },
-        "name": {
-          "type": "string",
-          "description": "A route's human-readable name"
-        },
-        "slug": {
-          "type": "string",
-          "description": "A route's machine-readable name"
-        },
-        "stackId": {
-          "type": "string",
-          "readOnly": true,
-          "description": "The ID of the stack that a route belongs to"
-        },
-        "networkId": {
-          "type": "string",
-          "readOnly": true,
-          "description": "The ID or slug of the VPC network that a route belongs to"
-        },
-        "metadata": {
-          "$ref": "#/definitions/networkMetadata"
-        },
-        "statuses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/networkRouteStatus"
-          },
-          "readOnly": true,
-          "description": "The status of a route in different regions"
-        },
-        "destinationPrefixes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "A route's destination network prefix, in CIDR format"
-        },
-        "gatewaySelectors": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RouteGatewaySelector"
-          },
-          "description": "Selectors that determine which EdgeCompute workload network interfaces should be be used as the route's gateway\n\nSelectors are applied to the route in order, with the highest priority assigned to the first gateway."
-        }
-      }
-    },
-    "networkRouteStatus": {
-      "type": "object",
-      "properties": {
-        "region": {
-          "type": "string",
-          "description": "The region in which a route's status resides\n\nRegions take the form `<pop name>-<cluster name>`, where `pop` is a StackPath EdgeCompute POP and `cluster` is a networking cluster within that POP.",
-          "readOnly": true
-        },
-        "state": {
-          "$ref": "#/definitions/RouteStatusState",
-          "readOnly": true
-        },
-        "gatewayIps": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "readOnly": true,
-          "description": "A list of route gateway IPs in the region"
-        }
-      }
+      "title": "Metadata associated with an entity"
     },
     "networkStringMapEntry": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
       },
-      "description": "A string to string key/value pair"
-    },
-    "networkUpdateNetworkRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The network's new name"
-        },
-        "metadata": {
-          "$ref": "#/definitions/networkMetadata"
-        }
-      },
-      "title": ""
-    },
-    "networkUpdateNetworkResponse": {
-      "type": "object",
-      "properties": {
-        "network": {
-          "$ref": "#/definitions/networkNetwork"
-        }
-      },
-      "description": "A response from a request to update a network"
-    },
-    "networkUpdateNetworkSubnetRequest": {
-      "type": "object",
-      "properties": {
-        "subnet": {
-          "$ref": "#/definitions/networkNetworkSubnet"
-        }
-      }
-    },
-    "networkUpdateNetworkSubnetResponse": {
-      "type": "object",
-      "properties": {
-        "subnet": {
-          "$ref": "#/definitions/networkNetworkSubnet"
-        }
-      }
-    },
-    "networkUpdateRouteRequest": {
-      "type": "object",
-      "properties": {
-        "route": {
-          "$ref": "#/definitions/networkRoute"
-        }
-      },
-      "title": ""
-    },
-    "networkUpdateRouteResponse": {
-      "type": "object",
-      "properties": {
-        "route": {
-          "$ref": "#/definitions/networkRoute"
-        }
-      },
-      "description": "A response from an update to a route on a network"
-    },
-    "paginationPageInfo": {
-      "type": "object",
-      "properties": {
-        "totalCount": {
-          "type": "string",
-          "description": "The total number of items in the dataset"
-        },
-        "hasPreviousPage": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "Whether or not a previous page of data exists"
-        },
-        "hasNextPage": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "Whether or not another page of data is available"
-        },
-        "startCursor": {
-          "type": "string",
-          "description": "The cursor for the first item in the set of data returned"
-        },
-        "endCursor": {
-          "type": "string",
-          "description": "The cursor for the last item in the set of data returned"
-        }
-      },
-      "description": "Information about a paginated response\n\nThis is modeled after the GraphQL Relay spec to support both cursor based pagination and traditional offset based pagination."
+      "title": "A string to string key/value pair"
     },
     "stackpath.rpc.BadRequest": {
       "allOf": [
@@ -1881,6 +2665,35 @@
         }
       ]
     },
+    "apiStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiStatusDetail"
+          }
+        }
+      }
+    },
+    "v1IPFamily": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "IPv4",
+        "IPv6"
+      ],
+      "default": "UNSPECIFIED",
+      "description": "- UNSPECIFIED: Unknown IP family\n - IPv4: IPv4 IP family\n - IPv6: IPv6 IP family",
+      "title": "supported IP families"
+    },
     "v1Action": {
       "type": "string",
       "enum": [
@@ -1889,7 +2702,198 @@
         "ALLOW"
       ],
       "default": "UNDEFINED",
-      "description": "Which action to apply"
+      "title": "Which action to apply"
+    },
+    "v1Allocation": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metav1Metadata"
+        },
+        "spec": {
+          "$ref": "#/definitions/v1AllocationSpec"
+        },
+        "status": {
+          "$ref": "#/definitions/v1AllocationStatus"
+        }
+      }
+    },
+    "v1AllocationClaim": {
+      "type": "object",
+      "properties": {
+        "stackId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metav1Metadata"
+        },
+        "spec": {
+          "$ref": "#/definitions/v1AllocationClaimSpec"
+        },
+        "status": {
+          "$ref": "#/definitions/v1AllocationClaimStatus"
+        }
+      }
+    },
+    "v1AllocationClaimSpec": {
+      "type": "object",
+      "properties": {
+        "reclaimPolicy": {
+          "$ref": "#/definitions/v1ReclaimPolicy"
+        },
+        "ipFamily": {
+          "$ref": "#/definitions/v1IPFamily"
+        },
+        "prefixLength": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "resourceBinding": {
+          "$ref": "#/definitions/v1TypedResourceReference"
+        },
+        "allocation": {
+          "$ref": "#/definitions/AllocationClaimSpecAllocationClaimSpecAllocation"
+        }
+      }
+    },
+    "v1AllocationClaimStatus": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string"
+        },
+        "allocation": {
+          "type": "string"
+        },
+        "resourceBinding": {
+          "$ref": "#/definitions/v1TypedResourceReference"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Condition"
+          }
+        }
+      }
+    },
+    "v1AllocationSpec": {
+      "type": "object",
+      "properties": {
+        "reclaimPolicy": {
+          "$ref": "#/definitions/v1ReclaimPolicy"
+        },
+        "allocationClass": {
+          "type": "string"
+        },
+        "ipFamily": {
+          "$ref": "#/definitions/v1IPFamily"
+        },
+        "prefixLength": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "selectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metav1MatchExpression"
+          }
+        }
+      }
+    },
+    "v1AllocationStatus": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "type": "string"
+        },
+        "parentAllocation": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Condition"
+          }
+        }
+      }
+    },
+    "v1Condition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of condition in CamelCase."
+        },
+        "status": {
+          "$ref": "#/definitions/v1ConditionStatus"
+        },
+        "observedVersion": {
+          "type": "string",
+          "description": "Represents the .metadata.version that was present when the condition was set."
+        },
+        "lastTransitionTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time the condition transitioned from one status to another."
+        },
+        "reason": {
+          "type": "string",
+          "description": "A programmatic identifier indicating the reason for the condition's status."
+        },
+        "message": {
+          "type": "string",
+          "description": "A human readable message indicating details about the condition."
+        }
+      },
+      "description": "Condition contains details for one aspect of the current state of an API Resource."
+    },
+    "v1ConditionStatus": {
+      "type": "string",
+      "enum": [
+        "CONDITION_STATUS_UNSPECIFIED",
+        "CONDITION_STATUS_TRUE",
+        "CONDITION_STATUS_FALSE",
+        "CONDITION_STATUS_UNKNOWN"
+      ],
+      "default": "CONDITION_STATUS_UNSPECIFIED",
+      "description": "Valid condition statuses.\n\n - CONDITION_STATUS_UNSPECIFIED: The condition status has not been set.\n - CONDITION_STATUS_TRUE: The condition is true.\n - CONDITION_STATUS_FALSE: The condition is false.\n - CONDITION_STATUS_UNKNOWN: The condition status is unknown."
+    },
+    "v1CreateAllocationClaimRequest": {
+      "type": "object",
+      "properties": {
+        "allocationClaim": {
+          "$ref": "#/definitions/v1AllocationClaim"
+        }
+      }
+    },
+    "v1CreateAllocationRequest": {
+      "type": "object",
+      "properties": {
+        "allocation": {
+          "$ref": "#/definitions/v1Allocation"
+        }
+      }
     },
     "v1CreateNetworkPolicyRequest": {
       "type": "object",
@@ -1898,7 +2902,7 @@
           "$ref": "#/definitions/v1NetworkPolicy"
         }
       },
-      "title": ""
+      "title": "A request to create a network policy"
     },
     "v1CreateNetworkPolicyResponse": {
       "type": "object",
@@ -1907,14 +2911,14 @@
           "$ref": "#/definitions/v1NetworkPolicy"
         }
       },
-      "description": "A response from a request to add a network policy to a stack"
+      "title": "A response from a request to add a network policy to a stack"
     },
     "v1Egress": {
       "type": "object",
       "properties": {
         "description": {
           "type": "string",
-          "description": "Detailed summary of what the egress rule does"
+          "title": "Detailed summary of what the egress rule does"
         },
         "action": {
           "$ref": "#/definitions/v1Action"
@@ -1926,7 +2930,65 @@
           "$ref": "#/definitions/v1Protocols"
         }
       },
-      "description": "An outbound rule from workload instances"
+      "title": "An outbound rule from workload instances"
+    },
+    "v1GetAllocationClaimResponse": {
+      "type": "object",
+      "properties": {
+        "allocationClaim": {
+          "$ref": "#/definitions/v1AllocationClaim"
+        }
+      }
+    },
+    "v1GetAllocationClaimsForAllocationResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AllocationClaim"
+          }
+        }
+      }
+    },
+    "v1GetAllocationClaimsResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AllocationClaim"
+          }
+        }
+      }
+    },
+    "v1GetAllocationResponse": {
+      "type": "object",
+      "properties": {
+        "allocation": {
+          "$ref": "#/definitions/v1Allocation"
+        }
+      }
+    },
+    "v1GetAllocationsResponse": {
+      "type": "object",
+      "properties": {
+        "pageInfo": {
+          "$ref": "#/definitions/paginationPageInfo"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Allocation"
+          }
+        }
+      }
     },
     "v1GetNetworkPoliciesResponse": {
       "type": "object",
@@ -1939,10 +3001,10 @@
           "items": {
             "$ref": "#/definitions/v1NetworkPolicy"
           },
-          "description": "The requested network policies"
+          "title": "The requested network policies"
         }
       },
-      "description": "A response from a request to retrieve a stack's network policies"
+      "title": "A response from a request to retrieve a stack's network policies"
     },
     "v1GetNetworkPolicyResponse": {
       "type": "object",
@@ -1951,7 +3013,7 @@
           "$ref": "#/definitions/v1NetworkPolicy"
         }
       },
-      "description": "A response from a request to get a network policy to a stack"
+      "title": "A response from a request to get a network policy to a stack"
     },
     "v1HostRule": {
       "type": "object",
@@ -1961,31 +3023,31 @@
           "items": {
             "$ref": "#/definitions/v1IpBlock"
           },
-          "description": "List of ip blocks"
+          "title": "List of ip blocks"
         },
         "instanceSelectors": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/networkMatchExpression"
           },
-          "description": "List of instance selectors"
+          "title": "List of instance selectors"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/networkMatchExpression"
           },
-          "description": "List of network selectors"
+          "title": "List of network selectors"
         }
       },
-      "description": "Defines IPs, instances, or networks"
+      "title": "Defines IPs, instances, or networks"
     },
     "v1Ingress": {
       "type": "object",
       "properties": {
         "description": {
           "type": "string",
-          "description": "Detailed summary of what the ingress rule does"
+          "title": "Detailed summary of what the ingress rule does"
         },
         "action": {
           "$ref": "#/definitions/v1Action"
@@ -1997,49 +3059,49 @@
           "$ref": "#/definitions/v1Protocols"
         }
       },
-      "description": "An inbound rule to workload instances"
+      "title": "An inbound rule to workload instances"
     },
     "v1IpBlock": {
       "type": "object",
       "properties": {
         "cidr": {
           "type": "string",
-          "description": "A subnet that will define all the IPs allowed by a rule"
+          "title": "A subnet that will define all the IPs allowed by a rule"
         },
         "except": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "A list of subnets that will be excluded from the above subnet\n\nThis allows a convenient way to allow multiple ip ranges in a single expression"
+          "description": "This allows a convenient way to allow multiple ip ranges in a single expression",
+          "title": "A list of subnets that will be excluded from the above subnet"
         }
       },
-      "description": "Defines an IP block"
+      "title": "Defines an IP block"
     },
     "v1NetworkPolicy": {
       "type": "object",
       "properties": {
         "stackId": {
           "type": "string",
-          "readOnly": true,
-          "description": "The ID of the stack that a network policy belongs to"
+          "title": "The ID of the stack that a network policy belongs to"
         },
         "id": {
           "type": "string",
-          "readOnly": true,
-          "description": "A network policy's unique identifier"
+          "title": "A network policy's unique identifier"
         },
         "name": {
           "type": "string",
-          "description": "A network policy's name as it appears in the StackPath portal"
+          "title": "A network policy's name as it appears in the StackPath portal"
         },
         "slug": {
           "type": "string",
-          "description": "A network policy's programmatic name\n\nNetwork policy slugs are used to build its instances names"
+          "description": "Network policy slugs are used to build its instances names",
+          "title": "A network policy's programmatic name"
         },
         "description": {
           "type": "string",
-          "description": "Detailed summary of what the policy does"
+          "title": "Detailed summary of what the policy does"
         },
         "metadata": {
           "$ref": "#/definitions/networkMetadata"
@@ -2048,7 +3110,8 @@
           "$ref": "#/definitions/v1NetworkPolicySpec"
         }
       },
-      "description": "A network policy\n\nNetwork policies define an ACL that applies to one or many workload instances"
+      "description": "Network policies define an ACL that applies to one or many workload instances",
+      "title": "A network policy"
     },
     "v1NetworkPolicySpec": {
       "type": "object",
@@ -2058,59 +3121,95 @@
           "items": {
             "$ref": "#/definitions/networkMatchExpression"
           },
-          "description": "A selector to match workload instances"
+          "title": "A selector to match workload instances"
         },
         "networkSelectors": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/networkMatchExpression"
           },
-          "description": "A selector to match networks"
+          "title": "A selector to match networks"
         },
         "policyTypes": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/NetworkPolicySpecPolicyType"
           },
-          "description": "A list of policy types\n\nPolicy types are used to specify what rules will be defined. If a policy type is given but not defined it will default. If it is not provided then no action will be used."
+          "description": "Policy types are used to specify what rules will be defined. If a policy type is given but not defined it will default. If it is not provided then no action will be used.",
+          "title": "A list of policy types"
         },
         "priority": {
           "type": "integer",
           "format": "int32",
-          "description": "A policy's priority among other network policies. 1 - 65000\n\nNetwork policies apply to all compute workloads on the stack. Lower values have a higher priority, and priorities must be unique across the stack. Use the special value 65534 to apply the same priority to different workload instances in the same stack, identified by their selectors."
+          "title": "A priority for all rules in the network policy. 1-65000"
         },
         "ingress": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Ingress"
           },
-          "description": "A list of rules for inbound traffic to instances\n\nIf the ingress policy type is given but not defined here the default is to block all"
+          "description": "If the ingress policy type is given but not defined here the default is to block all",
+          "title": "A list of rules for inbound traffic to instances"
         },
         "egress": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Egress"
           },
-          "description": "A list of rules for outbound traffic from instances\n\nIf the egress policy type is given but not defined here the default is to allow all"
+          "description": "If the egress policy type is given but not defined here the default is to allow all",
+          "title": "A list of rules for outbound traffic from instances"
         }
       },
-      "description": "The specification for the desired state of a network policy"
+      "title": "The specification for the desired state of a network policy"
+    },
+    "v1Operation": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/protobufAny"
+        },
+        "done": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "error": {
+          "$ref": "#/definitions/googlerpcStatus"
+        },
+        "response": {
+          "$ref": "#/definitions/protobufAny"
+        }
+      }
     },
     "v1ProtocolAh": {
       "type": "object",
-      "description": "Authentication Header (AH) protocol matching"
+      "title": "Authentication Header (AH) protocol matching"
     },
     "v1ProtocolEsp": {
       "type": "object",
-      "description": "Encapsulating Security Payload (ESP) protocol matching"
+      "title": "Encapsulating Security Payload (ESP) protocol matching"
     },
     "v1ProtocolGre": {
       "type": "object",
-      "description": "Generic Routing Encapsulation (GRE) protocol matching"
+      "title": "Generic Routing Encapsulation (GRE) protocol matching"
     },
     "v1ProtocolIcmp": {
       "type": "object",
-      "description": "ICMP protocol matching"
+      "title": "ICMP protocol matching"
+    },
+    "v1ProtocolIp6Extfh": {
+      "type": "object",
+      "title": "IPv6 Extension Fragment Header (IPv6-FH) protocol matching"
+    },
+    "v1ProtocolIpip": {
+      "type": "object",
+      "title": "IP-within-IP Encapsulation (IPIP) protocol matching"
+    },
+    "v1ProtocolSctp": {
+      "type": "object",
+      "title": "Stream Control Transmission Protocol (SCTP) protocol matching"
     },
     "v1ProtocolTcp": {
       "type": "object",
@@ -2120,17 +3219,17 @@
           "items": {
             "type": "string"
           },
-          "description": "List of destination ports to allow 1-65535"
+          "title": "List of destination ports to allow 1-65535"
         },
         "sourcePorts": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+          "title": "List of source ports to allow 1-65535, defaults to 1000-65535"
         }
       },
-      "description": "TCP protocol matching"
+      "title": "TCP protocol matching"
     },
     "v1ProtocolTcpUdp": {
       "type": "object",
@@ -2140,17 +3239,17 @@
           "items": {
             "type": "string"
           },
-          "description": "List of destination ports to allow 1-65535"
+          "title": "List of destination ports to allow 1-65535"
         },
         "sourcePorts": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+          "title": "List of source ports to allow 1-65535, defaults to 1000-65535"
         }
       },
-      "description": "TCP or UDP protocol convenience matching"
+      "title": "TCP or UDP protocol convenience matching"
     },
     "v1ProtocolUdp": {
       "type": "object",
@@ -2160,17 +3259,17 @@
           "items": {
             "type": "string"
           },
-          "description": "List of destination ports to allow 1-65535"
+          "title": "List of destination ports to allow 1-65535"
         },
         "sourcePorts": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "List of source ports to allow 1-65535, defaults to 1000-65535"
+          "title": "List of source ports to allow 1-65535, defaults to 1000-65535"
         }
       },
-      "description": "UDP protocol matching"
+      "title": "UDP protocol matching"
     },
     "v1Protocols": {
       "type": "object",
@@ -2195,9 +3294,56 @@
         },
         "gre": {
           "$ref": "#/definitions/v1ProtocolGre"
+        },
+        "sctp": {
+          "$ref": "#/definitions/v1ProtocolSctp"
+        },
+        "ipip": {
+          "$ref": "#/definitions/v1ProtocolIpip"
+        },
+        "ip6extfh": {
+          "$ref": "#/definitions/v1ProtocolIp6Extfh"
         }
       },
-      "description": "An object of all supported protocols and any attributes for them"
+      "title": "An object of all supported protocols and any attributes for them"
+    },
+    "v1ReclaimPolicy": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/ReclaimPolicyReclaimPolicyAction"
+        },
+        "idleRetentionPeriod": {
+          "type": "string"
+        }
+      }
+    },
+    "v1TypedResourceReference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateAllocationClaimRequest": {
+      "type": "object",
+      "properties": {
+        "allocationClaim": {
+          "$ref": "#/definitions/v1AllocationClaim"
+        }
+      }
+    },
+    "v1UpdateAllocationRequest": {
+      "type": "object",
+      "properties": {
+        "allocation": {
+          "$ref": "#/definitions/v1Allocation"
+        }
+      }
     },
     "v1UpdateNetworkPolicyRequest": {
       "type": "object",
@@ -2206,7 +3352,7 @@
           "$ref": "#/definitions/v1NetworkPolicy"
         }
       },
-      "title": ""
+      "title": "A request to update a network policy"
     },
     "v1UpdateNetworkPolicyResponse": {
       "type": "object",
@@ -2215,7 +3361,7 @@
           "$ref": "#/definitions/v1NetworkPolicy"
         }
       },
-      "description": "A response from a request to update a network policy"
+      "title": "A response from a request to update a network policy"
     }
   },
   "securityDefinitions": {

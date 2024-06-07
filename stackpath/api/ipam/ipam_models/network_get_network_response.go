@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkGetNetworkResponse The requested VPC network
+// NetworkGetNetworkResponse A response from a request to retrieve an individual network
 //
 // swagger:model networkGetNetworkResponse
 type NetworkGetNetworkResponse struct {

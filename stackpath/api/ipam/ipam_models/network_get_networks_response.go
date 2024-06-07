@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkGetNetworksResponse The requested VPC networks
+// NetworkGetNetworksResponse A response from a request to retrieve a stack's networks
 //
 // swagger:model networkGetNetworksResponse
 type NetworkGetNetworksResponse struct {

@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // V1NetworkPolicy A network policy
@@ -25,7 +24,6 @@ type V1NetworkPolicy struct {
 	Description string `json:"description,omitempty"`
 
 	// A network policy's unique identifier
-	// Read Only: true
 	ID string `json:"id,omitempty"`
 
 	// metadata
@@ -43,7 +41,6 @@ type V1NetworkPolicy struct {
 	Spec *V1NetworkPolicySpec `json:"spec,omitempty"`
 
 	// The ID of the stack that a network policy belongs to
-	// Read Only: true
 	StackID string `json:"stackId,omitempty"`
 }
 
@@ -103,10 +100,6 @@ func (m *V1NetworkPolicy) validateSpec(formats strfmt.Registry) error {
 func (m *V1NetworkPolicy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateID(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateMetadata(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -115,22 +108,9 @@ func (m *V1NetworkPolicy) ContextValidate(ctx context.Context, formats strfmt.Re
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateStackID(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *V1NetworkPolicy) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -157,15 +137,6 @@ func (m *V1NetworkPolicy) contextValidateSpec(ctx context.Context, formats strfm
 			}
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *V1NetworkPolicy) contextValidateStackID(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := validate.ReadOnly(ctx, "stackId", "body", string(m.StackID)); err != nil {
-		return err
 	}
 
 	return nil

@@ -110,11 +110,17 @@ generate:
 	${SED} -i -e 's/^type V1ProtocolEsp interface{}$$/type V1ProtocolEsp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_esp.go
 	${SED} -i -e 's/^type V1ProtocolGre interface{}$$/type V1ProtocolGre struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_gre.go
 	${SED} -i -e 's/^type V1ProtocolIcmp interface{}$$/type V1ProtocolIcmp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_icmp.go
+	${SED} -i -e 's/^type V1ProtocolSctp interface{}$$/type V1ProtocolSctp struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_sctp.go
+	${SED} -i -e 's/^type V1ProtocolIpip interface{}$$/type V1ProtocolIpip struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_ipip.go
+	${SED} -i -e 's/^type V1ProtocolIp6Extfh interface{}$$/type V1ProtocolIp6Extfh struct{}/' ./stackpath/api/ipam/ipam_models/v1_protocol_ip6_extfh.go
 
 	${SED} -i -e 's/^	Ah V1ProtocolAh `json:"ah,omitempty"`$$/	Ah *V1ProtocolAh `json:"ah,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
 	${SED} -i -e 's/^	Esp V1ProtocolEsp `json:"esp,omitempty"`$$/	Esp *V1ProtocolEsp `json:"esp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
 	${SED} -i -e 's/^	Gre V1ProtocolGre `json:"gre,omitempty"`$$/	Gre *V1ProtocolGre `json:"gre,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
 	${SED} -i -e 's/^	Icmp V1ProtocolIcmp `json:"icmp,omitempty"`$$/	Icmp *V1ProtocolIcmp `json:"icmp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Sctp V1ProtocolSctp `json:"sctp,omitempty"`$$/	Sctp *V1ProtocolSctp `json:"sctp,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Ipip V1ProtocolIpip `json:"ipip,omitempty"`$$/	Ipip *V1ProtocolIpip `json:"ipip,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
+	${SED} -i -e 's/^	Ip6extfh V1ProtocolIp6Extfh `json:"ip6extfh,omitempty"`$$/	Ip6extfh *V1ProtocolIp6Extfh `json:"ip6extfh,omitempty"`/' ./stackpath/api/ipam/ipam_models/v1_protocols.go
 
 	${SED} -i -e 's/ce.ValidateName.\+$$/ce/' ./stackpath/api/ipam/ipam_models/*.go
 	${SED} -i -e 's/ce.ValidateName.\+$$/ce/' ./stackpath/api/workload/workload_models/*.go

@@ -160,3 +160,64 @@ func resourceComputeLocation() *schema.Resource {
 		},
 	}
 }
+
+func resourceComputeCondition() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"status": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"observed_version": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"last_transition_time": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"reason": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"message": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+		},
+	}
+}
+
+func resourceComputeNetworkAllocationReclaimPolicy() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"action": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"idle_retention_period": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+		},
+	}
+}
+
+func resourceComputeNetworkAllocationResourceBinding() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+		},
+	}
+}

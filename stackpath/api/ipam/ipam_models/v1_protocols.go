@@ -30,6 +30,15 @@ type V1Protocols struct {
 	// icmp
 	Icmp *V1ProtocolIcmp `json:"icmp,omitempty"`
 
+	// ip6extfh
+	Ip6extfh *V1ProtocolIp6Extfh `json:"ip6extfh,omitempty"`
+
+	// ipip
+	Ipip *V1ProtocolIpip `json:"ipip,omitempty"`
+
+	// sctp
+	Sctp *V1ProtocolSctp `json:"sctp,omitempty"`
+
 	// tcp
 	TCP *V1ProtocolTCP `json:"tcp,omitempty"`
 

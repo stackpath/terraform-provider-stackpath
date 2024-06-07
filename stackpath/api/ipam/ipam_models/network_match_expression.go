@@ -18,8 +18,6 @@ import (
 type NetworkMatchExpression struct {
 
 	// The name of the selector to perform a match against
-	//
-	// Provide the key `workload.platform.stackpath.net/workload-slug` to select EdgeCompute workloads by their slug. All network interfaces in the workload are used as the route's gateway.
 	Key string `json:"key,omitempty"`
 
 	// The operation to perform to match a selector

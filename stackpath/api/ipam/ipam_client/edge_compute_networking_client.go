@@ -10,7 +10,9 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_client/allocations"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_client/network_policies"
+	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_client/operations"
 	"github.com/stackpath/terraform-provider-stackpath/v2/stackpath/api/ipam/ipam_client/virtual_private_cloud"
 )
 
@@ -56,7 +58,9 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *EdgeComput
 
 	cli := new(EdgeComputeNetworking)
 	cli.Transport = transport
+	cli.Allocations = allocations.New(transport, formats)
 	cli.NetworkPolicies = network_policies.New(transport, formats)
+	cli.Operations = operations.New(transport, formats)
 	cli.VirtualPrivateCloud = virtual_private_cloud.New(transport, formats)
 	return cli
 }
@@ -102,7 +106,11 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // EdgeComputeNetworking is a client for edge compute networking
 type EdgeComputeNetworking struct {
+	Allocations allocations.ClientService
+
 	NetworkPolicies network_policies.ClientService
+
+	Operations operations.ClientService
 
 	VirtualPrivateCloud virtual_private_cloud.ClientService
 
@@ -112,6 +120,8 @@ type EdgeComputeNetworking struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *EdgeComputeNetworking) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+	c.Allocations.SetTransport(transport)
 	c.NetworkPolicies.SetTransport(transport)
+	c.Operations.SetTransport(transport)
 	c.VirtualPrivateCloud.SetTransport(transport)
 }

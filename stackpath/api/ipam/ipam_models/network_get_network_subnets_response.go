@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetworkGetNetworkSubnetsResponse network get network subnets response
+// NetworkGetNetworkSubnetsResponse A response from a request to retrieve all subnets
 //
 // swagger:model networkGetNetworkSubnetsResponse
 type NetworkGetNetworkSubnetsResponse struct {
